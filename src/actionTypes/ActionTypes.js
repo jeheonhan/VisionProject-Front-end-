@@ -148,14 +148,11 @@ export const CONVERT_LOADER = 'convert_loader';
 export const GET_HRCARD_LIST = 'get_hrcard_list';
 export const CARRY_HRCARD_LIST = 'carry_hrcard_list';
 
-<<<<<<< HEAD
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';
 export const CARRY_VENDOR_LIST = 'carry_vendor_list';
 export const ADD_VENDOR = 'add_vendor';
 
-=======
 export const GET_APPOINT_LIST = 'get_appoint_list';
 export const CARRY_APPOINT_LIST = 'carry_appoint_list';
 export const CHECKED_EMPLOYEE = 'checked_employee';
->>>>>>> 19d29f47c3475fe2585e2e3cf464482bd3dedca3
