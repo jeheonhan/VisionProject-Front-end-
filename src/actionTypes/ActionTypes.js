@@ -147,3 +147,10 @@ export const CONVERT_LOADER = 'convert_loader';
 //인사관리
 export const GET_HRCARD_LIST = 'get_hrcard_list';
 export const CARRY_HRCARD_LIST = 'carry_hrcard_list';
+
+
+//코드관리
+export const GET_GROUP_CODE_LIST = 'get_group_code_list';
+export const CARRY_GROUP_CODE_LIST = 'carry_group_code_list';
+export const GET_CODE_LIST = 'get_code_list';
+export const CARRY_CODE_LIST = 'carry_code_list';
