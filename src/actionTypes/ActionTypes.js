@@ -147,3 +147,9 @@ export const CONVERT_LOADER = 'convert_loader';
 //인사관리
 export const GET_HRCARD_LIST = 'get_hrcard_list';
 export const CARRY_HRCARD_LIST = 'carry_hrcard_list';
+
+//회계관리
+export const GET_VENDOR_LIST = 'get_vendor_list';
+export const CARRY_VENDOR_LIST = 'carry_vendor_list';
+export const ADD_VENDOR = 'add_vendor';
+
