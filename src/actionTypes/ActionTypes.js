@@ -147,6 +147,9 @@ export const CONVERT_LOADER = 'convert_loader';
 //인사관리
 export const GET_HRCARD_LIST = 'get_hrcard_list';
 export const CARRY_HRCARD_LIST = 'carry_hrcard_list';
+export const GET_APPOINT_LIST = 'get_appoint_list';
+export const CARRY_APPOINT_LIST = 'carry_appoint_list';
+export const CHECKED_EMPLOYEE = 'checked_employee';
 
 
 //코드관리
@@ -154,3 +157,9 @@ export const GET_GROUP_CODE_LIST = 'get_group_code_list';
 export const CARRY_GROUP_CODE_LIST = 'carry_group_code_list';
 export const GET_CODE_LIST = 'get_code_list';
 export const CARRY_CODE_LIST = 'carry_code_list';
+
+//회계관리
+export const GET_VENDOR_LIST = 'get_vendor_list';
+export const CARRY_VENDOR_LIST = 'carry_vendor_list';
+export const ADD_VENDOR = 'add_vendor';
+
