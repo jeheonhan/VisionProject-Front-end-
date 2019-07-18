@@ -1,4 +1,4 @@
-import {GET_VENDOR_LIST, CARRY_VENDOR_LIST, ADD_VENDOR} from'../actionTypes/ActionTypes';
+import {GET_VENDOR_LIST, CARRY_VENDOR_LIST, ADD_VENDOR, GET_VENDOR, CARRY_VENDOR} from'../actionTypes/ActionTypes';
 
 const INIT_STATE = {
     loader: false,
@@ -25,9 +25,22 @@ export default (state = INIT_STATE, action) => {
             }
         }
 
+        case GET_VENDOR : {
+            return{
+                ...state
+            }
+        }
+
+        case CARRY_VENDOR : {
+            return{
+                ...state,
+                Vendor : action.payload
+            }
+        }
+
         default : {
             return{
-                state
+                ...state
             }
         }
     }

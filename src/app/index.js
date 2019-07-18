@@ -61,6 +61,8 @@ class App extends React.Component {
 
                   <Route path={`${match.url}/notice`}
                          component={asyncComponent(() => import('./routes/notice/index'))}/>
+                  <Route path={`${match.url}/code/detail`}
+                         component={asyncComponent(() => import('./routes/code/codeList'))}/>
                   <Route path={`${match.url}/code`}
                          component={asyncComponent(() => import('./routes/code/index'))}/>
                   <Route path={`${match.url}/home`}

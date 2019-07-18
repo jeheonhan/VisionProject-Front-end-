@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { connect } from 'react-redux';
 import { addVendor } from 'actions/Accounting';
+import GetPostCode from 'components/accounting/GetPostCode'
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -58,7 +59,7 @@ class FullScreenDialog extends React.Component {
             
           <div align="center">  
             <CardBox styleName="col-lg-4" heading="거래처 등록">
-              <AddTextFields addVendor={this.props.addVendor}/>
+              <AddTextFields handleRequestClose={this.handleRequestClose} addVendor={this.props.addVendor}/>
             </CardBox>
           </div>
           
@@ -107,30 +108,45 @@ function AddTextFields(props) {
     vendorTel:"",
     vendorPhone:"",
     vendorCategoryCodeNo:"",
-    bankCodeNo:"",
-    accountNo:"",
-    accountHolder:""
+    //도메인 안에 도메인에 값을 넣으려면 그냥 보내면 안되고 inner json으로 보내야 한다.
+    vendorAccount :{
+      bankCodeNo:"",
+      accountNo:"",
+      accountHolder:""
+    },
+    zipCode:"",
+    address:"",
+    detailAddress:""
   });
 
+  //inner json을 입력하려면 우선 임시방편으로 else if로 사용해서 직접 nested json에 넣는 수 밖에 없을듯
   const handleChange = name => event => {
-    setValues({ ...values, [name]: event.target.value });
+    if(name === 'bankCodeNo'){
+      setValues({...values, vendorAccount:{...values.vendorAccount, [name]:event.target.value}})
+    }else if(name === 'accountNo'){
+      setValues({...values, vendorAccount:{...values.vendorAccount, [name]:event.target.value}})
+    }else if(name === 'accountHolder'){
+      setValues({...values, vendorAccount:{...values.vendorAccount, [name]:event.target.value}})
+    }else{
+      setValues({ ...values, [name]: event.target.value });
+
+    }
     console.log(values);
+  };
+
+  const handlePostcode = (zipCode, address) => {
+    setValues({
+      ...values,
+      zipCode:zipCode,
+      address:address
+    })
   };
 
   const submitFn = () => {
       console.log(values);
       props.addVendor(values);
+      props.handleRequestClose();
 
-      setValues({
-        vendorName:"",
-        representativeName:"",
-        vendorTel:"",
-        vendorPhone:"",
-        vendorCategoryCodeNo:"",
-        bankCodeNo:"",
-        accountNo:"",
-        accountHolder:""
-      });
   }
 
     return (
@@ -150,7 +166,7 @@ function AddTextFields(props) {
           <TextField
             id="representativeName"
             label="대표자명"
-            placeholder="거래처명"
+            placeholder="대표자명"
             value={values.representativeName}
             onChange={handleChange('representativeName')}
             margin="normal"
@@ -179,6 +195,47 @@ function AddTextFields(props) {
             fullWidth
           />
         </div>
+
+        <div className="col-md-6 col-6">
+          <GetPostCode getPostcode={ handlePostcode }/>
+        </div>
+
+        <div className="col-md-6 col-6">
+          <TextField
+            id="zipCode"
+            label="우편번호"
+            placeholder="우편번호"
+            value={values.zipCode}
+            onChange={handleChange('zipCode')}
+            margin="normal"
+            fullWidth
+          />
+
+        </div>
+          <div className="col-md-12 col-12">
+          <TextField
+            id="address"
+            label="주소"
+            placeholder="주소"
+            value={values.address}
+            onChange={handleChange('address')}
+            margin="normal"
+            fullWidth
+          />
+        </div>
+        
+        <div className="col-md-12 col-12">
+          <TextField
+            id="detailAddress"
+            label="상세주소"
+            placeholder="상세주소"
+            value={values.detailAddress}
+            onChange={handleChange('detailAddress')}
+            margin="normal"
+            fullWidth
+          />
+        </div>
+
         <div className="col-md-12 col-12">
           <TextField
             id="vendorCategoryCodeNo"
@@ -203,7 +260,7 @@ function AddTextFields(props) {
             id="bankCodeNo"
             select
             label="은행 선택"
-            value={values.bankCodeNo}
+            value={values.vendorAccount.bankCodeNo}
             onChange={handleChange('bankCodeNo')}
             SelectProps={{}}
             helperText="은행을 선택해 주세요"
@@ -222,7 +279,7 @@ function AddTextFields(props) {
             id="accountNo"
             label="계좌번호"
             placeholder="계좌번호"
-            value={values.accountNo}
+            value={values.vendorAccount.accountNo}
             onChange={handleChange('accountNo')}
             margin="normal"
             fullWidth
@@ -233,7 +290,7 @@ function AddTextFields(props) {
             id="accountHolder"
             label="예금주명"
             placeholder="예금주명"
-            value={values.accountHolder}
+            value={values.vendorAccount.accountHolder}
             onChange={handleChange('accountHolder')}
             margin="normal"
             fullWidth

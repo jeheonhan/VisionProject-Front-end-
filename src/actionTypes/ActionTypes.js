@@ -150,6 +150,11 @@ export const CARRY_HRCARD_LIST = 'carry_hrcard_list';
 export const GET_APPOINT_LIST = 'get_appoint_list';
 export const CARRY_APPOINT_LIST = 'carry_appoint_list';
 export const CHECKED_EMPLOYEE = 'checked_employee';
+export const CHECKED_DEPARTMENT = 'checked_department';
+export const CHECKED_RANK = 'checked_rank';
+export const ADD_APPOINTMENT = 'add_appointment';
+export const GET_SIMPLE_HRCARD_BY_EMPLOYEENO = 'get_simple_hrcard_by_employeeno';
+export const CARRY_SIMPLE_HRCARD = 'carry_simple_hrcard';
 
 
 //코드관리
@@ -157,11 +162,22 @@ export const GET_GROUP_CODE_LIST = 'get_group_code_list';
 export const CARRY_GROUP_CODE_LIST = 'carry_group_code_list';
 export const GET_CODE_LIST = 'get_code_list';
 export const CARRY_CODE_LIST = 'carry_code_list';
+export const GET_FOR_CODE_DETAIL = 'get_for_code_detail';
+export const CARRY_FOR_CODE_DETAIL = 'carry_for_code_detail';
+
+
+
 
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';
 export const CARRY_VENDOR_LIST = 'carry_vendor_list';
 export const ADD_VENDOR = 'add_vendor';
+export const GET_VENDOR = 'get_vendor';
+export const CARRY_VENDOR = 'carry_vendor';
+
+
+
+
 
 //경영관리
 export const GET_BRANCH_LIST = 'get_branch_list';

@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
-import { getVendorList } from "actions/Accounting";
+import { getVendorList } from "actions/index";
 import CardBox from "components/CardBox";
 import GetVendorList from 'components/accounting/GetVendorList';
 

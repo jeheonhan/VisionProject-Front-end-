@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { checkedEmployee } from 'actions/HumanResource';
+import { checkedEmployee, checkedDepartment, checkedRank, getCodeList, addAppointment } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -8,14 +8,18 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CheckboxListSecondary from 'components/checkBox/CheckboxListSecondary';
-import CardBox from 'components/CardBox';
 import FindEmployee from './FindEmployee';
+import FindDepart from './FindDepart';
+import FindRank from './FindRank';
+import DatePicker from '../date/DatePickers';
+
 
 class FormDialog extends React.Component {
   state = {
     open: false,
-    subOpen: false
+    subOpen: false,
+    departOpen: false,
+    rankOpen: false
   };
 
   handleClickOpen = () => {
@@ -36,18 +40,61 @@ class FormDialog extends React.Component {
       this.setState({subOpen: false})
   }
 
-  handleChange = name => event => {
-      this.setState({[name]:event.target.value})
+  //부서검색 컴포넌트 열기
+  handleSubDepartComponentOpen = () => {
+    this.setState({departOpen: true})
   }
 
+   //부서검색 컴포넌트 닫기
+   handleSubDepartComponentClose = () => {
+    this.setState({departOpen: false})
+  }
+
+  //직급검색 컴포넌트 열기
+  handleSubRankComponentOpen = () => {
+    this.setState({rankOpen: true})
+  }
+
+  //직급검색 컴포넌트 닫기
+  handleSubRankComponentClose = () => {
+    this.setState({rankOpen: false})
+  }
+
+  handleChange = name => event => {
+      this.setState(...this.state, {[name]:event.target.value})
+      console.log(this.state)
+  }
+
+  //Date Picker로부터 date정보 받는 call back function
+  callBackDateChange = (date) => {
+    this.setState({appointDate:date})
+  }
+
+ 
   render() {
 
-    const { checkedEmployeeData } = this.props;
+    const { checkedEmployeeData, checkedDepartData, checkedRankData } = this.props;
 
-    if(checkedEmployeeData !== undefined){
-        console.log("employee :: "+checkedEmployeeData);
+
+    const handleSubmit = () => {
+      if(this.state.appointDate === undefined){
+        alert("당일 날짜로는 발령일자를 설정할 수 없습니다.")
+      }
+      else if(checkedEmployeeData === undefined){
+        alert("사원번호/사원명을 입력하세요!")
+      }else if(checkedDepartData === undefined){
+        alert("발령부서를 입력하세요!")
+      }else if(checkedRankData === undefined){
+        alert("발령직급을 입력하세요!")
+      }else{
+        this.props.addAppointment({appointDate:this.state.appointDate, employeeNo:checkedEmployeeData.employeeNo,
+          preDepartCodeNo:checkedEmployeeData.departCodeNo, preRankCodeNo:checkedEmployeeData.rankCodeNo,
+          appointDepartCodeNo:checkedDepartData.codeNo, appointRankCodeNo:checkedRankData.codeNo,
+          appointmentStatusCodeNo:"01"})
+        this.handleRequestClose();
+      }
     }
-
+  
     return (
       <div>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
@@ -57,21 +104,18 @@ class FormDialog extends React.Component {
           <DialogTitle>인사발령 등록</DialogTitle>
           <DialogContent >
             <DialogContentText>
-              To subscribe to this website, please enter your email address here. We will send
-              updates occationally.
+              사원번호 혹은 사원명을 선택한 이후에 발령일자, 발령부서, 발령직급을 선택하시기 바랍니다.
             </DialogContentText>
+            
             <div style={{float:"left"}}>
-            <TextField
-              margin="dense"
-              id="appointDate"
-              label="발령일자"
-            />
+            <DatePicker callBackDateChange={this.callBackDateChange}></DatePicker>
             </div>
+
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              autoComplete="1111,2222"
-              margin="dense"
+              required
+              margin="normal"
               id="employeeNo"
               label="사원번호"
             //사원번호 클릭시 자식컴포넌트 Open값을 true로 변경
@@ -82,61 +126,69 @@ class FormDialog extends React.Component {
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              margin="dense"
+              required
+              margin="normal"
               id="employeeName"
               label="사원명"
+              onClick={this.handleSubComponentOpen}
               value={checkedEmployeeData && checkedEmployeeData.employeeName}
             />
             </div>
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              margin="dense"
+              margin="normal"
               id="preDepartCodeName"
               label="이전부서"
               value={checkedEmployeeData && checkedEmployeeData.departCodeName}
+              disabled
             />
             </div>
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              margin="dense"
+              margin="normal"
               id="appointDepartCodeName"
               label="발령부서"
+              onClick={this.handleSubDepartComponentOpen}
+              value={checkedDepartData && checkedDepartData.codeName}
             />
             </div>
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              margin="dense"
+              margin="normal"
               id="preRankCodeName"
               label="이전직급"
               value={checkedEmployeeData && checkedEmployeeData.rankCodeName}
+              disabled
             />
             </div>
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              margin="dense"
+              margin="normal"
               id="appointRankCodeName"
               label="발령직급"
+              onClick={this.handleSubRankComponentOpen}
+              value={checkedRankData && checkedRankData.codeName}
             />
             </div>
-            <div style={{float:"left"}}>
+            {/* <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              margin="dense"
+              margin="normal"
               id="reference"
               label="참고"
             />
-            </div>
+            </div> */}
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleRequestClose} color="primary">
-              Cancel
+            <Button onClick={handleSubmit} color="secondary">
+              확인
             </Button>
-            <Button onClick={this.handleRequestClose} color="secondary">
-              Subscribe
+            <Button onClick={this.handleRequestClose} color="primary">
+              취소
             </Button>
           </DialogActions>
         </Dialog>
@@ -146,14 +198,23 @@ class FormDialog extends React.Component {
                     handleSubComponentClose={this.handleSubComponentClose}
                     checkedEmployee={this.props.checkedEmployee}
         />
+        <FindDepart open={this.state.departOpen}
+                    handleSubDepartComponentClose={this.handleSubDepartComponentClose}
+                    checkedDepartment={this.props.checkedDepartment}
+                    />
+      
+        <FindRank open={this.state.rankOpen}
+                  handleSubRankComponentClose={this.handleSubRankComponentClose}
+                  checkedRank={this.props.checkedRank}/>
+        
       </div>
     );
   }
 }
 
 const mapStateToProps = ({ humanResource }) => {
-    const { checkedEmployeeData } = humanResource;
-    return { checkedEmployeeData };
+    const { checkedEmployeeData, checkedDepartData, checkedRankData } = humanResource;
+    return { checkedEmployeeData, checkedDepartData, checkedRankData };
 }
 
-export default connect(mapStateToProps, { checkedEmployee })(FormDialog);
+export default connect(mapStateToProps, { checkedEmployee, checkedDepartment, checkedRank, addAppointment })(FormDialog);
