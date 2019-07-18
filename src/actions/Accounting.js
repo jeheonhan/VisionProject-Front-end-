@@ -1,4 +1,4 @@
-import {GET_VENDOR_LIST, CARRY_VENDOR_LIST, ADD_VENDOR } from'../actionTypes/ActionTypes';
+import {GET_VENDOR_LIST, CARRY_VENDOR_LIST, ADD_VENDOR, GET_VENDOR, CARRY_VENDOR } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
     return{
@@ -18,5 +18,19 @@ export const addVendor = (data) => {
     return{
         type: ADD_VENDOR,
         payload: data
+    }
+}
+
+export const getVendor = (vendorNo) => {
+    return{
+        type: GET_VENDOR,
+        payload: vendorNo
+    }
+}
+
+export const carryVendor = (vendor) => {
+    return{
+        type: CARRY_VENDOR,
+        payload: vendor
     }
 }

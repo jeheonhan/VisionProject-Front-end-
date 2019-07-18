@@ -16,8 +16,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconMailOutline from '@material-ui/icons/MailOutline';
-
+import GetBankInfo from 'components/accounting/GetBankInfo';
+import UpdateVendor from 'components/accounting/UpdateVendor';
+import { getVendor } from "actions/index";
+import { connect } from 'react-redux';
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -131,7 +133,14 @@ EnhancedTableToolbar.propTypes = {
 };
 
 
-class EnhancedTable extends React.Component {
+class VendorTable extends React.Component {
+
+  //이체정보 다이얼로그를 띄우는데 필요한 플래그 state
+  state = {
+    open: false,
+    subOpen: false
+  };
+
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -187,6 +196,32 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  getBankInfo = (event, vendorNo) => {
+    event.preventDefault();
+    console.log("BankInfo 가져오라는 요청");
+    if(vendorNo !== undefined){
+      this.props.getVendor(vendorNo);
+    }
+    this.setState({open : true});
+  }
+
+  updateVendor = (event, vendorNo) => {
+    event.preventDefault();
+    console.log("updateVendor 가져오라는 요청");
+    this.setState({subOpen : true})
+  }
+
+  //이체정보 다이얼로그 컴포넌트를 조작할 close open 자체는 getBankInfo에서 setState로 true 플래그를 바꿔줘서 열게함
+
+  handleRequestClose = () => {
+    this.setState({open: false});
+  };
+
+  updateVendorClose = () => {
+    this.setState({subOpen: false});
+  };
+
+
   constructor(props, context) {
     super(props, context);
 
@@ -203,7 +238,7 @@ class EnhancedTable extends React.Component {
 
   render() {
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-
+  
     return (
       <div>
         <EnhancedTableToolbar numSelected={selected.length}/>
@@ -238,13 +273,13 @@ class EnhancedTable extends React.Component {
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.vendorNo}</span></TableCell>
+                      <TableCell align="left" ><span onClick={ event => this.updateVendor(event, row.vendorNo) } style={{cursor:'pointer'}}>{row.vendorNo}</span></TableCell>
                       <TableCell align="left" >{row.vendorName}</TableCell>
                       <TableCell align="left">{row.representativeName}</TableCell>
                       <TableCell align="left">{row.vendorTel}</TableCell>
                       <TableCell align="left">{row.vendorPhone}</TableCell>
                       <TableCell align="left">{row.vendorCategoryCodeName}</TableCell>
-                      <TableCell align="left">이체정보<input type="hidden" value={row.vendorNo}/></TableCell>
+                      <TableCell align="left"><span onClick={ event => this.getBankInfo(event, row.vendorNo) } style={{cursor:'pointer'}}>이체정보</span><input type="hidden" value={row.vendorNo} /></TableCell>
                       <TableCell align="left">{row.address}</TableCell>
                     </TableRow>
                   );
@@ -262,6 +297,22 @@ class EnhancedTable extends React.Component {
                 </TableRow>
               </TableFooter>
             </Table>
+
+            {/* 이체정보를 위한 다이얼로그. 다이얼로그는 미리 띄워놓은 상태이지만 default가 false라 안보이는 것 뿐.
+            내가 직접 dialog에 open을 주입해줘야 다이얼로그가 띄워질 것*/}
+            {/* 중괄호로 감싸면 JSX에 어떤 표현식이던 넣을 수 있다. 여기에는 자바스크립트 논리 && 연산자도 포함된다.
+            이를 사용하면 요소의 조건부 포함을 더 편리하게 할 수 있다. */}
+            { this.props.Vendor && (<GetBankInfo
+              open={ this.state.open }
+              close={ this.handleRequestClose }
+              vendor={ this.props.Vendor }
+            />)}
+            { this.props.Vendor && (<UpdateVendor
+              open={ this.state.subOpen }
+              close={ this.updateVendorClose }
+              vendor={ this.props.Vendor }
+            />)}
+            
           </div>
         </div>
       </div>
@@ -269,4 +320,10 @@ class EnhancedTable extends React.Component {
   }
 }
 
-export default EnhancedTable;
+    const mapStateToProps = ({accounting}) => {
+      const { Vendor } = accounting;
+      return { Vendor };
+    }
+
+export default connect(mapStateToProps, {getVendor} )(VendorTable);
+

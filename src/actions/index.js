@@ -1,6 +1,5 @@
 export * from './Setting';
 export * from './Auth';
-export * from './User';
 export * from './Accounting';
 export * from './Approval';
 export * from './BusinessSupport';

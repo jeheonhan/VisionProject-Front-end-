@@ -162,4 +162,5 @@ export const CARRY_CODE_LIST = 'carry_code_list';
 export const GET_VENDOR_LIST = 'get_vendor_list';
 export const CARRY_VENDOR_LIST = 'carry_vendor_list';
 export const ADD_VENDOR = 'add_vendor';
-
+export const GET_VENDOR = 'get_vendor';
+export const CARRY_VENDOR = 'carry_vendor';
