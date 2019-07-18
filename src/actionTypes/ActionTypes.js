@@ -157,6 +157,8 @@ export const GET_GROUP_CODE_LIST = 'get_group_code_list';
 export const CARRY_GROUP_CODE_LIST = 'carry_group_code_list';
 export const GET_CODE_LIST = 'get_code_list';
 export const CARRY_CODE_LIST = 'carry_code_list';
+export const GET_FOR_CODE_DETAIL = 'get_for_code_detail';
+export const CARRY_FOR_CODE_DETAIL = 'carry_for_code_detail';
 
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';

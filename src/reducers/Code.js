@@ -32,11 +32,12 @@ switch(action.type){
    }
 
    case CARRY_CODE_LIST : {
-       return {
-           ...state,
-           codeList: action.payload
-       }
-   }
+    const named = action.payload[0].groupCode+"List";
+        return {
+            ...state,
+            [named]: action.payload
+        }
+    }
 
    default : {
        return{
