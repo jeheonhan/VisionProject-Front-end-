@@ -1,7 +1,6 @@
 import React from "react";
 import HRCardManage from 'containers/humanResource/HRCardManage';
 import ContainerHeader from "components/ContainerHeader";
-import { Button } from "@material-ui/core";
 import AddHRCard from 'components/humanResource/AddHRCard';
 
 
