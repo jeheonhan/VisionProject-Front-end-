@@ -16,5 +16,6 @@ export default function* rootSaga(getState) {
         humanresourceSagas(),
         codeSagas(),
         accountingSagas(),
+        businessSupportSagas()
     ]);
 }

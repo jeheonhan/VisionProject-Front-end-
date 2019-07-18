@@ -17,7 +17,7 @@ const getHRCardListRequest = async (search) => {
 
 const getAppointListRequest = async (search) => {
     return await axios({
-        method:"POST",
+        method:"GET",
         url:"/hr/getAppointmentList",
         data:search
     })

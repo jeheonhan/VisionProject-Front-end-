@@ -163,3 +163,6 @@ export const GET_VENDOR_LIST = 'get_vendor_list';
 export const CARRY_VENDOR_LIST = 'carry_vendor_list';
 export const ADD_VENDOR = 'add_vendor';
 
+//경영관리
+export const GET_BRANCH_LIST = 'get_branch_list';
+export const CARRY_BRANCH_lIST = 'carry_branch_list';
