@@ -16,7 +16,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconMailOutline from '@material-ui/icons/MailOutline';
 
 let counter = 0;
 
@@ -190,12 +189,18 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  //사원번호 클릭시 사원 프로필 보기
+  handleClickEmployeeNo = (event, employeeNo) => {
+    event.preventDefault();
+    this.props.getSimpleHRCardByEmployeeNo(employeeNo);
+  }
+
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      order: 'asc',
-      orderBy: '',
+      order: 'desc',
+      orderBy: 'appointDate',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
       data: this.props.appointList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
@@ -242,7 +247,11 @@ class EnhancedTable extends React.Component {
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
                       <TableCell align="left" >{row.appointDate}</TableCell>
-                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.employeeNo}</span></TableCell>
+                      <TableCell align="left" >
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickEmployeeNo(event, row.employeeNo)}>
+                          {row.employeeNo}
+                        </span>
+                      </TableCell>
                       <TableCell align="left" >{row.employeeName}</TableCell>
                       <TableCell align="left">{row.preDepartCodeName}</TableCell>
                       <TableCell align="left">{row.appointDepartCodeName}</TableCell>

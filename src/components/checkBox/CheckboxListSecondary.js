@@ -80,7 +80,7 @@ class CheckboxListSecondary extends Component {
     }
 
     return (
-      <List>
+      <List >
     
           <TextField
           error

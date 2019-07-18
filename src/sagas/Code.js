@@ -32,11 +32,14 @@ function* getGroupCodeList(){
 function* getCodeList(action){
     const codeList = yield call(getCodeListAxios, action.payload);
     yield put(carryCodeList(codeList));
+<<<<<<< HEAD
 }
 
 function* getForCodeDetail(action){
     const listForCodeDetail = yield call(getCodeListAxios, action.payload);
     yield put(carryForCodeDetail(listForCodeDetail));
+=======
+>>>>>>> 684b45ddc71d894f48e0a52398d8e26fe80da492
 }
 
 export function* getCodeListSaga(){
