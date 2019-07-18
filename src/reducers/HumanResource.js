@@ -2,7 +2,11 @@ import { GET_HRCARD_LIST,
          CARRY_HRCARD_LIST, 
          GET_APPOINT_LIST,
          CARRY_APPOINT_LIST,
-         CHECKED_EMPLOYEE} from "actionTypes/ActionTypes";
+         CHECKED_EMPLOYEE,
+         CHECKED_DEPARTMENT,
+         CHECKED_RANK,
+         GET_SIMPLE_HRCARD_BY_EMPLOYEENO,
+         CARRY_SIMPLE_HRCARD} from "actionTypes/ActionTypes";
 
 
 const INIT_STATE = 
@@ -56,9 +60,36 @@ export default (state = INIT_STATE, action) => {
             }
         }
 
+        case CHECKED_DEPARTMENT : {
+            return{
+                ...state,
+                checkedDepartData: action.payload
+            }
+        }
+
+        case CHECKED_RANK : {
+            return{
+                ...state,
+                checkedRankData: action.payload
+            }
+        }
+
+        case GET_SIMPLE_HRCARD_BY_EMPLOYEENO : {
+            return{
+                ...state,
+            }
+        }
+
+        case CARRY_SIMPLE_HRCARD : {
+            return{
+                ...state,
+                simpleHRCardDetail: action.payload
+            }
+        }
+
         default : {
             return{
-                state
+                ...state
             }
         }
     }

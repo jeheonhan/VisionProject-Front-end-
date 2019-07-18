@@ -2,11 +2,11 @@ import { GET_GROUP_CODE_LIST, CARRY_GROUP_CODE_LIST, GET_CODE_LIST, CARRY_CODE_L
 
 
 const INIT_STATE = {
-loader: false,
-alertMessage: '',
-showMessage: false,
-initURL: '',
-authUser: localStorage.getItem('user'),
+    groupCode: "",
+    groupCodeName: "",
+    codeNo: "",
+    codeName: "",
+    codeUsageStatus: ""
 };
 
 export default (state = INIT_STATE, action) => {
@@ -32,15 +32,16 @@ switch(action.type){
    }
 
    case CARRY_CODE_LIST : {
+       const named = action.payload[0].groupCode+"List";
        return {
            ...state,
-           codeList: action.payload
+           [named]: action.payload
        }
    }
 
    default : {
        return{
-           state
+           ...state
        }
    }
 }

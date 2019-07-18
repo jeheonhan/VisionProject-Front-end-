@@ -1,7 +1,7 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
 import { GET_GROUP_CODE_LIST, GET_CODE_LIST } from "actionTypes/ActionTypes";
-import { carryGroupCodeList } from "actions/Code";
+import { carryGroupCodeList, carryCodeList } from "actions/Code";
 
 const getGroupCodeListAxios = async () =>{
     //console.log("sagas/Code.js getGroupCodeList() start...");
@@ -31,7 +31,7 @@ function* getGroupCodeList(){
 
 function* getCodeList(action){
     const codeList = yield call(getCodeListAxios, action.payload);
-    yield put(carryGroupCodeList(codeList));
+    yield put(carryCodeList(codeList));
 }
 
 export function* getCodeListSaga(){

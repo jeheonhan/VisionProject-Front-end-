@@ -4,11 +4,12 @@ import CardBox from "components/CardBox";
 import { connect } from 'react-redux';
 import { getHRCardList } from "actions/HumanResource";
 
+
 class HRCardManage extends React.Component{
 
   constructor(props){
     super(props);
-    this.state={search:{searchKeyword:""}}
+    this.state={search:{searchKeyword:null}}
   }
 
     render(){
@@ -21,11 +22,13 @@ class HRCardManage extends React.Component{
       }
 
         return(
+          <div>
           <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
             {/* 전해줄 props값이 있으면 전해주고 아니면 Component 자체를 부르지 않음
                 내부에 있는 map이 값이 undefined면 에러가 나는 상황을 방지 */}
             {HRCardList !== undefined ? (<GetHRCardList HRCardList={HRCardList}></GetHRCardList>):"error"}
           </CardBox>
+            </div>
         );
     }
 }
