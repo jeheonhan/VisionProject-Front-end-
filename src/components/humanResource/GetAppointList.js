@@ -16,6 +16,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import { connect } from 'react-redux';
+import { getAppointList } from 'actions/HumanResource';
 
 let counter = 0;
 
@@ -55,7 +57,7 @@ class EnhancedTableHead extends React.Component {
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
-            <Checkbox color="secondary"
+            <Checkbox color="primary"
                       indeterminate={numSelected > 0 && numSelected < rowCount}
                       checked={numSelected === rowCount}
                       onChange={onSelectAllClick}
@@ -204,14 +206,24 @@ class EnhancedTable extends React.Component {
       orderBy: 'appointDate',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.appointList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      data: this.props.appointList,
       page: 0,
       rowsPerPage: 10,
+      search:{searchKeyword:null},
+      flag:false
     };
   }
 
   render() {
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
+
+
+
+    if(this.props.appointList !== this.state.data){
+      this.setState({data:this.props.appointList});
+    }
+
+    
 
     return (
       <div>
@@ -244,7 +256,7 @@ class EnhancedTable extends React.Component {
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox color="secondary" checked={isSelected} 
+                        <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
                       <TableCell align="left" >{row.appointDate}</TableCell>
@@ -287,4 +299,9 @@ class EnhancedTable extends React.Component {
   }
 }
 
-export default EnhancedTable;
+const mapStateToProps = ({ humanResource }) => {
+  const { appointList } = humanResource;
+  return { appointList }
+}
+
+export default connect(mapStateToProps,{ getAppointList })(EnhancedTable);
