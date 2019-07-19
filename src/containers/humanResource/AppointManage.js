@@ -34,10 +34,10 @@ class AppointManage extends React.Component{
             <div >
             <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside  >
                 {appointList !== undefined ? 
-                    (<GetAppointList appointList={appointList} 
-                                    getSimpleHRCardByEmployeeNo={this.props.getSimpleHRCardByEmployeeNo}
-                                    handleSimpleHRCardOpen={handleSimpleHRCardOpen}
-                                    />):""}
+                    (<GetAppointList  
+                        getSimpleHRCardByEmployeeNo={this.props.getSimpleHRCardByEmployeeNo}
+                        handleSimpleHRCardOpen={handleSimpleHRCardOpen}
+                        />):""}
           </CardBox>
             <SimpleHRCard open={this.state.simpleCardOpen} handleSimpleHRCardClose={handleSimpleHRCardClose}/>
             </div>
@@ -48,9 +48,6 @@ class AppointManage extends React.Component{
 
 const mapStateToProps = ({ humanResource }) => {
     const { appointList } = humanResource;
-    if(appointList !== undefined){
-        console.log("길이 :: "+appointList.length)
-    }
     return { appointList }
 }
 

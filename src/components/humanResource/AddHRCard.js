@@ -1,31 +1,50 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { getCodeList } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import CardBox from 'components/CardBox';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
 import FileBase64 from 'react-file-base64';
+import FindDepart from './FindDepart';
+import FindRank from './FindRank';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Select from '@material-ui/core/Select';
+import GetPostCode from 'components/accounting/GetPostCode';
+
 
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
+
 class FullScreenDialog extends React.Component {
+
+
   state = {
     open: false,
-    employee: null
+    employee: null,
+    employee:{
+      account:{
+
+      }
+    }
   };
 
   handleClickOpen = () => {
     this.setState({open: true});
   };
+
+
 
   handleRequestClose = () => {
     this.setState({open: false});
@@ -33,10 +52,27 @@ class FullScreenDialog extends React.Component {
 
   handleChange = name => event => {
    
-    this.setState({employee:{
-      [name]: event.target.value,
-    }});
-    console.log(this.state);
+    if(name == 'bankCodeNo' || name == 'accountNo'){
+
+        if(this.state.employee.account == null){
+          this.setState({employee:{  ...this.state.employee, 
+            account:{
+              [name]:event.target.value
+            }
+          }})
+        }else{
+          this.setState({employee:{  ...this.state.employee, 
+            account:{...this.state.employee.account,
+              [name]:event.target.value
+            }
+          }})
+        }
+    }else{
+      this.setState({ employee:{...this.state.employee,
+        [name]: event.target.value,
+      }});
+    }
+
   };
 
   handleFileUpload = (files) => {
@@ -44,7 +80,15 @@ class FullScreenDialog extends React.Component {
   }
 
   render() {
-    console.log(this.state.employee)
+
+    const { bankList } = this.props;
+
+    if(bankList === undefined){
+      this.props.getCodeList({searchKeyword:"bank"});
+    }
+
+    console.log(this.state)
+
     return (
       <div>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
@@ -59,7 +103,6 @@ class FullScreenDialog extends React.Component {
           <AppBar className="position-relative">
             <Toolbar className="bg-deep-orange">
               <IconButton onClick={this.handleRequestClose} aria-label="Close">
-                <CloseIcon/>
               </IconButton>
               <Typography variant="title" color="inherit" style={{
                 flex: 1,
@@ -67,15 +110,16 @@ class FullScreenDialog extends React.Component {
                 인사카드 등록
               </Typography>
               <Button onClick={this.handleRequestClose} color="inherit">
-                확인
+                닫기
               </Button>
             </Toolbar>
           </AppBar>
               
           <div  align="center">
-          <CardBox styleName="col-md-5" cardStyle="p-0" headerOutside>
+          <CardBox styleName="col-md-4" cardStyle="p-0" headerOutside>
             <AddTextField handleChange={this.handleChange} handleFileUpload={this.handleFileUpload}
-              stateValue={this.state}></AddTextField>
+              stateValue={this.state} bankList={bankList}
+              state={this.state}></AddTextField>
           </CardBox>
           </div>
         </Dialog>
@@ -84,27 +128,60 @@ class FullScreenDialog extends React.Component {
   }
 }
 
-export default FullScreenDialog;
+const mapStateToProps = ({ code }) => {
+  const { bankList } = code;
+  return { bankList };
+}
+
+export default connect(mapStateToProps, { getCodeList })(FullScreenDialog);
 
 
 //입력창
 function AddTextField(props){
+
+    const[value, setValue] = React.useState({findDepartOpen:false, findRankOpen:false});
+
+    //부서검색 열기
+    const handleFindDepartOpen = () => {
+      setValue({findDepartOpen: true});
+    }
+  
+     //부서검색 닫기
+    const handleFindDepartClose = () => {
+      setValue({findDepartOpen: false});
+    }
+  
+    //직급검색 열기
+    const handleFindRankOpen = () => {
+      setValue({findRankOpen: true});
+    }
+  
+     //직급검색 닫기
+    const handleFindRankClose = () => {
+      setValue({findRankOpen: false});
+    }
+
+
     return(
         <div align="center">
-          <br/><br/><br/>
-            <div className="col-md-8 col-12" align="center">
-              <CardBox 
-                    childrenStyle="d-flex justify-content-center"
-                    heading={"프로필 사진"}>
-              <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
-                <Avatar className="size-100" alt="Remy Sharp" src='https://via.placeholder.com/150x150'/>
-              </Tooltip>
-            </CardBox>
-              <FileBase64 
-                multiple={false}
-                onDone = {props.handleFileUpload}/>
-            </div>
-            <div className="col-md-8 col-12" float="left">
+          <br/>
+          <Typography variant="h4" color="textPrimary" style={{
+                flex: 1,
+              }}>
+                인사카드 등록
+          <br/><br/>
+              </Typography>
+              <div className="col-md-8 col-12" >
+                <CardBox 
+                        childrenStyle="d-flex justify-content-center"
+                        heading={""}>
+                  <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
+                    <Avatar className="size-100" alt="Remy Sharp" src='https://via.placeholder.com/150x150'/>
+                  </Tooltip>
+                </CardBox>
+              </div>              
+              
+            <div className="col-md-8 col-12" >
             <TextField
                     id="employeeNo"
                     label="사원번호"
@@ -175,6 +252,7 @@ function AddTextField(props){
                     onChange={props.handleChange('departCodeNo')}
                     margin="normal"
                     fullWidth
+                    onClick={handleFindDepartOpen}
                 />
             </div>
             <div className="col-md-8 col-12">
@@ -184,39 +262,48 @@ function AddTextField(props){
                     onChange={props.handleChange('rankCodeNo')}
                     margin="normal"
                     fullWidth
+                    onClick={handleFindRankOpen}
                 />
             </div>
-            {/* <div className="col-md-3 col-12">
-            <TextField
-              id="select-currency"
-              select
-              label="Select"
-              value={this.state.currency}
-              onChange={this.handleChange('currency')}
-              SelectProps={{}}
-              helperText="Please select your currency"
-              margin="normal"
-              fullWidth
-            >
-            {currencies.map(option => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </div> */}
+            
+
             <div className="col-md-8 col-12">
-            <TextField
-                    id="name"
-                    label="급여통장"
-                    onChange={props.handleChange('name')}
-                    margin="normal"
-                    fullWidth
-                />
+              <FormControl fullWidth>
+                {/* <InputLabel htmlFor="age-simple">급여통장 은행 선택</InputLabel> */}
+                <Select
+                  fullWidth
+                  onChange={props.handleChange('bankCodeNo')}
+                  value={props.state.employee && props.state.employee.account && props.state.employee.account.bankCodeNo}
+                  // input={<Input id="ageSimple1"/>}
+                >
+                
+                  {props.bankList && props.bankList.map( bankRow => 
+                    (<MenuItem value={bankRow.codeNo}>{bankRow.codeName}</MenuItem>)
+                  )}
+                </Select>
+                <FormHelperText>급여 받으실 은행을 선택하세요.</FormHelperText>
+                </FormControl>
             </div>
 
+            <div className="col-md-8 col-12">
+              <TextField
+                      id="accountNo"
+                      label="계좌번호"
+                      onChange={props.handleChange('accountNo')}
+                      margin="normal"
+                      fullWidth
+                  />
+            </div>
 
+            <div style={{display:"none"}}>
+                  <FileBase64 
+                    multiple={false}
+                    onDone = {props.handleFileUpload}/>
+            </div>
             <br/><br/><br/>
+            <FindDepart open={value.findDepartOpen} handleSubDepartComponentClose={handleFindDepartClose}/>
+            <FindRank open={value.findRankOpen} handleSubRankComponentClose={handleFindRankClose}/>
+            <GetPostCode></GetPostCode>
         </div>
     );
 }

@@ -17,6 +17,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
+import { connect } from 'react-redux';
+import { getHRCardList } from 'actions';
 
 let counter = 0;
 
@@ -54,7 +56,7 @@ class EnhancedTableHead extends React.Component {
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
-            <Checkbox color="secondary"
+            <Checkbox color="primary"
                       indeterminate={numSelected > 0 && numSelected < rowCount}
                       checked={numSelected === rowCount}
                       onChange={onSelectAllClick}
@@ -196,14 +198,25 @@ class EnhancedTable extends React.Component {
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.HRCardList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      data: this.props.HRCardList,
       page: 0,
       rowsPerPage: 10,
+      search:{searchKeyword:null},
+      flag: false
     };
   }
 
   render() {
+   
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
+
+    const { HRCardList } = this.props;
+
+    if(HRCardList !== this.state.data){
+      this.setState({data:HRCardList});
+    }
+
+
 
     return (
       <div>
@@ -236,11 +249,11 @@ class EnhancedTable extends React.Component {
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox color="secondary" checked={isSelected} 
+                        <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
                       <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.employeeNo}</span></TableCell>
-                      <TableCell align="left" >{row.employeeName}</TableCell>
+                      <TableCell align="left">{row.employeeName}</TableCell>
                       <TableCell align="left">{row.departCodeName}</TableCell>
                       <TableCell align="left">{row.rankCodeName}</TableCell>
                       <TableCell align="left">{row.joinDate}</TableCell>
@@ -268,5 +281,9 @@ class EnhancedTable extends React.Component {
     );
   }
 }
+const mapStateToProps = ({humanResource}) => {
+  const { HRCardList } = humanResource;
+  return { HRCardList };
+}
 
-export default EnhancedTable;
+export default connect(mapStateToProps, { getHRCardList })(EnhancedTable);
