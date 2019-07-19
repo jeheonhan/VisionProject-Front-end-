@@ -8,7 +8,8 @@ import SimpleHRCard from 'components/humanResource/SimpleHRCard';
 class AppointManage extends React.Component{
     constructor(props){
         super(props);
-        this.state={search:{searchKeyword:null}}
+        this.state={search:{searchKeyword:null},
+                    simpleCardOpen:false}
     }
 
     render(){
@@ -18,6 +19,16 @@ class AppointManage extends React.Component{
             this.props.getAppointList(this.state.search)
         }
 
+        //사원 프로필 화면 열기
+        const handleSimpleHRCardOpen = () => {
+            this.setState({simpleCardOpen:true})
+        }
+
+        //사원 프로필 화면 열기
+        const handleSimpleHRCardClose = () => {
+            this.setState({simpleCardOpen:false})
+        }
+
         return(
             
             <div >
@@ -25,9 +36,10 @@ class AppointManage extends React.Component{
                 {appointList !== undefined ? 
                     (<GetAppointList appointList={appointList} 
                                     getSimpleHRCardByEmployeeNo={this.props.getSimpleHRCardByEmployeeNo}
-                                    style={{zIndex:1}}/>):""}
+                                    handleSimpleHRCardOpen={handleSimpleHRCardOpen}
+                                    />):""}
           </CardBox>
-            {/* <SimpleHRCard/> */}
+            <SimpleHRCard open={this.state.simpleCardOpen} handleSimpleHRCardClose={handleSimpleHRCardClose}/>
             </div>
             
         );

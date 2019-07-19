@@ -35,7 +35,7 @@ const addAppointmentRequest = async (_data) => {
 
 const getAppointListRequest = async (search) => {
     return await axios({
-        method:"GET",
+        method:"POST",
         url:"/hr/getAppointmentList",
         data:search
     })
