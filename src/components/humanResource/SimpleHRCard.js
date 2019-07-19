@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import UserProfileCard from 'components/dashboard/Common/userProfileCard/UserProfileCard';
+import { connect } from 'react-redux';
 
 
 class SimpleHRCard extends React.Component{
@@ -14,14 +15,13 @@ class SimpleHRCard extends React.Component{
       };
 
     render(){
+
+      const { simpleHRCardDetail } = this.props;
+
         return(
-            <div >
-            <Button variant="contained" className="bg-primary text-white" onClick={() => this.setState({open: true})}>Open
-              alert dialog</Button>
-            <Dialog open={this.state.open} onClose={this.handleRequestClose} maxWidth="xs">
-                    <div className="col-lg-6 col-md-12">
-                    <UserProfileCard headerStyle="bg-secondary"/>
-                    </div>
+            <div >              
+            <Dialog open={this.props.open} onClose={this.props.handleSimpleHRCardClose} maxWidth="xs">
+                  {simpleHRCardDetail && (<UserProfileCard simpleHRCardDetail={simpleHRCardDetail}/>)}
             </Dialog>
           </div>
             
@@ -29,5 +29,10 @@ class SimpleHRCard extends React.Component{
     }
 }
 
-export default SimpleHRCard;
+const mapStateToProps = ({ humanResource }) => {
+  const { simpleHRCardDetail } = humanResource;
+  return { simpleHRCardDetail }
+}
+
+export default connect(mapStateToProps, {})(SimpleHRCard);
 

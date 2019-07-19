@@ -193,6 +193,7 @@ class EnhancedTable extends React.Component {
   handleClickEmployeeNo = (event, employeeNo) => {
     event.preventDefault();
     this.props.getSimpleHRCardByEmployeeNo(employeeNo);
+    this.props.handleSimpleHRCardOpen();
   }
 
   constructor(props, context) {
@@ -252,7 +253,11 @@ class EnhancedTable extends React.Component {
                           {row.employeeNo}
                         </span>
                       </TableCell>
-                      <TableCell align="left" >{row.employeeName}</TableCell>
+                      <TableCell align="left" >
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickEmployeeNo(event, row.employeeNo)}>
+                          {row.employeeName}
+                        </span>
+                      </TableCell>
                       <TableCell align="left">{row.preDepartCodeName}</TableCell>
                       <TableCell align="left">{row.appointDepartCodeName}</TableCell>
                       <TableCell align="left">{row.preRankCodeName}</TableCell>
