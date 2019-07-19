@@ -9,7 +9,7 @@ import CardBox from 'components/CardBox';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { connect } from 'react-redux';
-import { addVendor } from 'actions/Accounting';
+import { addVendor, getCodeList } from 'actions/index';
 import GetPostCode from 'components/accounting/GetPostCode'
 
 function Transition(props) {
@@ -17,7 +17,7 @@ function Transition(props) {
 }
 
 //import할 이름은 alias니 내 마음대로 이름을 바꿔도됨
-class FullScreenDialog extends React.Component {
+class AddVendor extends React.Component {
   state = {
     open: false,
   };
@@ -31,6 +31,13 @@ class FullScreenDialog extends React.Component {
   };
 
   render() {
+
+    const { bankList, vendorList } = this.props;
+    if(bankList === undefined){
+      this.props.getCodeList({ searchKeyword : "bank" });
+      this.props.getCodeList({ searchKeyword : "vendor" });
+    }
+
     return (
       <div>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
@@ -59,7 +66,11 @@ class FullScreenDialog extends React.Component {
             
           <div align="center">  
             <CardBox styleName="col-lg-4" heading="거래처 등록">
-              <AddTextFields handleRequestClose={this.handleRequestClose} addVendor={this.props.addVendor}/>
+              <AddTextFields 
+                bankCodeList={ bankList } 
+                vendorCodeList={ vendorList } 
+                handleRequestClose={this.handleRequestClose }
+                addVendor={this.props.addVendor }/>
             </CardBox>
           </div>
           
@@ -69,33 +80,21 @@ class FullScreenDialog extends React.Component {
   }
 }
 
-export default connect(null, {addVendor})(FullScreenDialog);
+const mapStateToProps = ({code}) => {
+  const { bankList, vendorList } = code;
+  return { bankList, vendorList };
+}
+
+export default connect(mapStateToProps, {addVendor, getCodeList})(AddVendor);
 
 //입력창
 function AddTextFields(props) {
-
-  const vendorList = [
-    {
-      vendorCategoryCodeNo: '01',
-      vendorCategoryCodeName: '식자재',
-    },
-    {
-      vendorCategoryCodeNo: '02',
-      vendorCategoryCodeName: '가구',
-    },
-  ];
   
-  const bankList = [
-    {
-      bankCodeNo: '01',
-      bankCodeName: '우리은행',
-    },
-    {
-      bankCodeNo: '02',
-      bankCodeName: '국민은행',
-    },
-  ];
-
+  //const 선언시에는 []가 필요하지만, 값을 대입할때는 다 받기때문에 안써도 무방하다.
+  //const는 뒤에 오는 값을 알아서 판별해서 대입하기 때문에 다 받을 수 있다.
+  const vendorList = props.vendorCodeList;
+  const bankList = props.bankCodeList;
+  
   //Hook이란 특별한 함수, useState는 Hook 중 하나인데 state를 함수 컴포넌트에서 사용할 수 있게 해준다.
   //Hook은 함수 컴포넌트에서 React의 특징을 갖게 해주는 함수. Hook은 항상 use라는 키워드로 시작
   //useState를 사용해서 values라는 변수를 선언한다. useState의 인자로 넘기는 것은 state의 초기값.
@@ -249,8 +248,8 @@ function AddTextFields(props) {
             fullWidth
           >
             {vendorList.map(option => (
-              <MenuItem key={option.vendorCategoryCodeNo} value={option.vendorCategoryCodeNo}>
-                {option.vendorCategoryCodeName}
+              <MenuItem key={option.codeNo} value={option.codeNo}>
+                {option.codeName}
               </MenuItem>
             ))}
           </TextField>
@@ -268,8 +267,8 @@ function AddTextFields(props) {
             fullWidth
           >
             {bankList.map(option => (
-              <MenuItem key={option.bankCodeNo} value={option.bankCodeNo}>
-                {option.bankCodeName}
+              <MenuItem key={option.codeNo} value={option.codeNo}>
+                {option.codeName}
               </MenuItem>
             ))}
           </TextField>
