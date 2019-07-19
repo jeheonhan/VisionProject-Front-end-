@@ -1,5 +1,5 @@
 import React from 'react';
-import AddCode from 'components/code/AddCode';
+import AddCode from 'components/code/addCode';
 import { connect } from 'react-redux';
 import CardBox from 'components/CardBox';
 import {getCodeList, getForCodeDetail} from 'actions/Code'
