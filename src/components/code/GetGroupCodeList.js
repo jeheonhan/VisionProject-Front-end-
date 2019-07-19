@@ -2,15 +2,14 @@ import React from 'react';
 import {Card, CardBody, CardImg, CardSubtitle, CardText} from 'reactstrap';
 import Button from '@material-ui/core/Button';
 
-import GetCodeList from 'components/code/GetCodeList'
-import { getCodeList } from 'actions/Code';
+
 
 
 
 class GetGroupCodeList extends React.Component {
   
-  handleClick = () => {
-    alert(this.props.code)
+  handleClick = (event) => {
+    event.preventDefault();
     this.props.action(this.props.code);
   }
 

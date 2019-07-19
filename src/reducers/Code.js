@@ -1,4 +1,4 @@
-import { GET_GROUP_CODE_LIST, CARRY_GROUP_CODE_LIST, GET_CODE_LIST, CARRY_CODE_LIST } from "actionTypes/ActionTypes";
+import { CARRY_NEW_CODE_NO, CARRY_FOR_CODE_DETAIL, GET_GROUP_CODE_LIST, CARRY_GROUP_CODE_LIST, GET_CODE_LIST, CARRY_CODE_LIST, CHECK_DUPLICATE_RESULT, ADD_CODE_RESULT } from "actionTypes/ActionTypes";
 
 
 const INIT_STATE = {
@@ -17,7 +17,12 @@ switch(action.type){
            ...state
        }
    }
-
+   case CARRY_NEW_CODE_NO : {
+       return{
+           ...state,
+           newCodeNo: action.payload
+       }
+   }
    case CARRY_GROUP_CODE_LIST : {
        return{
            ...state,
@@ -37,7 +42,28 @@ switch(action.type){
            ...state,
            [named]: action.payload
        }
-   }
+    }
+
+    case CARRY_FOR_CODE_DETAIL : {
+        return {
+            ...state,
+            codeList : action.payload
+        }
+    }
+
+    case ADD_CODE_RESULT : {
+        return{
+            ...state,
+            codeList : action.payload
+        }
+    }
+
+    case CHECK_DUPLICATE_RESULT : {
+        return {
+            ...state,
+            CodeNameBool : action.payload
+        }
+    }
 
    default : {
        return{

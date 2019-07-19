@@ -1,4 +1,4 @@
-import { GET_FOR_CODE_DETAIL, CARRY_FOR_CODE_DETAIL, GET_GROUP_CODE_LIST, CARRY_GROUP_CODE_LIST, GET_CODE_LIST, CARRY_CODE_LIST} from '../actionTypes/ActionTypes';
+import { ADD_CODE_RESULT, GET_FOR_CODE_DETAIL, CARRY_FOR_CODE_DETAIL, GET_GROUP_CODE_LIST, CARRY_GROUP_CODE_LIST, GET_CODE_LIST, CARRY_CODE_LIST, GET_NEW_CODE_NO, CARRY_NEW_CODE_NO, CHECK_DUPLICATE_CODE_NAME, CHECK_DUPLICATE_RESULT, ADD_CODE} from '../actionTypes/ActionTypes';
 
 
 export const getGroupCodeList = () => {
@@ -43,5 +43,47 @@ export const carryForCodeDetail = (data) => {
     return{
         type: CARRY_FOR_CODE_DETAIL,
         payload: data
+    }
+}
+
+export const getNewCodeNo = (data) => {
+    return {
+        type: GET_NEW_CODE_NO,
+        payload: data
+    }
+}
+
+export const carryNewCodeNo = (data) => {
+    return{
+        type: CARRY_NEW_CODE_NO,
+        payload: data
+    }
+}
+
+export const checkDuplicateCodeName = (data) => {
+    return{
+        type: CHECK_DUPLICATE_CODE_NAME,
+        payload: data
+    }
+}
+
+export const checkDuplicateResult = (data) => {
+    return{
+        type: CHECK_DUPLICATE_RESULT,
+        payload: data
+    }
+}
+
+export const addCode = (data) => {
+    return{
+        type: ADD_CODE,
+        payload: data
+    }
+}
+
+export const addCodeResult = (data) => {
+    return{
+        type: ADD_CODE_RESULT,
+        payload : data
     }
 }

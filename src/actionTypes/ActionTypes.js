@@ -164,9 +164,12 @@ export const GET_CODE_LIST = 'get_code_list';
 export const CARRY_CODE_LIST = 'carry_code_list';
 export const GET_FOR_CODE_DETAIL = 'get_for_code_detail';
 export const CARRY_FOR_CODE_DETAIL = 'carry_for_code_detail';
-
-
-
+export const GET_NEW_CODE_NO = 'get_new_code_no';
+export const CARRY_NEW_CODE_NO = 'carry_new_code_no';
+export const CHECK_DUPLICATE_CODE_NAME = 'check_duplicate_code_name';
+export const CHECK_DUPLICATE_RESULT = 'check_duplicate_result';
+export const ADD_CODE = 'add_code';
+export const ADD_CODE_RESULT = 'add_code_result';
 
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';
