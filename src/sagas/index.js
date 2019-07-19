@@ -8,6 +8,7 @@ import businessSupportSagas from './BusinessSupport';
 import codeSagas from './Code';
 import humanresourceSagas from './HumanResource';
 import productionManagementSagas from './ProductionManagement';
+import noticeSagas from './Notice';
 
 
 export default function* rootSaga(getState) {
@@ -16,6 +17,7 @@ export default function* rootSaga(getState) {
         humanresourceSagas(),
         codeSagas(),
         accountingSagas(),
-        businessSupportSagas()
+        businessSupportSagas(),
+        noticeSagas()
     ]);
 }

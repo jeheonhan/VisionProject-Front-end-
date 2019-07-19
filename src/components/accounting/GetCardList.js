@@ -16,11 +16,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import GetBankInfo from 'components/accounting/GetBankInfo';
-import UpdateVendor from 'components/accounting/UpdateVendor';
-import GetVendorAddress from 'components/accounting/GetVendorAddress';
-import { getVendor, updateVendor, getCodeList } from "actions/index";
-import { connect } from 'react-redux';
 import IconHome from '@material-ui/icons/Home'
 import IconPayment from '@material-ui/icons/Payment'
 
@@ -28,14 +23,13 @@ import IconPayment from '@material-ui/icons/Payment'
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
-  {id: 'vendorNo', align: false, disablePadding: false, label: '거래처번호'},
-  {id: 'vendorName', align: true, disablePadding: false, label: '거래처명'},
-  {id: 'representativeName', align: true, disablePadding: false, label: '대표자명'},
-  {id: 'vendorTel', align: true, disablePadding: false, label: '전화번호'},
-  {id: 'vendorPhone', align: true, disablePadding: false, label: '휴대폰번호'},
-  {id: 'vendorCategoryCodeName', align: true, disablePadding: false, label: '거래처분류'},
-  {id: 'bankInfo', align: true, disablePadding: false, label: '이체정보'},
-  {id: 'address', align: true, disablePadding: false, label: '주소'},
+  {id: 'cardRegNo', align: false, disablePadding: false, label: '카드등록번호'},
+  {id: 'cardNo', align: true, disablePadding: false, label: '카드번호'},
+  {id: 'cardName', align: true, disablePadding: false, label: '카드명'},
+  {id: 'cardCompanyCodeName', align: true, disablePadding: false, label: '카드사명'},
+  {id: 'cardCategoryCodeName', align: true, disablePadding: false, label: '카드구분'},
+  {id: 'accountNo', align: true, disablePadding: false, label: '계좌번호'},
+  {id: 'cardManagerName', align: true, disablePadding: false, label: '카드관리자'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -108,7 +102,7 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">거래처 목록조회</Typography>
+          <Typography variant="title">카드 목록조회</Typography>
         )}
       </div>
       <div className="spacer"/>
@@ -137,7 +131,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 
-class VendorTable extends React.Component {
+class CardTable extends React.Component {
   constructor(props, context) {
     super(props, context);
 
@@ -146,12 +140,9 @@ class VendorTable extends React.Component {
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.VendorList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      data: this.props.cardList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
       page: 0,
       rowsPerPage: 10,
-      open: false,
-      subOpen: false,
-      addressOpen: false
     };
   }
   //이체정보 다이얼로그를 띄우는데 필요한 플래그 state
@@ -213,58 +204,11 @@ class VendorTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  getBankInfo = (event, vendorNo) => {
-    event.preventDefault();
-    console.log("BankInfo 가져오라는 요청 :: "+vendorNo);
-    if(vendorNo !== undefined){
-      this.props.getVendor(vendorNo);
-    }
-    this.setState({open : true});
-  }
-
-  updateVendor = (event, vendorNo) => {
-    event.preventDefault();
-    console.log("updateVendor 가져오라는 요청");
-    if(vendorNo !== undefined){
-      this.props.getVendor(vendorNo);
-    }
-    this.setState({subOpen : true})
-  }
-
-  getVendorAddress = (event, vendorNo) => {
-    event.preventDefault();
-    console.log("updateVendor 가져오라는 요청");
-    if(vendorNo !== undefined){
-      this.props.getVendor(vendorNo);
-    }
-    this.setState({addressOpen : true})
-  }
-
-  //이체정보 다이얼로그 컴포넌트를 조작할 close open 자체는 getBankInfo에서 setState로 true 플래그를 바꿔줘서 열게함
-
-  handleRequestClose = () => {
-    this.setState({open : false});
-  };
-
-  updateVendorClose = () => {
-    this.setState({subOpen : false});
-  };
-
-  addressVendorClose = () => {
-    this.setState({addressOpen : false});
-  }
-
   render() {
 
-    const { bankList, vendorList } = this.props;
-    if(bankList === undefined){
-      this.props.getCodeList({ searchKeyword : "bank" });
-      this.props.getCodeList({ searchKeyword : "vendor" });
-    }
-
-    if(this.props.VendorList !== this.state.data){
+    if(this.props.cardList !== this.state.data){
       this.setState({
-        data : this.props.VendorList
+        data : this.props.cardList
       })
     }
 
@@ -331,28 +275,6 @@ class VendorTable extends React.Component {
               </TableFooter>
             </Table>
 
-            {/* 이체정보를 위한 다이얼로그. 다이얼로그는 미리 띄워놓은 상태이지만 default가 false라 안보이는 것 뿐.
-            내가 직접 dialog에 open을 주입해줘야 다이얼로그가 띄워질 것*/}
-            {/* 중괄호로 감싸면 JSX에 어떤 표현식이던 넣을 수 있다. 여기에는 자바스크립트 논리 && 연산자도 포함된다.
-            이를 사용하면 요소의 조건부 포함을 더 편리하게 할 수 있다. */}
-            { this.props.Vendor && (<GetBankInfo
-              open={ this.state.open }
-              close={ this.handleRequestClose }
-              vendor={ this.props.Vendor }
-            />)}
-            { this.props.Vendor && (<UpdateVendor
-              bankCodeList={ bankList } 
-              vendorCodeList={ vendorList }
-              open={ this.state.subOpen }
-              close={ this.updateVendorClose }
-              vendor={ this.props.Vendor }
-              updateVendor={ this.props.updateVendor }
-            />)}
-            { this.props.Vendor && (<GetVendorAddress
-              open={ this.state.addressOpen }
-              close={ this.addressVendorClose }
-              vendor={ this.props.Vendor }
-            />)}
                 
           </div>
         </div>
@@ -360,12 +282,3 @@ class VendorTable extends React.Component {
     );
   }
 }
-
-    const mapStateToProps = ({accounting, code}) => {
-      const { Vendor } = accounting;
-      const { bankList, vendorList } = code;
-      return { Vendor, bankList, vendorList  };
-    }
-
-export default connect(mapStateToProps, { getVendor, updateVendor, getCodeList } )(VendorTable);
-

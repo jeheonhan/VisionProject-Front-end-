@@ -1,4 +1,4 @@
-import {GET_VENDOR_LIST, CARRY_VENDOR_LIST, ADD_VENDOR, GET_VENDOR, CARRY_VENDOR } from'../actionTypes/ActionTypes';
+import {GET_VENDOR_LIST, CARRY_VENDOR_LIST, ADD_VENDOR, GET_VENDOR, CARRY_VENDOR, UPDATE_VENDOR, GET_CARD_LIST, CARRY_CARD_LIST } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
     return{
@@ -32,5 +32,26 @@ export const carryVendor = (vendor) => {
     return{
         type: CARRY_VENDOR,
         payload: vendor
+    }
+}
+
+export const updateVendor = (vendor) => {
+    return{
+        type: UPDATE_VENDOR,
+        payload: vendor
+    }
+}
+
+export const getCardList = (search) => {
+    return{
+        type: GET_CARD_LIST,
+        payload: search
+    }
+}
+
+export const carryCardList = (data) => {
+    return{
+        type: CARRY_CARD_LIST,
+        payload: data
     }
 }

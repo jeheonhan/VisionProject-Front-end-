@@ -177,6 +177,10 @@ export const CARRY_VENDOR_LIST = 'carry_vendor_list';
 export const ADD_VENDOR = 'add_vendor';
 export const GET_VENDOR = 'get_vendor';
 export const CARRY_VENDOR = 'carry_vendor';
+export const UPDATE_VENDOR = 'update_vendor';
+export const GET_CARD_LIST = 'get_card_list';
+export const CARRY_CARD_LIST = 'carry_card_list';
+
 
 
 
@@ -184,4 +188,8 @@ export const CARRY_VENDOR = 'carry_vendor';
 
 //경영관리
 export const GET_BRANCH_LIST = 'get_branch_list';
-export const CARRY_BRANCH_lIST = 'carry_branch_list';
+export const CARRY_BRANCH_LIST = 'carry_branch_list';
+
+//공지사항
+export const GET_NOTICE_LIST = 'get_notice_list';
+export const CARRY_NOTICE_LIST = 'carry_notice_list';

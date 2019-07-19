@@ -18,45 +18,13 @@ class UpdateVendor extends React.Component {
       super(props);
 
       this.state = {
-        vendorNo : this.props.vendor.vendorNo,
-        vendorName : this.props.vendor.vendorName,
-        representativeName : this.props.vendor.representativeName,
-        vendorTel : this.props.vendor.vendorTel,
-        vendorPhone : this.props.vendor.vendorPhone,
-        vendorCategoryCodeNo : this.props.vendor.vendorCategoryCodeNo,
-        //도메인 안에 도메인에 값을 넣으려면 그냥 보내면 안되고 inner json으로 보내야 한다.
-        vendorAccount : {
-          bankCodeNo : this.props.vendor.vendorAccount.bankCodeNo,
-          accountNo : this.props.vendor.vendorAccount.accountNo,
-          accountHolder : this.props.vendor.vendorAccount.accountHolder
-        },
-        zipCode : this.props.vendor.zipCode,
-        address : this.props.vendor.address,
-        detailAddress : this.props.vendor.detailAddress
+        vendor : this.props.vendor,
       }
   }
 
-  vendorList = [
-    {
-      vendorCategoryCodeNo: '01',
-      vendorCategoryCodeName: '식자재',
-    },
-    {
-      vendorCategoryCodeNo: '02',
-      vendorCategoryCodeName: '가구',
-    },
-  ];
-  
-  bankList = [
-    {
-      bankCodeNo: '01',
-      bankCodeName: '우리은행',
-    },
-    {
-      bankCodeNo: '02',
-      bankCodeName: '국민은행',
-    },
-  ];
+
+  vendorList = this.props.vendorCodeList;
+  bankList = this.props.bankCodeList;
 
   handleChange = name => event => {
     if(name === 'bankCodeNo'){
@@ -81,12 +49,18 @@ class UpdateVendor extends React.Component {
   };
 
   submitFn = () => {
+    alert("this is submitFn");
     console.log(this.state);
-    // props.addVendor(state);
-    // props.handleRequestClose();
+    this.props.updateVendor(this.state);
+    this.props.close();
   }
 
   render() {
+    if(this.state.vendor !== this.props.vendor){
+      this.setState({
+        vendor : this.props.vendor
+      })
+    }
     console.log("여기는 UpdateVendor");
     
     return (
@@ -101,11 +75,12 @@ class UpdateVendor extends React.Component {
                   id="vendorNo"
                   label="거래처번호"
                   placeholder="거래처번호"
-                  value={this.state.vendorNo}
+                  value={this.state.vendor.vendorNo}
                   onChange={this.handleChange('vendorNo')}
                   margin="normal"
                   fullWidth
                   disabled="true"
+                  helperText="거래처 번호는 수정할 수 없습니다"
                 />
               </div>
               
@@ -114,7 +89,7 @@ class UpdateVendor extends React.Component {
                   id="vendorName"
                   label="거래처명"
                   placeholder="거래처명"
-                  value={this.state.vendorName}
+                  value={this.state.vendor.vendorName}
                   onChange={this.handleChange('vendorName')}
                   margin="normal"
                   fullWidth
@@ -126,7 +101,7 @@ class UpdateVendor extends React.Component {
                   id="representativeName"
                   label="대표자명"
                   placeholder="대표자명"
-                  value={this.state.representativeName}
+                  value={this.state.vendor.representativeName}
                   onChange={this.handleChange('representativeName')}
                   margin="normal"
                   fullWidth
@@ -137,7 +112,7 @@ class UpdateVendor extends React.Component {
                   id="vendorTel"
                   label="거래처 전화번호"
                   placeholder="거래처 전화번호"
-                  value={this.state.vendorTel}
+                  value={this.state.vendor.vendorTel}
                   onChange={this.handleChange('vendorTel')}
                   margin="normal"
                   fullWidth
@@ -148,7 +123,7 @@ class UpdateVendor extends React.Component {
                   id="vendorPhone"
                   label="거래처 휴대폰번호"
                   placeholder="거래처 휴대폰번호"
-                  value={this.state.vendorPhone}
+                  value={this.state.vendor.vendorPhone}
                   onChange={this.handleChange('vendorPhone')}
                   margin="normal"
                   fullWidth
@@ -164,7 +139,7 @@ class UpdateVendor extends React.Component {
                   id="zipCode"
                   label="우편번호"
                   placeholder="우편번호"
-                  value={this.state.zipCode}
+                  value={this.state.vendor.zipCode}
                   onChange={this.handleChange('zipCode')}
                   margin="normal"
                   fullWidth
@@ -176,7 +151,7 @@ class UpdateVendor extends React.Component {
                   id="address"
                   label="주소"
                   placeholder="주소"
-                  value={this.state.address}
+                  value={this.state.vendor.address}
                   onChange={this.handleChange('address')}
                   margin="normal"
                   fullWidth
@@ -188,7 +163,7 @@ class UpdateVendor extends React.Component {
                   id="detailAddress"
                   label="상세주소"
                   placeholder="상세주소"
-                  value={this.state.detailAddress}
+                  value={this.state.vendor.detailAddress}
                   onChange={this.handleChange('detailAddress')}
                   margin="normal"
                   fullWidth
@@ -200,7 +175,7 @@ class UpdateVendor extends React.Component {
                   id="vendorCategoryCodeNo"
                   select
                   label="거래처 분류"
-                  value={this.state.vendorCategoryCodeNo}
+                  value={this.state.vendor.vendorCategoryCodeNo}
                   onChange={this.handleChange('vendorCategoryCodeNo')}
                   SelectProps={{}}
                   helperText="거래처를 분류해 주세요"
@@ -208,8 +183,8 @@ class UpdateVendor extends React.Component {
                   fullWidth
                 >
                   {this.vendorList.map(option => (
-                    <MenuItem key={option.vendorCategoryCodeNo} value={option.vendorCategoryCodeNo}>
-                      {option.vendorCategoryCodeName}
+                    <MenuItem key={option.codeNo} value={option.codeNo}>
+                      {option.codeName}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -219,7 +194,7 @@ class UpdateVendor extends React.Component {
                   id="bankCodeNo"
                   select
                   label="은행 선택"
-                  value={this.state.vendorAccount.bankCodeNo}
+                  value={this.state.vendor.vendorAccount.bankCodeNo}
                   onChange={this.handleChange('bankCodeNo')}
                   SelectProps={{}}
                   helperText="은행을 선택해 주세요"
@@ -227,8 +202,8 @@ class UpdateVendor extends React.Component {
                   fullWidth
                 >
                   {this.bankList.map(option => (
-                    <MenuItem key={option.bankCodeNo} value={option.bankCodeNo}>
-                      {option.bankCodeName}
+                    <MenuItem key={option.codeNo} value={option.codeNo}>
+                      {option.codeName}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -238,7 +213,7 @@ class UpdateVendor extends React.Component {
                   id="accountNo"
                   label="계좌번호"
                   placeholder="계좌번호"
-                  value={this.state.vendorAccount.accountNo}
+                  value={this.state.vendor.vendorAccount.accountNo}
                   onChange={this.handleChange('accountNo')}
                   margin="normal"
                   fullWidth
@@ -249,7 +224,7 @@ class UpdateVendor extends React.Component {
                   id="accountHolder"
                   label="예금주명"
                   placeholder="예금주명"
-                  value={this.state.vendorAccount.accountHolder}
+                  value={this.state.vendor.vendorAccount.accountHolder}
                   onChange={this.handleChange('accountHolder')}
                   margin="normal"
                   fullWidth
@@ -257,7 +232,7 @@ class UpdateVendor extends React.Component {
               </div>
           
               <div className="col-md-8 col-8">
-                <Button className="jr-btn text-uppercase btn-block" color="default" onClick={() => {this.submitFn()}}>등록하기</Button>
+                <Button className="jr-btn text-uppercase btn-block" color="default" onClick={() => {this.submitFn()}}>수정하기</Button>
               </div>
               
             </form>

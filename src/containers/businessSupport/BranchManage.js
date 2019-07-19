@@ -1,5 +1,6 @@
 import React from 'react';
 import GetBranchList from 'components/businessSupport/GetBranchList';
+import CardBox from "components/CardBox";
 import { connect } from 'react-redux';
 import { getBranchList } from 'actions/BusinessSupport';
 
@@ -17,12 +18,17 @@ class BranchManage extends React.Component{
         if(branchList === undefined){
             this.props.getBranchList(this.state.search);
         }else{
-            console.log("sdjfklajeflwj :: "+branchList.totalCount)
+            console.log("Fail")
         }
 
         return(
             <div>
-            {branchList && ( <GetBranchList branchList={branchList}></GetBranchList>)}
+            <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
+            {/* 전해줄 props값이 있으면 전해주고 아니면 Component 자체를 부르지 않음
+                내부에 있는 map이 값이 undefined면 에러가 나는 상황을 방지 */}
+            {branchList !== undefined ? ( <GetBranchList branchList={branchList}></GetBranchList>):""}
+          </CardBox>
+           
             </div>  
         );
     }

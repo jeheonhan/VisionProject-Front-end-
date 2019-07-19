@@ -4,6 +4,7 @@ import { carryHRCardList, carryAppointList, getAppointList, carrySimpleHRCard } 
 import { GET_HRCARD_LIST, GET_APPOINT_LIST, ADD_APPOINTMENT, GET_SIMPLE_HRCARD_BY_EMPLOYEENO } from "actionTypes/ActionTypes";
 
 
+
 const getSimpleHRCardDetailRequest = async (employeeNo) => {
     return await axios({
         method: "GET",
@@ -55,7 +56,9 @@ function* getHRCardListFn({payload}){
 
 function* addAppointmentFn({payload}){
     yield call(addAppointmentRequest, payload);
-    yield put(getAppointList({searchKeyword:null}));
+    yield put(getAppointList({searchKeyword:null}))
+    
+    //yield put(getAppointList({searchKeyword:null}));
 }
 
 function* getAppointListFn({payload}){
