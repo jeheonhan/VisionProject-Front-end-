@@ -1,19 +1,20 @@
-import { GET_BRANCH_LIST, CARRY_BRANCH_lIST } from 'actionTypes/ActionTypes';
+import { GET_BRANCH_LIST, CARRY_BRANCH_LIST } from 'actionTypes/ActionTypes';
 
 const INIT_STATE = 
     {
-        employeeNo: "",
-        employeeName: "",
-        departCodeNo: "",
-        departCodeName: "",
-        rankCodeNo: "",
-        rankCodeName: "",
-        employeePhone: "",
-        profileImage: null,
-        signatureImage: null,
-        wage: "",
-        joinDate: "",
-        employeeEmail: ""
+        branchNo: "",
+        branchName: "",
+        zipCode: "",
+        address: "",
+        detailAdress: "",
+        businessLicenseNo: "",
+        branchTel: "",
+        branchManagerPhone: "",
+        branchManagerName: "",
+        localCodeNo: "",
+        localCodeName: "",
+        branchStatusCodeNo: "",
+        branchRegDate: ""
     };
 
 export default (state = INIT_STATE, action) => {
@@ -24,7 +25,7 @@ export default (state = INIT_STATE, action) => {
             }
         }
 
-        case CARRY_BRANCH_lIST : {
+        case CARRY_BRANCH_LIST : {
             return{
                 ...state,
                 branchList: action.payload

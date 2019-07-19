@@ -181,4 +181,8 @@ export const CARRY_VENDOR = 'carry_vendor';
 
 //경영관리
 export const GET_BRANCH_LIST = 'get_branch_list';
-export const CARRY_BRANCH_lIST = 'carry_branch_list';
+export const CARRY_BRANCH_LIST = 'carry_branch_list';
+
+//공지사항
+export const GET_NOTICE_LIST = 'get_notice_list';
+export const CARRY_NOTICE_LIST = 'carry_notice_list';

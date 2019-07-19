@@ -1,4 +1,4 @@
-import {GET_BRANCH_LIST, CARRY_BRANCH_lIST} from '../actionTypes/ActionTypes';
+import {GET_BRANCH_LIST, CARRY_BRANCH_LIST} from '../actionTypes/ActionTypes';
 
 export const getBranchList = (search) => {
     return {
@@ -9,7 +9,7 @@ export const getBranchList = (search) => {
 
 export const carryBranchList = (data) => {
     return {
-        type: CARRY_BRANCH_lIST,
+        type: CARRY_BRANCH_LIST,
         payload: data
     }
 }

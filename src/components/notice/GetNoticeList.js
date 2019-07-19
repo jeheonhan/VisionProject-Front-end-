@@ -20,13 +20,11 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 const columnData = [
-    {id: 'branchNo', align: false, disablePadding: false, label: '지점번호'},
-    {id: 'branchName', align: true, disablePadding: false, label: '지점명'},
-    {id: 'localCodeName', align: true, disablePadding: false, label: '지역'},
-    {id: 'address', align: true, disablePadding: false, label: '주소'},
-    {id: 'branchTel', align: true, disablePadding: false, label: '전화번호'},
-    {id: 'branchRegDate', align: true, disablePadding: false, label: '등록일자'}, 
-    {id: 'branchStatus', align: true, disablePadding: false, label: '영업상태'}, 
+    {id: 'noticeNo', align: false, disablePadding: false, label: 'no'},
+    {id: 'noticeTitle', align: true, disablePadding: false, label: '제목'},
+    {id: 'employeeName', align: true, disablePadding: false, label: '작성자'},
+    {id: 'noticeRegDate', align: true, disablePadding: false, label: '등록일'},
+    {id: 'viewCount', align: true, disablePadding: false, label: '조회수'},
   ];
 
 
@@ -100,7 +98,7 @@ const columnData = [
           {numSelected > 0 ? (
             <Typography variant="subheading">{numSelected} 선택</Typography>
           ) : (
-            <Typography variant="title">지점 목록조회</Typography>
+            <Typography variant="title">공지사항 목록조회</Typography>
           )}
         </div>
         <div className="spacer"/>
@@ -193,7 +191,7 @@ const columnData = [
         orderBy: '',
         selected: [],
         // data에 props로 들어오는 list값 넣어주기.
-        data: this.props.branchList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+        data: this.props.noticeList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
         page: 0,
         rowsPerPage: 10,
       };
@@ -236,13 +234,11 @@ const columnData = [
                           <Checkbox color="secondary" checked={isSelected} 
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                         </TableCell>
-                        <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.branchNo}</span></TableCell>
-                        <TableCell align="left" >{row.branchName}</TableCell>
-                        <TableCell align="left">{row.localCodeName}</TableCell>
-                        <TableCell align="left">{row.address}</TableCell>
-                        <TableCell align="left">{row.branchTel}</TableCell>
-                        <TableCell align="left">{row.branchRegDate}</TableCell>
-                        <TableCell align="left">{row.branchStatus}</TableCell>
+                        <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.noticeNo}</span></TableCell>
+                        <TableCell align="left" >{row.noticeTitle}</TableCell>
+                        <TableCell align="left">{row.employeeName}</TableCell>
+                        <TableCell align="left">{row.noticeRegDate}</TableCell>
+                        <TableCell align="left">{row.viewCount}</TableCell>
                       </TableRow>
                     );
                   })}
