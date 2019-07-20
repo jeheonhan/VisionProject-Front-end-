@@ -18,7 +18,7 @@ export default class DatePickers extends Component {
     return (
       <div key="basic_day" className="picker" >
         <DatePicker
-          label="발령일자"
+          label={this.props.label}
           margin="normal"
           format={'YYYY/MM/DD'}
           value={selectedDate}

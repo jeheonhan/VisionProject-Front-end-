@@ -18,6 +18,7 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconHome from '@material-ui/icons/Home'
 import IconPayment from '@material-ui/icons/Payment'
+import { getCardList } from 'actions';
 
 
 //칼럼명 지어주는 곳
@@ -249,14 +250,13 @@ class CardTable extends React.Component {
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left" ><span onClick={ event => this.updateVendor(event, row.vendorNo) } style={{cursor:'pointer'}}>{row.vendorNo}</span></TableCell>
-                      <TableCell align="left" >{row.vendorName}</TableCell>
-                      <TableCell align="left">{row.representativeName}</TableCell>
-                      <TableCell align="left">{row.vendorTel}</TableCell>
-                      <TableCell align="left">{row.vendorPhone}</TableCell>
-                      <TableCell align="left">{row.vendorCategoryCodeName}</TableCell>
-                      <TableCell align="left"><span onClick={ event => this.getBankInfo(event, row.vendorNo) } style={{cursor:'pointer'}}><IconPayment htmlColor={"#e65100"} titleAccess={"이체정보보기"} /></span></TableCell>
-                      <TableCell align="left"><span onClick={ event => this.getVendorAddress(event, row.vendorNo) } style={{cursor:'pointer'}} id={row.vendorNo}><IconHome htmlColor={"#e65100"} titleAccess={"주소보기"} /></span></TableCell>
+                      <TableCell align="left">{row.cardRegNo}</TableCell>
+                      <TableCell align="left">{row.cardNo}</TableCell>
+                      <TableCell align="left">{row.cardName}</TableCell>
+                      <TableCell align="left">{row.cardCompanyCodeName}</TableCell>
+                      <TableCell align="left">{row.cardCategoryCodeName}</TableCell>
+                      <TableCell align="left">{row.accountNo}</TableCell>
+                      <TableCell align="left">{row.cardManagerName}</TableCell>
                     </TableRow>
 
                   );
@@ -282,3 +282,5 @@ class CardTable extends React.Component {
     );
   }
 }
+
+export default CardTable;
