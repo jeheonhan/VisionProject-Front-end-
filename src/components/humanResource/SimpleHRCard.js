@@ -20,7 +20,7 @@ class SimpleHRCard extends React.Component{
 
         return(
             <div >              
-            <Dialog open={this.props.open} onClose={this.props.handleSimpleHRCardClose} maxWidth="xs">
+            <Dialog open={this.props.open} onClose={this.props.handleSimpleHRCardClose} maxWidth="xs" >
                   {simpleHRCardDetail && (<UserProfileCard simpleHRCardDetail={simpleHRCardDetail}/>)}
             </Dialog>
           </div>

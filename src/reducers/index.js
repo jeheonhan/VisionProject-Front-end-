@@ -21,5 +21,5 @@ export default (history) => combineReducers({
   code: Code,
   humanResource: HumanResource,
   productionManagement: ProductionManagement,
-  notice: Notice
+  notice: Notice,
 });

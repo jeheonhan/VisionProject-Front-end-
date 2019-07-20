@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getCodeList } from 'actions/index';
+import { getCodeList, addHRCard } from 'actions/index';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -20,8 +21,23 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
 import GetPostCode from 'components/accounting/GetPostCode';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import DatePicker from 'components/date/DatePickers';
 
-
+const useStyles = makeStyles(theme => ({
+  button: {
+    margin: theme.spacing(1),
+  },
+  leftIcon: {
+    marginRight: theme.spacing(1),
+  },
+  rightIcon: {
+    marginLeft: theme.spacing(1),
+  },
+  iconSmall: {
+    fontSize: 20,
+  },
+}));
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -32,7 +48,6 @@ class FullScreenDialog extends React.Component {
 
   state = {
     open: false,
-    employee: null,
     employee:{
       account:{
 
@@ -40,11 +55,22 @@ class FullScreenDialog extends React.Component {
     }
   };
 
+  //인사카드 등록창 열기
   handleClickOpen = () => {
     this.setState({open: true});
   };
 
-
+  //인사카드 등록창 닫기
+  handleClickClose = () => {
+    this.setState({
+      employee:{
+        account:{
+  
+        }
+      },
+      open:false
+    })
+  }
 
   handleRequestClose = () => {
     this.setState({open: false});
@@ -75,8 +101,58 @@ class FullScreenDialog extends React.Component {
 
   };
 
-  handleFileUpload = (files) => {
-    this.setState({employee:{file:files}})
+  //프로필 사진 업로드
+  handleProfileImgUpload = (files) => {
+    this.setState({employee:{...this.state.employee,
+      profileFile:files}})
+  }
+
+  //서명 사진 업로드
+  handleSignatureImgUpload = (files) => {
+    this.setState({employee:{...this.state.employee,
+      signatureFile:files}})
+  }
+
+  //우편번호 API로부터 Data받아오기
+  handleAddress = (zonecode, fullAddress) => {
+      this.setState({
+        employee:{...this.state.employee,
+          zipCode:zonecode,
+          address:fullAddress
+        }
+      })
+  }
+
+  //입사일자 Date Picker로부터 값 받아오기
+  handleDatePicker = (date) => {
+    this.setState({
+      employee:{...this.state.employee,
+      joinDate:date}
+    })
+  }
+
+  //부서 검색창으로부터 선택된 부서 data 받아오기
+  checkedDepartment = (checkedParam) => {
+    this.setState({
+      employee:{...this.state.employee,
+      departCodeNo:checkedParam.codeNo,
+      departCodeName:checkedParam.codeName}
+    })
+  }
+
+  //직급 검색창으로부터 선택된 직급 data 받아오기
+  checkedRank = (checkedParam) => {
+    this.setState({
+      employee:{...this.state.employee,
+      rankCodeNo:checkedParam.codeNo,
+      rankCodeName:checkedParam.codeName}
+    })
+  }
+
+  //Submit
+  handleSubmit = () => {
+    this.props.addHRCard(this.state.employee);
+    this.handleClickClose()
   }
 
   render() {
@@ -117,11 +193,19 @@ class FullScreenDialog extends React.Component {
               
           <div  align="center">
           <CardBox styleName="col-md-4" cardStyle="p-0" headerOutside>
-            <AddTextField handleChange={this.handleChange} handleFileUpload={this.handleFileUpload}
+            <AddTextField handleChange={this.handleChange} 
+              handleProfileImgUpload={this.handleProfileImgUpload}
+              handleSignatureImgUpload={this.handleSignatureImgUpload}
               stateValue={this.state} bankList={bankList}
-              state={this.state}></AddTextField>
+              state={this.state}
+              handleAddress={this.handleAddress}
+              handleDatePicker={this.handleDatePicker}
+              checkedDepartment={this.checkedDepartment}
+              checkedRank={this.checkedRank}></AddTextField>
           </CardBox>
           </div>
+
+          <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleSubmit}>전송</Button>
         </Dialog>
       </div>
     );
@@ -133,11 +217,14 @@ const mapStateToProps = ({ code }) => {
   return { bankList };
 }
 
-export default connect(mapStateToProps, { getCodeList })(FullScreenDialog);
+export default connect(mapStateToProps, { getCodeList, addHRCard })(FullScreenDialog);
 
 
 //입력창
 function AddTextField(props){
+
+    const classes = useStyles();
+
 
     const[value, setValue] = React.useState({findDepartOpen:false, findRankOpen:false});
 
@@ -161,6 +248,18 @@ function AddTextField(props){
       setValue({findRankOpen: false});
     }
 
+    //입사일자 값 받기
+    const callBackDateChange = (_date) => {
+      props.handleDatePicker(_date);
+    }
+
+    //upload버튼 클릭시 trigger발생
+    const handleClickUploadBtn = () => {
+      
+    }
+
+    //상위 Component의 state 값에 profileImage가 저장되어 있으면 가져옴
+    const { profileImage, departCodeName, rankCodeName } = props.state.employee;
 
     return(
         <div align="center">
@@ -176,12 +275,12 @@ function AddTextField(props){
                         childrenStyle="d-flex justify-content-center"
                         heading={""}>
                   <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
-                    <Avatar className="size-100" alt="Remy Sharp" src='https://via.placeholder.com/150x150'/>
+                    <Avatar className="size-100" alt="Remy Sharp" src={profileImage && `${profileImage.base64}`}/>
                   </Tooltip>
                 </CardBox>
               </div>              
               
-            <div className="col-md-8 col-12" >
+            {/* <div className="col-md-8 col-12" >
             <TextField
                     id="employeeNo"
                     label="사원번호"
@@ -189,7 +288,7 @@ function AddTextField(props){
                     margin="normal"
                     fullWidth
                 />
-            </div>
+            </div> */}
             <div className="col-md-8 col-12">
             <TextField
                     id="employeeName"
@@ -228,13 +327,7 @@ function AddTextField(props){
                 />
             </div>
             <div className="col-md-8 col-12">
-            <TextField
-                    id="joinDate"
-                    label="입사일자"
-                    onChange={props.handleChange('joinDate')}
-                    margin="normal"
-                    fullWidth
-                />
+            <DatePicker label="입사일자" callBackDateChange={callBackDateChange}/>            
             </div>
             <div className="col-md-8 col-12">
             <TextField
@@ -252,6 +345,7 @@ function AddTextField(props){
                     onChange={props.handleChange('departCodeNo')}
                     margin="normal"
                     fullWidth
+                    value={departCodeName}
                     onClick={handleFindDepartOpen}
                 />
             </div>
@@ -262,6 +356,7 @@ function AddTextField(props){
                     onChange={props.handleChange('rankCodeNo')}
                     margin="normal"
                     fullWidth
+                    value={rankCodeName}
                     onClick={handleFindRankOpen}
                 />
             </div>
@@ -295,15 +390,89 @@ function AddTextField(props){
                   />
             </div>
 
-            <div style={{display:"none"}}>
+            <div className="col-md-8 col-12">
+              <TextField
+                      id="zipCode"
+                      label="우편번호"
+                      margin="normal"
+                      value={props.state.employee.zipCode}
+                      fullWidth
+                  />
+            </div>
+
+            <div className="col-md-8 col-12">
+              <TextField
+                      id="address"
+                      label="주소"
+                      margin="normal"
+                      value={props.state.employee.address}
+                      fullWidth
+                      multiline={true}
+                  />
+            </div>
+
+            <div className="col-md-8 col-12">
+              <TextField
+                      id="detailAddress"
+                      label="상세주소"
+                      margin="normal"
+                      onChange={props.handleChange('detailAddress')}
+                      fullWidth
+                  />
+            </div>
+
+            <div className="col-md-8 col-12">
+              <TextField
+                      id="wage"
+                      label="시급"
+                      margin="normal"
+                      onChange={props.handleChange('wage')}
+                      fullWidth
+                  />
+            </div>
+
+            <div className="col-md-8 col-12">
+              <TextField
+                      id="refer"
+                      label="참조"
+                      margin="normal"
+                      onChange={props.handleChange('refer')}
+                      fullWidth
+                  />
+            </div>
+
+            <Button variant="contained" color="default" className={classes.button} onClick={handleClickUploadBtn}>
+              Upload
+              <CloudUploadIcon className={classes.rightIcon} />
+            </Button>
+
+            <div style={{display:""}} >
+                  프로필 사진
                   <FileBase64 
                     multiple={false}
-                    onDone = {props.handleFileUpload}/>
+                    onDone = {props.handleProfileImgUpload}/>
             </div>
+
+            <div style={{display:""}} >
+                  도장/서명 사진
+                  <FileBase64 
+                    multiple={false}
+                    onDone = {props.handleSignatureImgUpload}/>
+            </div>
+
             <br/><br/><br/>
-            <FindDepart open={value.findDepartOpen} handleSubDepartComponentClose={handleFindDepartClose}/>
-            <FindRank open={value.findRankOpen} handleSubRankComponentClose={handleFindRankClose}/>
-            <GetPostCode></GetPostCode>
+            <FindDepart 
+              open={value.findDepartOpen} 
+              handleSubDepartComponentClose={handleFindDepartClose}
+              checkedDepartment={props.checkedDepartment}
+              />
+            <FindRank 
+              open={value.findRankOpen} 
+              handleSubRankComponentClose={handleFindRankClose}
+              checkedRank={props.checkedRank}/>
+
+            <GetPostCode getPostcode={props.handleAddress}></GetPostCode>
+            
         </div>
     );
 }
