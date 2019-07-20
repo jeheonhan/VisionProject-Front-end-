@@ -2,6 +2,7 @@ import React from 'react';
 import GetNoticeList from 'components/notice/GetNoticeList';
 import { connect } from 'react-redux';
 import { getNoticeList } from 'actions/Notice';
+import CardBox from 'components/CardBox';
 
 
 class NoticeManage extends React.Component{
@@ -17,13 +18,13 @@ class NoticeManage extends React.Component{
 
         if(noticeList === undefined){
             this.props.getNoticeList(this.state.search);
-        }else{
-            console.log("########### :: Fail :: ")
         }
 
         return(
             <div>
-            {noticeList && ( <GetNoticeList noticeList={noticeList}></GetNoticeList>)}
+                <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
+                      {noticeList !==undefined ? ( <GetNoticeList noticeList={noticeList}></GetNoticeList>) : ""}
+                </CardBox>
             </div>  
         );
     }

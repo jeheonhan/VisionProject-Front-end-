@@ -1,11 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { checkedEmployee, 
-         checkedDepartment, 
-         checkedRank, 
-         getCodeList, 
-         addAppointment,
-         cleanStoreState, } from 'actions/index';
+import { checkedEmployee, checkedDepartment, checkedRank, getCodeList, addAppointment } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -95,13 +90,7 @@ class FormDialog extends React.Component {
         this.props.addAppointment({appointDate:this.state.appointDate, employeeNo:checkedEmployeeData.employeeNo,
           preDepartCodeNo:checkedEmployeeData.departCodeNo, preRankCodeNo:checkedEmployeeData.rankCodeNo,
           appointDepartCodeNo:checkedDepartData.codeNo, appointRankCodeNo:checkedRankData.codeNo,
-          appointmentStatusCodeNo:"01"});
-
-        this.setState({appointDate:null});
-        this.props.cleanStoreState("checkedEmployeeData");
-        this.props.cleanStoreState("checkedDepartData");
-        this.props.cleanStoreState("checkedRankData");
-
+          appointmentStatusCodeNo:"01"})
         this.handleRequestClose();
       }
     }
@@ -228,4 +217,4 @@ const mapStateToProps = ({ humanResource }) => {
     return { checkedEmployeeData, checkedDepartData, checkedRankData };
 }
 
-export default connect(mapStateToProps, { checkedEmployee, checkedDepartment, checkedRank, addAppointment, cleanStoreState })(FormDialog);
+export default connect(mapStateToProps, { checkedEmployee, checkedDepartment, checkedRank, addAppointment })(FormDialog);

@@ -7,7 +7,10 @@ import {  GET_HRCARD_LIST
         CHECKED_RANK,
         ADD_APPOINTMENT,
         GET_SIMPLE_HRCARD_BY_EMPLOYEENO,
-        CARRY_SIMPLE_HRCARD} from '../actionTypes/ActionTypes';
+        CARRY_SIMPLE_HRCARD,
+        ADD_HRCARD,
+        GET_WORKATTITUDE_LIST,
+        CARRY_WORKATTITUDE_LIST} from '../actionTypes/ActionTypes';
 
 
 export const getHRCardList = (search) => {
@@ -76,6 +79,27 @@ export const getSimpleHRCardByEmployeeNo = (employeeNo) => {
 export const carrySimpleHRCard = (data) => {
     return{
         type: CARRY_SIMPLE_HRCARD,
+        payload: data
+    }
+}
+
+export const addHRCard = (data) => {
+    return{
+        type: ADD_HRCARD,
+        payload: data
+    }
+}
+
+export const getWorkAttitudeList = (search) => {
+    return{
+        type: GET_WORKATTITUDE_LIST,
+        payload: search
+    }
+}
+
+export const carryWorkAttitudeList = (data) => {
+    return{
+        type: CARRY_WORKATTITUDE_LIST,
         payload: data
     }
 }
