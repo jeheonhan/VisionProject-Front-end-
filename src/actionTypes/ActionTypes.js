@@ -144,9 +144,14 @@ export const INSERT_USER = 'insert_user';
 //로그인
 export const CONVERT_LOADER = 'convert_loader';
 
+//공통
+export const SEND_EMAIL = 'send_email';
+export const CLEAN_STORE_STATE = 'clean_store_state';
+
 //인사관리
 export const GET_HRCARD_LIST = 'get_hrcard_list';
 export const CARRY_HRCARD_LIST = 'carry_hrcard_list';
+export const ADD_HRCARD = 'add_hrcard'
 export const GET_APPOINT_LIST = 'get_appoint_list';
 export const CARRY_APPOINT_LIST = 'carry_appoint_list';
 export const CHECKED_EMPLOYEE = 'checked_employee';
@@ -155,6 +160,8 @@ export const CHECKED_RANK = 'checked_rank';
 export const ADD_APPOINTMENT = 'add_appointment';
 export const GET_SIMPLE_HRCARD_BY_EMPLOYEENO = 'get_simple_hrcard_by_employeeno';
 export const CARRY_SIMPLE_HRCARD = 'carry_simple_hrcard';
+export const GET_WORKATTITUDE_LIST = 'get_workattitude_list';
+export const CARRY_WORKATTITUDE_LIST = 'carry_workattitude_list';
 
 
 //코드관리

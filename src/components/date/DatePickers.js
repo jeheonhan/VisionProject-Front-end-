@@ -14,11 +14,11 @@ export default class DatePickers extends Component {
 
   render() {
     const {selectedDate} = this.state;
-
+    //DatePicker에 props로 labe="" 으로 값을 줘야함 (재사용성)
     return (
       <div key="basic_day" className="picker" >
         <DatePicker
-          label="발령일자"
+          label={this.props.label}
           margin="normal"
           format={'YYYY/MM/DD'}
           value={selectedDate}

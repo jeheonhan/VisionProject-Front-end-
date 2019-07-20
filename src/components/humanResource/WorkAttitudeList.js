@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getHRCardList } from 'actions';
+import { getWorkAttitudeList } from 'actions';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Table from '@material-ui/core/Table';
@@ -21,19 +21,18 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import ComposeMail from 'components/mail/ComposeMail';
 
-let counter = 0;
 
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
+  {id: 'workAttitudeNo', align: false, disablePadding: false, label: '근태번호'},
   {id: 'employeeNo', align: false, disablePadding: false, label: '사원번호'},
   {id: 'employeeName', align: true, disablePadding: false, label: '사원명'},
-  {id: 'departCodeName', align: true, disablePadding: false, label: '부서명'},
-  {id: 'rankCodeName', align: true, disablePadding: false, label: '직급'},
-  {id: 'joinDate', align: true, disablePadding: false, label: '입사일자'},
-  {id: 'employeePhone', align: true, disablePadding: false, label: '휴대폰번호'},
-  {id: 'employeeEmail', align: true, disablePadding: false, label: '이메일'},
+  {id: 'workAttitudeCodeNo', align: true, disablePadding: false, label: '근태코드'},
+  {id: 'workAttitudeCodeName', align: true, disablePadding: false, label: '근태명칭'},
+  {id: 'workAttitudeTime', align: true, disablePadding: false, label: '시간(분)'},
+  {id: 'workAttitudeDate', align: true, disablePadding: false, label: '기준일'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -106,7 +105,7 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">인사카드 목록조회</Typography>
+          <Typography variant="title">근태 목록조회</Typography>
         )}
       </div>
       <div className="spacer"/>
@@ -194,21 +193,6 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  //Mail 창 열기
-  handleClickMailOpen = (event, email) => {
-    event.preventDefault();
-    this.setState({
-      composeMail:true,
-      emailForSending:email
-    })
-  }
-
-  //Mail 창 닫기
-  handleClickMailClose = () => {
-    this.setState({
-      composeMail:false
-    })
-  }
 
   constructor(props, context) {
     super(props, context);
@@ -218,7 +202,7 @@ class EnhancedTable extends React.Component {
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.HRCardList,
+      data: this.props.workAttitudeList,
       page: 0,
       rowsPerPage: 10,
       search:{searchKeyword:null},
@@ -231,14 +215,11 @@ class EnhancedTable extends React.Component {
    
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
-    const { HRCardList } = this.props;
+    const { workAttitudeList } = this.props;
 
-    const { emailForSending } = this.state;
-
-    if(HRCardList !== this.state.data){
-      this.setState({data:HRCardList});
+    if(workAttitudeList !== this.state.data){
+      this.setState({data:workAttitudeList});
     }
-
 
 
     return (
@@ -275,15 +256,13 @@ class EnhancedTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.employeeNo}</span></TableCell>
+                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.workAttitudeNo}</span></TableCell>
+                      <TableCell align="left">{row.employeeNo}</TableCell>
                       <TableCell align="left">{row.employeeName}</TableCell>
-                      <TableCell align="left">{row.departCodeName}</TableCell>
-                      <TableCell align="left">{row.rankCodeName}</TableCell>
-                      <TableCell align="left">{row.joinDate}</TableCell>
-                      <TableCell align="left">{row.employeePhone}</TableCell>
-                      <TableCell align="left">
-                        <IconMailOutline onClick={event => this.handleClickMailOpen(event, row.employeeEmail)} style={{cursor:'pointer'}}/><input type="hidden" value={row.employeeEmail}/>
-                      </TableCell>
+                      <TableCell align="left">{row.workAttitudeCodeNo}</TableCell>
+                      <TableCell align="left">{row.workAttitudeCodeName}</TableCell>
+                      <TableCell align="left">{row.workAttitudeTime}</TableCell>
+                      <TableCell align="left">{row.workAttitudeDate}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -302,19 +281,13 @@ class EnhancedTable extends React.Component {
             </Table>
           </div>
         </div>
-        {/* 메일 컴포넌트 */}
-        <ComposeMail open={this.state.composeMail} //user={user}
-                             onClose={this.handleClickMailClose}
-                             //onMailSend={this.onMailSend.bind(this)
-                             emailForSending={emailForSending}
-          />
       </div>
     );
   }
 }
-const mapStateToProps = ({humanResource}) => {
-  const { HRCardList } = humanResource;
-  return { HRCardList };
+const mapStateToProps = ({ humanResource }) => {
+  const { workAttitudeList } = humanResource;
+  return { workAttitudeList };
 }
 
-export default connect(mapStateToProps, { getHRCardList })(EnhancedTable);
+export default connect(mapStateToProps, { getWorkAttitudeList })(EnhancedTable);
