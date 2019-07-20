@@ -18,6 +18,7 @@ export default function* rootSaga(getState) {
         codeSagas(),
         accountingSagas(),
         businessSupportSagas(),
-        noticeSagas()
+        noticeSagas(),
+        approvalSagas(),
     ]);
 }

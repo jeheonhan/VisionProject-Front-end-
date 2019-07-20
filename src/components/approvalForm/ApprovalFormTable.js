@@ -11,6 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import {getApprovalFormList} from 'actions/Approval'
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -18,7 +19,6 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
 import { convertCodeUsageStatus, checkDuplicateCodeName} from 'actions';
-import UpdateCode from './UpdateCode';
 
 let counter = 0;
 
@@ -27,11 +27,10 @@ let counter = 0;
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
   
-  {id: 'codeNo', align: true, disablePadding: false, label: '코드번호'},
-  {id: 'codeName', align: true, disablePadding: false, label: '코드명'},
-  {id: 'groupCode', align: false, disablePadding: false, label: '그룹코드'},
-  {id: 'groupCodeName', align: false, disablePadding: false, label: '그룹코드명'},
-  {id: 'codeUsageStatus', align:false, disablePadding: false, label : '사용상태'}
+  {id: 'approvalFormNo', align: true, disablePadding: false, label: '결재양식번호'},
+  {id: 'approvalTitle', align: true, disablePadding: false, label: '결재양식명'},
+  {id: 'registrantEmployeeName', align: false, disablePadding: false, label: '등록자'},
+  {id: 'useCount', align: false, disablePadding: false, label: '누적사용횟수'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -97,7 +96,7 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">코드조회</Typography>
+          <Typography variant="title">결재양식 목록조회</Typography>
         )}
       </div>
       <div className="spacer"/>
@@ -168,36 +167,8 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  handleClickUsage = (event, row) =>{
-    event.preventDefault();
-    const message = row.codeUsageStatus==='Y'? '삭제' : '복구'
-    if(window.confirm("코드를 "+message+"하시겠습니까?")){
-      const _usage = row.codeUsageStatus==='Y'? 'N' : 'Y'
-      this.props.convertCodeUsageStatus({ groupCode: row.groupCode,
-          groupCodeName : row.groupCodeName,
-          codeNo : row.codeNo,
-          codeName : row.codeName,
-          codeUsageStatus : _usage
-        })
-    }
-  }
 
-  handleTargetCode = (event) => {
-    event.preventDefault();
-    this.props.checkDuplicateCodeName({...this.state.targetCode, codeName: event.target.value})
-    this.setState({
-      targetCode : {
-        ...this.state.targetCode,
-        codeName: event.target.value
-      }
-    })
-  }
 
-  handleCloseUpdate = () =>{
-    this.setState({
-      open: false
-    })
-  }
 
   //코드번호 클릭시 코드 수정창 띄우기
   handleClickCodeNo = (event, row) => {
@@ -219,7 +190,7 @@ class EnhancedTable extends React.Component {
       orderBy: 'codeNo',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.codeList,
+      data: this.props.approvalFormList,
       page: 0,
       rowsPerPage: 10,
       targetCode: {
@@ -234,10 +205,10 @@ class EnhancedTable extends React.Component {
   render() {
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
-    const { codeList } = this.props;
+    const { approvalFormList } = this.props;
 
-    if(codeList !== this.state.data){
-      this.setState({data:codeList})
+    if(approvalFormList !== this.state.data){
+      this.setState({data:approvalFormList})
     }
 
     return (
@@ -273,21 +244,16 @@ class EnhancedTable extends React.Component {
                       
                       <TableCell align="left" >
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickCodeNo(event, row)}>
-                          {row.codeNo}
+                          {row.approvalFormNo}
                         </span>
                       </TableCell>
                       <TableCell align="left">
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickCodeNo(event, row)}>
-                          {row.codeName}
+                          {row.approvalFormTitle}
                         </span>
                       </TableCell>
-                      <TableCell align="left" >{row.groupCode}</TableCell>
-                      <TableCell align="left" >{row.groupCodeName}</TableCell>
-                      <TableCell align="left">
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickUsage(event, row)}>
-                          {row.codeUsageStatus==='Y' ? "사용중" : "삭제됨"}
-                        </span>
-                      </TableCell>
+                      <TableCell align="left" >{row.registrantEmployeeName}</TableCell>
+                      <TableCell align="left" >{row.useCount}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -306,21 +272,14 @@ class EnhancedTable extends React.Component {
             </Table>
           </div>
         </div>
-        <UpdateCode 
-          open = {this.state.open} 
-          code={this.state.targetCode} 
-          action={this.handleCloseUpdate} 
-          handleName={this.handleTargetCode}
-          codeNameBool = {this.props.CodeNameBool}
-        />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ code }) => {
-  const { codeList, CodeNameBool } = code;
-  return {codeList, CodeNameBool};
+const mapStateToProps = ({ approval }) => {
+    const { approvalFormList } = approval;
+    return { approvalFormList }
 }
 
-export default connect(mapStateToProps, {convertCodeUsageStatus, checkDuplicateCodeName})(EnhancedTable);
+export default connect(mapStateToProps, {getApprovalFormList})(EnhancedTable);

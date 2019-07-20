@@ -170,6 +170,13 @@ export const CHECK_DUPLICATE_CODE_NAME = 'check_duplicate_code_name';
 export const CHECK_DUPLICATE_RESULT = 'check_duplicate_result';
 export const ADD_CODE = 'add_code';
 export const ADD_CODE_RESULT = 'add_code_result';
+export const CONVERT_CODE_USAGE_STATUS = 'convert_code_usage_status';
+export const UPDATE_CODE = 'update_code';
+
+//결재서양식관리
+export const GET_APPROVAL_FORM_LIST = 'get_approval_form_list';
+export const CARRY_APPROVAL_FORM_LIST = 'carry_approval_form_list';
+
 
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';

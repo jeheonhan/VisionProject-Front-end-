@@ -1,6 +1,6 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { GET_GROUP_CODE_LIST, GET_CODE_LIST, GET_FOR_CODE_DETAIL, GET_NEW_CODE_NO, CHECK_DUPLICATE_CODE_NAME, ADD_CODE } from "actionTypes/ActionTypes";
+import { GET_GROUP_CODE_LIST, GET_CODE_LIST, GET_FOR_CODE_DETAIL, GET_NEW_CODE_NO, CHECK_DUPLICATE_CODE_NAME, ADD_CODE, CONVERT_CODE_USAGE_STATUS, UPDATE_CODE } from "actionTypes/ActionTypes";
 import { carryNewCodeNo, carryGroupCodeList, carryCodeList, carryForCodeDetail, checkDuplicateResult, addCodeResult } from "actions/Code";
 
 const getGroupCodeListAxios = async () =>{
@@ -52,6 +52,26 @@ const addCodeAxios = async(data) => {
     .catch(error => console.log(error))
 }
 
+const convertCodeUsageAxios = async(data) => {
+    return await axios({
+        method:"POST",
+        url:"/code/convertCodeUsageStatus",
+        data: data
+    })
+    .then(resoponse => resoponse.data)
+    .catch(error => console.log(error))
+}
+
+const updateCodeAxios = async(data) => {
+    return await axios({
+        method:"POST",
+        url:"/code/modifyCode",
+        data : data
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
 function* getGroupCodeList(){
     //console.log("sagas/Code.js getGroupCodeList() 실행");
     const groupCodeList = yield call(getGroupCodeListAxios);
@@ -83,6 +103,16 @@ function* addCode(action){
     yield put(addCodeResult(_addCodeResult));
 }
 
+function* updateCode(action){
+    yield call(updateCodeAxios, action.payload)
+    yield put(addCodeResult());
+}
+
+function* convertCodeUsage(action){
+    yield call(convertCodeUsageAxios, action.payload);
+    yield put(carryForCodeDetail());
+}
+
 export function* getCodeListSaga(){
     //console.log("/sagas/Code.js getCodeListSaga() 실행☆")
     yield takeEvery(GET_CODE_LIST, getCodeList);
@@ -109,6 +139,14 @@ export function* addCodeSaga(){
     yield takeEvery(ADD_CODE, addCode)
 }
 
+export function* convertCodeUsageSaga(){
+    yield takeEvery(CONVERT_CODE_USAGE_STATUS, convertCodeUsage)
+}
+
+export function* updateCodeSaga(){
+    yield takeEvery(UPDATE_CODE, updateCode)
+}
+
 export default function* rootSaga(){
     console.log("/sagas/Code.js rootSaga() 실행")
     yield all([fork(getGroupCodeListSaga), 
@@ -116,6 +154,8 @@ export default function* rootSaga(){
                fork(getForCodeDetailSaga),
                fork(getNewCodeNoSaga),
                fork(checkDuplicateCodeNameSaga),
-               fork(addCodeSaga)
+               fork(addCodeSaga),
+               fork(convertCodeUsageSaga),
+               fork(updateCodeSaga)
         ]);
 }
