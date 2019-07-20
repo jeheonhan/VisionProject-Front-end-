@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import { getCardList } from "actions/index";
 import CardBox from "components/CardBox";
+import GetCardList from 'components/accounting/GetCardList';
 
 class CardManage extends React.Component{
 
@@ -24,6 +25,7 @@ class CardManage extends React.Component{
 
         return (
             <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
+                {cardList !== undefined ?(<GetCardList cardList={cardList}></GetCardList>) : "error" }
             </CardBox>
         )
     }
