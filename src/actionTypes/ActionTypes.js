@@ -196,6 +196,8 @@ export const CARRY_CARD_LIST = 'carry_card_list';
 //경영관리
 export const GET_BRANCH_LIST = 'get_branch_list';
 export const CARRY_BRANCH_LIST = 'carry_branch_list';
+export const GET_BRANCH_DETAIL = 'get_branch_detail';
+export const CARRY_BRANCH_DETAIL = 'carry_branch_detail';
 
 //공지사항
 export const GET_NOTICE_LIST = 'get_notice_list';

@@ -36,7 +36,7 @@ class BranchManage extends React.Component{
 
 const mapStateToProps = ({ businessSupport }) => {
     const { branchList } = businessSupport;
-    return { branchList }
+    return { branchList };
 }
 
-export default connect(mapStateToProps, { getBranchList })(BranchManage)
+export default connect(mapStateToProps, { getBranchList })(BranchManage);

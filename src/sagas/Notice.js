@@ -9,7 +9,7 @@ const getNoticeListRequest = async (search) => {
         url:"/notice/getNoticeList",
         data:search
     })
-    .then(reponse => Response.data)
+    .then(response => response.data)
     .catch(error => console.log(error))
 }
 

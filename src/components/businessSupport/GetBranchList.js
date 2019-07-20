@@ -17,10 +17,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
+import { connect } from 'react-redux';
+import { getBranchList, getBranchDetail } from 'actions';
 
 
 const columnData = [
-    {id: 'branchNo', align: false, disablePadding: false, label: '지점번호'},
     {id: 'branchName', align: true, disablePadding: false, label: '지점명'},
     {id: 'localCodeName', align: true, disablePadding: false, label: '지역'},
     {id: 'address', align: true, disablePadding: false, label: '주소'},
@@ -184,6 +185,14 @@ const columnData = [
       this.setState({rowsPerPage: event.target.value});
     };
     isSelected = id => this.state.selected.indexOf(id) !== -1;
+
+    getBranchDetail = (event, branchNo) => {
+      event.preventDefault();
+      if(branchNo !== undefined) {
+        this.props.getBranchDetail(branchNo);
+      }
+      this.setState({open : true});
+    }
   
     constructor(props, context) {
       super(props, context);
@@ -236,8 +245,7 @@ const columnData = [
                           <Checkbox color="secondary" checked={isSelected} 
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                         </TableCell>
-                        <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.branchNo}</span></TableCell>
-                        <TableCell align="left" >{row.branchName}</TableCell>
+                        <TableCell align="left" ><span onClick={ event => this.getBranchDetail(event, row.branchNo)} style={{cursor:'pointer'}}>{row.branchName}</span></TableCell>
                         <TableCell align="left">{row.localCodeName}</TableCell>
                         <TableCell align="left">{row.address}</TableCell>
                         <TableCell align="left">{row.branchTel}</TableCell>
@@ -266,4 +274,9 @@ const columnData = [
     }
   }
   
-  export default EnhancedTable;
+  const mapStateToProps = ({ businessSupport }) => {
+    const { branchList } = businessSupport;
+    return { branchList };
+}
+
+export default connect(mapStateToProps, { getBranchList })(EnhancedTable);
