@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getForCodeDetail, getNewCodeNo, checkDuplicateCodeName, addCode } from 'actions/Code';
+import { getForCodeDetail, getNewCodeNo, checkDuplicateCodeName, addCode, updateCode } from 'actions/Code';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,17 +11,25 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 class FormDialog extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.firstSettingState();
+    }
   state = {
     open: false,
     subOpen: false,
     departOpen: false,
     rankOpen: false,
-    duplicate: "코드명을 중복확인하세요"
+    duplicate: "코드명을 중복확인하세요",
+    Code : {groupCode : "",
+        groupCodeName : "",
+        codeNo: "",
+        codeName: ""}
   };
 
   handleClickOpen = () => {
     this.setState({open: true});
-    this.props.getNewCodeNo(this.props.List[0].groupCode)
   };
 
   handleRequestClose = () => {
@@ -32,7 +40,7 @@ class FormDialog extends React.Component {
 
   handleChange = name => event => {
       this.setState(...this.state, {[name]:event.target.value})
-      console.log(this.state)
+      //console.log(this.state)
   }
 
   handleChangeCodeName = event => {
@@ -49,43 +57,39 @@ class FormDialog extends React.Component {
   firstSettingState = () => {
     this.setState({
         ...this.state, 
-        Code : {groupCode : this.props.List[0].groupCode,
-                groupCodeName : this.props.List[0].groupCodeName,
-                codeNo: this.props.newCodeNo,
-                codeName: ""}
+        Code : {groupCode : this.props.code.groupCode,
+                groupCodeName : this.props.code.groupCodeName,
+                codeNo: this.props.code.codeNo,
+                codeName: this.props.code.codeName}
     })
     
   }
 
-  componentDidMount() {
-    this.firstSettingState();
-    console.log(this.state)
-  }
+//   componentDidMount() {
+//     this.firstSettingState();
+//   }
  
   render() {
 
-    const { List, newCodeNo, CodeNameBool } = this.props;
+    const { code, CodeNameBool } = this.props;
 
     const handleSubmit = (event) => {
       if(!this.props.CodeNameBool){
         alert("입력하신 코드명이 중복됩니다.")
       }
       else{
-        this.props.addCode({groupCode: this.props.List[0].groupCode, groupCodeName: this.props.List[0].groupCodeName, codeNo: this.props.newCodeNo.codeNo, codeName: this.state.Code.codeName})
-        this.handleRequestClose();
+        this.props.updateCode(this.props.code)
+        this.props.action();
       }
     }
-  
+    console.log(this.state)
     return (
       <div>
-        <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
-            코드 등록
-        </Button>
-        <Dialog open={this.state.open} onClose={this.handleRequestClose} maxWidth="xl">
-          <DialogTitle>새로운 코드 등록</DialogTitle>
+        <Dialog open={this.props.open} onClose={this.props.action} maxWidth="xl">
+          <DialogTitle>코드 수정하기</DialogTitle>
           <DialogContent >
             <DialogContentText>
-              코드명을 입력하세요.
+              코드명을 수정할 수 있습니다.
             </DialogContentText>
             
             <div style={{float:"left"}}>
@@ -95,7 +99,7 @@ class FormDialog extends React.Component {
               margin="normal"
               id="groupCode"
               label="그룹코드"
-              value={List[0].groupCode}
+              value={this.props.code.groupCode}
             />
             </div>
             <div style={{float:"left"}}>
@@ -105,7 +109,7 @@ class FormDialog extends React.Component {
               margin="normal"
               id="groupCodeName"
               label="그룹코드명"
-              value={List[0].groupCodeName}
+              value={this.props.code.groupCodeName}
             />
             </div>
             <div style={{float:"left"}}>
@@ -114,7 +118,7 @@ class FormDialog extends React.Component {
               margin="normal"
               id="codeNo"
               label="코드번호"
-              value={newCodeNo!==undefined && newCodeNo.codeNo}
+              value={this.props.code.codeNo}
             />
             </div>
             <div style={{float:"left"}}>
@@ -123,8 +127,8 @@ class FormDialog extends React.Component {
               margin="normal"
               id="codeName"
               label="코드명"
-              onChange={this.handleChangeCodeName}
-              value={this.state.codeName}
+              onChange={this.props.handleName}
+              value={this.props.code.codeName}
               helperText={CodeNameBool!==undefined ? (CodeNameBool ? "사용하실 수 있는 코드명입니다.":"코드명이 중복됩니다."): (this.state.duplicate)}
             />
             </div>
@@ -133,7 +137,7 @@ class FormDialog extends React.Component {
             <Button onClick={handleSubmit} color="secondary">
               확인
             </Button>
-            <Button onClick={this.handleRequestClose} color="primary">
+            <Button onClick={this.props.action} color="primary">
               취소
             </Button>
           </DialogActions>
@@ -145,8 +149,8 @@ class FormDialog extends React.Component {
 }
 
 const mapStateToProps = ({ code }) => {
-    const { newCodeNo, CodeNameBool } = code;
-    return { newCodeNo, CodeNameBool };
+    const { CodeNameBool } = code;
+    return { CodeNameBool };
 }
 
-export default connect(mapStateToProps, { getNewCodeNo, checkDuplicateCodeName, addCode, getForCodeDetail })(FormDialog);
+export default connect(mapStateToProps, { checkDuplicateCodeName, getForCodeDetail, updateCode })(FormDialog);

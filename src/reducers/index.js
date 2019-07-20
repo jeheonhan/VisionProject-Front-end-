@@ -3,7 +3,7 @@ import {connectRouter} from 'connected-react-router';
 import Settings from './Settings';
 import Auth from './Auth';
 import Accounting from './Accounting';
-import Approval from './Accounting';
+import Approval from './Approval';
 import BusinessSupport from './BusinessSupport';
 import Code from './Code';
 import HumanResource from './HumanResource';

@@ -23,15 +23,12 @@ import CodeDetailManage from 'containers/code/CodeDetailManage'
 
 class CodeList extends React.Component{
 
-  componentDidMount(){
-    console.log(this.props.location.state.search);
-  }
-
   render(){
     return(
+
       <div>
-        {/* <ContainerHeader title={"그룹코드목록"}  description={"코드로 사용되는 정보를 관리할 수 있습니다"}/> */}
-                <CodeDetailManage></CodeDetailManage>
+        <ContainerHeader title={"그룹코드목록"} match={this.props.match} description={"코드로 사용되는 정보를 관리할 수 있습니다"}/>
+                <CodeDetailManage search = {this.props.location.state.search}></CodeDetailManage>
        <div align="right">
        </div>
   
