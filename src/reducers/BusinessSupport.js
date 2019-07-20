@@ -1,4 +1,7 @@
-import { GET_BRANCH_LIST, CARRY_BRANCH_LIST } from 'actionTypes/ActionTypes';
+import { GET_BRANCH_LIST, 
+        CARRY_BRANCH_LIST, 
+        GET_BRANCH_DETAIL, 
+        CARRY_BRANCH_DETAIL } from 'actionTypes/ActionTypes';
 
 const INIT_STATE = 
     {
@@ -29,6 +32,19 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 branchList: action.payload
+            }
+        }
+
+        case GET_BRANCH_DETAIL : {
+            return{
+                ...state
+            }
+        }
+
+        case CARRY_BRANCH_DETAIL : {
+            return{
+                ...state,
+                Branch : action.payload
             }
         }
 
