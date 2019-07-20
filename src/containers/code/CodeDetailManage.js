@@ -11,15 +11,21 @@ class CodeDetailManage extends React.Component{
         super(props);
     
         this.state = {
-          codeList: this.props.codeList
+          search: this.props.search
         };
       }
 
-    
-
     render(){
         const {codeList} = this.props;
-        return(
+
+        if(codeList===undefined || codeList===''){
+            this.props.getForCodeDetail(this.state.search)
+            return (<div>&nbsp;&nbsp;LOADING...</div>)
+        }
+
+        else
+        //alert(codeList);
+           { return(
             <div>
                 
                 {codeList !== undefined ? (<CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside><CodeDetailListTable /></CardBox>) : (<div>&nbsp;&nbsp;&nbsp; 이 URL로는 직접 접근하실 수 없습니다. 코드관리를 통해 접근해주세요.</div>)}
@@ -28,7 +34,7 @@ class CodeDetailManage extends React.Component{
                     <AddCode List={codeList}></AddCode>
                 </div>):("")}
             </div>
-        )
+        )}
     }
 }
 const mapStateToProps = ({ code }) => {
@@ -36,4 +42,4 @@ const mapStateToProps = ({ code }) => {
     return { codeList }
 }
 
-export default connect(mapStateToProps, { getCodeList })(CodeDetailManage)
+export default connect(mapStateToProps, { getCodeList, getForCodeDetail })(CodeDetailManage)

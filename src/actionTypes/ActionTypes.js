@@ -144,9 +144,14 @@ export const INSERT_USER = 'insert_user';
 //로그인
 export const CONVERT_LOADER = 'convert_loader';
 
+//공통
+export const SEND_EMAIL = 'send_email';
+export const CLEAN_STORE_STATE = 'clean_store_state';
+
 //인사관리
 export const GET_HRCARD_LIST = 'get_hrcard_list';
 export const CARRY_HRCARD_LIST = 'carry_hrcard_list';
+export const ADD_HRCARD = 'add_hrcard'
 export const GET_APPOINT_LIST = 'get_appoint_list';
 export const CARRY_APPOINT_LIST = 'carry_appoint_list';
 export const CHECKED_EMPLOYEE = 'checked_employee';
@@ -155,6 +160,8 @@ export const CHECKED_RANK = 'checked_rank';
 export const ADD_APPOINTMENT = 'add_appointment';
 export const GET_SIMPLE_HRCARD_BY_EMPLOYEENO = 'get_simple_hrcard_by_employeeno';
 export const CARRY_SIMPLE_HRCARD = 'carry_simple_hrcard';
+export const GET_WORKATTITUDE_LIST = 'get_workattitude_list';
+export const CARRY_WORKATTITUDE_LIST = 'carry_workattitude_list';
 
 
 //코드관리
@@ -170,6 +177,13 @@ export const CHECK_DUPLICATE_CODE_NAME = 'check_duplicate_code_name';
 export const CHECK_DUPLICATE_RESULT = 'check_duplicate_result';
 export const ADD_CODE = 'add_code';
 export const ADD_CODE_RESULT = 'add_code_result';
+export const CONVERT_CODE_USAGE_STATUS = 'convert_code_usage_status';
+export const UPDATE_CODE = 'update_code';
+
+//결재서양식관리
+export const GET_APPROVAL_FORM_LIST = 'get_approval_form_list';
+export const CARRY_APPROVAL_FORM_LIST = 'carry_approval_form_list';
+
 
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';
@@ -189,6 +203,8 @@ export const CARRY_CARD_LIST = 'carry_card_list';
 //경영관리
 export const GET_BRANCH_LIST = 'get_branch_list';
 export const CARRY_BRANCH_LIST = 'carry_branch_list';
+export const GET_BRANCH_DETAIL = 'get_branch_detail';
+export const CARRY_BRANCH_DETAIL = 'carry_branch_detail';
 
 //공지사항
 export const GET_NOTICE_LIST = 'get_notice_list';

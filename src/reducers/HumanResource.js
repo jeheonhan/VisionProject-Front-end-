@@ -6,7 +6,9 @@ import { GET_HRCARD_LIST,
          CHECKED_DEPARTMENT,
          CHECKED_RANK,
          GET_SIMPLE_HRCARD_BY_EMPLOYEENO,
-         CARRY_SIMPLE_HRCARD} from "actionTypes/ActionTypes";
+         CARRY_SIMPLE_HRCARD,
+         CARRY_WORKATTITUDE_LIST,
+         CLEAN_STORE_STATE,} from "actionTypes/ActionTypes";
 
 
 const INIT_STATE = 
@@ -84,6 +86,21 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 simpleHRCardDetail: action.payload
+            }
+        }
+
+        case CARRY_WORKATTITUDE_LIST : {
+            return{
+                ...state,
+                workAttitudeList: action.payload
+            }
+        }
+
+        //원하는 store의 state값 날리기
+        case CLEAN_STORE_STATE : {
+            return{
+                ...state,
+                [action.payload]:null
             }
         }
 
