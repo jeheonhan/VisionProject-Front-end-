@@ -16,10 +16,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconHome from '@material-ui/icons/Home'
-import IconPayment from '@material-ui/icons/Payment'
-import { getCardList } from 'actions';
-
+import { getCard, getCodeList, updateCard } from 'actions';
+import { connect } from 'react-redux';
+import UpdateCard from 'components/accounting/UpdateCard';
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -133,6 +132,7 @@ EnhancedTableToolbar.propTypes = {
 
 
 class CardTable extends React.Component {
+
   constructor(props, context) {
     super(props, context);
 
@@ -141,14 +141,12 @@ class CardTable extends React.Component {
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.cardList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      data: this.props._cardList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
       page: 0,
       rowsPerPage: 10,
+      updateOpen: false,
     };
   }
-  //이체정보 다이얼로그를 띄우는데 필요한 플래그 state
-
-
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -205,11 +203,37 @@ class CardTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+
+  //카드 수정 다이얼로그 띄우기
+  updateCardDialogOpen = () => {
+    this.setState({updateOpen : true});
+  }
+
+  //카드 수정 다이얼로그 닫기
+  updateCardDialogClose = () => {
+    this.setState({updateOpen : false});
+    
+  }
+
+  //카드 수정 요청
+  updateCard = (event, cardRegNo) => {
+    event.preventDefault();
+    this.props.getCard(cardRegNo);
+    this.updateCardDialogOpen();
+  }
+
   render() {
 
-    if(this.props.cardList !== this.state.data){
+    const { cardList, cardCategoryList } = this.props;
+
+    if(cardList === undefined){
+      this.props.getCodeList({ searchKeyword : "card" });
+      this.props.getCodeList({ searchKeyword : "cardCategory" });
+    }
+
+    if(this.props._cardList !== this.state.data){
       this.setState({
-        data : this.props.cardList
+        data : this.props._cardList
       })
     }
 
@@ -250,7 +274,7 @@ class CardTable extends React.Component {
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left">{row.cardRegNo}</TableCell>
+                      <TableCell align="left"><span onClick={ event => this.updateCard(event, row.cardRegNo) } style={{cursor:'pointer'}}>{row.cardRegNo}</span></TableCell>
                       <TableCell align="left">{row.cardNo}</TableCell>
                       <TableCell align="left">{row.cardName}</TableCell>
                       <TableCell align="left">{row.cardCompanyCodeName}</TableCell>
@@ -274,8 +298,15 @@ class CardTable extends React.Component {
                 </TableRow>
               </TableFooter>
             </Table>
-
-                
+            
+            {this.props.Card && (<UpdateCard
+              open={this.state.updateOpen}
+              close={this.updateCardDialogClose}
+              card={this.props.Card}
+              cardList={cardList}
+              cardCategoryList={cardCategoryList}
+            />)}
+            
           </div>
         </div>
       </div>
@@ -283,4 +314,12 @@ class CardTable extends React.Component {
   }
 }
 
-export default CardTable;
+const mapStateToProps = ({ accounting, code }) => {
+  const { Card } = accounting;
+  const { cardList, cardCategoryList } = code;
+  return { Card, cardList, cardCategoryList };
+  // cardList와 cardCategoryList를 return 해주지 않으면 하위에 있는 TextField에서 아래와 같은 오류 발생
+  // Warning: Material-UI: `children` must be passed when using the `TextField` component with `select`.
+}
+
+export default connect(mapStateToProps,{ getCard, getCodeList, updateCard })(CardTable);

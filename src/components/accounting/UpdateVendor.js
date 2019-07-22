@@ -65,7 +65,7 @@ class UpdateVendor extends React.Component {
     
     return (
       <div>
-        <Dialog maxWidth={"xs"} open={this.props.open} onClose={this.updateVendorClose}>
+        <Dialog maxWidth={"xs"} open={this.props.open} >
           <DialogTitle align="center">거래처 수정</DialogTitle>
           <DialogContent align="right">
             <form className="row" noValidate autoComplete="off" align="center">

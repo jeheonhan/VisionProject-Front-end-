@@ -142,10 +142,8 @@ function AddTextFields(props) {
   };
 
   const submitFn = () => {
-      console.log(values);
       props.addVendor(values);
       props.handleRequestClose();
-
   }
 
     return (

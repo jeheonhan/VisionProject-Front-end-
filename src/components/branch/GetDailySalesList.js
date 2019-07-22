@@ -18,16 +18,13 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
-import { getBranchList, getBranchDetail } from 'actions';
+import { getDailySalesList } from 'actions';
 
 
 const columnData = [
-    {id: 'branchName', align: true, disablePadding: false, label: '지점명'},
-    {id: 'localCodeName', align: true, disablePadding: false, label: '지역'},
-    {id: 'address', align: true, disablePadding: false, label: '주소'},
-    {id: 'branchTel', align: true, disablePadding: false, label: '전화번호'},
-    {id: 'branchRegDate', align: true, disablePadding: false, label: '등록일자'}, 
-    {id: 'branchStatus', align: true, disablePadding: false, label: '영업상태'}, 
+    {id: 'branchNo', align: true, disablePadding: false, label: '지점번호'},
+    {id: 'salesDate', align: true, disablePadding: false, label: '매출일자'},
+    {id: 'dailyTotalAmount', align: true, disablePadding: false, label: '총 매출금액'},
   ];
 
 
@@ -101,7 +98,7 @@ const columnData = [
           {numSelected > 0 ? (
             <Typography variant="subheading">{numSelected} 선택</Typography>
           ) : (
-            <Typography variant="title">지점 목록조회</Typography>
+            <Typography variant="title">일 매출조회</Typography>
           )}
         </div>
         <div className="spacer"/>
@@ -186,7 +183,7 @@ const columnData = [
     };
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-    getBranch = (event, branchNo) => {
+    getBranchDetail = (event, branchNo) => {
       event.preventDefault();
       if(branchNo !== undefined) {
         this.props.getBranchDetail(branchNo);
@@ -202,7 +199,7 @@ const columnData = [
         orderBy: '',
         selected: [],
         // data에 props로 들어오는 list값 넣어주기.
-        data: this.props.branchList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+        data: this.props.dailySalesList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
         page: 0,
         rowsPerPage: 10,
       };
@@ -245,12 +242,9 @@ const columnData = [
                           <Checkbox color="secondary" checked={isSelected} 
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                         </TableCell>
-                        <TableCell align="left" ><span onClick={ event => this.getBranch(event, row.branchNo)} style={{cursor:'pointer'}}>{row.branchName}</span></TableCell>
-                        <TableCell align="left">{row.localCodeName}</TableCell>
-                        <TableCell align="left">{row.address}</TableCell>
-                        <TableCell align="left">{row.branchTel}</TableCell>
-                        <TableCell align="left">{row.branchRegDate}</TableCell>
-                        <TableCell align="left">{row.branchStatus}</TableCell>
+                        <TableCell align="left" >{row.branchNo}</TableCell>
+                        <TableCell align="left"><span onClick={ event => this.getBranchDetail(event, row.branchNo)} style={{cursor:'pointer'}}>{row.salesDate}</span></TableCell>
+                        <TableCell align="left">{row.dailyTotalAmount}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -274,9 +268,9 @@ const columnData = [
     }
   }
   
-  const mapStateToProps = ({ businessSupport }) => {
-    const { branchList } = businessSupport;
-    return { branchList };
+  const mapStateToProps = ({ branch }) => {
+    const { dailySalesList } = branch;
+    return { dailySalesList };
 }
 
-export default connect(mapStateToProps, { getBranchList, getBranchDetail })(EnhancedTable);
+export default connect(mapStateToProps, { getDailySalesList })(EnhancedTable);

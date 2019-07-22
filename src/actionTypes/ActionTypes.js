@@ -189,6 +189,8 @@ export const UPDATE_CODE = 'update_code';
 //결재서양식관리
 export const GET_APPROVAL_FORM_LIST = 'get_approval_form_list';
 export const CARRY_APPROVAL_FORM_LIST = 'carry_approval_form_list';
+export const ADD_APPROVAL_FORM = 'add_approval_form';
+export const DELETE_APPROVAL_FORM = 'delete_approval_form';
 
 
 //회계관리
@@ -200,7 +202,11 @@ export const CARRY_VENDOR = 'carry_vendor';
 export const UPDATE_VENDOR = 'update_vendor';
 export const GET_CARD_LIST = 'get_card_list';
 export const CARRY_CARD_LIST = 'carry_card_list';
-
+export const GET_ACCOUNT_LIST = 'get_account_list';
+export const CARRY_ACCOUNT_LIST = 'carry_account_list';
+export const ADD_CARD = 'add_card';
+export const GET_CARD = 'get_card';
+export const CARRY_CARD = 'carry_card';
 
 
 
@@ -215,3 +221,7 @@ export const CARRY_BRANCH_DETAIL = 'carry_branch_detail';
 //공지사항
 export const GET_NOTICE_LIST = 'get_notice_list';
 export const CARRY_NOTICE_LIST = 'carry_notice_list';
+
+//지점관리
+export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';
+export const CARRY_DAILY_SALES_LIST = 'carry_daily_sales_list';

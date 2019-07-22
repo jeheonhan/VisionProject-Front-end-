@@ -10,9 +10,11 @@ class CardManage extends React.Component{
         super(props);
         this.state = {
             search : 
-                { searchKeyword : " " }
+                { 
+                    searchKeyword : "",
+                    usageCondition : "01"
+                }
         }
-        
     }
 
     render() {
@@ -22,10 +24,11 @@ class CardManage extends React.Component{
         if(cardList === undefined) {
             this.props.getCardList(this.state.search);
         }
-
+        
         return (
             <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
-                {cardList !== undefined ?(<GetCardList cardList={cardList}></GetCardList>) : "error" }
+                {/* 그룹코드의 카드사명이cardList이기에 카드 목록조회 결과의 변수를 _cardList로 둔다. */}
+                {cardList !== undefined ?(<GetCardList _cardList={cardList}></GetCardList>) : "error" }
             </CardBox>
         )
     }
