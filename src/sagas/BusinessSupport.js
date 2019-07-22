@@ -16,7 +16,7 @@ const getBranchListRequest = async (search) => {
 const getBranchDetailRequest = async (branchNo) => {
     return await axios({
          method:"GET",
-         url:"/bs/getBranchDetail/"+branchNo,
+         url:"/bs/getBranch/"+branchNo,
     })
     .then(response => response.data)
     .catch(error => console.log(error))

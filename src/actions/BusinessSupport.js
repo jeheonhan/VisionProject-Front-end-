@@ -14,10 +14,10 @@ export const carryBranchList = (data) => {
     }
 }
 
-export const getBranchDetail = (data) => {
+export const getBranchDetail = (branchNo) => {
     return {
         type: GET_BRANCH_DETAIL,
-        payload: data
+        payload: branchNo
     }
 }
 
