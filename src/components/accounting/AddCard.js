@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { checkedEmployee } from 'actions/index';
+import { checkedEmployee, getCodeList  } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -66,20 +66,6 @@ class AddCard extends React.Component {
     }
 
   }
-  
-  cardCompanyList = [
-    {
-        codeNo : '01',
-        codeName : '우리카드'
-    }
-  ];
-
-  cardCategoryList = [
-    {
-        codeNo : '01',
-        codeName : '신용'
-    }
-  ]
 
   //카드등록 다이얼로그창 띄우기
   handleClickOpen = () => {
@@ -108,7 +94,13 @@ class AddCard extends React.Component {
 
   //계좌찾기 다이얼로그창 닫기
   handleFindAccountClose = () => {
-      this.setState({findAccountOpen: false})
+    this.setState({findAccountOpen: false})
+  }
+
+  getAccountNo = (_accountNo) => {
+    this.setState({
+      accountNo : _accountNo
+    })
   }
 
   handleChange = name => event => {
@@ -118,10 +110,17 @@ class AddCard extends React.Component {
 
   render() {
 
+    const { cardList, cardCategoryList } = this.props;
+
     //왜 굳이 const로 만들어서 줬지? 그냥 this.props로 줘도 되지 않나
     //this.props 하나로 다 받을 수 있어서 재사용성을 높을 듯?
     const { checkedEmployeeData } = this.props;
-    
+   
+    if(cardList === undefined){
+      this.props.getCodeList({ searchKeyword : "card" });
+      this.props.getCodeList({ searchKeyword : "cardCategory" });
+    }
+   
     return (
       <div>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
@@ -194,7 +193,7 @@ class AddCard extends React.Component {
                     fullWidth
                     onChange={this.handleChange('cardCompanyCodeNo')}
                   >
-                  {this.cardCompanyList.map(option => (
+                  {cardList && cardList.map(option => (
                       <MenuItem key={option.codeNo} value={option.codeNo}>
                           {option.codeName}
                       </MenuItem>
@@ -211,10 +210,9 @@ class AddCard extends React.Component {
                         helperText="카드종류를 선택해주세요"
                         margin="normal"
                         fullWidth
-                        value={this.state.cardCategoryCodeNo}
                         onChange={this.handleChange('cardCategoryCodeNo')}
                     >
-                    {this.cardCategoryList.map(option => (
+                    {cardCategoryList && cardCategoryList.map(option => (
                         <MenuItem key={option.codeNo} value={option.codeNo}>
                             {option.codeName}
                         </MenuItem>
@@ -253,8 +251,13 @@ class AddCard extends React.Component {
                     label="계좌번호"
                     helperText="항목을 클릭하여 계좌를 선택해주세요"
                     onClick={this.handleFindAccountOpen}
+                    value={this.state.accountNo}
                     fullWidth
                   />
+                </div>
+
+                <div className="col-md-12 col-12">
+                  {/* <Button className="jr-btn text-uppercase btn-block" color="default" onClick={() => {submitFn()}}>등록하기</Button> */}
                 </div>
 
                 <FindEmployee 
@@ -265,7 +268,9 @@ class AddCard extends React.Component {
                 <FindAccount
                   open={this.state.findAccountOpen}
                   handleFindAccountClose={this.handleFindAccountClose}
+                  getAccountNo = {this.getAccountNo}
                 />
+
 
               </form>
             </CardBox>
@@ -276,10 +281,12 @@ class AddCard extends React.Component {
   }
 }
 
-  const mapStateToProps = ({ humanResource }) => {
+  const mapStateToProps = ({ humanResource, code }) => {
     const { checkedEmployeeData } = humanResource;
-    return { checkedEmployeeData }
+    const { cardList, cardCategoryList } = code;
+
+    return { checkedEmployeeData, cardList, cardCategoryList }
   }
 
 
-export default connect(mapStateToProps, {checkedEmployee})(AddCard);
+export default connect(mapStateToProps, {checkedEmployee, getCodeList})(AddCard);

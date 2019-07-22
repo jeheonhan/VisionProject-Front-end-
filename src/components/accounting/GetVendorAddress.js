@@ -11,9 +11,7 @@ class GetVendorAddress extends Component {
 
   //this.state 직접 변경은 constructor 안에서만 가능하고, 그 외에 state 값을 변경하고 싶으면 setState 메소드를 사용해야함.
   //setState 사용하면 redering 된다.
-  constructor(props){
-    super(props);
-  }
+
 
   render() {
     console.log("여기는 GetVendorAddress");

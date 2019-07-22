@@ -6,7 +6,9 @@ import {
     CARRY_VENDOR, 
     UPDATE_VENDOR, 
     GET_CARD_LIST, 
-    CARRY_CARD_LIST 
+    CARRY_CARD_LIST,
+    GET_ACCOUNT_LIST,
+    CARRY_ACCOUNT_LIST 
 } from'../actionTypes/ActionTypes';
 
 const INIT_STATE = {
@@ -66,6 +68,19 @@ export default (state = INIT_STATE, action) => {
                 cardList: action.payload
             }
         }
+
+        case GET_ACCOUNT_LIST : {
+            return{
+                ...state
+            }
+        }
+
+        case CARRY_ACCOUNT_LIST : {
+            return{
+                ...state,
+                AccountList: action.payload
+            }
+        }        
 
         default : {
             return{

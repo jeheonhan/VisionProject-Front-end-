@@ -194,7 +194,8 @@ export const CARRY_VENDOR = 'carry_vendor';
 export const UPDATE_VENDOR = 'update_vendor';
 export const GET_CARD_LIST = 'get_card_list';
 export const CARRY_CARD_LIST = 'carry_card_list';
-
+export const GET_ACCOUNT_LIST = 'get_account_list';
+export const CARRY_ACCOUNT_LIST = 'carry_account_list';
 
 
 
