@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { checkedEmployee, getCodeList  } from 'actions/index';
+import { checkedEmployee, getCodeList, addCard  } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import MaskedInput from 'react-text-mask';
 import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import FileBase64 from 'react-file-base64';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -97,6 +97,11 @@ class AddCard extends React.Component {
     this.setState({findAccountOpen: false})
   }
 
+  //프로필 사진 업로드
+  handleProfileImgUpload = (files) => {
+    this.setState({cardImage:files})
+  }
+
   getAccountNo = (_accountNo) => {
     this.setState({
       accountNo : _accountNo
@@ -107,20 +112,37 @@ class AddCard extends React.Component {
     this.setState({ ...this.state, [name]: event.target.value });
     console.log(this.state);
   };
+  
 
+  
   render() {
-
+    
     const { cardList, cardCategoryList } = this.props;
-
+    
     //왜 굳이 const로 만들어서 줬지? 그냥 this.props로 줘도 되지 않나
     //this.props 하나로 다 받을 수 있어서 재사용성을 높을 듯?
     const { checkedEmployeeData } = this.props;
-   
+    
     if(cardList === undefined){
       this.props.getCodeList({ searchKeyword : "card" });
       this.props.getCodeList({ searchKeyword : "cardCategory" });
     }
-   
+ 
+    const submitCard = () => {
+      
+      this.props.addCard({
+        cardManager : checkedEmployeeData.employeeNo,
+        cardCategoryCodeNo : this.state.cardCategoryCodeNo,
+        cardName : this.state.cardName,
+        cardCompanyCodeNo : this.state.cardCompanyCodeNo,
+        cardImage : "http://placehold.it/320x100",
+        accountNo : this.state.accountNo,
+        cardNo : this.state.cardNo,
+      })
+  
+      this.handleRequestClose()
+    }
+    
     return (
       <div>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
@@ -150,6 +172,17 @@ class AddCard extends React.Component {
           <div align="center">
             <CardBox styleName="col-lg-6" heading="카드 등록">
               <form className="row" noValidate autoComplete="off">
+
+                {/* <div className="col-md-8 col-12" >
+                  <CardBox 
+                          childrenStyle="d-flex justify-content-center"
+                          heading={""}>
+                    <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
+                      <Avatar className="size-100" alt="Remy Sharp" src={profileImage && `${profileImage.base64}`}/>
+                    </Tooltip>
+                  </CardBox>
+                </div>               */}
+
                 <div className="col-lg-8 col-sm-6 col-12">
                   <FormControl className="mb-3" fullWidth>
                     <InputLabel htmlFor="cardNo">카드번호</InputLabel>
@@ -256,8 +289,15 @@ class AddCard extends React.Component {
                   />
                 </div>
 
+                <div style={{display:""}} >
+                  프로필 사진
+                  <FileBase64 
+                    multiple={false}
+                    onDone = {this.props.handleProfileImgUpload}/>
+                </div>
+
                 <div className="col-md-12 col-12">
-                  {/* <Button className="jr-btn text-uppercase btn-block" color="default" onClick={() => {submitFn()}}>등록하기</Button> */}
+                  <Button className="jr-btn text-uppercase btn-block" color="default" onClick={() => {submitCard()}}>등록하기</Button>
                 </div>
 
                 <FindEmployee 
@@ -285,8 +325,8 @@ class AddCard extends React.Component {
     const { checkedEmployeeData } = humanResource;
     const { cardList, cardCategoryList } = code;
 
-    return { checkedEmployeeData, cardList, cardCategoryList }
+    return { checkedEmployeeData, cardList, cardCategoryList };
   }
 
 
-export default connect(mapStateToProps, {checkedEmployee, getCodeList})(AddCard);
+export default connect(mapStateToProps, {checkedEmployee, getCodeList, addCard})(AddCard);

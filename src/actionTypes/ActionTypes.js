@@ -196,6 +196,9 @@ export const GET_CARD_LIST = 'get_card_list';
 export const CARRY_CARD_LIST = 'carry_card_list';
 export const GET_ACCOUNT_LIST = 'get_account_list';
 export const CARRY_ACCOUNT_LIST = 'carry_account_list';
+export const ADD_CARD = 'add_card';
+export const GET_CARD = 'get_card';
+export const CARRY_CARD = 'carry_card';
 
 
 

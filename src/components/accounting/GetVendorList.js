@@ -222,7 +222,7 @@ class VendorTable extends React.Component {
     this.setState({open : true});
   }
 
-  updateVendor = (event, vendorNo) => {
+  updateVendorDialog = (event, vendorNo) => {
     event.preventDefault();
     console.log("updateVendor 가져오라는 요청");
     if(vendorNo !== undefined){
@@ -233,7 +233,7 @@ class VendorTable extends React.Component {
 
   getVendorAddress = (event, vendorNo) => {
     event.preventDefault();
-    console.log("updateVendor 가져오라는 요청");
+    console.log("getVendorAddress 가져오라는 요청");
     if(vendorNo !== undefined){
       this.props.getVendor(vendorNo);
     }
@@ -305,7 +305,7 @@ class VendorTable extends React.Component {
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left" ><span onClick={ event => this.updateVendor(event, row.vendorNo) } style={{cursor:'pointer'}}>{row.vendorNo}</span></TableCell>
+                      <TableCell align="left" ><span onClick={ event => this.updateVendorDialog(event, row.vendorNo) } style={{cursor:'pointer'}}>{row.vendorNo}</span></TableCell>
                       <TableCell align="left" >{row.vendorName}</TableCell>
                       <TableCell align="left">{row.representativeName}</TableCell>
                       <TableCell align="left">{row.vendorTel}</TableCell>
