@@ -8,7 +8,10 @@ import { GET_HRCARD_LIST,
          GET_SIMPLE_HRCARD_BY_EMPLOYEENO,
          CARRY_SIMPLE_HRCARD,
          CARRY_WORKATTITUDE_LIST,
-         CLEAN_STORE_STATE,} from "actionTypes/ActionTypes";
+         CLEAN_STORE_STATE,
+         CARRY_WORKATTITUDE_CODE_LIST,
+         CHECKED_WORKATTITUDE_CODE,
+         CHECKED_APPOINTMENT_ROW_DATA} from "actionTypes/ActionTypes";
 
 
 const INIT_STATE = 
@@ -76,6 +79,20 @@ export default (state = INIT_STATE, action) => {
             }
         }
 
+        case CHECKED_WORKATTITUDE_CODE : {
+            return{
+                ...state,
+                checkedWorkAttitudeCodeData: action.payload
+            }
+        }
+
+        case CHECKED_APPOINTMENT_ROW_DATA : {
+            return{
+                ...state,
+                checkedAppointmentData: action.payload
+            }
+        }
+
         case GET_SIMPLE_HRCARD_BY_EMPLOYEENO : {
             return{
                 ...state,
@@ -101,6 +118,13 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 [action.payload]:null
+            }
+        }
+
+        case CARRY_WORKATTITUDE_CODE_LIST : {
+            return {
+                ...state,
+                workAttitudeCodeList: action.payload
             }
         }
 

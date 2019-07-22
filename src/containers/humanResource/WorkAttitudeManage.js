@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getWorkAttitudeList } from 'actions/HumanResource';
 import CardBox from "components/CardBox";
-import WorkAttitudeList from 'components/humanResource/WorkAttitudeList';
+import WorkAttitudeList from 'components/humanResource/GetWorkAttitudeList';
 
 class WorkAttitudeManage extends React.Component{
 

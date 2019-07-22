@@ -5,13 +5,37 @@ import { carryHRCardList,
          getAppointList, 
          carrySimpleHRCard, 
          getHRCardList,
-         carryWorkAttitudeList, } from 'actions/index';
+         carryWorkAttitudeList,
+         carryWorkAttitudeCodeList,
+         getWorkAttitudeList, } from 'actions/index';
 import { GET_HRCARD_LIST, 
          GET_APPOINT_LIST, 
          ADD_APPOINTMENT, 
          GET_SIMPLE_HRCARD_BY_EMPLOYEENO, 
          ADD_HRCARD,
-         GET_WORKATTITUDE_LIST } from "actionTypes/ActionTypes";
+         GET_WORKATTITUDE_LIST,
+         GET_WORKATTITUDE_CODE_LIST,
+         ADD_WORKATTITUDE, } from "actionTypes/ActionTypes";
+
+const addWorkAttitudeRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/addWorkAttitude",
+        data:_data
+    })
+    .then(response => console.log(response.data))
+    .catch(error => console.log(error))
+}
+
+const getWorkAttitudeCodeListRequest = async (search) => {
+    return await axios({
+        method:"POST",
+        url:"/hr/getWorkAttitudeCodeList",
+        data: search
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
 
 const getWorkAttitude = async (search) => {
     return await axios({
@@ -72,6 +96,16 @@ const getAppointListRequest = async (search) => {
     .catch(error => console.log(error));
 }
 
+function* addWorkAttitudeFn({payload}){
+    yield call(addWorkAttitudeRequest, payload);
+    yield put(getWorkAttitudeList({searchKeyword:null}));
+}
+
+function* getWorkAttitudeCodeListFn({payload}){
+    const workAttitudeCodeList = yield call(getWorkAttitudeCodeListRequest, payload);
+    yield put(carryWorkAttitudeCodeList(workAttitudeCodeList));
+}
+
 function* getWorkAttitudeListFn({payload}){
     const workAttitudeList = yield call(getWorkAttitude, payload);
     yield put(carryWorkAttitudeList(workAttitudeList));
@@ -103,8 +137,16 @@ function* getAppointListFn({payload}){
     yield put(carryAppointList(appointList));
 }
 
+export function* addWorkAttitude(){
+    yield takeEvery(ADD_WORKATTITUDE, addWorkAttitudeFn);
+}
+
+export function* getWorkAttitudeCodeListSaga(){
+    yield takeEvery(GET_WORKATTITUDE_CODE_LIST, getWorkAttitudeCodeListFn);
+}
+
 export function* getWorkAttitudeListSaga(){
-    yield takeEvery(GET_WORKATTITUDE_LIST, getWorkAttitudeListFn)
+    yield takeEvery(GET_WORKATTITUDE_LIST, getWorkAttitudeListFn);
 }
 
 export function* addHRCardSaga(){
@@ -134,5 +176,7 @@ export default function* rootSaga(){
             fork(getAppointListSaga),
             fork(getSimpleHRCardDetailSaga),
             fork(addHRCardSaga),
-            fork(getWorkAttitudeListSaga)]);
+            fork(getWorkAttitudeListSaga),
+            fork(getWorkAttitudeCodeListSaga),
+            fork(addWorkAttitude)]);
 }

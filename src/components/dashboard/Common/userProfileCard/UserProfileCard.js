@@ -30,6 +30,8 @@ import Fab from '@material-ui/core/Fab';
 // export default UserProfileCard;
 
 export default function UserProfileCard(props){
+
+
   return(
     <div className="jr-card text-center">
       <div className={`jr-card-header-color bg-secondary`}>
@@ -39,7 +41,7 @@ export default function UserProfileCard(props){
         </div>
 
         <img className="rounded-circle size-90 avatar-shadow mb-3"
-             src="https://via.placeholder.com/150x150" alt="Team Member"/>
+             src={`/img/${props.simpleHRCardDetail.profileImage}`} alt="Team Member"/>
 
         <div className="jr-card-hd-content">
           <h5 className="mb-0 text-white">{props.simpleHRCardDetail.employeeName}</h5><br/>

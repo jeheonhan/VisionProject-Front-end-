@@ -23,6 +23,7 @@ import Select from '@material-ui/core/Select';
 import GetPostCode from 'components/accounting/GetPostCode';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DatePicker from 'components/date/DatePickers';
+import InputLabel from '@material-ui/core/InputLabel';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -192,7 +193,7 @@ class FullScreenDialog extends React.Component {
           </AppBar>
               
           <div  align="center">
-          <CardBox styleName="col-md-4" cardStyle="p-0" headerOutside>
+          <CardBox styleName="col-lg-8" cardStyle="p-0" headerOutside>
             <AddTextField handleChange={this.handleChange} 
               handleProfileImgUpload={this.handleProfileImgUpload}
               handleSignatureImgUpload={this.handleSignatureImgUpload}
@@ -258,29 +259,38 @@ function AddTextField(props){
       
     }
 
+    const handleClickDatePicker = (event) => {
+      event.preventDefault();
+      props.refs.onclick()
+    }
+
     //상위 Component의 state 값에 profileImage가 저장되어 있으면 가져옴
-    const { profileImage, departCodeName, rankCodeName } = props.state.employee;
+    const { profileFile, departCodeName, rankCodeName } = props.state.employee;
 
     return(
-        <div align="center">
+        <div >
           <br/>
           <Typography variant="h4" color="textPrimary" style={{
                 flex: 1,
+                float:"initial"
               }}>
                 인사카드 등록
           <br/><br/>
               </Typography>
-              <div className="col-md-8 col-12" >
+              <br/>
+
+              <div className="col-md-4 col-6" style={{float:"left"}}>
+              <br/><br/>
                 <CardBox 
                         childrenStyle="d-flex justify-content-center"
                         heading={""}>
                   <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
-                    <Avatar className="size-100" alt="Remy Sharp" src={profileImage && `${profileImage.base64}`}/>
+                    <Avatar className="size-100" alt="Remy Sharp" src={profileFile && `${profileFile.base64}`}/>
                   </Tooltip>
                 </CardBox>
               </div>              
               
-            {/* <div className="col-md-8 col-12" >
+            {/* <div className="col-md-4 col-6" >
             <TextField
                     id="employeeNo"
                     label="사원번호"
@@ -289,82 +299,67 @@ function AddTextField(props){
                     fullWidth
                 />
             </div> */}
-            <div className="col-md-8 col-12">
-            <TextField
-                    id="employeeName"
-                    label="사원명"
-                    onChange={props.handleChange('employeeName')}
-                    margin="normal"
-                    fullWidth
-                />
+            <br/><br/><br/><br/>
+            <div>
+              <div className="col-md-4 col-6" style={{float:"left"}}>
+              <TextField
+                      id="employeeName"
+                      label="사원명"
+                      onChange={props.handleChange('employeeName')}
+                      margin="normal"
+                      fullWidth
+                  />
+              </div>
+              <div className="col-md-4 col-6" style={{float:"left"}}>
+                <TextField
+                        id="ssn"
+                        label="주민등록번호"            
+                        onChange={props.handleChange('ssn')}
+                        margin="normal"
+                        fullWidth
+                    >
+                  </TextField>
+              </div>
             </div>
-            <div className="col-md-8 col-12">
-            <TextField
-                    id="ssn"
-                    label="주민등록번호"            
-                    onChange={props.handleChange('ssn')}
-                    margin="normal"
-                    fullWidth
-                >
-                </TextField>
+            <div>
+              <div className="col-md-4 col-6" style={{float:"left"}}>
+              <TextField
+                      id="employeePhone"
+                      label="휴대폰번호"
+                      onChange={props.handleChange('employeePhone')}
+                      margin="normal"
+                      fullWidth
+                  />
+              </div>
+              <div className="col-md-4 col-6"  style={{float:"left"}}>
+              <TextField
+                      id="employeeTel"
+                      label="전화번호"
+                      onChange={props.handleChange('employeeTel')}
+                      margin="normal"
+                      fullWidth
+                  />
+              </div>
             </div>
-            <div className="col-md-8 col-12">
-            <TextField
-                    id="employeePhone"
-                    label="휴대폰번호"
-                    onChange={props.handleChange('employeePhone')}
-                    margin="normal"
-                    fullWidth
-                />
-            </div>
-            <div className="col-md-8 col-12">
-            <TextField
-                    id="employeeTel"
-                    label="전화번호"
-                    onChange={props.handleChange('employeeTel')}
-                    margin="normal"
-                    fullWidth
-                />
-            </div>
-            <div className="col-md-8 col-12">
-            <DatePicker label="입사일자" callBackDateChange={callBackDateChange}/>            
-            </div>
-            <div className="col-md-8 col-12">
-            <TextField
-                    id="employeeEmail"
-                    label="이메일"
-                    onChange={props.handleChange('employeeEmail')}
-                    margin="normal"
-                    fullWidth
-                />
-            </div>
-            <div className="col-md-8 col-12">
-            <TextField
-                    id="departCodeNo"
-                    label="부서"
-                    onChange={props.handleChange('departCodeNo')}
-                    margin="normal"
-                    fullWidth
-                    value={departCodeName}
-                    onClick={handleFindDepartOpen}
-                />
-            </div>
-            <div className="col-md-8 col-12">
-            <TextField
-                    id="rankCodeNo"
-                    label="직급"
-                    onChange={props.handleChange('rankCodeNo')}
-                    margin="normal"
-                    fullWidth
-                    value={rankCodeName}
-                    onClick={handleFindRankOpen}
-                />
+            <br/><br/><br/><br/><br/><br/><br/>
+            <div>
+              <div className="col-md-4 col-6" tyle={{float:"left"}}>
+              <TextField
+                      id="employeeEmail"
+                      label="이메일"
+                      onChange={props.handleChange('employeeEmail')}
+                      margin="normal"
+                      fullWidth
+                  />
+              </div>
+              <div className="col-md-4 col-6" tyle={{float:"left"}}>
+              <DatePicker  label="입사일자" callBackDateChange={callBackDateChange}/>            
+              </div>
             </div>
             
-
-            <div className="col-md-8 col-12">
+            <div className="col-md-4 col-6">
               <FormControl fullWidth>
-                {/* <InputLabel htmlFor="age-simple">급여통장 은행 선택</InputLabel> */}
+                <InputLabel htmlFor="age-simple">은행 선택</InputLabel>
                 <Select
                   fullWidth
                   onChange={props.handleChange('bankCodeNo')}
@@ -380,7 +375,7 @@ function AddTextField(props){
                 </FormControl>
             </div>
 
-            <div className="col-md-8 col-12">
+            <div className="col-md-4 col-6">
               <TextField
                       id="accountNo"
                       label="계좌번호"
@@ -390,7 +385,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-8 col-12">
+            <div className="col-md-4 col-6">
               <TextField
                       id="zipCode"
                       label="우편번호"
@@ -400,7 +395,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-8 col-12">
+            <div className="col-md-4 col-6">
               <TextField
                       id="address"
                       label="주소"
@@ -411,7 +406,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-8 col-12">
+            <div className="col-md-4 col-6">
               <TextField
                       id="detailAddress"
                       label="상세주소"
@@ -421,7 +416,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-8 col-12">
+            <div className="col-md-4 col-6">
               <TextField
                       id="wage"
                       label="시급"
@@ -431,7 +426,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-8 col-12">
+            <div className="col-md-4 col-6">
               <TextField
                       id="refer"
                       label="참조"

@@ -157,11 +157,17 @@ export const CARRY_APPOINT_LIST = 'carry_appoint_list';
 export const CHECKED_EMPLOYEE = 'checked_employee';
 export const CHECKED_DEPARTMENT = 'checked_department';
 export const CHECKED_RANK = 'checked_rank';
+export const CHECKED_WORKATTITUDE_CODE = 'checked_workattitude_code';
+export const CHECKED_APPOINTMENT_ROW_DATA = 'checked_appointment_row_data';
 export const ADD_APPOINTMENT = 'add_appointment';
 export const GET_SIMPLE_HRCARD_BY_EMPLOYEENO = 'get_simple_hrcard_by_employeeno';
 export const CARRY_SIMPLE_HRCARD = 'carry_simple_hrcard';
 export const GET_WORKATTITUDE_LIST = 'get_workattitude_list';
 export const CARRY_WORKATTITUDE_LIST = 'carry_workattitude_list';
+export const GET_WORKATTITUDE_CODE_LIST = 'get_workattitude_code_list';
+export const CARRY_WORKATTITUDE_CODE_LIST = 'carry_workattitude_code_list';
+export const ADD_WORKATTITUDE = 'add_workattitude';
+
 
 
 //코드관리

@@ -1,7 +1,7 @@
 import React from "react";
 import WorkAttitudeManage from 'containers/humanResource/WorkAttitudeManage';
 import ContainerHeader from "components/ContainerHeader";
-import AddWorkAttitude from 'components/humanResource/AddAppoint';
+import AddWorkAttitude from 'components/humanResource/AddWorkAttitude';
 
 const WorkAttitude = ({match}) => {
     return (

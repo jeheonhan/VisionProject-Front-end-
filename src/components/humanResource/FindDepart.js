@@ -9,10 +9,9 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
-import Avatar from "@material-ui/core/Avatar";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import { connect } from 'react-redux';
 import { getCodeList } from 'actions/index';
+import Radio from '@material-ui/core/Radio';
 
 
 //props로 opne boolean 값이 true가 오면 opne이 된다.
@@ -25,7 +24,9 @@ class FindDepart extends React.Component{
       checked: [1],
       search:{
         searchKeyword:"depart"
-      }
+      },
+      selectedValue:null,
+      checkedParam:null
     };
   }
 
@@ -39,13 +40,11 @@ class FindDepart extends React.Component{
  
     render(){
 
-      var checkedParam = null;
-
       const { departList } = this.props;
      
 
       const OKbuttonFunction = () => {
-        this.props.checkedDepartment(checkedParam)
+        this.props.checkedDepartment(this.state.checkedParam)
         this.props.handleSubDepartComponentClose();
       }
 
@@ -58,7 +57,7 @@ class FindDepart extends React.Component{
 
       const eventHandler = (event, row) => {
         event.preventDefault();
-        checkedParam = row;
+        this.setState({selectedValue:row.codeNo, checkedParam:row})
       }
 
     return(        
@@ -76,9 +75,16 @@ class FindDepart extends React.Component{
               <ListItemText className="br-break" primary={row.codeName}/>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <ListItemSecondaryAction>
-                <Checkbox color="primary"
+                {/* <Checkbox color="primary"
                           onClick={event => eventHandler(event, row)}
-                />
+                /> */}
+                <Radio color="primary"
+                  checked={this.state.selectedValue === row.codeNo}
+                  onChange={event => eventHandler(event, row)}
+                  value={row.codeNo}
+                  name="radio button demo"
+                  aria-label="B"
+                  />
                 </ListItemSecondaryAction>
               </ListItem>
             )}

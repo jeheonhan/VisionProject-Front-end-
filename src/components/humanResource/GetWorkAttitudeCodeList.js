@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getAppointList } from 'actions/HumanResource';
+import { getWorkAttitudeList } from 'actions';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Table from '@material-ui/core/Table';
@@ -18,23 +18,21 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { checkedApointmentRowData } from 'actions/index';
+import IconMailOutline from '@material-ui/icons/MailOutline';
+import ComposeMail from 'components/mail/ComposeMail';
 
-let counter = 0;
 
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
-  {id: 'appointDate', align: false, disablePadding: false, label: '발령일자'},
-  {id: 'employeeNo', align: false, disablePadding: false, label: '사원번호'},
-  {id: 'employeeName', align: true, disablePadding: false, label: '사원명'},
-  {id: 'preDepartCodeName', align: true, disablePadding: false, label: '이전부서'},
-  {id: 'appointDepartCodeName', align: true, disablePadding: false, label: '발령부서'},
-  {id: 'preRankCodeName', align: true, disablePadding: false, label: '이전직급'},
-  {id: 'appointRankCodeName', align: true, disablePadding: false, label: '발령직급'},
-  {id: 'reference', align: true, disablePadding: false, label: '참고'},
-  {id: 'appointmentStatusCodeName', align: true, disablePadding: false, label: '확정여부'},
+  {id: 'workAttitudeCodeNo', align: false, disablePadding: false, label: '근태코드'},
+  {id: 'workAttitudeCodeName', align: false, disablePadding: false, label: '근태명칭'},
+  {id: 'commuteApplyCode', align: true, disablePadding: false, label: '출/퇴근적용여부'},
+  {id: 'applyStartTime', align: true, disablePadding: false, label: '시작시간'},
+  {id: 'applyEndTime', align: true, disablePadding: false, label: '종료시간'},
+  {id: 'workType', align: true, disablePadding: false, label: '반영방식'},
+  {id: 'workDayOfWeek', align: true, disablePadding: false, label: '반영요일'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -107,7 +105,7 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">인사발령 목록조회</Typography>
+          <Typography variant="title">근태코드 목록조회</Typography>
         )}
       </div>
       <div className="spacer"/>
@@ -116,7 +114,7 @@ let EnhancedTableToolbar = props => {
           // 툴팁 내용
           <Tooltip title="수정">
             <IconButton aria-label="수정">
-              <DeleteIcon onClick={props.handleModifyAppointWithData}/>
+              <DeleteIcon/>
             </IconButton>
           </Tooltip>
         ) : (
@@ -137,6 +135,9 @@ EnhancedTableToolbar.propTypes = {
 
 
 class EnhancedTable extends React.Component {
+
+
+
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -164,44 +165,26 @@ class EnhancedTable extends React.Component {
       this.handleClick(event, id);
     }
   };
-
-  //체크박스 클릭시
-  handleClick = (event, id, row) => {
+  handleClick = (event, id) => {
     const {selected} = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
-    // if (selectedIndex === -1) {
-    //   newSelected = newSelected.concat(selected, id);
-    // } else if (selectedIndex === 0) {
-    //   newSelected = newSelected.concat(selected.slice(1));
-    // } else if (selectedIndex === selected.length - 1) {
-    //   newSelected = newSelected.concat(selected.slice(0, -1));
-    // } else if (selectedIndex > 0) {
-    //   newSelected = newSelected.concat(
-    //     selected.slice(0, selectedIndex),
-    //     selected.slice(selectedIndex + 1),
-    //   );
-    // }
-    if(selectedIndex !== -1){
-      this.setState({
-              selected: [],
-              checkedRowData:null
-            });
-    }else{
-      this.setState({
-          selected: [id],
-          checkedRowData: row
-                    });
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
     }
 
+    this.setState({selected: newSelected});
   };
-  //수정버튼 누를 시에 체크된 Data를 수정화면으로 보내기위한 action
-  handleModifyAppointWithData = () => {
-    this.props.checkedApointmentRowData(this.state.checkedRowData);
-    this.props.handleModifyAppointOpen();
-  }
-
   handleChangePage = (event, page) => {
     this.setState({page});
   };
@@ -210,44 +193,38 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  //사원번호 클릭시 사원 프로필 보기
-  handleClickEmployeeNo = (event, employeeNo) => {
-    event.preventDefault();
-    this.props.getSimpleHRCardByEmployeeNo(employeeNo);
-    this.props.handleSimpleHRCardOpen();
-  }
 
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      order: 'desc',
-      orderBy: 'appointDate',
+      order: 'asc',
+      orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.appointList,
+      data: this.props.workAttitudeCodeList,
       page: 0,
       rowsPerPage: 10,
       search:{searchKeyword:null},
-      flag:false
+      flag: false,
+      composeMail:false
     };
   }
 
   render() {
+   
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
+    const { workAttitudeCodeList } = this.props;
 
-
-    if(this.props.appointList !== this.state.data){
-      this.setState({data:this.props.appointList});
+    if(workAttitudeCodeList !== this.state.data){
+      this.setState({data:workAttitudeCodeList});
     }
 
-    
 
     return (
       <div>
-        <EnhancedTableToolbar numSelected={selected.length}
-                               handleModifyAppointWithData={this.handleModifyAppointWithData}/>
+        <EnhancedTableToolbar numSelected={selected.length}/>
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -258,7 +235,6 @@ class EnhancedTable extends React.Component {
                 onSelectAllClick={this.handleSelectAllClick}
                 onRequestSort={this.handleRequestSort}
                 rowCount={data.length}
-               
               />
               <TableBody>
                 
@@ -278,25 +254,15 @@ class EnhancedTable extends React.Component {
                     >
                       <TableCell padding="checkbox">
                         <Checkbox color="primary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index, row)}/>
+                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left" >{row.appointDate}</TableCell>
-                      <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickEmployeeNo(event, row.employeeNo)}>
-                          {row.employeeNo}
-                        </span>
-                      </TableCell>
-                      <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickEmployeeNo(event, row.employeeNo)}>
-                          {row.employeeName}
-                        </span>
-                      </TableCell>
-                      <TableCell align="left">{row.preDepartCodeName}</TableCell>
-                      <TableCell align="left">{row.appointDepartCodeName}</TableCell>
-                      <TableCell align="left">{row.preRankCodeName}</TableCell>
-                      <TableCell align="left">{row.appointRankCodeName}</TableCell>
-                      <TableCell align="left">{row.reference}</TableCell>
-                      <TableCell align="left">{row.appointmentStatusCodeName}</TableCell>
+                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.workAttitudeCodeNo}</span></TableCell>
+                      <TableCell align="left">{row.workAttitudeCodeName}</TableCell>
+                      <TableCell align="left">{row.commuteApplyCode == '02' ? "적용":"미적용"}</TableCell>
+                      <TableCell align="left">{row.applyStartTime}</TableCell>
+                      <TableCell align="left">{row.applyEndTime}</TableCell>
+                      <TableCell align="left">{row.workType == '01' ? "정상근무":"추가근무"}</TableCell>
+                      <TableCell align="left">{row.workDayOfWeek}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -319,10 +285,9 @@ class EnhancedTable extends React.Component {
     );
   }
 }
-
 const mapStateToProps = ({ humanResource }) => {
-  const { appointList } = humanResource;
-  return { appointList }
+  const { workAttitudeCodeList } = humanResource;
+  return { workAttitudeCodeList };
 }
 
-export default connect(mapStateToProps,{ getAppointList, checkedApointmentRowData })(EnhancedTable);
+export default connect(mapStateToProps, { getWorkAttitudeList })(EnhancedTable);

@@ -13,6 +13,7 @@ import Avatar from "@material-ui/core/Avatar";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import { connect } from 'react-redux';
 import { getCodeList } from 'actions/index';
+import Radio from '@material-ui/core/Radio';
 
 
 //props로 opne boolean 값이 true가 오면 opne이 된다.
@@ -25,7 +26,9 @@ class FindRank extends React.Component{
       checked: [1],
       search:{
         searchKeyword:"rank"
-      }
+      },
+      selectedValue:null,
+      checkedParam:null
     };
   }
 
@@ -39,13 +42,11 @@ class FindRank extends React.Component{
  
     render(){
 
-      var checkedParam = null;
-
       const { rankList } = this.props;
      
 
       const OKbuttonFunction = () => {
-        this.props.checkedRank(checkedParam)
+        this.props.checkedRank(this.state.checkedParam)
         this.props.handleSubRankComponentClose();
       }
 
@@ -58,7 +59,7 @@ class FindRank extends React.Component{
 
       const eventHandler = (event, row) => {
         event.preventDefault();
-        checkedParam = row;
+        this.setState({selectedValue:row.codeNo, checkedParam:row})
       }
 
     return(        
@@ -76,9 +77,16 @@ class FindRank extends React.Component{
               <ListItemText className="br-break" primary={row.codeName}/>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <ListItemSecondaryAction>
-                <Checkbox color="primary"
+                {/* <Checkbox color="primary"
                           onClick={event => eventHandler(event, row)}
-                />
+                /> */}
+                <Radio color="primary"
+                  checked={this.state.selectedValue === row.codeNo}
+                  onChange={event => eventHandler(event, row)}
+                  value={row.codeNo}
+                  name="radio button demo"
+                  aria-label="B"
+                  />
                 </ListItemSecondaryAction>
               </ListItem>
             )}

@@ -10,7 +10,13 @@ import {  GET_HRCARD_LIST
         CARRY_SIMPLE_HRCARD,
         ADD_HRCARD,
         GET_WORKATTITUDE_LIST,
-        CARRY_WORKATTITUDE_LIST} from '../actionTypes/ActionTypes';
+        CARRY_WORKATTITUDE_LIST,
+        GET_WORKATTITUDE_CODE_LIST,
+        CARRY_WORKATTITUDE_CODE_LIST,
+        CHECKED_WORKATTITUDE_CODE,
+        ADD_WORKATTITUDE,
+        CHECKED_APPOINTMENT_ROW_DATA
+        } from '../actionTypes/ActionTypes';
 
 
 export const getHRCardList = (search) => {
@@ -62,6 +68,21 @@ export const checkedRank = (data) => {
     }
 }
 
+export const checkedWorkAttitudeCode = (data) => {
+    return{
+        type: CHECKED_WORKATTITUDE_CODE,
+        payload: data
+    }
+}
+
+export const checkedApointmentRowData = (data) => {
+    alert()
+    return{
+        type: CHECKED_APPOINTMENT_ROW_DATA,
+        payload: data
+    }
+}
+
 export const addAppointment = (data) => {
     return{
         type: ADD_APPOINTMENT,
@@ -100,6 +121,27 @@ export const getWorkAttitudeList = (search) => {
 export const carryWorkAttitudeList = (data) => {
     return{
         type: CARRY_WORKATTITUDE_LIST,
+        payload: data
+    }
+}
+
+export const getWorkAttitudeCodeList = (search) => {
+    return{
+        type: GET_WORKATTITUDE_CODE_LIST,
+        payload: search
+    }
+}
+
+export const carryWorkAttitudeCodeList = (data) => {
+    return{
+        type: CARRY_WORKATTITUDE_CODE_LIST,
+        payload: data
+    }
+}
+
+export const addWorkAttitude = (data) => {
+    return{
+        type: ADD_WORKATTITUDE,
         payload: data
     }
 }

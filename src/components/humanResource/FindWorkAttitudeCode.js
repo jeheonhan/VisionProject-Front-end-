@@ -8,11 +8,8 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
-import Checkbox from "@material-ui/core/Checkbox";
-import Avatar from "@material-ui/core/Avatar";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import { connect } from 'react-redux';
-import { getHRCardList } from 'actions/HumanResource';
+import { getWorkAttitudeCodeList } from 'actions/HumanResource';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Radio from '@material-ui/core/Radio';
@@ -36,14 +33,14 @@ const classes = makeStyles(theme => ({
 
 //props로 opne boolean 값이 true가 오면 opne이 된다.
 //props로 handleSubComponentClose전달 받아서 자기 자신을 close 시켜야한다.
-class FindEmployee extends React.Component{
+class FindWorkAttitudeCode extends React.Component{
 
   constructor(props){
     super(props);
     this.state = {
       checked: [1],
       search:{
-        searchKeyword:""
+        searchKeyword:null
       },
       selectedValue:null,
       checkedParam:null
@@ -52,27 +49,28 @@ class FindEmployee extends React.Component{
 
   handleSearch = (event) => {
     this.setState({search:{searchKeyword:event.target.value}})
-    this.props.getHRCardList({searchKeyword:event.target.value})
+    this.props.getWorkAttitudeCodeList({searchKeyword:event.target.value})
 
   }
-  
 
     render(){
 
-      const { HRCardList } = this.props;
+      console.log(this.state.checkedParam)
+
+      const { workAttitudeCodeList } = this.props;
 
       const OKbuttonFunction = () => {
-        this.props.checkedEmployee(this.state.checkedParam)
-        this.props.handleSubComponentClose();
+        this.props.checkedWorkAttitudeCode(this.state.checkedParam)
+        this.props.handleSubWorkAttitudeCodeClose();
       }
     
-      if(HRCardList === undefined){
-        this.props.getHRCardList(this.state.search);
+      if(workAttitudeCodeList === undefined){
+        this.props.getWorkAttitudeCodeList(this.state.search);
       }
 
       const eventHandler = (event, row) => {
         event.preventDefault();
-        this.setState({selectedValue:row.employeeNo, checkedParam:row})
+        this.setState({selectedValue:row.workAttitudeCodeNo, checkedParam:row})
       }
 
     return(        
@@ -84,8 +82,8 @@ class FindEmployee extends React.Component{
             <TextField
             error
             id="outlined-error"
-            label="사원검색"
-            placeholder="사원번호/사원명"
+            label="근태코드 검색"
+            placeholder="근태명칭"
             className={classes.textField}
             margin="normal"
             variant="outlined"
@@ -94,36 +92,26 @@ class FindEmployee extends React.Component{
             fullWidth
             />
 
-          {HRCardList && HRCardList.map(row =>
+          {workAttitudeCodeList && workAttitudeCodeList.map(row =>
             <ListItem button key={row.employeeNo}>
-              <span className="col-sm-2">
-              <ListItemAvatar>
-                <Avatar alt="Remy Sharp" src={"/img/newyork.jpg"}/>
-              </ListItemAvatar>
+              <span className="col-md-5">
+              <ListItemText className="br-break" primary={row.workAttitudeCodeNo}/>
               </span>
-              <span className="col-sm-4">
-              <ListItemText className="br-break" primary={row.departCodeName}/>
+              <span className="col-md-8">
+              <ListItemText className="br-break" primary={row.workAttitudeCodeName}/>
               </span>
-              <span className="col-sm-4">
-              <ListItemText className="br-break" primary={row.employeeName+"("+row.employeeNo+")"}/>
-              </span>
-              <span className="col-sm-2">
-              <ListItemText className="br-break" primary={row.rankCodeName} type="dense"/>
-              </span>
-              <span className="col-sm-1">
               <ListItemSecondaryAction>
                 {/* <Checkbox color="primary"
                           onClick={event => eventHandler(event, row)}
                 /> */}
                 <Radio color="primary"
-                  checked={this.state.selectedValue === row.employeeNo}
+                  checked={this.state.selectedValue === row.workAttitudeCodeNo}
                   onChange={event => eventHandler(event, row)}
-                  value={row.employeeNo}
+                  value={row.workAttitudeCodeNo}
                   name="radio button demo"
                   aria-label="B"
                   />
-              </ListItemSecondaryAction>
-                </span>
+                </ListItemSecondaryAction>
               </ListItem>
             )}
           </List>
@@ -133,7 +121,7 @@ class FindEmployee extends React.Component{
             <Button onClick={OKbuttonFunction} color="secondary">
                 확인
             </Button>
-            <Button onClick={this.props.handleSubComponentClose} color="primary">
+            <Button onClick={this.props.handleSubWorkAttitudeCodeClose} color="primary">
                 취소
             </Button>
           </DialogActions>
@@ -142,9 +130,9 @@ class FindEmployee extends React.Component{
 }
 }
 
-const mapStateToProps = ({humanResource}) => {
-  const { HRCardList } = humanResource;
-  return { HRCardList }
+const mapStateToProps = ({ humanResource }) => {
+  const { workAttitudeCodeList } = humanResource;
+  return { workAttitudeCodeList }
 }
 
-export default connect(mapStateToProps, { getHRCardList })(FindEmployee);
+export default connect(mapStateToProps, { getWorkAttitudeCodeList })(FindWorkAttitudeCode);

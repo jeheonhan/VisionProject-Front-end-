@@ -4,16 +4,21 @@ import { connect } from 'react-redux';
 import { getAppointList, getSimpleHRCardByEmployeeNo } from 'actions/HumanResource';
 import GetAppointList from 'components/humanResource/GetAppointList';
 import SimpleHRCard from 'components/humanResource/SimpleHRCard';
+import ModifyAppoint from 'components/humanResource/ModifyAppoint';
 
 class AppointManage extends React.Component{
     constructor(props){
         super(props);
         this.state={search:{searchKeyword:null},
-                    simpleCardOpen:false}
+                    simpleCardOpen:false,
+                    modifyAppointOpen:false,
+                }
     }
 
     render(){
         const { appointList } = this.props;
+
+        console.log("asdfj :: "+this.state)
 
         if(appointList === undefined){
             this.props.getAppointList(this.state.search)
@@ -28,6 +33,16 @@ class AppointManage extends React.Component{
         const handleSimpleHRCardClose = () => {
             this.setState({simpleCardOpen:false})
         }
+        
+        //인사발령 수정 화면 열기
+        const handleModifyAppointOpen = () => {
+            this.setState({modifyAppointOpen:true})
+        }
+
+        //인사발령 수정 화면 닫기
+        const handleModifyAppointClose = () => {
+            this.setState({modifyAppointOpen:false})
+        }
 
         return(
             
@@ -37,9 +52,14 @@ class AppointManage extends React.Component{
                     (<GetAppointList  
                         getSimpleHRCardByEmployeeNo={this.props.getSimpleHRCardByEmployeeNo}
                         handleSimpleHRCardOpen={handleSimpleHRCardOpen}
+                        handleModifyAppointOpen={handleModifyAppointOpen}
+                        handleModifyAppointClose={handleModifyAppointClose}
                         />):""}
           </CardBox>
             <SimpleHRCard open={this.state.simpleCardOpen} handleSimpleHRCardClose={handleSimpleHRCardClose}/>
+
+            <ModifyAppoint open={this.state.modifyAppointOpen}
+                            handleModifyAppointClose={handleModifyAppointClose}/>
             </div>
             
         );
