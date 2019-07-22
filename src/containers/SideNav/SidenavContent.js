@@ -264,6 +264,32 @@ class SidenavContent extends Component {
             </ul>
           </li>
 
+          <li className="menu no-arrow">
+            <NavLink className="prepend-icon" to="/app/dailySales">
+              <i className="zmdi zmdi-calendar zmdi-hc-fw"/>
+              <span className="nav-text">일매출조회</span>
+            </NavLink>
+          </li>
+
+          <li className="menu collapse-box">
+            <Button>
+              <i className="zmdi zmdi-shopping-cart zmdi-hc-fw"/>
+                <span className="nav-text">주문관리</span>
+            </Button>
+            <ul className="sub-menu">
+              <li>
+                <NavLink className="prepend-icon" to="/app/branch/orderRequest">
+                  <span className="nav-text">주문요청</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink className="prepend-icon" to="/app/branch/orderManage">
+                  <span className="nav-text">내주문관리</span>
+                </NavLink>
+              </li>
+            </ul>
+          </li>
+          
         </ul>
       </CustomScrollbars>
     );
