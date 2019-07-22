@@ -210,3 +210,7 @@ export const CARRY_BRANCH_DETAIL = 'carry_branch_detail';
 //공지사항
 export const GET_NOTICE_LIST = 'get_notice_list';
 export const CARRY_NOTICE_LIST = 'carry_notice_list';
+
+//지점관리
+export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';
+export const CARRY_DAILY_SALES_LIST = 'carry_daily_sales_list';
