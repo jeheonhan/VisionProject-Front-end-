@@ -1,4 +1,4 @@
-import { ADD_CODE_RESULT, GET_FOR_CODE_DETAIL, CARRY_FOR_CODE_DETAIL, GET_GROUP_CODE_LIST, CARRY_GROUP_CODE_LIST, GET_CODE_LIST, CARRY_CODE_LIST, GET_NEW_CODE_NO, CARRY_NEW_CODE_NO, CHECK_DUPLICATE_CODE_NAME, CHECK_DUPLICATE_RESULT, ADD_CODE} from '../actionTypes/ActionTypes';
+import { ADD_CODE_RESULT, GET_FOR_CODE_DETAIL, CARRY_FOR_CODE_DETAIL, GET_GROUP_CODE_LIST, CARRY_GROUP_CODE_LIST, GET_CODE_LIST, CARRY_CODE_LIST, GET_NEW_CODE_NO, CARRY_NEW_CODE_NO, CHECK_DUPLICATE_CODE_NAME, CHECK_DUPLICATE_RESULT, ADD_CODE, CONVERT_CODE_USAGE_STATUS, UPDATE_CODE} from '../actionTypes/ActionTypes';
 
 
 export const getGroupCodeList = () => {
@@ -84,6 +84,20 @@ export const addCode = (data) => {
 export const addCodeResult = (data) => {
     return{
         type: ADD_CODE_RESULT,
+        payload : data
+    }
+}
+
+export const convertCodeUsageStatus =(data) =>{
+    return{
+        type: CONVERT_CODE_USAGE_STATUS,
+        payload: data
+    }
+}
+
+export const updateCode = (data) => {
+    return{
+        type: UPDATE_CODE,
         payload : data
     }
 }

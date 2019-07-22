@@ -1,9 +1,37 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { carryHRCardList, carryAppointList, getAppointList, carrySimpleHRCard } from 'actions/index';
-import { GET_HRCARD_LIST, GET_APPOINT_LIST, ADD_APPOINTMENT, GET_SIMPLE_HRCARD_BY_EMPLOYEENO } from "actionTypes/ActionTypes";
+import { carryHRCardList,
+         carryAppointList, 
+         getAppointList, 
+         carrySimpleHRCard, 
+         getHRCardList,
+         carryWorkAttitudeList, } from 'actions/index';
+import { GET_HRCARD_LIST, 
+         GET_APPOINT_LIST, 
+         ADD_APPOINTMENT, 
+         GET_SIMPLE_HRCARD_BY_EMPLOYEENO, 
+         ADD_HRCARD,
+         GET_WORKATTITUDE_LIST } from "actionTypes/ActionTypes";
 
+const getWorkAttitude = async (search) => {
+    return await axios({
+        method:"POST",
+        url:"/hr/getWorkAttitudeList",
+        data:search
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
 
+const addHRCardRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/addHumanResourceCard",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
 
 const getSimpleHRCardDetailRequest = async (employeeNo) => {
     return await axios({
@@ -44,6 +72,16 @@ const getAppointListRequest = async (search) => {
     .catch(error => console.log(error));
 }
 
+function* getWorkAttitudeListFn({payload}){
+    const workAttitudeList = yield call(getWorkAttitude, payload);
+    yield put(carryWorkAttitudeList(workAttitudeList));
+}
+
+function* addHRcardFn({payload}){
+    yield call(addHRCardRequest, payload);
+    yield put(getHRCardList({searchKeyword:null}))
+}
+
 function* getSimpleHRCardDetailFn({payload}){
     const SimpleHRCard = yield call(getSimpleHRCardDetailRequest, payload);
     yield put(carrySimpleHRCard(SimpleHRCard))
@@ -57,14 +95,20 @@ function* getHRCardListFn({payload}){
 function* addAppointmentFn({payload}){
     yield call(addAppointmentRequest, payload);
     yield put(getAppointList({searchKeyword:null}))
-    
-    //yield put(getAppointList({searchKeyword:null}));
 }
 
 function* getAppointListFn({payload}){
     console.log(payload);
     const appointList = yield call(getAppointListRequest, payload);
     yield put(carryAppointList(appointList));
+}
+
+export function* getWorkAttitudeListSaga(){
+    yield takeEvery(GET_WORKATTITUDE_LIST, getWorkAttitudeListFn)
+}
+
+export function* addHRCardSaga(){
+    yield takeEvery(ADD_HRCARD, addHRcardFn);
 }
 
 export function* getSimpleHRCardDetailSaga(){
@@ -88,5 +132,7 @@ export default function* rootSaga(){
             fork(getHRCardListSaga),
             fork(addAppointmentSaga),
             fork(getAppointListSaga),
-            fork(getSimpleHRCardDetailSaga)]);
+            fork(getSimpleHRCardDetailSaga),
+            fork(addHRCardSaga),
+            fork(getWorkAttitudeListSaga)]);
 }

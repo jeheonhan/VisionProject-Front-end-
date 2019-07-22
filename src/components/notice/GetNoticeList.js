@@ -20,9 +20,8 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 const columnData = [
-    {id: 'noticeNo', align: false, disablePadding: false, label: 'no'},
+    {id: 'noticeNo', align: false, disablePadding: false, label: 'No'},
     {id: 'noticeTitle', align: true, disablePadding: false, label: '제목'},
-    {id: 'employeeName', align: true, disablePadding: false, label: '작성자'},
     {id: 'noticeRegDate', align: true, disablePadding: false, label: '등록일'},
     {id: 'viewCount', align: true, disablePadding: false, label: '조회수'},
   ];
@@ -234,9 +233,8 @@ const columnData = [
                           <Checkbox color="secondary" checked={isSelected} 
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                         </TableCell>
-                        <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.noticeNo}</span></TableCell>
-                        <TableCell align="left" >{row.noticeTitle}</TableCell>
-                        <TableCell align="left">{row.employeeName}</TableCell>
+                        <TableCell align="left" >{row.noticeNo}</TableCell>
+                        <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.noticeTitle}</span></TableCell>
                         <TableCell align="left">{row.noticeRegDate}</TableCell>
                         <TableCell align="left">{row.viewCount}</TableCell>
                       </TableRow>

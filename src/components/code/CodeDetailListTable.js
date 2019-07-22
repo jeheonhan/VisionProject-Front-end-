@@ -17,6 +17,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
+import { convertCodeUsageStatus, checkDuplicateCodeName} from 'actions';
+import UpdateCode from './UpdateCode';
 
 let counter = 0;
 
@@ -29,6 +31,7 @@ const columnData = [
   {id: 'codeName', align: true, disablePadding: false, label: '코드명'},
   {id: 'groupCode', align: false, disablePadding: false, label: '그룹코드'},
   {id: 'groupCodeName', align: false, disablePadding: false, label: '그룹코드명'},
+  {id: 'codeUsageStatus', align:false, disablePadding: false, label : '사용상태'}
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -51,13 +54,6 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox color="secondary"
-                      indeterminate={numSelected > 0 && numSelected < rowCount}
-                      checked={numSelected === rowCount}
-                      onChange={onSelectAllClick}
-            />
-          </TableCell>
           {columnData.map(column => {
             return (
               <TableCell
@@ -106,20 +102,6 @@ let EnhancedTableToolbar = props => {
       </div>
       <div className="spacer"/>
       <div className="actions">
-        {numSelected > 0 ? (
-          // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
-        )}
       </div>
     </Toolbar>
   );
@@ -148,7 +130,7 @@ class EnhancedTable extends React.Component {
   };
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState({selected: this.state.data.map((row, index) => index)});
+      //this.setState({selected: this.state.data.map((row, index) => index)});
       return;
     }
     this.setState({selected: []});
@@ -186,9 +168,45 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  //사원번호 클릭시 사원 프로필 보기
-  handleClickCodeNo = (event, codeNo, groupCode) => {
+  handleClickUsage = (event, row) =>{
     event.preventDefault();
+    const message = row.codeUsageStatus==='Y'? '삭제' : '복구'
+    if(window.confirm("코드를 "+message+"하시겠습니까?")){
+      const _usage = row.codeUsageStatus==='Y'? 'N' : 'Y'
+      this.props.convertCodeUsageStatus({ groupCode: row.groupCode,
+          groupCodeName : row.groupCodeName,
+          codeNo : row.codeNo,
+          codeName : row.codeName,
+          codeUsageStatus : _usage
+        })
+    }
+  }
+
+  handleTargetCode = (event) => {
+    event.preventDefault();
+    this.props.checkDuplicateCodeName({...this.state.targetCode, codeName: event.target.value})
+    this.setState({
+      targetCode : {
+        ...this.state.targetCode,
+        codeName: event.target.value
+      }
+    })
+  }
+
+  handleCloseUpdate = () =>{
+    this.setState({
+      open: false
+    })
+  }
+
+  //코드번호 클릭시 코드 수정창 띄우기
+  handleClickCodeNo = (event, row) => {
+    event.preventDefault();
+    this.setState({
+      ...this.state,
+      open: true,
+      targetCode: row
+    })
     //this.props.getSimpleHRCardByEmployeeNo(employeeNo);
     //this.props.handleSimpleHRCardOpen();
   }
@@ -204,6 +222,12 @@ class EnhancedTable extends React.Component {
       data: this.props.codeList,
       page: 0,
       rowsPerPage: 10,
+      targetCode: {
+        groupCode:"",
+        groupCodeName:"",
+        codeNo:"",
+        codeName:""
+      }
     };
   }
 
@@ -246,23 +270,24 @@ class EnhancedTable extends React.Component {
                       key={page*rowsPerPage+index}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox color="secondary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
-                      </TableCell>
                       
                       <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickCodeNo(event, row.codeNo, row.groupCode)}>
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickCodeNo(event, row)}>
                           {row.codeNo}
                         </span>
                       </TableCell>
                       <TableCell align="left">
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickCodeNo(event, row.codeNo, row.groupCode)}>
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickCodeNo(event, row)}>
                           {row.codeName}
                         </span>
                       </TableCell>
                       <TableCell align="left" >{row.groupCode}</TableCell>
                       <TableCell align="left" >{row.groupCodeName}</TableCell>
+                      <TableCell align="left">
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickUsage(event, row)}>
+                          {row.codeUsageStatus==='Y' ? "사용중" : "삭제됨"}
+                        </span>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -281,14 +306,21 @@ class EnhancedTable extends React.Component {
             </Table>
           </div>
         </div>
+        <UpdateCode 
+          open = {this.state.open} 
+          code={this.state.targetCode} 
+          action={this.handleCloseUpdate} 
+          handleName={this.handleTargetCode}
+          codeNameBool = {this.props.CodeNameBool}
+        />
       </div>
     );
   }
 }
 
 const mapStateToProps = ({ code }) => {
-  const { codeList } = code;
-  return {codeList};
+  const { codeList, CodeNameBool } = code;
+  return {codeList, CodeNameBool};
 }
 
-export default connect(mapStateToProps, {})(EnhancedTable);
+export default connect(mapStateToProps, {convertCodeUsageStatus, checkDuplicateCodeName})(EnhancedTable);

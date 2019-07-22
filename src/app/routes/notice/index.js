@@ -6,10 +6,8 @@ const Notice = ({match}) => {
     return (
   
       <div>
-        <ContainerHeader title={"공지사항"} match={match}/>  
-        <NoticeManage></NoticeManage>
-
-  
+          <ContainerHeader title={"공지사항"} match={match}/>
+          <NoticeManage></NoticeManage>  
       </div>
     );
   };
