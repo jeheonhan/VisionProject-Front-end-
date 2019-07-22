@@ -44,7 +44,7 @@ export default (state = INIT_STATE, action) => {
         case CARRY_BRANCH_DETAIL : {
             return{
                 ...state,
-                Branch : action.payload
+                branch : action.payload
             }
         }
 

@@ -1,7 +1,7 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { carryVendorList, getVendorList, carryVendor, carryCardList } from 'actions/index';
-import { GET_VENDOR_LIST, ADD_VENDOR, GET_VENDOR, UPDATE_VENDOR, GET_CARD_LIST} from "actionTypes/ActionTypes";
+import { carryVendorList, getVendorList, carryVendor, carryCardList, carryAccountList } from 'actions/index';
+import { GET_VENDOR_LIST, ADD_VENDOR, GET_VENDOR, UPDATE_VENDOR, GET_CARD_LIST, GET_ACCOUNT_LIST} from "actionTypes/ActionTypes";
 
 const getVendorListRequest = async (search) => {
     console.log("Request search : "+search);
@@ -59,6 +59,17 @@ const getCardListRequest = async (search) => {
     .catch(response => console.log(response));
 }
 
+const getAccountListRequest = async (search) => {
+    console.log("Request search : "+search);
+    return await axios({
+        method:"POST",
+        url:"/accounting/getAccountList",
+        data:search
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
 //여기서 payload는 search 도메인을 의미한다.
 function* getVendorListFn({payload}){
     console.log("getVendorListFn payload : "+payload);
@@ -92,6 +103,12 @@ function* getCardListFn({payload}){
     yield put(carryCardList(CardList));
 }
 
+function* getAccountListFn({payload}){
+    console.log("getAccountListFn payload : "+payload);
+    const AccountList = yield call(getAccountListRequest, payload);
+    yield put(carryAccountList(AccountList));
+}
+
 export function* getVendorListSaga(){
     console.log("getVendorListSaga 입니다");
     yield takeEvery(GET_VENDOR_LIST, getVendorListFn);
@@ -117,6 +134,11 @@ export function* getCardListSaga(){
     yield takeEvery(GET_CARD_LIST, getCardListFn);
 }
 
+export function* getAccountListSaga(){
+    console.log("getAccountListSaga 입니다");
+    yield takeEvery(GET_ACCOUNT_LIST, getAccountListFn);
+}
+
 export default function* rootSaga(){
     yield all([
         fork(getVendorListSaga),
@@ -124,5 +146,6 @@ export default function* rootSaga(){
         fork(getVendorSaga),
         fork(updateVendorSaga),
         fork(getCardListSaga),
+        fork(getAccountListSaga),
     ]);
 }

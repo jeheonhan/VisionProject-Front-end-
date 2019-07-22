@@ -9,6 +9,7 @@ import Code from './Code';
 import HumanResource from './HumanResource';
 import ProductionManagement from './ProductionManagement';
 import Notice from './Notice';
+import Branch from './Branch';
 
 
 export default (history) => combineReducers({
@@ -22,4 +23,5 @@ export default (history) => combineReducers({
   humanResource: HumanResource,
   productionManagement: ProductionManagement,
   notice: Notice,
+  branch: Branch
 });

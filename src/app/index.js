@@ -10,6 +10,8 @@ import Accounting from './routes/accounting';
 import ProductionManagement from './routes/productionManagement';
 import BusinessSupport from './routes/businessSupport';
 import Approval from './routes/approval';
+import Branch from './routes/branch';
+
 import {
   ABOVE_THE_HEADER,
   BELOW_THE_HEADER,
@@ -58,6 +60,7 @@ class App extends React.Component {
                   <Route path={`${match.url}/productionManagement`} component={ProductionManagement}/>
                   <Route path={`${match.url}/businessSupport`} component={BusinessSupport}/>
                   <Route path={`${match.url}/approval`} component={Approval}/>
+                  <Route path={`${match.url}/branch`} component={Branch}/>
 
                   <Route path={`${match.url}/notice`}
                          component={asyncComponent(() => import('./routes/notice/index'))}/>
@@ -65,6 +68,9 @@ class App extends React.Component {
                          component={asyncComponent(() => import('./routes/code/codeList'))}/>
                   <Route path={`${match.url}/code`}
                          component={asyncComponent(() => import('./routes/code/index'))}/>
+                  <Route path={`${match.url}/dailySales`}
+                         component={asyncComponent(() => import('./routes/dailySales/index'))}/>
+                                
                   <Route path={`${match.url}/home`}
                          component={asyncComponent(() => import('./routes/home/index'))}/>
                  
