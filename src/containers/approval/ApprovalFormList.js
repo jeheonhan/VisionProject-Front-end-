@@ -1,10 +1,10 @@
 import React from 'react';
-import AddCode from 'components/code/addCode';
 import { connect } from 'react-redux';
 import CardBox from 'components/CardBox';
 import {getApprovalFormList} from 'actions/Approval'
 import ApprovalFormTable from 'components/approvalForm/ApprovalFormTable'
-import CodeDetailListTable from 'components/code/CodeDetailListTable';
+import AddApprovalForm from 'components/approvalForm/AddApprovalForm'
+
 
 class ApprovalFormList extends React.Component{
 
@@ -25,7 +25,9 @@ class ApprovalFormList extends React.Component{
             return(
             <div>
                 {approvalFormList !== undefined ? (<CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside><ApprovalFormTable></ApprovalFormTable></CardBox>):""}
-                
+                <div align="right">
+                 <AddApprovalForm></AddApprovalForm>
+                </div>
             </div>
         )}
     }

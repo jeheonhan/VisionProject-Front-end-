@@ -183,6 +183,8 @@ export const UPDATE_CODE = 'update_code';
 //결재서양식관리
 export const GET_APPROVAL_FORM_LIST = 'get_approval_form_list';
 export const CARRY_APPROVAL_FORM_LIST = 'carry_approval_form_list';
+export const ADD_APPROVAL_FORM = 'add_approval_form';
+export const DELETE_APPROVAL_FORM = 'delete_approval_form';
 
 
 //회계관리
