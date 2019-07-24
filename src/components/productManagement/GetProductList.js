@@ -16,20 +16,21 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
-import { getCard } from 'actions/index';
-import UpdateCard from 'components/accounting/UpdateCard';
+import { getProductList } from 'actions/index.js';
+
+let counter = 0;
+
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
-  {id: 'cardRegNo', align: false, disablePadding: false, label: '등록번호'},
-  {id: 'cardNo', align: true, disablePadding: false, label: '카드번호'},
-  {id: 'cardName', align: true, disablePadding: false, label: '카드명'},
-  {id: 'cardCompanyCodeName', align: true, disablePadding: false, label: '카드사명'},
-  {id: 'cardCategoryCodeName', align: true, disablePadding: false, label: '카드구분'},
-  {id: 'accountNo', align: true, disablePadding: false, label: '계좌번호'},
-  {id: 'cardManagerName', align: true, disablePadding: false, label: '카드관리자'},
+  {id: 'productNo', align: false, disablePadding: false, label: '물품번호'},
+  {id: 'productName', align: true, disablePadding: false, label: '물품명'},
+  {id: 'purchasePrice', align: true, disablePadding: false, label: '매입단가'},
+  {id: 'salesPrice: ', align: true, disablePadding: false, label: '출하단가'},
+  {id: 'quantity', align: true, disablePadding: false, label: '재고'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -47,13 +48,14 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
+    console.log("프로덕트컴포넌트")
     const {onSelectAllClick, order, orderBy, numSelected, rowCount} = this.props;
 
     return (
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
-            <Checkbox color="secondary"
+            <Checkbox color="primary"
                       indeterminate={numSelected > 0 && numSelected < rowCount}
                       checked={numSelected === rowCount}
                       onChange={onSelectAllClick}
@@ -87,7 +89,7 @@ class EnhancedTableHead extends React.Component {
       </TableHead>
     );
   }
-}//end of class
+}
 
 
 let EnhancedTableToolbar = props => {
@@ -102,7 +104,7 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">카드 목록조회</Typography>
+          <Typography variant="title">물품 목록조회</Typography>
         )}
       </div>
       <div className="spacer"/>
@@ -131,24 +133,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 
-class CardTable extends React.Component {
-
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      order: 'asc',
-      orderBy: '',
-      selected: [],
-      // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.cardList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
-      page: 0,
-      rowsPerPage: 10,
-      updateOpen: false,
-
-    };
-  }
-
+class EnhancedTable extends React.Component {
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -204,35 +189,34 @@ class CardTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  constructor(props, context) {
+    super(props, context);
 
-  //카드 수정 다이얼로그 띄우기
-  updateCardDialogOpen = () => {
-    this.setState({updateOpen : true});
-  }
-
-  //카드 수정 다이얼로그 닫기
-  updateCardDialogClose = () => {
-    this.setState({updateOpen : false});
-    
-  }
-
-  //카드 수정 요청
-  updateCard = (event, cardRegNo) => {
-    event.preventDefault();
-    this.props.getCard(cardRegNo);
-    this.updateCardDialogOpen();
+    this.state = {
+      order: 'asc',
+      orderBy: '',
+      selected: [],
+      // data에 props로 들어오는 list값 넣어주기.
+      data: this.props.ProductList,
+      page: 0,
+      rowsPerPage: 10,
+      search:{searchKeyword:null},
+      flag: false
+    };
   }
 
   render() {
+   
+    const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
-    if(this.props.cardList !== this.state.data){
-      this.setState({
-        data : this.props.cardList
-      })
+    const { ProductList } = this.props;
+
+    if(ProductList !== this.state.data){
+      this.setState({data:ProductList});
     }
 
-    const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-  
+
+
     return (
       <div>
         <EnhancedTableToolbar numSelected={selected.length}/>
@@ -253,7 +237,6 @@ class CardTable extends React.Component {
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
-                  const currVenorNo = row.vendorNo;
                   return (
                     <TableRow
                       hover
@@ -265,18 +248,15 @@ class CardTable extends React.Component {
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox color="secondary" checked={isSelected} 
+                        <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={ event => this.updateCard(event, row.cardRegNo) } style={{cursor:'pointer'}}>{row.cardRegNo}</span></TableCell>
-                      <TableCell align="left">{row.cardNo}</TableCell>
-                      <TableCell align="left">{row.cardName}</TableCell>
-                      <TableCell align="left">{row.cardCompanyCodeName}</TableCell>
-                      <TableCell align="left">{row.cardCategoryCodeName}</TableCell>
-                      <TableCell align="left">{row.accountNo}</TableCell>
-                      <TableCell align="left">{row.cardManagerName}</TableCell>
+                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.productNo}</span></TableCell>
+                      <TableCell align="left">{row.productName}</TableCell>
+                      <TableCell align="left">{row.purchasePrice}</TableCell>
+                      <TableCell align="left">{row.salesPrice}</TableCell>
+                      <TableCell align="left">{row.quantity}</TableCell>
                     </TableRow>
-
                   );
                 })}
               </TableBody>
@@ -292,12 +272,6 @@ class CardTable extends React.Component {
                 </TableRow>
               </TableFooter>
             </Table>
-            
-            <UpdateCard
-              open={this.state.updateOpen}
-              close={this.updateCardDialogClose}
-            />
-            
           </div>
         </div>
       </div>
@@ -305,4 +279,12 @@ class CardTable extends React.Component {
   }
 }
 
-export default connect(null, {getCard})(CardTable);
+const mapStateToProps = ({productionManagement}) => {
+  console.log("프로덕트의 컴포넌트의 커넥트")
+  const { ProductList } = productionManagement;
+  return { ProductList };
+}
+
+
+                   
+export default connect(mapStateToProps,  null )(EnhancedTable);
