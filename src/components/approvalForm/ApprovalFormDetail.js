@@ -50,7 +50,6 @@ class FullScreenDialog extends React.Component {
 
   handleAddApproval = (event, _formNo) => {
     event.preventDefault();
-    alert("handleAddApproval"+_formNo)
     this.setState({
       redirect:true,
       formNo : _formNo
@@ -59,7 +58,6 @@ class FullScreenDialog extends React.Component {
 
   renderRedirect = () => {
     if (this.state.redirect) {
-      alert("redirect")
       this.setState({
         ...this.state,
         redirect:false
@@ -67,7 +65,7 @@ class FullScreenDialog extends React.Component {
 
       return <Redirect to={{
         pathname: "/app/approval/approvalRequest",
-        state: {formNo : this.state.formNo}
+        state: {form : this.props.targetForm.approvalForm, formNo: this.props.targetForm.approvalFormNo, formName: this.props.targetForm.approvalFormTitle}
       }}/>
     }
   }
