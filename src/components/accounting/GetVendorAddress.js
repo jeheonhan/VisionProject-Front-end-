@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
+import { connect } from 'react-redux';
 
 class GetVendorAddress extends Component {
 
@@ -14,25 +14,26 @@ class GetVendorAddress extends Component {
 
 
   render() {
+    const { vendorAddress } = this.props;
     console.log("여기는 GetVendorAddress");
     
     return (
       <div>
 
-        <Dialog open={this.props.open} onClose={this.handleRequestClose}>
+        <Dialog open={this.props.open}>
           <DialogTitle>
             {"거래처주소"}
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
             <div>
-                우편번호 : { this.props.vendor.zipCode }
+                우편번호 : { vendorAddress && vendorAddress.zipCode }
               </div>
               <div>
-                주소 : { this.props.vendor.address }
+                주소 : { vendorAddress && vendorAddress.address }
               </div>
               <div>
-                상세주소 : { this.props.vendor.detailAddress }
+                상세주소 : { vendorAddress && vendorAddress.detailAddress }
               </div>
             </DialogContentText>
           </DialogContent>
@@ -49,4 +50,10 @@ class GetVendorAddress extends Component {
   }
 }
 
-export default GetVendorAddress;
+const mapStatetoProps = ({ accounting }) => {
+  const { vendorAddress } = accounting;
+  
+  return { vendorAddress };
+}
+
+export default connect(mapStatetoProps)(GetVendorAddress);

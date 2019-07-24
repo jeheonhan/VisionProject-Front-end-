@@ -6,7 +6,8 @@ import { checkedEmployee
         , getCodeList
         , addAppointment
         , checkedWorkAttitudeCode
-        , addWorkAttitude } from 'actions/index';
+        , addWorkAttitude
+        , cleanStoreState } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -72,7 +73,7 @@ class FormDialog extends React.Component {
     console.log("checkedWorkAttitudeCode :: "+ checkedWorkAttitudeCodeData)
     const handleSubmit = () => {
       if(this.state.workAttitudeDate === undefined){
-        alert("당일 날짜로는 발령일자를 설정할 수 없습니다.")
+        alert("당일 날짜로는 근태를 등록할 수 없습니다.")
       }
       else if(checkedEmployeeData.employeeNo === undefined){
         alert("사원번호를 입력하세요.")
@@ -87,6 +88,10 @@ class FormDialog extends React.Component {
                                    employeeNo:checkedEmployeeData.employeeNo,
                                    workAttitudeCodeNo:checkedWorkAttitudeCodeData.workAttitudeCodeNo,
                                    workAttitudeTime:this.state.workAttitudeTime})
+        
+        this.setState({workAttitudeDate:null, workAttitudeTime:null});
+        this.props.cleanStoreState("checkedEmployeeData");
+        this.props.cleanStoreState("checkedWorkAttitudeCodeData");
         this.handleRequestClose();
       }
     }
@@ -205,4 +210,4 @@ const mapStateToProps = ({ humanResource }) => {
 
 export default connect(mapStateToProps, { checkedEmployee, checkedDepartment
                                           , checkedRank, addAppointment, checkedWorkAttitudeCode
-                                          , addWorkAttitude })(FormDialog);
+                                          , addWorkAttitude, cleanStoreState })(FormDialog);

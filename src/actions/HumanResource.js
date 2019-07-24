@@ -15,7 +15,9 @@ import {  GET_HRCARD_LIST
         CARRY_WORKATTITUDE_CODE_LIST,
         CHECKED_WORKATTITUDE_CODE,
         ADD_WORKATTITUDE,
-        CHECKED_APPOINTMENT_ROW_DATA
+        CHECKED_APPOINTMENT_ROW_DATA,
+        UPDATE_APPOINTMENT,
+        ADD_WORKATTITUDE_CODE,
         } from '../actionTypes/ActionTypes';
 
 
@@ -76,7 +78,6 @@ export const checkedWorkAttitudeCode = (data) => {
 }
 
 export const checkedApointmentRowData = (data) => {
-    alert()
     return{
         type: CHECKED_APPOINTMENT_ROW_DATA,
         payload: data
@@ -142,6 +143,20 @@ export const carryWorkAttitudeCodeList = (data) => {
 export const addWorkAttitude = (data) => {
     return{
         type: ADD_WORKATTITUDE,
+        payload: data
+    }
+}
+
+export const updateAppointment = (data) => {
+    return{
+        type: UPDATE_APPOINTMENT,
+        payload: data
+    }
+}
+
+export const addWorkAttitudeCode = (data) => {
+    return{
+        type: ADD_WORKATTITUDE_CODE,
         payload: data
     }
 }

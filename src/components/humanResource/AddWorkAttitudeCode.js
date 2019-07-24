@@ -1,12 +1,13 @@
 import React from 'react';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { checkedEmployee
         , checkedDepartment
         , checkedRank
-        , getCodeList
         , addAppointment
         , checkedWorkAttitudeCode
-        , addWorkAttitude } from 'actions/index';
+        , addWorkAttitude
+        , addWorkAttitudeCode } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -14,79 +15,191 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FindWorkAttitudeCode from 'components/humanResource/FindWorkAttitudeCode';
-import FindEmployee from 'components/humanResource/FindEmployee';
-import DatePicker from '../date/DatePickers';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import TimePicker from 'components/time/TimePickers';
 
 
 class FormDialog extends React.Component {
   state = {
     open: false,
     subOpen: false,
-    workAttitudeCodeOpen: false
+    workAttitudeCodeOpen: false,
+    btnShow: true,
+    commuteApplyTextfield: false,
+    checkedAll:false,
+    checkedDay:false,
+    checkedSaturday:false,
+    checkedSunday:false,
+    duplicate:false,
   };
 
   handleClickOpen = () => {
-    this.setState({open: true});
+    this.setState({open: true,
+                 workAttitudeCode:{...this.state.workAttitudeCode, commuteApplyCode:"01"}});
   };
 
   handleRequestClose = () => {
-    this.setState({open: false});
+    this.setState({
+                  open: false
+                  ,btnShow: true
+                  ,commuteApplyTextfield: false
+                  ,checkedAll:false
+                  ,checkedDay:false
+                  ,checkedSaturday:false
+                  ,checkedSunday:false
+                  ,workAttitudeCode:null
+                  ,duplicate:false});
   };
 
-  //자식 컴포넌트 열기
-  handleSubComponentOpen = () => {
-    this.setState({subOpen: true})
-  }
-
-  //자식 컴포넌트 닫기
-  handleSubComponentClose = () => {
-      this.setState({subOpen: false})
-  }
-
-  //근태코드 검색 열기
-  handleSubWorkAttitudeCodeOpen = () => {
-    this.setState({workAttitudeCodeOpen:true})
-  }
-
-  //근태코드 검색 닫기
-  handleSubWorkAttitudeCodeClose = () => {
-    this.setState({workAttitudeCodeOpen:false})
-  }
 
   handleChange = name => event => {
-      this.setState({[name]:event.target.value})
-      console.log(this.state)
+      this.setState({workAttitudeCode:{...this.state.workAttitudeCode, [name]:event.target.value}});
   }
 
-  //Date Picker로부터 date정보 받는 call back function
-  callBackDateChange = (date) => {
-    this.setState({workAttitudeDate:date})
+  //출퇴근기록반영 TextField 보여주기
+  handleCommuteApplyShow  = () => {
+      this.setState({
+        btnShow: false,
+        commuteApplyTextfield: true,
+        workAttitudeCode:{...this.state.workAttitudeCode, commuteApplyCode:"02"}
+      })
+    }
+
+  //반영요일 체크박스
+  checkworkDayOfWeek = (name) =>  {
+      if(name == 'checkedAll'){
+        if(this.state.checkedAll){
+          this.setState({
+            checkedAll:false,
+            checkedDay:false,
+            checkedSaturday:false,
+            checkedSunday:false
+          })
+        }else{
+          this.setState({
+            checkedAll:true,
+            checkedDay:true,
+            checkedSaturday:true,
+            checkedSunday:true
+          })
+        }
+      }
+      else if(name == 'checkedDay'){
+        if(this.state.checkedSaturday && this.state.checkedSunday){
+          this.checkworkDayOfWeek('checkedAll');
+        }else{
+          this.setState({
+                  checkedDay:this.state.checkedDay? false:true,
+          })
+        }
+      }
+      else if(name == 'checkedSaturday'){
+        if(this.state.checkedDay && this.state.checkedSunday){
+          this.checkworkDayOfWeek('checkedAll');
+        }else{
+          this.setState({
+            checkedSaturday:this.state.checkedSaturday? false:true
+          })
+        }
+      }
+      else if(name == 'checkedSunday'){
+        if(this.state.checkedDay && this.state.checkedSaturday){
+          this.checkworkDayOfWeek('checkedAll');
+        }else{
+          this.setState({
+            checkedSunday:this.state.checkedSunday? false:true
+          })
+        }
+      }
+  }
+
+  //Date로부터 시작시간 받아오기
+  handleChangeStartTime = (date) => {
+    this.setState({workAttitudeCode:{...this.state.workAttitudeCode, applyStartTime:date}})
+  }
+
+  //Date로부터 종료시간 받아오기
+  handleChangeEndTime = (date) => {
+    this.setState({workAttitudeCode:{...this.state.workAttitudeCode, applyEndTime:date}})
+  }
+
+  //근태코드 중복체크 비동기 요청
+  handleDuplicateCheckReq = async (_data) => {
+    return await axios({
+      method:"GET",
+      url:"/hr/getWorkAttitudeCodeDetail/"+_data
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+  }
+
+  //근태코드 중복체크
+  handleDuplicate = (event) => {
+    var target = event.target.value;
+    var values = this.handleDuplicateCheckReq(target);
+    values.then(data => data ? 
+        this.setState({duplicate:true, workAttitudeCode:{...this.state.workAttitudeCode, workAttitudeCodeNo:target}})
+        :this.setState({duplicate:false, workAttitudeCode:{...this.state.workAttitudeCode, workAttitudeCodeNo:target}}))
   }
 
  
   render() {
 
-    const { checkedEmployeeData, checkedWorkAttitudeCodeData } = this.props;
+   console.log(this.state)
 
-    console.log("checkedWorkAttitudeCode :: "+ checkedWorkAttitudeCodeData)
     const handleSubmit = () => {
-      if(this.state.workAttitudeDate === undefined){
-        alert("당일 날짜로는 발령일자를 설정할 수 없습니다.")
+      if(this.state.workAttitudeCode.workAttitudeCodeNo === undefined){
+        alert("근태코드를 반드시 입력하세요.")
       }
-      else if(checkedEmployeeData.employeeNo === undefined){
-        alert("사원번호를 입력하세요.")
+      else if(this.state.duplicate){
+        alert("중복된 근태코드는 등록할 수 없습니다.")
       }
-      else if(checkedWorkAttitudeCodeData.workAttitudeCodeNo === undefined){
-        alert("근태코드를 입력하세요.")
+      else if(this.state.workAttitudeCode.workAttitudeCodeName === undefined){
+        alert("근태명칭을 반드시 입력하세요.")
       }
       else{
-        console.log("result :: " + this.state.workAttitudeDate+ " "+checkedEmployeeData.employeeNo+
-        " "+checkedWorkAttitudeCodeData.workAttitudeCodeNo+" "+this.state.workAttitudeTime)
-        this.props.addWorkAttitude({workAttitudeDate:this.state.workAttitudeDate, 
-                                   employeeNo:checkedEmployeeData.employeeNo,
-                                   workAttitudeCodeNo:checkedWorkAttitudeCodeData.workAttitudeCodeNo,
-                                   workAttitudeTime:this.state.workAttitudeTime})
+
+        var values;
+
+        if(this.state.checkedAll){
+          values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"01"});
+        }
+        else if(this.state.checkedDay){
+          if(this.state.checkedSaturday){
+            values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"03"});
+          }
+          else if(this.state.checkedSunday){
+            values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"04"});
+          }
+          else{
+            values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"05"});
+          }
+        }
+        else if(this.state.checkedSaturday){
+          if(this.state.checkedSunday){
+            values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"06"});
+          }
+        }
+        else if(this.state.checkedSunday){
+          values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"07"});
+        }
+
+        this.props.addWorkAttitudeCode(values);
+        // this.setState({
+        //   checkedAll:false,
+        //   checkedDay:false,
+        //   checkedSaturday:false,
+        //   checkedSunday:false,
+        //   workAttitudeCode:null
+        // });
+        console.log(values)
         this.handleRequestClose();
       }
     }
@@ -97,77 +210,112 @@ class FormDialog extends React.Component {
             등록
         </Button>
         <Dialog open={this.state.open} onClose={this.handleRequestClose} maxWidth="xl">
-          <DialogTitle>근태 등록</DialogTitle>
+          <DialogTitle>근태코드 등록</DialogTitle>
           <DialogContent >
             <DialogContentText>
-              사원번호 혹은 사원명을 선택한 이후에 발령일자, 발령부서, 발령직급을 선택하시기 바랍니다.
+              근태코드에 출퇴근시간 반영을 원하시면 출퇴근기록반영 버튼을 누르시길 바랍니다.
             </DialogContentText>
-            
-            <div style={{float:"left"}}>
-            <DatePicker callBackDateChange={this.callBackDateChange}></DatePicker>
-            </div>
 
-            <div style={{float:"left"}}>
-            &nbsp;
-            <TextField
-              required
-              margin="none"
-              id="employeeNo"
-              label="사원번호"
-            //사원번호 클릭시 자식컴포넌트 Open값을 true로 변경
-              onClick={this.handleSubComponentOpen}
-              value={checkedEmployeeData && checkedEmployeeData.employeeNo}
-            />
-            </div>
-            <div style={{float:"left"}}>
-            &nbsp;
-            <TextField
-              required
-              margin="none"
-              id="employeeName"
-              label="사원명"
-              onClick={this.handleSubComponentOpen}
-              value={checkedEmployeeData && checkedEmployeeData.employeeName}
-            />
-            </div>
-            <div style={{float:"left"}}>
+            <div >
             &nbsp;
             <TextField
               margin="none"
-              id="appointDepartCodeName"
+              id="workAttitudeCodeNo"
               label="근태코드"
-              onClick={this.handleSubWorkAttitudeCodeOpen}
-              value={checkedWorkAttitudeCodeData && checkedWorkAttitudeCodeData.workAttitudeCodeNo}
+              value={this.state.workAttitudeCode && this.state.workAttitudeCode.workAttitudeCodeNo}
+              onChange={this.handleDuplicate}
+              //onChange={this.handleChange("workAttitudeCodeNo")}
+              helperText={this.state.duplicate? "중복입니다.":""}
+              fullWidth
             />
             </div>
-            <div style={{float:"left"}}>
+            <div >
             &nbsp;
             <TextField
               margin="none"
-              id="preRankCodeName"
+              id="workAttitudeCodeName"
               label="근태명칭"
-              value={checkedWorkAttitudeCodeData && checkedWorkAttitudeCodeData.workAttitudeCodeName}
-              disabled
+              value={this.state.workAttitudeCode && this.state.workAttitudeCode.workAttitudeCodeName}
+              onChange={this.handleChange('workAttitudeCodeName')}
+              fullWidth
             />
             </div>
-            <div style={{float:"left"}}>
-            &nbsp;
-            <TextField
-              margin="none"
-              id="workAttitudeTime"
-              label="시간(분)"
-              onChange={this.handleChange('workAttitudeTime')}
-              value={this.state.workAttitudeTime && this.state.workAttitudeTime}
-            />
+            <br/>
+            <Button variant="contained" color="primary" 
+                    className="jr-btn jr-btn-sm" style={{display:this.state.btnShow ? 'block':'none'}}
+                    onClick={this.handleCommuteApplyShow}>
+              출퇴근기록반영
+            </Button>
+
+            <div style={{display:this.state.commuteApplyTextfield ? 'block':'none'}}>
+                <FormControl component="fieldset" required>
+                  <FormLabel component="legend">반영방식</FormLabel>
+                  <RadioGroup
+                    className="d-flex flex-row"
+                    aria-label="workType"
+                    name="workType"
+                    value={this.state.value}
+                    onChange={this.handleChange('workType')}
+                  >
+                    <FormControlLabel value="01" control={<Radio color="primary"/>} label="정상근무"/>
+                    <FormControlLabel value="02" control={<Radio color="primary"/>} label="연장근무"/>
+                  </RadioGroup>
+                </FormControl>
+            
+              <hr/>
+
+              <div>
+              <FormHelperText className="text-grey">반영요일</FormHelperText>
+              <FormGroup className="d-flex flex-row" >
+                <FormControlLabel
+                  control={
+                    <Checkbox color="primary"
+                              checked={this.state.checkedAll}
+                              onClick={event => { event.preventDefault(); this.checkworkDayOfWeek('checkedAll')}}
+                              value="all"
+                    />
+                  }
+                  label="전체"
+                />
+                
+                <FormControlLabel
+                  control={
+                    <Checkbox color="primary"
+                              checked={this.state.checkedDay}
+                              onClick={event => { event.preventDefault(); this.checkworkDayOfWeek('checkedDay')}}
+                              value="day"
+                    />
+                  }
+                  label="평일"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox color="primary"
+                              checked={this.state.checkedSaturday}
+                              onClick={event => { event.preventDefault(); this.checkworkDayOfWeek('checkedSaturday')}}
+                              value="saturday"
+                    />
+                  }
+                  label="토요일"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox color="primary"
+                              checked={this.state.checkedSunday}
+                              onClick={event => { event.preventDefault(); this.checkworkDayOfWeek('checkedSunday')}}
+                              value="sunday"
+                    />
+                  }
+                  label="일요일"
+                />
+              </FormGroup>
             </div>
-            {/* <div style={{float:"left"}}>
-            &nbsp;
-            <TextField
-              margin="normal"
-              id="reference"
-              label="참고"
-            />
-            </div> */}
+            <br/>
+            <TimePicker label="시작시간" handleChangeTime = {this.handleChangeStartTime}></TimePicker>
+            <br/>
+            <TimePicker label="종료시간" handleChangeTime = {this.handleChangeEndTime}></TimePicker>
+          </div>
+
           </DialogContent>
           <DialogActions>
             <Button onClick={handleSubmit} color="secondary">
@@ -179,30 +327,11 @@ class FormDialog extends React.Component {
           </DialogActions>
         </Dialog>
 
-        {/* 자식 컴포넌트 open 값이 true면 열림 이때 자기 자신을 닫게 해줄 eventHandler도 props로 전달 */}
-        <FindEmployee open={this.state.subOpen} 
-                    handleSubComponentClose={this.handleSubComponentClose}
-                    checkedEmployee={this.props.checkedEmployee}
-        />
-        {/* <FindDepart open={this.state.departOpen}
-                    handleSubDepartComponentClose={this.handleSubDepartComponentClose}
-                    checkedDepartment={this.props.checkedDepartment}
-                    /> */}
-      
-        <FindWorkAttitudeCode open={this.state.workAttitudeCodeOpen} 
-                              handleSubWorkAttitudeCodeClose={this.handleSubWorkAttitudeCodeClose}
-                              checkedWorkAttitudeCode={this.props.checkedWorkAttitudeCode}/>
 
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ humanResource }) => {
-    const { checkedEmployeeData, checkedWorkAttitudeCodeData } = humanResource;
-    return { checkedEmployeeData, checkedWorkAttitudeCodeData };
-}
 
-export default connect(mapStateToProps, { checkedEmployee, checkedDepartment
-                                          , checkedRank, addAppointment, checkedWorkAttitudeCode
-                                          , addWorkAttitude })(FormDialog);
+export default connect(null, { addWorkAttitudeCode })(FormDialog);

@@ -16,7 +16,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconMailOutline from '@material-ui/icons/MailOutline';
+import {getNoticeList, getNoticeDetail} from 'actions';
+import GetNoticeDetail from 'components/notice/GetNoticeDetail';
+import { connect } from 'net';
 
 
 const columnData = [
@@ -195,6 +197,16 @@ const columnData = [
         rowsPerPage: 10,
       };
     }
+
+    getNotice = (event, noticeNo) => {
+      event.preventDefault();
+      this.props.getNoticeDetail(noticeNo);
+      this.setState({open: true});
+    }
+
+    handleRequestClose = () => {
+      this.setState({open : false});
+    }
   
     render() {
       const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
@@ -234,7 +246,7 @@ const columnData = [
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                         </TableCell>
                         <TableCell align="left" >{row.noticeNo}</TableCell>
-                        <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.noticeTitle}</span></TableCell>
+                        <TableCell align="left" ><span onClick={event => this.getNotice(event, row.noticeNo)} style={{cursor:'pointer'}}>{row.noticeTitle}</span></TableCell>
                         <TableCell align="left">{row.noticeRegDate}</TableCell>
                         <TableCell align="left">{row.viewCount}</TableCell>
                       </TableRow>
@@ -253,11 +265,23 @@ const columnData = [
                   </TableRow>
                 </TableFooter>
               </Table>
+
+              { this.props.noticeDetail && (<GetNoticeDetail
+              open={ this.state.open }
+              handleRequestClose={ this.handleRequestClose }
+              noticeDetail={ this.props.noticeDetail }
+            />)}
+
             </div>
           </div>
         </div>
       );
     }
   }
+
+  const mapStateToProps = ({ notice }) => {
+    const{noticeList, noticeDetail} = notice;
+    return{noticeList, notice};
+  }
   
-  export default EnhancedTable;
+  export default connect(mapStateToProps, {getNoticeList, getNoticeDetail})(EnhancedTable);

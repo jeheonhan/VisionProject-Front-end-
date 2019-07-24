@@ -19,7 +19,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import GetBankInfo from 'components/accounting/GetBankInfo';
 import UpdateVendor from 'components/accounting/UpdateVendor';
 import GetVendorAddress from 'components/accounting/GetVendorAddress';
-import { getVendor, updateVendor, getCodeList } from "actions/index";
+import { getVendor, updateVendor, getCodeList, getVendorBank, getVendorAddress } from "actions/index";
 import { connect } from 'react-redux';
 import IconHome from '@material-ui/icons/Home'
 import IconPayment from '@material-ui/icons/Payment'
@@ -213,54 +213,69 @@ class VendorTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  //거래처 이체정보 클릭시 발생 이벤트
   getBankInfo = (event, vendorNo) => {
     event.preventDefault();
     console.log("BankInfo 가져오라는 요청 :: "+vendorNo);
     if(vendorNo !== undefined){
-      this.props.getVendor(vendorNo);
+      this.props.getVendorBank(vendorNo);
     }
-    this.setState({open : true});
+    this.handleRequestOpen();
   }
 
+  //거래처 수정 다이얼로그 클릭시 발생 이벤트
   updateVendorDialog = (event, vendorNo) => {
     event.preventDefault();
     console.log("updateVendor 가져오라는 요청");
     if(vendorNo !== undefined){
       this.props.getVendor(vendorNo);
+
     }
-    this.setState({subOpen : true})
+    this.updateVendorOpen();
   }
 
+  //거래처 주소 다이얼로그 클릭시 발생 이벤트
   getVendorAddress = (event, vendorNo) => {
     event.preventDefault();
     console.log("getVendorAddress 가져오라는 요청");
     if(vendorNo !== undefined){
-      this.props.getVendor(vendorNo);
+      this.props.getVendorAddress(vendorNo);
     }
-    this.setState({addressOpen : true})
+    this.addressVendorOpen();
   }
 
   //이체정보 다이얼로그 컴포넌트를 조작할 close open 자체는 getBankInfo에서 setState로 true 플래그를 바꿔줘서 열게함
+  //다이얼로그에 직접 boolean 값을 string 으로 보내주게 되면 동작은 하지만 에러 발생함. true는 전송할 수 있지만 false는 전송할 수 없다함
 
+  //거래처 이체정보 다이얼로그 열기
+  handleRequestOpen = () => {
+    this.setState({open : true});
+  };
+  //거래처 이체정보 다이얼로그 닫기
   handleRequestClose = () => {
     this.setState({open : false});
   };
 
+  //거래처 수정 다이얼로그 열기
+  updateVendorOpen = () => {
+    this.setState({subOpen : true});
+  };
+
+  //거래처 수정 다이얼로그 닫기
   updateVendorClose = () => {
     this.setState({subOpen : false});
   };
 
+  //거래처 주소 다이얼로그 열기
+  addressVendorOpen = () => {
+    this.setState({addressOpen : true});
+  }
+  //거래처 주소 다이얼로그 닫기
   addressVendorClose = () => {
     this.setState({addressOpen : false});
   }
 
   render() {
-
-    const { bankList, vendorList } = this.props;
-    if(bankList === undefined){
-      this.props.getCodeList({ searchKeyword : "bank" });
-      this.props.getCodeList({ searchKeyword : "vendor" });
-    }
 
     if(this.props.VendorList !== this.state.data){
       this.setState({
@@ -335,24 +350,20 @@ class VendorTable extends React.Component {
             내가 직접 dialog에 open을 주입해줘야 다이얼로그가 띄워질 것*/}
             {/* 중괄호로 감싸면 JSX에 어떤 표현식이던 넣을 수 있다. 여기에는 자바스크립트 논리 && 연산자도 포함된다.
             이를 사용하면 요소의 조건부 포함을 더 편리하게 할 수 있다. */}
-            { this.props.Vendor && (<GetBankInfo
+            <GetBankInfo
               open={ this.state.open }
               close={ this.handleRequestClose }
-              vendor={ this.props.Vendor }
-            />)}
-            { this.props.Vendor && (<UpdateVendor
-              bankCodeList={ bankList } 
-              vendorCodeList={ vendorList }
+            />
+
+            <UpdateVendor
               open={ this.state.subOpen }
               close={ this.updateVendorClose }
-              vendor={ this.props.Vendor }
-              updateVendor={ this.props.updateVendor }
-            />)}
-            { this.props.Vendor && (<GetVendorAddress
+            />
+            
+            <GetVendorAddress
               open={ this.state.addressOpen }
               close={ this.addressVendorClose }
-              vendor={ this.props.Vendor }
-            />)}
+            />
                 
           </div>
         </div>
@@ -361,11 +372,5 @@ class VendorTable extends React.Component {
   }
 }
 
-    const mapStateToProps = ({accounting, code}) => {
-      const { Vendor } = accounting;
-      const { bankList, vendorList } = code;
-      return { Vendor, bankList, vendorList  };
-    }
-
-export default connect(mapStateToProps, { getVendor, updateVendor, getCodeList } )(VendorTable);
+export default connect(null, { getVendor, updateVendor, getCodeList, getVendorBank, getVendorAddress })(VendorTable);
 

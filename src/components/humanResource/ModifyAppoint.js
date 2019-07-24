@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { checkedEmployee, 
          checkedDepartment, 
          checkedRank, 
-         getCodeList, 
          addAppointment,
-         cleanStoreState, } from 'actions/index';
+         cleanStoreState,
+         updateAppointment } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -74,55 +74,58 @@ class FormDialog extends React.Component {
 
   //Date Picker로부터 date정보 받는 call back function
   callBackDateChange = (date) => {
-    this.setState({appointDate:date})
+    this.setState({data:{...this.state.data, appointDate:date}})
   }
 
  
   render() {
 
+    console.log(this.state)
 
     const {data} = this.state;    
 
     const { checkedEmployeeData, checkedDepartData, checkedRankData, checkedAppointmentData } = this.props;
 
-    // if(!this.state.flag && checkedAppointmentData !== this.state.data){
-    //     this.setState({data:checkedAppointmentData, flag:true});
-    // }else if(checkedAppointmentData.employeeNo !== this.state.data.employeeNo){
-    //     this.setState({flag:false})
-    // }
+    if(!this.state.flag && checkedAppointmentData !== this.state.data){
+        this.setState({data:checkedAppointmentData, flag:true});
+    }
 
-    if(checkedEmployeeData && checkedEmployeeData.employeeNo !== data.employeeNo){
-        this.setState({data:{...this.state.data, employeeNo:checkedEmployeeData.employeeNo}})
+    if(checkedDepartData && checkedDepartData.codeNo !== data.appointDepartCodeNo){
+        this.setState({data:{...this.state.data, appointDepartCodeNo:checkedDepartData.codeNo,
+                            appointDepartCodeName:checkedDepartData.codeName}})
+    }
+
+    if(checkedRankData && checkedRankData.codeNo !== data.appointRankCodeNo){
+      this.setState({data:{...this.state.data, appointRankCodeNo:checkedRankData.codeNo,
+                          appointRankCodeName:checkedRankData.codeName}})
     }
 
     const handleSubmit = () => {
-      if(this.state.appointDate === undefined){
+      if(data.appointDate === undefined){
         alert("당일 날짜로는 발령일자를 설정할 수 없습니다.")
-      }
-      else if(checkedEmployeeData === undefined){
-        alert("사원번호/사원명을 입력하세요!")
       }else if(checkedDepartData === undefined){
         alert("발령부서를 입력하세요!")
       }else if(checkedRankData === undefined){
         alert("발령직급을 입력하세요!")
       }else{
-        this.props.addAppointment({appointDate:this.state.appointDate, employeeNo:checkedEmployeeData.employeeNo,
-          preDepartCodeNo:checkedEmployeeData.departCodeNo, preRankCodeNo:checkedEmployeeData.rankCodeNo,
-          appointDepartCodeNo:checkedDepartData.codeNo, appointRankCodeNo:checkedRankData.codeNo,
-          appointmentStatusCodeNo:"01"});
-
-        this.setState({appointDate:null});
+        this.props.updateAppointment(data);
         this.props.cleanStoreState("checkedEmployeeData");
         this.props.cleanStoreState("checkedDepartData");
         this.props.cleanStoreState("checkedRankData");
 
-        this.handleRequestClose();
+        handleClearWhenClose();
       }
+    }
+
+    //창을 닫을 때 flag를 true로 바꾸고 나감
+    const handleClearWhenClose = () => {
+      this.setState({flag:false})
+      this.props.handleModifyAppointClose();
     }
   
     return (
       <div>
-        <Dialog open={this.props.open} onClose={this.props.handleModifyAppointClose} maxWidth="xl">
+        <Dialog open={this.props.open} onClose={handleClearWhenClose} maxWidth="xl">
           <DialogTitle>인사발령 수정</DialogTitle>
           <DialogContent >
             <DialogContentText>
@@ -200,7 +203,7 @@ class FormDialog extends React.Component {
             <Button onClick={handleSubmit} color="secondary">
               확인
             </Button>
-            <Button onClick={this.props.handleModifyAppointClose} color="primary">
+            <Button onClick={handleClearWhenClose} color="primary">
               취소
             </Button>
           </DialogActions>
@@ -230,4 +233,6 @@ const mapStateToProps = ({ humanResource }) => {
     return { checkedEmployeeData, checkedDepartData, checkedRankData, checkedAppointmentData };
 }
 
-export default connect(mapStateToProps, { checkedEmployee, checkedDepartment, checkedRank, addAppointment, cleanStoreState })(FormDialog);
+export default connect(mapStateToProps, { checkedEmployee, checkedDepartment, 
+                                          checkedRank, addAppointment, 
+                                          cleanStoreState, updateAppointment })(FormDialog);
