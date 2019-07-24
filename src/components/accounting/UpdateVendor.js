@@ -7,6 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import GetPostCode from 'components/accounting/GetPostCode'
 import MenuItem from '@material-ui/core/MenuItem';
+import { updateVendor, cleanStoreState,getCodeList } from 'actions/index'
+import { connect } from 'react-redux';
+
 
 class UpdateVendor extends React.Component {
 
@@ -18,51 +21,71 @@ class UpdateVendor extends React.Component {
       super(props);
 
       this.state = {
-        vendor : this.props.vendor,
+        
+        updateFlag : false,
       }
   }
 
-
-  vendorList = this.props.vendorCodeList;
-  bankList = this.props.bankCodeList;
-
   handleChange = name => event => {
     if(name === 'bankCodeNo'){
-      this.setState({...this.state, vendorAccount:{...this.state.vendorAccount, [name]:event.target.value}})
+      //여기 같은 경우는 조금 복잡한데 key : value, key:{ value, key:value}
+      //브레이스 안에서는 ,를 다시 사용할 수 있다.
+      this.setState({ vendor : { ...this.state.vendor, vendorAccount : { ...this.state.vendor.vendorAccount, [name]:event.target.value }}})
     }else if(name === 'accountNo'){
-      this.setState({...this.state, vendorAccount:{...this.state.vendorAccount, [name]:event.target.value}})
+      this.setState({ vendor : { ...this.state.vendor, vendorAccount : { ...this.state.vendor.vendorAccount, [name]:event.target.value }}})
     }else if(name === 'accountHolder'){
-      this.setState({...this.state, vendorAccount:{...this.state.vendorAccount, [name]:event.target.value}})
+      this.setState({ vendor : { ...this.state.vendor, vendorAccount : { ...this.state.vendor.vendorAccount, [name]:event.target.value }}})
     }else{
-      this.setState({ ...this.state, [name]: event.target.value });
-
+      this.setState({ vendor: { ...this.state.vendor, [name]: event.target.value }});
     }
-    console.log(this.state);
   };
 
-  handlePostcode = (zipCode, address) => {
+  handlePostcode = (_zipCode, _address) => {
     this.setState({
-      ...this.state,
-      zipCode : zipCode,
-      address : address
+      //setState는 key : { value, key:value, key:value} 
+      vendor : { ...this.state.vendor, address : _address, zipCode : _zipCode }
     })
+      
   };
 
   submitFn = () => {
-    alert("this is submitFn");
-    console.log(this.state);
-    this.props.updateVendor(this.state);
+    this.props.updateVendor(this.state.vendor);
+    this.setState({ updateFlag : false });
+    this.props.cleanStoreState('vendorInfo');
+    this.props.close();
+  }
+
+  //다이얼로그 닫기
+  closeUpdateVendor = (event) => {
+    event.preventDefault();
+    this.setState({ updateFlag : false })
+    this.props.cleanStoreState('vendorInfo');
+    //cleanStoreState를 하면 리듀서에서 null로 넣었기 때문에 Store에서 해당 key의 값을 null로 만든다.
+    //clean을 하는 이유는 나갈때 setState가 되면서 re rendering이 이뤄지는데 이때 변한값과 원래 값이 일치하지 않아서
+    //flag를 true로 만들어 버려 원래값을 저장시키고 flag를 true 상태로 바꿔버려 논리가 엉키게된다.
     this.props.close();
   }
 
   render() {
-    if(this.state.vendor !== this.props.vendor){
-      this.setState({
-        vendor : this.props.vendor
-      })
-    }
-    console.log("여기는 UpdateVendor");
+
     
+    const { vendorList, bankList, vendorInfo } = this.props;
+    
+    if(bankList === undefined){
+      this.props.getCodeList({ searchKeyword : "bank" });
+      this.props.getCodeList({ searchKeyword : "vendor" });
+    }
+
+    if( !this.state.updateFlag) {
+      //null과 undefined는 다르다!
+      if(this.state.vendor !== vendorInfo && vendorInfo !== null){
+          this.setState({
+              updateFlag : true, 
+              vendor : vendorInfo
+          });
+      }
+    }
+
     return (
       <div>
         <Dialog maxWidth={"xs"} open={this.props.open} >
@@ -75,7 +98,7 @@ class UpdateVendor extends React.Component {
                   id="vendorNo"
                   label="거래처번호"
                   placeholder="거래처번호"
-                  value={this.state.vendor.vendorNo}
+                  value={this.state.vendor && this.state.vendor.vendorNo}
                   onChange={this.handleChange('vendorNo')}
                   margin="normal"
                   fullWidth
@@ -89,7 +112,7 @@ class UpdateVendor extends React.Component {
                   id="vendorName"
                   label="거래처명"
                   placeholder="거래처명"
-                  value={this.state.vendor.vendorName}
+                  value={this.state.vendor && this.state.vendor.vendorName}
                   onChange={this.handleChange('vendorName')}
                   margin="normal"
                   fullWidth
@@ -101,7 +124,7 @@ class UpdateVendor extends React.Component {
                   id="representativeName"
                   label="대표자명"
                   placeholder="대표자명"
-                  value={this.state.vendor.representativeName}
+                  value={this.state.vendor && this.state.vendor.representativeName}
                   onChange={this.handleChange('representativeName')}
                   margin="normal"
                   fullWidth
@@ -112,7 +135,7 @@ class UpdateVendor extends React.Component {
                   id="vendorTel"
                   label="거래처 전화번호"
                   placeholder="거래처 전화번호"
-                  value={this.state.vendor.vendorTel}
+                  value={this.state.vendor && this.state.vendor.vendorTel}
                   onChange={this.handleChange('vendorTel')}
                   margin="normal"
                   fullWidth
@@ -123,7 +146,7 @@ class UpdateVendor extends React.Component {
                   id="vendorPhone"
                   label="거래처 휴대폰번호"
                   placeholder="거래처 휴대폰번호"
-                  value={this.state.vendor.vendorPhone}
+                  value={this.state.vendor && this.state.vendor.vendorPhone}
                   onChange={this.handleChange('vendorPhone')}
                   margin="normal"
                   fullWidth
@@ -139,8 +162,7 @@ class UpdateVendor extends React.Component {
                   id="zipCode"
                   label="우편번호"
                   placeholder="우편번호"
-                  value={this.state.vendor.zipCode}
-                  onChange={this.handleChange('zipCode')}
+                  value={this.state.vendor && this.state.vendor.zipCode}
                   margin="normal"
                   fullWidth
                 />
@@ -151,8 +173,7 @@ class UpdateVendor extends React.Component {
                   id="address"
                   label="주소"
                   placeholder="주소"
-                  value={this.state.vendor.address}
-                  onChange={this.handleChange('address')}
+                  value={this.state.vendor && this.state.vendor.address}
                   margin="normal"
                   fullWidth
                 />
@@ -163,7 +184,7 @@ class UpdateVendor extends React.Component {
                   id="detailAddress"
                   label="상세주소"
                   placeholder="상세주소"
-                  value={this.state.vendor.detailAddress}
+                  value={this.state.vendor && this.state.vendor.detailAddress}
                   onChange={this.handleChange('detailAddress')}
                   margin="normal"
                   fullWidth
@@ -175,14 +196,14 @@ class UpdateVendor extends React.Component {
                   id="vendorCategoryCodeNo"
                   select
                   label="거래처 분류"
-                  value={this.state.vendor.vendorCategoryCodeNo}
+                  value={this.state.vendor && this.state.vendor.vendorCategoryCodeNo}
                   onChange={this.handleChange('vendorCategoryCodeNo')}
                   SelectProps={{}}
                   helperText="거래처를 분류해 주세요"
                   margin="normal"
                   fullWidth
                 >
-                  {this.vendorList.map(option => (
+                  {vendorList && vendorList.map(option => (
                     <MenuItem key={option.codeNo} value={option.codeNo}>
                       {option.codeName}
                     </MenuItem>
@@ -194,14 +215,14 @@ class UpdateVendor extends React.Component {
                   id="bankCodeNo"
                   select
                   label="은행 선택"
-                  value={this.state.vendor.vendorAccount.bankCodeNo}
+                  value={this.state.vendor && this.state.vendor.vendorAccount.bankCodeNo}
                   onChange={this.handleChange('bankCodeNo')}
                   SelectProps={{}}
                   helperText="은행을 선택해 주세요"
                   margin="normal"
                   fullWidth
                 >
-                  {this.bankList.map(option => (
+                  {bankList && bankList.map(option => (
                     <MenuItem key={option.codeNo} value={option.codeNo}>
                       {option.codeName}
                     </MenuItem>
@@ -213,7 +234,7 @@ class UpdateVendor extends React.Component {
                   id="accountNo"
                   label="계좌번호"
                   placeholder="계좌번호"
-                  value={this.state.vendor.vendorAccount.accountNo}
+                  value={this.state.vendor && this.state.vendor.vendorAccount.accountNo}
                   onChange={this.handleChange('accountNo')}
                   margin="normal"
                   fullWidth
@@ -224,7 +245,7 @@ class UpdateVendor extends React.Component {
                   id="accountHolder"
                   label="예금주명"
                   placeholder="예금주명"
-                  value={this.state.vendor.vendorAccount.accountHolder}
+                  value={this.state.vendor && this.state.vendor.vendorAccount.accountHolder}
                   onChange={this.handleChange('accountHolder')}
                   margin="normal"
                   fullWidth
@@ -238,7 +259,7 @@ class UpdateVendor extends React.Component {
             </form>
           </DialogContent>
           <DialogActions align="centery">
-            <Button onClick={this.props.close} color="secondary">
+            <Button onClick={event => this.closeUpdateVendor(event)} color="secondary">
               닫기
             </Button>
           </DialogActions>
@@ -248,4 +269,12 @@ class UpdateVendor extends React.Component {
   }
 }
 
-export default UpdateVendor;
+const mapStateToProps = ({accounting, code }) => {
+  const { vendorInfo } = accounting;
+  const { bankList, vendorList } = code;
+  
+
+  return { vendorInfo, bankList, vendorList };
+}
+
+export default connect(mapStateToProps, { updateVendor, cleanStoreState,getCodeList })(UpdateVendor);

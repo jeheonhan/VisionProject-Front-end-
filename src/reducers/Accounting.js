@@ -7,11 +7,22 @@ import {
     UPDATE_VENDOR, 
     GET_CARD_LIST, 
     CARRY_CARD_LIST,
-    GET_ACCOUNT_LIST,
-    CARRY_ACCOUNT_LIST,
     ADD_CARD,
     GET_CARD,
-    CARRY_CARD
+    CARRY_CARD,
+    GET_ACCOUNT_LIST,
+    CARRY_ACCOUNT_LIST,
+    ADD_ACCOUNT,
+    CLEAN_STORE_STATE,
+    GET_VENDOR_BANK,
+    GET_VENDOR_ADDRESS,
+    CARRY_VENDOR_BANK,
+    CARRY_VENDOR_ADDRESS,
+    UPDATE_CARD,
+    GET_CHECK_ACCOUNT_LIST,
+    CARRY_CHECK_ACCOUNT_LIST,
+    GET_ACCOUNT,
+    CARRY_ACCOUNT,
 } from'../actionTypes/ActionTypes';
 
 const INIT_STATE = {
@@ -48,14 +59,13 @@ export default (state = INIT_STATE, action) => {
         case CARRY_VENDOR : {
             return{
                 ...state,
-                Vendor : action.payload
+                vendorInfo : action.payload
             }
         }
 
         case UPDATE_VENDOR : {
             return{
-                ...state,
-                Vendor : action.payload
+                ...state
             }
         }
 
@@ -71,26 +81,13 @@ export default (state = INIT_STATE, action) => {
                 cardList: action.payload
             }
         }
-
-        case GET_ACCOUNT_LIST : {
-            return{
-                ...state
-            }
-        }
-
-        case CARRY_ACCOUNT_LIST : {
-            return{
-                ...state,
-                AccountList: action.payload
-            }
-        }        
         
         case ADD_CARD : {
             return{
                 ...state
             }
         }
-
+        
         case GET_CARD : {
             return{
                 ...state
@@ -100,7 +97,92 @@ export default (state = INIT_STATE, action) => {
         case CARRY_CARD : {
             return{
                 ...state,
-                Card : action.payload
+                cardInfo : action.payload
+            }
+        }
+        
+        case GET_ACCOUNT_LIST : {
+            return{
+                ...state
+            }
+        }
+
+        case CARRY_ACCOUNT_LIST : {
+            return{
+                ...state,
+                accountList: action.payload
+            }
+        }        
+        
+        case ADD_ACCOUNT : {
+            return{
+                ...state
+            }
+        }
+
+        //원하는 store의 state값 날리기
+        case CLEAN_STORE_STATE : {
+            return{
+                ...state,
+                [action.payload]:null
+            }
+        }
+
+        case GET_VENDOR_BANK : {
+            return{
+                ...state
+            }
+        }
+
+        case CARRY_VENDOR_BANK : {
+            return{
+                ...state,
+                vendorBank : action.payload
+            }
+        }
+
+        case GET_VENDOR_ADDRESS : {
+            return{
+                ...state
+            }
+        }
+
+        case CARRY_VENDOR_ADDRESS : {
+            return{
+                ...state,
+                vendorAddress : action.payload
+            }
+        }
+
+        case UPDATE_CARD : {
+            return{
+                ...state
+            }
+        }
+
+        case GET_CHECK_ACCOUNT_LIST : {
+            return{
+                ...state
+            }
+        }
+
+        case CARRY_CHECK_ACCOUNT_LIST : {
+            return{
+                ...state,
+                checkAccountList: action.payload
+            }
+        }
+        
+        case GET_ACCOUNT : {
+            return{
+                ...state
+            }
+        }
+
+        case CARRY_ACCOUNT : {
+            return{
+                ...state,
+                accountInfo : action.payload
             }
         }
 

@@ -12,7 +12,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import Radio from '@material-ui/core/Radio';
 import { connect } from 'react-redux';
-import { getAccountList } from 'actions/index';
+import { getCheckAccountList, cleanStoreState } from 'actions/index';
 
 
 const classes = makeStyles(theme => ({
@@ -38,6 +38,8 @@ class FindAccount extends React.Component {
     
     super(props);
 
+    //sql에서 and와 or는 우선순위가 있다. and가 더 높기 때문에 and 또는 or가 하나의 묶음인 경우에는 and 앞 ()를 써서 하나로 합쳐주자
+    //AND (account_no LIKE '%'||#{searchKeyword}||'%'OR LOWER(reference) LIKE '%'||#{searchKeyword}||'%')
     this.state = {
       search:{
         searchKeyword : "",
@@ -65,12 +67,10 @@ class FindAccount extends React.Component {
 
   render() {
 
-    const { AccountList } = this.props;
+    const { checkAccountList } = this.props;
     
-    
-
-    if(AccountList === undefined){
-      this.props.getAccountList(this.state.search);
+    if(checkAccountList === undefined){
+      this.props.getCheckAccountList(this.state.search);
     }
 
 
@@ -79,7 +79,7 @@ class FindAccount extends React.Component {
         {/* Dialog의 onClose는 다이얼로그를 클릭하면 꺼지게 하는 속성  */}
         <Dialog open={this.props.open}>
             <DialogTitle>계좌검색</DialogTitle>
-              <DialogContent>
+              <DialogContent style={{minWidth: '500px', maxWidth: '500px', minHeight:'400px', maxHeight:'400px'}}>
                 <List>
                   
                   <TextField
@@ -96,7 +96,7 @@ class FindAccount extends React.Component {
                     helperText="계좌번호 또는 참고로 검색가능합니다"
                   />
 
-                  {AccountList && AccountList.map(row =>
+                  {checkAccountList && checkAccountList.map(row =>
                     <ListItem button key={row.accountRegNo}>
                       <ListItemText className="br-break" primary={row.accountNo}/>
                       &nbsp;&nbsp;&nbsp;
@@ -128,10 +128,9 @@ class FindAccount extends React.Component {
 }
 
 const mapStateToProps = ({ accounting }) => {
-  const { AccountList } = accounting;
+  const { checkAccountList } = accounting;
   
-  return { AccountList }
+  return { checkAccountList }
 }
 
-
-export default connect(mapStateToProps, { getAccountList })(FindAccount);
+export default connect(mapStateToProps, { getCheckAccountList, cleanStoreState })(FindAccount);

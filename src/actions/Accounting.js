@@ -7,11 +7,21 @@ import {
     UPDATE_VENDOR, 
     GET_CARD_LIST, 
     CARRY_CARD_LIST,
-    GET_ACCOUNT_LIST,
-    CARRY_ACCOUNT_LIST,
     ADD_CARD,
     GET_CARD,
-    CARRY_CARD
+    CARRY_CARD,
+    GET_ACCOUNT_LIST,
+    CARRY_ACCOUNT_LIST,
+    ADD_ACCOUNT,
+    GET_VENDOR_BANK,
+    GET_VENDOR_ADDRESS,
+    CARRY_VENDOR_BANK,
+    CARRY_VENDOR_ADDRESS,
+    UPDATE_CARD,
+    GET_CHECK_ACCOUNT_LIST,
+    CARRY_CHECK_ACCOUNT_LIST,
+    GET_ACCOUNT,
+    CARRY_ACCOUNT,
 } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
@@ -70,20 +80,6 @@ export const carryCardList = (data) => {
     }
 }
 
-export const getAccountList = (search) => {
-    return{
-        type: GET_ACCOUNT_LIST,
-        payload: search
-    }
-}
-
-export const carryAccountList = (data) => {
-    return{
-        type: CARRY_ACCOUNT_LIST,
-        payload: data
-    }
-}
-
 export const addCard = (data) => {
     return{
         type: ADD_CARD,
@@ -102,5 +98,88 @@ export const carryCard = (card) => {
     return{
         type: CARRY_CARD,
         payload: card
+    }
+}
+
+export const getAccountList = (search) => {
+    return{
+        type: GET_ACCOUNT_LIST,
+        payload: search
+    }
+}
+
+export const carryAccountList = (data) => {
+    return{
+        type: CARRY_ACCOUNT_LIST,
+        payload: data
+    }
+}
+
+export const addAccount = (data) => {
+    return{
+        type: ADD_ACCOUNT,
+        payload: data
+    }
+}
+
+export const getVendorBank = (vendorNo) => {
+    return{
+        type: GET_VENDOR_BANK,
+        payload: vendorNo
+    }
+}
+export const getVendorAddress = (vendorNo) => {
+    return{
+        type: GET_VENDOR_ADDRESS,
+        payload: vendorNo
+    }
+}
+
+export const carryVendorBank = (vendorBank) => {
+    return{
+        type: CARRY_VENDOR_BANK,
+        payload: vendorBank
+    }
+}
+
+export const carryVendorAddress = (vendorAddress) => {
+    return{
+        type: CARRY_VENDOR_ADDRESS,
+        payload: vendorAddress
+    }
+}
+
+export const updateCard = (card) => {
+    return{
+        type: UPDATE_CARD,
+        payload: card
+    }
+}
+
+export const getCheckAccountList = (search) => {
+    return{
+        type: GET_CHECK_ACCOUNT_LIST,
+        payload: search
+    }
+}
+
+export const carryCheckAccountList = (data) => {
+    return{
+        type: CARRY_CHECK_ACCOUNT_LIST,
+        payload: data
+    }
+}
+
+export const getAccount = (accountRegNo) => {
+    return{
+        type: GET_ACCOUNT,
+        payload: accountRegNo
+    }
+}
+
+export const carryAccount = (account) => {
+    return{
+        type: CARRY_ACCOUNT,
+        payload: account
     }
 }

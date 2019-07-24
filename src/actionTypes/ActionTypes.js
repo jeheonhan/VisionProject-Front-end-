@@ -198,15 +198,29 @@ export const GET_VENDOR_LIST = 'get_vendor_list';
 export const CARRY_VENDOR_LIST = 'carry_vendor_list';
 export const ADD_VENDOR = 'add_vendor';
 export const GET_VENDOR = 'get_vendor';
+export const GET_VENDOR_BANK = 'get_vendor_bank';
+export const GET_VENDOR_ADDRESS = 'get_vendor_address';
 export const CARRY_VENDOR = 'carry_vendor';
+export const CARRY_VENDOR_BANK = 'carry_vendor_bank';
+export const CARRY_VENDOR_ADDRESS = 'carry_vendor_address';
 export const UPDATE_VENDOR = 'update_vendor';
 export const GET_CARD_LIST = 'get_card_list';
 export const CARRY_CARD_LIST = 'carry_card_list';
-export const GET_ACCOUNT_LIST = 'get_account_list';
-export const CARRY_ACCOUNT_LIST = 'carry_account_list';
 export const ADD_CARD = 'add_card';
 export const GET_CARD = 'get_card';
 export const CARRY_CARD = 'carry_card';
+export const GET_ACCOUNT_LIST = 'get_account_list';
+export const CARRY_ACCOUNT_LIST = 'carry_account_list';
+export const ADD_ACCOUNT = 'add_account';
+export const UPDATE_CARD = 'update_card';
+export const GET_CHECK_ACCOUNT_LIST = 'get_check_account_list';
+export const CARRY_CHECK_ACCOUNT_LIST = 'carry_check_account_list';
+export const GET_ACCOUNT = 'get_account';
+export const CARRY_ACCOUNT = 'carry_account';
+
+
+
+
 
 
 
