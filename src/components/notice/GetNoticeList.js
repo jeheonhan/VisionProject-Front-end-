@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import {getNoticeList, getNoticeDetail} from 'actions';
+import {getNoticeList, getNoticeDetail} from 'actions/index';
 import GetNoticeDetail from 'components/notice/GetNoticeDetail';
 import { connect } from 'net';
 
