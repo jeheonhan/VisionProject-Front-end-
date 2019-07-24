@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { getCard, getCodeList, updateCard } from 'actions';
+import { getCard, getCodeList } from 'actions';
 import { connect } from 'react-redux';
 import UpdateCard from 'components/accounting/UpdateCard';
 
@@ -322,4 +322,4 @@ const mapStateToProps = ({ accounting, code }) => {
   // Warning: Material-UI: `children` must be passed when using the `TextField` component with `select`.
 }
 
-export default connect(mapStateToProps,{ getCard, getCodeList, updateCard })(CardTable);
+export default connect(mapStateToProps,{ getCard, getCodeList })(CardTable);

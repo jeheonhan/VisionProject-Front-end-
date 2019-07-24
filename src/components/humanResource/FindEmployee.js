@@ -78,8 +78,7 @@ class FindEmployee extends React.Component{
     return(        
         <Dialog open={this.props.open}  maxWidth="xl">
           <DialogTitle>사원 검색</DialogTitle>
-          <DialogContent >
-
+          <DialogContent style={{minWidth: '500px', maxWidth: '500px', minHeight:'400px', maxHeight:'400px'}}>
           <List >
             <TextField
             error

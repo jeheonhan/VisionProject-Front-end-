@@ -167,6 +167,8 @@ export const CARRY_WORKATTITUDE_LIST = 'carry_workattitude_list';
 export const GET_WORKATTITUDE_CODE_LIST = 'get_workattitude_code_list';
 export const CARRY_WORKATTITUDE_CODE_LIST = 'carry_workattitude_code_list';
 export const ADD_WORKATTITUDE = 'add_workattitude';
+export const UPDATE_APPOINTMENT = 'update_appointment';
+export const ADD_WORKATTITUDE_CODE = 'add_workattitude_code';
 
 
 
