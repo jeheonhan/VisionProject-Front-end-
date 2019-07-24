@@ -1,20 +1,20 @@
 import {
     GET_PRODUCT_LIST , CARRY_PRODUCT_LIST , CARRY_ORDER_TO_VENDOR_LIST ,
-    GET_ORDER_TO_VENDOR_LIST ,ADD_PRODUCT , GET_ADD_PRODUCT_ACCOUNT ,
-    CARRY_ADD_PRODUCT_ACCOUNT
+    GET_ORDER_TO_VENDOR_LIST ,ADD_PRODUCT , GET_INFO_ACCOUNT ,
+    CARRY_INFO_ACCOUNT
 } from '../actionTypes/ActionTypes';
 
 
 
 export const getProductList = () => {
-    console.log("리듀서가 잡아가는놈")
+    console.log("사가가 잡아가는놈")
     return {
         type : GET_PRODUCT_LIST
     }
 }
     
 export const carryProductList = (data) => {
-    console.log("put으로 디스패치하는놈")
+ 
     return{
         type : CARRY_PRODUCT_LIST,
         payload : data
@@ -43,17 +43,17 @@ export const addProduct = (data) => {
     }
 }
 
-export const addProductAccount = () => {
+export const getInfoAccount = () => {
     console.log("액션리턴 ")
     return {
-        type : GET_ADD_PRODUCT_ACCOUNT
+        type : GET_INFO_ACCOUNT
     }
 }
 
-export const carryAddProductAccount = (data) => {
+export const carryInfoAccount = (data) => {
     console.log("액션값들고 리턴 ")
     return {
-        type : CARRY_ADD_PRODUCT_ACCOUNT,
+        type : CARRY_INFO_ACCOUNT,
         payload : data
     }
 }

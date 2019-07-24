@@ -23,11 +23,9 @@ class ProductionManage extends React.Component{
             }
               return(
                 <div>
-                  
+                      
                   {ProductList !== undefined ? (<GetProductList ProductList={ProductList}></GetProductList>):"error"}
-              
-            
-                
+               
                   </div>
               );
 

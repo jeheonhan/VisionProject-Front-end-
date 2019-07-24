@@ -257,5 +257,5 @@ export const CARRY_PRODUCT_LIST = 'carry_product_list';
 export const GET_ORDER_TO_VENDOR_LIST = 'get_order_to_vendor_list';
 export const CARRY_ORDER_TO_VENDOR_LIST = 'carry_order_to_vendor_list';
 export const ADD_PRODUCT = 'add_product'
-export const GET_ADD_PRODUCT_ACCOUNT = 'get_add_product_account'
-export const CARRY_ADD_PRODUCT_ACCOUNT = 'carry_add_product_account'
+export const GET_INFO_ACCOUNT = 'get_info_account'
+export const CARRY_INFO_ACCOUNT = 'carry_info_account'

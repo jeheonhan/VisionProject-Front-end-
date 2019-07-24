@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {  addProduct } from 'actions/index';
-import {  addProductAccount } from 'actions/index';
+import {  addProduct,getInfoAccount } from 'actions/index';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -34,6 +33,11 @@ function Transition(props) {
 
 class FullScreenDialog extends React.Component {
 
+  constructor(props){
+    super(props);
+
+  }
+
 
   state = {
     open: false,
@@ -45,6 +49,8 @@ class FullScreenDialog extends React.Component {
       vendorNo : '',
     }
   };
+
+
 
   handleChange = (e) => {
     
@@ -95,11 +101,13 @@ class FullScreenDialog extends React.Component {
   }
 
   render() {
-
-    
-
+    const {infoAccount} = this.props;
+    console.log("startastatrastat");
+    console.log(infoAccount);
+   
     return (
       <div>
+
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
             등록
         </Button>
@@ -181,8 +189,8 @@ class FullScreenDialog extends React.Component {
     <div className="col-md-3 col-3" >
     <TextField
       name="vendorNo"
-      label="거래처번호"
-      value={this.state.name}
+      label="번호"
+      value= {this.state.name}
       onChange={this.handleChange}
       margin="normal"
       fullWidth
@@ -202,13 +210,15 @@ class FullScreenDialog extends React.Component {
 
 
 
-//const mapStateToProps = ({//저장하는 리듀서의 이름}) => {
- //{} = ;// 리듀서의 이름
-  //return {  };//키값
-//}
+const mapStateToProps = ({productionManagement}) => {
+ 
+ const {infoAccount}  = productionManagement ; 
+   return { infoAccount  };//키값
+
+}
 
 
-export default connect(null,{addProduct, addProductAccount})(FullScreenDialog);
+export default connect(mapStateToProps,{addProduct })(FullScreenDialog);
 
 
 

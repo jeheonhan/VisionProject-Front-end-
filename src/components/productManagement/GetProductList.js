@@ -18,7 +18,10 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
-import { getProductList } from 'actions/index.js';
+import { getProductList, getInfoAccount } from 'actions/index';
+import AddProduct from './AddProduct';
+
+
 
 let counter = 0;
 
@@ -48,7 +51,7 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    console.log("프로덕트컴포넌트")
+    
     const {onSelectAllClick, order, orderBy, numSelected, rowCount} = this.props;
 
     return (
@@ -202,8 +205,19 @@ class EnhancedTable extends React.Component {
       rowsPerPage: 10,
       search:{searchKeyword:null},
       flag: false
+   
+
+    };
+
+
+    const {getInfoAccount} = this.props;
+
+    if({getInfoAccount} !== undefined){
+      getInfoAccount();
     };
   }
+
+ 
 
   render() {
    
@@ -215,10 +229,23 @@ class EnhancedTable extends React.Component {
       this.setState({data:ProductList});
     }
 
+    
+   
+
+    
+      
+      
+    
+    
 
 
     return (
+     
+
+      
+          
       <div>
+        <AddProduct     infoAccount = { getInfoAccount }    >     </AddProduct>
         <EnhancedTableToolbar numSelected={selected.length}/>
         <div className="flex-auto">
           <div className="table-responsive-material">
@@ -280,11 +307,12 @@ class EnhancedTable extends React.Component {
 }
 
 const mapStateToProps = ({productionManagement}) => {
-  console.log("프로덕트의 컴포넌트의 커넥트")
-  const { ProductList } = productionManagement;
-  return { ProductList };
+ 
+  const { ProductList, infoAccount } = productionManagement;
+  return { ProductList, infoAccount};
 }
 
 
+
                    
-export default connect(mapStateToProps,  null )(EnhancedTable);
+export default connect(mapStateToProps,  {getInfoAccount} )(EnhancedTable);
