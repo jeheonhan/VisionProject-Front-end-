@@ -7,3 +7,4 @@ export * from './Code';
 export * from './HumanResource';
 export * from './ProductionManagement';
 export * from './Common';
+export * from './Branch';

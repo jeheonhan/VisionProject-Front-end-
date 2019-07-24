@@ -225,3 +225,19 @@ export const CARRY_NOTICE_LIST = 'carry_notice_list';
 //지점관리
 export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';
 export const CARRY_DAILY_SALES_LIST = 'carry_daily_sales_list';
+
+
+
+
+
+
+
+
+//생산관리
+export const GET_PRODUCT_LIST = 'get_product_list';
+export const CARRY_PRODUCT_LIST = 'carry_product_list';
+export const GET_ORDER_TO_VENDOR_LIST = 'get_order_to_vendor_list';
+export const CARRY_ORDER_TO_VENDOR_LIST = 'carry_order_to_vendor_list';
+export const ADD_PRODUCT = 'add_product'
+export const GET_ADD_PRODUCT_ACCOUNT = 'get_add_product_account'
+export const CARRY_ADD_PRODUCT_ACCOUNT = 'carry_add_product_account'
