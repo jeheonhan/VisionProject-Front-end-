@@ -27,7 +27,7 @@ const getOrderToVendorListRequest = async () => {
 
 const addProductRequest = async (data) => {
     console.log("addProductRequest() 왓냐");
-    console.log("data 왓냐 :: " + data);
+    console.log("data 왓냐 :: " );
     console.log(data);
     return await axios({
         method : "POST",
