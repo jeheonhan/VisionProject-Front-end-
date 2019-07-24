@@ -18,6 +18,11 @@ import {  GET_HRCARD_LIST
         CHECKED_APPOINTMENT_ROW_DATA,
         UPDATE_APPOINTMENT,
         ADD_WORKATTITUDE_CODE,
+        GET_DEPARTMENT_LIST,
+        CARRY_DEPARTMENT_LIST,
+        ADD_DEPARTMENT,
+        CONVERT_DEPART_USAGE_STATUS,
+        CHECKED_WORKATTITUDE,
         } from '../actionTypes/ActionTypes';
 
 
@@ -80,6 +85,13 @@ export const checkedWorkAttitudeCode = (data) => {
 export const checkedApointmentRowData = (data) => {
     return{
         type: CHECKED_APPOINTMENT_ROW_DATA,
+        payload: data
+    }
+}
+
+export const checkedWorkAttitude = (data) => {
+    return{
+        type: CHECKED_WORKATTITUDE,
         payload: data
     }
 }
@@ -157,6 +169,34 @@ export const updateAppointment = (data) => {
 export const addWorkAttitudeCode = (data) => {
     return{
         type: ADD_WORKATTITUDE_CODE,
+        payload: data
+    }
+}
+
+export const getDepartmentList = (search) => {
+    return{
+        type: GET_DEPARTMENT_LIST,
+        payload: search
+    }
+}
+
+export const carryDepartmentList = (data) => {
+    return{
+        type: CARRY_DEPARTMENT_LIST,
+        payload: data
+    }
+}
+
+export const addDepartment = (data) => {
+    return{
+        type: ADD_DEPARTMENT,
+        payload: data
+    }
+}
+
+export const convertDepartUsageStatus = (data) => {
+    return{
+        type: CONVERT_DEPART_USAGE_STATUS,
         payload: data
     }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getWorkAttitudeList } from 'actions';
+import { getWorkAttitudeList
+        ,checkedWorkAttitude } from 'actions';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Table from '@material-ui/core/Table';
@@ -18,8 +19,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconMailOutline from '@material-ui/icons/MailOutline';
-import ComposeMail from 'components/mail/ComposeMail';
 
 
 
@@ -193,6 +192,12 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  //근태코드 수정
+  handleModifyWorkAttitude = (event, row) => {
+    event.preventDefault();
+    this.props.checkedWorkAttitude(row);
+  }
+
 
   constructor(props, context) {
     super(props, context);
@@ -256,7 +261,11 @@ class EnhancedTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.workAttitudeNo}</span></TableCell>
+                      <TableCell align="left" >
+                        <span style={{cursor:'pointer'}} onClick={event => {event.preventDefault()}}>
+                          {row.workAttitudeNo}
+                        </span>
+                      </TableCell>
                       <TableCell align="left">{row.employeeNo}</TableCell>
                       <TableCell align="left">{row.employeeName}</TableCell>
                       <TableCell align="left">{row.workAttitudeCodeNo}</TableCell>
@@ -290,4 +299,4 @@ const mapStateToProps = ({ humanResource }) => {
   return { workAttitudeList };
 }
 
-export default connect(mapStateToProps, { getWorkAttitudeList })(EnhancedTable);
+export default connect(mapStateToProps, { getWorkAttitudeList, checkedWorkAttitude })(EnhancedTable);

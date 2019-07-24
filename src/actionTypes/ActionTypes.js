@@ -157,6 +157,7 @@ export const CARRY_APPOINT_LIST = 'carry_appoint_list';
 export const CHECKED_EMPLOYEE = 'checked_employee';
 export const CHECKED_DEPARTMENT = 'checked_department';
 export const CHECKED_RANK = 'checked_rank';
+export const CHECKED_WORKATTITUDE = 'checked_workattitude';
 export const CHECKED_WORKATTITUDE_CODE = 'checked_workattitude_code';
 export const CHECKED_APPOINTMENT_ROW_DATA = 'checked_appointment_row_data';
 export const ADD_APPOINTMENT = 'add_appointment';
@@ -169,6 +170,10 @@ export const CARRY_WORKATTITUDE_CODE_LIST = 'carry_workattitude_code_list';
 export const ADD_WORKATTITUDE = 'add_workattitude';
 export const UPDATE_APPOINTMENT = 'update_appointment';
 export const ADD_WORKATTITUDE_CODE = 'add_workattitude_code';
+export const GET_DEPARTMENT_LIST = 'get_department_list';
+export const CARRY_DEPARTMENT_LIST = 'carry_department_list';
+export const ADD_DEPARTMENT = 'add_department';
+export const CONVERT_DEPART_USAGE_STATUS = 'convert_depart_usage_status';
 
 
 

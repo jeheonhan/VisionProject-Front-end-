@@ -8,7 +8,9 @@ import { carryHRCardList,
          carryWorkAttitudeList,
          carryWorkAttitudeCodeList,
          getWorkAttitudeList,
-         getWorkAttitudeCodeList } from 'actions/index';
+         getWorkAttitudeCodeList,
+         carryDepartmentList, 
+         getDepartmentList} from 'actions/index';
 import { GET_HRCARD_LIST, 
          GET_APPOINT_LIST, 
          ADD_APPOINTMENT, 
@@ -18,7 +20,40 @@ import { GET_HRCARD_LIST,
          GET_WORKATTITUDE_CODE_LIST,
          ADD_WORKATTITUDE,
          UPDATE_APPOINTMENT,
-         ADD_WORKATTITUDE_CODE, } from "actionTypes/ActionTypes";
+         ADD_WORKATTITUDE_CODE,
+         GET_DEPARTMENT_LIST,
+         ADD_DEPARTMENT,
+         CONVERT_DEPART_USAGE_STATUS, } from "actionTypes/ActionTypes";
+
+const convertDepartUsageRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/convertDepartmentUsageStatus",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
+
+const addDepartmentRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/addDepartment",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
+
+const getDepartmentListRequest = async (_data) => {
+    return await axios({
+        method:"POST",
+        url:"/hr/getDepartmentList",
+        data:_data
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
 
 const addWorkAttitudeCodeRequest = async (_data) => {
     await axios({
@@ -119,6 +154,21 @@ const getAppointListRequest = async (search) => {
     .catch(error => console.log(error));
 }
 
+function* convertDepartUsageFn({payload}){
+    yield call(convertDepartUsageRequest, payload);
+    yield put(getDepartmentList({searchKeyword:null}));
+}
+
+function* addDepartmentFn({payload}){
+    yield call(addDepartmentRequest, payload);
+    yield put(getDepartmentList({searchKeyword:null}));
+}
+
+function* getDepartmentListFn({payload}){
+    const departList = yield call(getDepartmentListRequest, payload);
+    yield put(carryDepartmentList(departList));
+}
+
 function* addWorkAttitudeCodeFn({payload}){
     yield call(addWorkAttitudeCodeRequest, payload);
     yield put(getWorkAttitudeCodeList({searchKeyword:null}));
@@ -168,6 +218,18 @@ function* getAppointListFn({payload}){
     console.log(payload);
     const appointList = yield call(getAppointListRequest, payload);
     yield put(carryAppointList(appointList));
+}
+
+export function* convertDepartUsageSaga(){
+    yield takeEvery(CONVERT_DEPART_USAGE_STATUS, convertDepartUsageFn);
+}
+
+export function* addDepartmentSaga(){
+    yield takeEvery(ADD_DEPARTMENT, addDepartmentFn);
+}
+
+export function* getDepartmentListSaga(){
+    yield takeEvery(GET_DEPARTMENT_LIST, getDepartmentListFn);
 }
 
 export function* addWorkAttitudeCodeSaga(){
@@ -221,5 +283,8 @@ export default function* rootSaga(){
             fork(getWorkAttitudeCodeListSaga),
             fork(addWorkAttitudeSaga),
             fork(updateAppointmentSaga),
-            fork(addWorkAttitudeCodeSaga)]);
+            fork(addWorkAttitudeCodeSaga),
+            fork(getDepartmentListSaga),
+            fork(addDepartmentSaga),
+            fork(convertDepartUsageSaga)]);
 }

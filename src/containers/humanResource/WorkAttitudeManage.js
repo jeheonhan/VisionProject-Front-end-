@@ -9,8 +9,19 @@ class WorkAttitudeManage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            search:{searchKeyword:null}
+            search:{searchKeyword:null},
+            modifyOpen:false
         }
+    }
+
+    //근태수정화면 열기
+    handleModifyOpen = () => {
+        this.setState({modifyOpen:true});
+    }
+
+    //근태수정화면 닫기
+    handleModifyClose = () => {
+        this.setState({modifyOpen:false});
     }
 
     render(){
