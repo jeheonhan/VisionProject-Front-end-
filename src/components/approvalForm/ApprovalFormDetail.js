@@ -10,6 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import CardBox from 'components/CardBox';
 import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom';
 import { Button } from '@material-ui/core';
 
 function Transition(props) {
@@ -47,6 +48,30 @@ class FullScreenDialog extends React.Component {
       })
   }
 
+  handleAddApproval = (event, _formNo) => {
+    event.preventDefault();
+    alert("handleAddApproval"+_formNo)
+    this.setState({
+      redirect:true,
+      formNo : _formNo
+    })
+  }
+
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      alert("redirect")
+      this.setState({
+        ...this.state,
+        redirect:false
+      })
+
+      return <Redirect to={{
+        pathname: "/app/approval/approvalRequest",
+        state: {formNo : this.state.formNo}
+      }}/>
+    }
+  }
+
   handleClickOpen = () => {
     this.setState({
       ...this.state,
@@ -64,6 +89,7 @@ class FullScreenDialog extends React.Component {
   render() {
     return (
       <div>
+        {this.renderRedirect()}
         <Dialog
           fullScreen
           open={this.props.open}
@@ -103,7 +129,7 @@ class FullScreenDialog extends React.Component {
             />
             </span>
             <span style={{float:"right", paddingTop:"25px", paddingRight:"20px"}}>
-            <Button variant="contained" className="jr-btn bg-danger text-white">결재서작성</Button>
+            <Button variant="contained" className="jr-btn bg-danger text-white" onClick={(event) => this.handleAddApproval(event, this.props.targetForm.approvalFormNo)}>결재서작성</Button>
             </span>
             </div>
             <Divider/>
