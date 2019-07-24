@@ -77,7 +77,6 @@ class AddAccount extends React.Component {
         <Dialog
           fullScreen
           open={this.state.open}
-          onClose={this.handleRequestClose}
           TransitionComponent={Transition}
         >
           <AppBar className="position-relative">

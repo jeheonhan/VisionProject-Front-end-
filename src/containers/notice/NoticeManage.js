@@ -33,7 +33,7 @@ class NoticeManage extends React.Component{
 
 const mapStateToProps = ({ notice }) => {
     const { noticeList } = notice;
-    return { noticeList }
+    return { noticeList };
 }
 
-export default connect(mapStateToProps, { getNoticeList })(NoticeManage)
+export default connect(mapStateToProps, { getNoticeList })(NoticeManage);

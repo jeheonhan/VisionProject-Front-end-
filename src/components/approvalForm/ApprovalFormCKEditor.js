@@ -34,7 +34,6 @@ class CK extends React.Component {
   
     render() {
       return (
-        <div>
           <div className="jr-card">
             <CKEditor
             config={{
@@ -49,7 +48,6 @@ class CK extends React.Component {
               }}
             />
           </div>
-        </div>
       )
     }
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getCodeList } from 'actions/index';
+import { getCodeList, cleanStoreState, updateAccount } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,7 +9,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
 
-
 class UpdateAccount extends React.Component {
   
     state = {
@@ -17,9 +16,13 @@ class UpdateAccount extends React.Component {
         updateFlag : false
     }
 
+    //계좌수정 제출
     submitAccount = (event) => {
         event.preventDefault();
-
+        this.props.updateAccount(this.state.account);
+        this.setState({ updateFlag : false });
+        this.props.cleanStoreState('accountInfo');
+        this.props.close();
     }
 
     //계좌수정
@@ -27,6 +30,15 @@ class UpdateAccount extends React.Component {
         this.setState({
             account : { ...this.state.account, [name] : event.target.value}
         })
+        console.log(this.state.account)
+    }
+
+    //계좌수정 다이얼로그 닫기
+    closeUpdateAccount = (event) => {
+        event.preventDefault();
+        this.setState({ updateFlag : false });
+        this.props.cleanStoreState('accountInfo');
+        this.props.close();
     }
 
     render() {
@@ -41,7 +53,7 @@ class UpdateAccount extends React.Component {
     if( !this.state.updateFlag ) {
         if(this.state.account !== accountInfo && accountInfo !== null) {
             this.setState({
-                updateFlag : false,
+                updateFlag : true,
                 account : accountInfo
             })
         }
@@ -51,7 +63,7 @@ class UpdateAccount extends React.Component {
       <div>
         
         <Dialog open={this.props.open}>
-          <DialogTitle>Subscribe</DialogTitle>
+          <DialogTitle>계좌수정</DialogTitle>
           <DialogContent>
 
             <form className="row" noValidate autoComplete="off">
@@ -60,7 +72,7 @@ class UpdateAccount extends React.Component {
                             id="bankCodeNo"
                             select
                             label="은행 선택"
-                            value={this.state.bankCodeNo}
+                            value={this.state.account && this.state.account.bankCodeNo}
                             onChange={this.handleChange('bankCodeNo')}
                             SelectProps={{}}
                             helperText="은행을 선택해 주세요"
@@ -83,7 +95,7 @@ class UpdateAccount extends React.Component {
                             }}
                             placeholder="계좌번호"
                             helperText="계좌번호를 입력해주세요"
-                            value={this.state.accountNo}
+                            value={this.state.account && this.state.account.accountNo}
                             fullWidth
                             margin="normal"
                             onChange={this.handleChange('accountNo')}
@@ -98,7 +110,7 @@ class UpdateAccount extends React.Component {
                             }}
                             placeholder="예금주명"
                             helperText="예금주명을 입력해주세요"
-                            value={this.state.accountHolder}
+                            value={this.state.account && this.state.account.accountHolder}
                             fullWidth
                             margin="normal"
                             onChange={this.handleChange('accountHolder')}
@@ -113,7 +125,7 @@ class UpdateAccount extends React.Component {
                             }}
                             placeholder="참고"
                             helperText="계좌 검색시 사용할 키워드를 입력해주세요"
-                            value={this.state.reference}
+                            value={this.state.account && this.state.account.reference}
                             fullWidth
                             margin="normal"
                             onChange={this.handleChange('reference')}
@@ -124,7 +136,7 @@ class UpdateAccount extends React.Component {
                             id="accountCategoryCodeNo"
                             select
                             label="사용처 선택"
-                            value={this.state.accountCategoryCodeNo}
+                            value={this.state.account && this.state.account.accountCategoryCodeNo}
                             onChange={this.handleChange('accountCategoryCodeNo')}
                             SelectProps={{}}
                             helperText="사용처를 선택해 주세요"
@@ -162,4 +174,4 @@ const mapStateToProps = ({ code, accounting }) => {
     return { bankList, accountCategoryList, accountInfo };
 }
 
-export default connect(mapStateToProps, {getCodeList})(UpdateAccount);
+export default connect(mapStateToProps, {getCodeList, cleanStoreState, updateAccount})(UpdateAccount);

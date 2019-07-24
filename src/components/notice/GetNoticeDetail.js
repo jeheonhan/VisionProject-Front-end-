@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -11,51 +10,35 @@ import CardBox from 'components/CardBox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
-const useStyles = makeStyles(theme => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  leftIcon: {
-    marginRight: theme.spacing(1),
-  },
-  rightIcon: {
-    marginLeft: theme.spacing(1),
-  },
-  iconSmall: {
-    fontSize: 20,
-  },
-}));
 
 function Transition(props) {
-  return <Slide direction="left" {...props} />;
+  return <Slide direction="up" {...props} />;
 }
 
 class GetNoticeDetail extends React.Component {
 
+  constructor(props){
 
-  state = {
-    open: false,
-    notice:{}
-  };
+    super(props);
 
-  handleRequestClose = () => {
-    this.setState({open: false});
-  };
+    this.state = {
+      notice : this.props.noticeDetail,
+      open : this.props.open
+    }
+}
+
 
   render() {
 
-    if(this.state.notice !== this.props.notice){
-       this.setState({notice: this.props.notice});
+    if(this.state.notice !== this.props.noticeDetail){
+       this.setState({notice: this.props.noticeDetail});
     }
-
-    console.log(this.state)
-
+    //console.log(this.state)
     return (
       <div>
         <Dialog
           fullScreen
-          open={this.state.open}
-          onClose={this.handleRequestClose}
+          open={this.props.open}
           TransitionComponent={Transition}
         >
           <AppBar className="position-relative">
@@ -67,34 +50,36 @@ class GetNoticeDetail extends React.Component {
               }}>
                 공지사항 상세조회
               </Typography>
-              <Button onClick={this.handleRequestClose} color="inherit">
+              <Button onClick={this.props.handleRequestClose} color="inherit">
                 닫기
               </Button>
             </Toolbar>
           </AppBar>
               
           <div  align="center">
-          <CardBox styleName="col-lg-8" cardStyle="p-0" headerOutside>
             <List>
                 <ListItem>
                   <div>No : {this.state.notice.noticeNo}</div>
                 </ListItem>
+                <hr/>
                 <ListItem>
                   <div>제   목 : {this.state.notice.noticeTitle}</div>
                 </ListItem>
+                <hr/>
                 <ListItem>
                   <div>작성자 : {this.state.notice.employeeName}({this.state.notice.departCodeName})</div>
                 </ListItem>
+                <hr/>
                 <ListItem>
                   <div>조회수 : {this.state.notice.viewCount}</div>
                 </ListItem>
+                <hr/>
                 <ListItem>
-                  <div>내   용 : </div><br/>
-                  <div>{this.state.notice.viewCount}</div>
+                  <div>내   용 </div>
                 </ListItem>
-
+                  <br/>
+                  <div>{this.state.notice.content}</div>             
             </List>
-          </CardBox>
           </div>
 
         </Dialog>

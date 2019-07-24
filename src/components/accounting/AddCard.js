@@ -102,6 +102,7 @@ class AddCard extends React.Component {
     this.setState({cardImage:files})
   }
 
+  //계좌번호 입력
   getAccountNo = (_accountNo) => {
     this.setState({
       accountNo : _accountNo

@@ -11,7 +11,7 @@ const Product = ({match}) => {
       <ContainerHeader title={"물품관리"} match={match}/>
       <ProductionManage></ProductionManage>
       <div align="right">
-          <AddProduct></AddProduct>
+          
         </div>
     </div>
     

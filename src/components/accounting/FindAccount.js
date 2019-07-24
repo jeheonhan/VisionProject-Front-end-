@@ -43,10 +43,11 @@ class FindAccount extends React.Component {
     this.state = {
       search:{
         searchKeyword : "",
-        searchCondition : "06",
-        usageCondition : "01"
+        searchCondition : "",
+        usageCondition : "01",
       },
       selectedValue: undefined,
+      accountFlag: false,
     }
   };
 
@@ -62,6 +63,20 @@ class FindAccount extends React.Component {
 
   submitButton = () => {
     this.props.getAccountNo(this.state.selectedValue);
+    // this.props.cleanStoreState("checkAccountList");
+    this.setState({
+      accountFlag : false
+    })
+    console.log("findAccount submit 들어왔습니다")
+    this.props.handleFindAccountClose();
+  }
+
+  closeFindAccountDialog = () => {
+    // this.props.cleanStoreState("checkAccountList");
+    this.setState({
+      accountFlag : false
+    })
+    console.log("findAccount close 들어왔습니다")
     this.props.handleFindAccountClose();
   }
 
@@ -69,10 +84,23 @@ class FindAccount extends React.Component {
 
     const { checkAccountList } = this.props;
     
-    if(checkAccountList === undefined){
+    if(!this.state.accountFlag && this.props.searchCondition !== undefined){
+      console.log("searchCondition이 있을때")
+      this.setState({
+        accountFlag : true
+      })
+      this.props.getCheckAccountList({
+          searchKeyword : "",
+          searchCondition : this.props.searchCondition,
+          usageCondition : "01", 
+      });
+    }else if(!this.state.accountFlag && this.props.searchCondition === undefined){
+      console.log("searchCondition이 없을때")
+      this.setState({
+        accountFlag : true
+      })
       this.props.getCheckAccountList(this.state.search);
     }
-
 
     return (
       <div>
@@ -102,6 +130,8 @@ class FindAccount extends React.Component {
                       &nbsp;&nbsp;&nbsp;
                       <ListItemText className="br-break" primary={row.bankCodeName}/>
                       &nbsp;&nbsp;&nbsp;
+                      <ListItemText className="br-break" primary={row.reference}/>
+                      &nbsp;&nbsp;&nbsp;
                       <ListItemSecondaryAction>
                         <Radio color="primary"
                           checked={this.state.selectedValue == row.accountNo}
@@ -117,7 +147,7 @@ class FindAccount extends React.Component {
                 <Button onClick={this.submitButton} color="secondary">
                   확인
                 </Button>
-                <Button onClick={this.props.handleFindAccountClose} color="primary">
+                <Button onClick={this.closeFindAccountDialog} color="primary">
                   취소
                 </Button>
               </DialogActions>

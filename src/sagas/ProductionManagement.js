@@ -1,7 +1,7 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { carryProductList, carryOrderToVendorList, addProduct, getProductList, addProductAccount} from 'actions/index';
-import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST, ADD_PRODUCT, GET_ADD_PRODUCT_ACCOUNT} from "actionTypes/ActionTypes";
+import { carryProductList, carryOrderToVendorList, addProduct, getProductList, addProductAccount, getInfoAccount,carryInfoAccount} from 'actions/index';
+import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST, ADD_PRODUCT, GET_INFO_ACCOUNT} from "actionTypes/ActionTypes";
 
 
 
@@ -27,7 +27,7 @@ const getOrderToVendorListRequest = async () => {
 
 const addProductRequest = async (data) => {
     console.log("addProductRequest() 왓냐");
-    console.log("data 왓냐 :: " + data);
+    console.log("data 왓냐 :: " );
     console.log(data);
     return await axios({
         method : "POST",
@@ -41,10 +41,10 @@ const addProductRequest = async (data) => {
 const getProductAccountRequest = async () => {
     console.log("getProductAccountRequest 왓냐");
     return await axios({
-       method : "POST",
+       method : "GET",
        url : "/pm/addProductPreparing" 
     })
-    .then(respones => respones)
+    .then(respones => respones.data)
     .catch(error => console.log(error))
 }   
 
@@ -78,9 +78,10 @@ function* addProductFn({payload}){
 
 function* getProductAccountFn(){
     console.log("가자 Fn() 1");
-    yield call(getProductAccountRequest);
+   const accountIfo = yield call(getProductAccountRequest);
     console.log("가자 Fn() 2");
-    yield put(addProductAccount());
+    console.log(accountIfo);
+    yield put(carryInfoAccount(accountIfo));
 }
 
 
@@ -107,7 +108,7 @@ export function* addProductSaga(){
 
 export function* getProductAccountSaga() {
     console.log("getProductAccountSaga()");
-    yield takeEvery(GET_ADD_PRODUCT_ACCOUNT, getProductAccountFn)
+    yield takeEvery(GET_INFO_ACCOUNT, getProductAccountFn)
 }
 
 

@@ -22,6 +22,10 @@ import {
     CARRY_CHECK_ACCOUNT_LIST,
     GET_ACCOUNT,
     CARRY_ACCOUNT,
+    UPDATE_ACCOUNT,
+    GET_STATEMENT_LIST,
+    CARRY_STATEMENT_LIST,
+    ADD_STATEMENT,
 } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
@@ -181,5 +185,33 @@ export const carryAccount = (account) => {
     return{
         type: CARRY_ACCOUNT,
         payload: account
+    }
+}
+
+export const updateAccount = (account) => {
+    return{
+        type: UPDATE_ACCOUNT,
+        payload: account
+    }
+}
+
+export const getStatementList = (search) => {
+    return{
+        type: GET_STATEMENT_LIST,
+        payload: search
+    }
+}
+
+export const carryStatementList = (data) => {
+    return{
+        type: CARRY_STATEMENT_LIST,
+        payload: data
+    }
+}
+
+export const addStatement = (data) => {
+    return{
+        type: ADD_STATEMENT,
+        payload: data
     }
 }

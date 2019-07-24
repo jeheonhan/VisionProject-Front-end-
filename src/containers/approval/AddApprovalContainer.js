@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import CardBox from 'components/CardBox';
 import AddApproval from 'components/approval/AddApproval';
-import Button from '@material-ui/core/Button';
-import {CallMade} from '@material-ui/icons'
+
 
 
 
@@ -17,14 +16,8 @@ class ApprovalFormList extends React.Component{
 
             return(
             <div>
-                <CardBox styleName="col-lg-13" cardStyle="p-1" headerOutside>
-                    <AddApproval></AddApproval>
-                </CardBox>
-                <span style={{float:"right", padding:"20px"}}>
-                    <Button variant="contained" color="primary" className="jr-btn jr-btn-lg">
-                        <CallMade/>상신
-                    </Button>
-                </span>
+                    {this.props.form!==undefined ? <AddApproval formName={this.props.formName} form={this.props.form} formNo={this.props.formNo}/> : ""}
+
             </div>
         )}
 }

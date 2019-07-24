@@ -1,8 +1,8 @@
 import { GET_PRODUCT_LIST, CARRY_PRODUCT_LIST ,
     GET_ORDER_TO_VENDOR_LIST, CARRY_ORDER_TO_VENDOR_LIST,
     ADD_PRODUCT,
-    GET_ADD_PRODUCT_ACCOUNT,
-    CARRY_ADD_PRODUCT_ACCOUNT,
+    GET_INFO_ACCOUNT,
+    CARRY_INFO_ACCOUNT,
   
 } from "actionTypes/ActionTypes";
 
@@ -35,7 +35,7 @@ switch(action.type){
            ...state,
            ProductList: action.payload
        }
-   }
+   }//리듀서가 ProdictList라는 키네임으로 저장을 함.
 
    case GET_ORDER_TO_VENDOR_LIST : {
        console.log("겟오더벤더리스트")
@@ -59,18 +59,18 @@ switch(action.type){
        }
    }
 
-   case GET_ADD_PRODUCT_ACCOUNT : {
+   case GET_INFO_ACCOUNT : {
     console.log("애드프로덕트거래처번호가져오려고 액션취하는놈")
        return {
            ...state
        }
    }
 
-   case CARRY_ADD_PRODUCT_ACCOUNT : {
+   case CARRY_INFO_ACCOUNT : {
     console.log("애드프로덕트거래처번호가져오는놈")
        return {
            ...state,
-           getInfoAccount : action.payload
+           infoAccount : action.payload
        }
    }
 
