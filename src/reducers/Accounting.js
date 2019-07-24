@@ -23,6 +23,7 @@ import {
     CARRY_CHECK_ACCOUNT_LIST,
     GET_ACCOUNT,
     CARRY_ACCOUNT,
+    CARRY_STATEMENT_LIST,
 } from'../actionTypes/ActionTypes';
 
 const INIT_STATE = {
@@ -31,6 +32,7 @@ const INIT_STATE = {
 
 export default (state = INIT_STATE, action) => {
     switch(action.type){
+
         case GET_VENDOR_LIST : {
             return{
                 ...state
@@ -183,6 +185,13 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 accountInfo : action.payload
+            }
+        }
+
+        case CARRY_STATEMENT_LIST : {
+            return{
+                ...state,
+                statementList: action.payload
             }
         }
 

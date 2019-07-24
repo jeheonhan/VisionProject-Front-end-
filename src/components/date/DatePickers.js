@@ -17,7 +17,7 @@ export default class DatePickers extends Component {
     const {selectedDate} = this.state;
 
     //props로 전달되는 date값이 있을 경우 전달된 date를 나타내고, 만약 없으면 현재 날짜로 처리됨
-    if(this.props.value !== this.state.selectedDate){
+    if(this.props.value && this.props.value !== this.state.selectedDate){
       console.log("date :: "+this.props.value)
       this.setState({selectedDate:this.props.value})
     }

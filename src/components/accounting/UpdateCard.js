@@ -72,15 +72,14 @@ class UpdateCard extends React.Component {
         })
     }
 
-    //카드 수정 함수
+    //카드수정
     handleChange = name => event => {
-
-            this.setState({ card:{...this.state.card, [name]: event.target.value} });
-            console.log(this.state.card);
-        
+            this.setState({ 
+                card:{...this.state.card, [name]: event.target.value} 
+            });
     };
 
-    //카드 수정 다이얼로그 닫기
+    //카드수정 다이얼로그 닫기
     closeUpdateCard = (event) => {
         event.preventDefault();
         this.setState({ updateFlag : false });
@@ -88,9 +87,9 @@ class UpdateCard extends React.Component {
         this.props.close();
     }
 
-    //카드 수정 제출
-    submitCard = () => {
-
+    //카드수정 제출
+    submitCard = (event) => {
+        event.preventDefault();
         this.props.updateCard(this.state.card);
         this.setState({ updateFlag : false });
         this.props.cleanStoreState('cardInfo');
@@ -262,7 +261,7 @@ class UpdateCard extends React.Component {
                         </div>
 
                         <div className="col-md-12 col-12">
-                            <Button className="jr-btn text-uppercase btn-block" color="default" onClick={() => {this.submitCard()}}>수정하기</Button>
+                            <Button className="jr-btn text-uppercase btn-block" color="default" onClick={(event) => {this.submitCard(event)}}>수정하기</Button>
                         </div>
 
                         <FindEmployee 

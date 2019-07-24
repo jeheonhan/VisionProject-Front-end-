@@ -219,7 +219,10 @@ export const GET_CHECK_ACCOUNT_LIST = 'get_check_account_list';
 export const CARRY_CHECK_ACCOUNT_LIST = 'carry_check_account_list';
 export const GET_ACCOUNT = 'get_account';
 export const CARRY_ACCOUNT = 'carry_account';
-
+export const UPDATE_ACCOUNT = 'update_account';
+export const GET_STATEMENT_LIST = 'get_statement_list';
+export const CARRY_STATEMENT_LIST = 'carry_statement_list';
+export const ADD_STATEMENT = 'add_statement';
 
 
 
