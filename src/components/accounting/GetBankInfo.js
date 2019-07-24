@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
+import { connect } from 'react-redux';
 
 class GetBankInfo extends Component {
 
@@ -14,28 +14,29 @@ class GetBankInfo extends Component {
 
 
   render() {
-    console.log("여기는 GetBankInfo");
+    
+    const { vendorBank } = this.props;
     
     return (
       <div>
 
-        <Dialog open={this.props.open} onClose={this.handleRequestClose}>
+        <Dialog open={this.props.open}>
           <DialogTitle>
             {"이체정보"}
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
               <div>
-                계좌번호 : { this.props.vendor.vendorAccount.accountNo }
+                계좌번호 : { vendorBank && vendorBank.vendorAccount.accountNo }
               </div>
               <div>
-                예금주 : { this.props.vendor.vendorAccount.accountHolder }
+                예금주 : { vendorBank && vendorBank.vendorAccount.accountHolder }
               </div>
               <div>
-                은행코드 : { this.props.vendor.vendorAccount.bankCodeNo }
+                은행코드 : { vendorBank && vendorBank.vendorAccount.bankCodeNo }
               </div>
               <div>
-                은행명 : { this.props.vendor.vendorAccount.bankCodeName }
+                은행명 : { vendorBank && vendorBank.vendorAccount.bankCodeName }
               </div>
             </DialogContentText>
           </DialogContent>
@@ -52,4 +53,10 @@ class GetBankInfo extends Component {
   }
 }
 
-export default GetBankInfo;
+const mapStateToProps = ({ accounting }) => {
+  const { vendorBank } = accounting;
+
+  return { vendorBank };
+}
+
+export default connect(mapStateToProps)(GetBankInfo);

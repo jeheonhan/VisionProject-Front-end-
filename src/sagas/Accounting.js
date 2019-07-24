@@ -7,7 +7,12 @@ import {
     carryCardList, 
     carryAccountList, 
     getCardList, 
-    carryCard
+    carryCard,
+    getAccountList,
+    carryVendorBank,
+    carryVendorAddress,
+    carryCheckAccountList,
+    carryAccount,
 } from 'actions/index';
 import { 
     GET_VENDOR_LIST, 
@@ -17,7 +22,13 @@ import {
     GET_CARD_LIST, 
     GET_ACCOUNT_LIST, 
     ADD_CARD,
-    GET_CARD
+    GET_CARD,
+    ADD_ACCOUNT,
+    GET_VENDOR_BANK,
+    GET_VENDOR_ADDRESS,
+    UPDATE_CARD,
+    GET_CHECK_ACCOUNT_LIST,
+    GET_ACCOUNT,
 } from "actionTypes/ActionTypes";
 
 const getVendorListRequest = async (search) => {
@@ -108,6 +119,38 @@ const getCardRequest = async (_cardNo) =>{
     .catch(response => console.log(response));
 }
 
+const insertAccountRequest = async (_account) => {
+    console.log("Request _account"+_account);
+    return await axios({
+        method:"POST",
+        url:"/accounting/addAccount",
+        data:_account
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
+const updateCardRequest = async (_card) => {
+    console.log("Request _card"+_card);
+    return await axios({
+        method:"POST",
+        url:"/accounting/modifyCard",
+        data:_card
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
+const getAccountRequest = async (_accountRegNo) =>{
+    console.log("Request _data"+_accountRegNo);
+    return await axios({
+        method:"GET",
+        url:"/accounting/getAccountDetail/"+_accountRegNo
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
 //여기서 payload는 search 도메인을 의미한다.
 function* getVendorListFn({payload}){
     console.log("getVendorListFn payload : "+payload);
@@ -125,8 +168,8 @@ function* addVendorFn({payload}){
 
 function* getVendorFn({payload}){
     console.log("getVendorFn payload : "+payload);
-    const Vendor = yield call(getVendorRequest, payload);
-    yield put(carryVendor(Vendor));
+    const vendorInfo = yield call(getVendorRequest, payload);
+    yield put(carryVendor(vendorInfo));
 }
 
 function* updateVendorFn({payload}){
@@ -143,8 +186,8 @@ function* getCardListFn({payload}){
 
 function* getAccountListFn({payload}){
     console.log("getAccountListFn payload : "+payload);
-    const AccountList = yield call(getAccountListRequest, payload);
-    yield put(carryAccountList(AccountList));
+    const accountList = yield call(getAccountListRequest, payload);
+    yield put(carryAccountList(accountList));
 }
 
 function* addCardFn({payload}){
@@ -157,6 +200,42 @@ function* getCardFn({payload}){
     console.log("getCardFn payload : "+payload);
     const Card = yield call(getCardRequest, payload);
     yield put(carryCard(Card));
+}
+
+function* addAccountFn({payload}){
+    console.log("addAccountFn payload : "+payload);
+    yield call(insertAccountRequest, payload);
+    yield put(getAccountList({ searchKeyword : "", usageCondition : "01" }));
+}
+
+function* getVendorBankFn({payload}){
+    console.log("getVendorBankFn payload : "+payload);
+    const vendorBank = yield call(getVendorRequest, payload);
+    yield put(carryVendorBank(vendorBank));
+}
+
+function* getVendorAddressFn({payload}){
+    console.log("getVendorAddressFn payload : "+payload);
+    const vendorAddress = yield call(getVendorRequest, payload);
+    yield put(carryVendorAddress(vendorAddress));
+}
+
+function* updateCardFn({payload}){
+    console.log("updateCardFn payload : "+payload);
+    yield call(updateCardRequest, payload);
+    yield put(getCardList({ searchKeyword : "", usageCondition : "01" }))
+}
+
+function* getCheckAccountListFn({payload}){
+    console.log("getCheckAccountListFn payload : "+payload);
+    const checkAccountList = yield call(getAccountListRequest, payload);
+    yield put(carryCheckAccountList(checkAccountList));
+}
+
+function* getAccountFn({payload}){
+    console.log("getAccountFn payload : "+payload);
+    const accountInfo = yield call(getAccountRequest, payload);
+    yield put(carryAccount(accountInfo));
 }
 
 export function* getVendorListSaga(){
@@ -199,6 +278,36 @@ export function* getCardSaga(){
     yield takeEvery(GET_CARD, getCardFn);
 }
 
+export function* addAccountSaga(){
+    console.log("addAccountSaga 입니다");
+    yield takeEvery(ADD_ACCOUNT, addAccountFn);
+}
+
+export function* getVendorBankSaga(){
+    console.log("getVendorBankSaga 입니다");
+    yield takeEvery(GET_VENDOR_BANK, getVendorBankFn);
+}
+
+export function* getVendorAddressSaga(){
+    console.log("getVendorAddressSaga 입니다");
+    yield takeEvery(GET_VENDOR_ADDRESS, getVendorAddressFn);
+}
+
+export function* updateCardSaga(){
+    console.log("updateCardSaga 입니다");
+    yield takeEvery(UPDATE_CARD, updateCardFn);
+}
+
+export function* getCheckAccountListSaga(){
+    console.log("getCheckAccountListSaga 입니다");
+    yield takeEvery(GET_CHECK_ACCOUNT_LIST, getCheckAccountListFn);
+}
+
+export function* getAccountSaga(){
+    console.log("getAccountSaga 입니다");
+    yield takeEvery(GET_ACCOUNT, getAccountFn);
+}
+
 export default function* rootSaga(){
     yield all([
         fork(getVendorListSaga),
@@ -209,7 +318,11 @@ export default function* rootSaga(){
         fork(getAccountListSaga),
         fork(addCardSaga),
         fork(getCardSaga),
-        
-        
+        fork(addAccountSaga),
+        fork(getVendorBankSaga),
+        fork(getVendorAddressSaga),
+        fork(updateCardSaga),
+        fork(getCheckAccountListSaga),
+        fork(getAccountSaga),
     ]);
 }

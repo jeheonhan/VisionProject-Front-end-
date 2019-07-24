@@ -24,5 +24,6 @@ export default function* rootSaga(getState) {
         approvalSagas(),
         commonSagas(),
         branchSagas(),
+        productionManagementSagas(),
     ]);
 }

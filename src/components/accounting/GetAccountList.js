@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Table from '@material-ui/core/Table';
@@ -16,20 +17,18 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { connect } from 'react-redux';
-import { getCard } from 'actions/index';
-import UpdateCard from 'components/accounting/UpdateCard';
+import UpdateAccount from './UpdateAccount';
+import { getAccount } from 'actions/index';
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
-  {id: 'cardRegNo', align: false, disablePadding: false, label: '등록번호'},
-  {id: 'cardNo', align: true, disablePadding: false, label: '카드번호'},
-  {id: 'cardName', align: true, disablePadding: false, label: '카드명'},
-  {id: 'cardCompanyCodeName', align: true, disablePadding: false, label: '카드사명'},
-  {id: 'cardCategoryCodeName', align: true, disablePadding: false, label: '카드구분'},
+  {id: 'accountRegNo', align: false, disablePadding: false, label: '등록번호'},
   {id: 'accountNo', align: true, disablePadding: false, label: '계좌번호'},
-  {id: 'cardManagerName', align: true, disablePadding: false, label: '카드관리자'},
+  {id: 'reference', align: true, disablePadding: false, label: '참고'},
+  {id: 'bankCodeName', align: true, disablePadding: false, label: '은행명'},
+  {id: 'accountHolder', align: true, disablePadding: false, label: '예금주명'},
+  {id: 'accountCategoryCodeName', align: true, disablePadding: false, label: '사용처'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -102,7 +101,7 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">카드 목록조회</Typography>
+          <Typography variant="title">계좌 목록조회</Typography>
         )}
       </div>
       <div className="spacer"/>
@@ -131,7 +130,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 
-class CardTable extends React.Component {
+class AccountTable extends React.Component {
 
   constructor(props, context) {
     super(props, context);
@@ -141,11 +140,10 @@ class CardTable extends React.Component {
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.cardList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      data: this.props.accountList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
       page: 0,
       rowsPerPage: 10,
-      updateOpen: false,
-
+      updateDialogOpen: false,
     };
   }
 
@@ -204,30 +202,28 @@ class CardTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-
-  //카드 수정 다이얼로그 띄우기
-  updateCardDialogOpen = () => {
-    this.setState({updateOpen : true});
-  }
-
-  //카드 수정 다이얼로그 닫기
-  updateCardDialogClose = () => {
-    this.setState({updateOpen : false});
-    
-  }
-
-  //카드 수정 요청
-  updateCard = (event, cardRegNo) => {
+  //계좌 수정 다이얼로그창 띄우기
+  updateAcountDialog = (event, accountRegNo) => {
     event.preventDefault();
-    this.props.getCard(cardRegNo);
-    this.updateCardDialogOpen();
+    this.props.getAccount(accountRegNo);
+    this.AccountUpdateDialogOpen();
+  }
+
+  //계좌 수정 다이얼로그창 열기
+  AccountUpdateDialogOpen = () => {
+    this.setState({ updateDialogOpen : true });
+  }
+
+  //계좌 수정 다이얼로그창 닫기
+  AccountUpdateDialogClose = () => {
+    this.setState({ updateDialogOpen : false });
   }
 
   render() {
 
-    if(this.props.cardList !== this.state.data){
+    if(this.props.accountList !== this.state.data){
       this.setState({
-        data : this.props.cardList
+        data : this.props.accountList
       })
     }
 
@@ -268,13 +264,12 @@ class CardTable extends React.Component {
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={ event => this.updateCard(event, row.cardRegNo) } style={{cursor:'pointer'}}>{row.cardRegNo}</span></TableCell>
-                      <TableCell align="left">{row.cardNo}</TableCell>
-                      <TableCell align="left">{row.cardName}</TableCell>
-                      <TableCell align="left">{row.cardCompanyCodeName}</TableCell>
-                      <TableCell align="left">{row.cardCategoryCodeName}</TableCell>
+                      <TableCell align="left"><span onClick={ event => this.updateAcountDialog(event, row.accountRegNo)} style={{cursor:'pointer'}}>{row.accountRegNo}</span></TableCell>
                       <TableCell align="left">{row.accountNo}</TableCell>
-                      <TableCell align="left">{row.cardManagerName}</TableCell>
+                      <TableCell align="left">{row.reference}</TableCell>
+                      <TableCell align="left">{row.bankCodeName}</TableCell>
+                      <TableCell align="left">{row.accountHolder}</TableCell>
+                      <TableCell align="left">{row.accountCategoryCodeName}</TableCell>
                     </TableRow>
 
                   );
@@ -292,10 +287,10 @@ class CardTable extends React.Component {
                 </TableRow>
               </TableFooter>
             </Table>
-            
-            <UpdateCard
-              open={this.state.updateOpen}
-              close={this.updateCardDialogClose}
+
+            <UpdateAccount
+              open={this.state.updateDialogOpen}
+              close={this.AccountUpdateDialogClose}
             />
             
           </div>
@@ -305,4 +300,5 @@ class CardTable extends React.Component {
   }
 }
 
-export default connect(null, {getCard})(CardTable);
+
+export default connect(null, { getAccount })(AccountTable);

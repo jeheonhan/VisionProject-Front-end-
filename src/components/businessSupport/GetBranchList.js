@@ -19,6 +19,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
 import { getBranchList, getBranchDetail } from 'actions';
+import GetBranchDetail from './GetBranchDetail';
 
 
 const columnData = [
@@ -193,6 +194,10 @@ const columnData = [
       }
       this.setState({open : true});
     }
+
+    handleRequestClose = () => {
+      this.setState({open : false});
+    }
   
     constructor(props, context) {
       super(props, context);
@@ -267,6 +272,13 @@ const columnData = [
                   </TableRow>
                 </TableFooter>
               </Table>
+
+              { this.props.branch && (<GetBranchDetail
+              open={ this.state.open }
+              handleRequestClose={ this.handleRequestClose }
+              branch={ this.props.branch }
+            />)}
+
             </div>
           </div>
         </div>
@@ -276,7 +288,8 @@ const columnData = [
   
   const mapStateToProps = ({ businessSupport }) => {
     const { branchList } = businessSupport;
-    return { branchList };
+    const { branch } = businessSupport;
+    return { branchList, branch };
 }
 
 export default connect(mapStateToProps, { getBranchList, getBranchDetail })(EnhancedTable);

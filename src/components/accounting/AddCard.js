@@ -123,7 +123,7 @@ class AddCard extends React.Component {
     //this.props 하나로 다 받을 수 있어서 재사용성을 높을 듯?
     const { checkedEmployeeData } = this.props;
     
-    if(cardList === undefined){
+    if(cardList === undefined) {
       this.props.getCodeList({ searchKeyword : "card" });
       this.props.getCodeList({ searchKeyword : "cardCategory" });
     }
