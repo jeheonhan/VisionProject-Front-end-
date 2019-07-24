@@ -193,7 +193,9 @@ export const GET_APPROVAL_FORM_LIST = 'get_approval_form_list';
 export const CARRY_APPROVAL_FORM_LIST = 'carry_approval_form_list';
 export const ADD_APPROVAL_FORM = 'add_approval_form';
 export const DELETE_APPROVAL_FORM = 'delete_approval_form';
-
+export const GET_APPROVAL_FORM_DETAIL = 'get_approval_fom_detail';
+export const CARRY_APPROVAL_FORM_DETAIL = 'carry_approval_fom_detail';
+export const ADD_APPROVAL = 'add_approval';
 
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';
@@ -238,7 +240,7 @@ export const CARRY_BRANCH_DETAIL = 'carry_branch_detail';
 export const GET_NOTICE_LIST = 'get_notice_list';
 export const CARRY_NOTICE_LIST = 'carry_notice_list';
 export const GET_NOTICE_DETAIL = 'get_notice_detail';
-export const CARRY_NOTICE_DETAIL = 'carry_notice_list';
+export const CARRY_NOTICE_DETAIL = 'carry_notice_detail';
 
 //지점관리
 export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';

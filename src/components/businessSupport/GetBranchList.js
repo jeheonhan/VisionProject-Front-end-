@@ -16,9 +16,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
-import { getBranchList, getBranchDetail } from 'actions';
+import { getBranchList, getBranchDetail } from 'actions/index';
 import GetBranchDetail from './GetBranchDetail';
 
 
@@ -234,7 +233,7 @@ const columnData = [
                   
                   {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                   {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
+                    //console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                     const isSelected = this.isSelected(page*rowsPerPage+index);
                     return (
                       <TableRow
@@ -287,8 +286,7 @@ const columnData = [
   }
   
   const mapStateToProps = ({ businessSupport }) => {
-    const { branchList } = businessSupport;
-    const { branch } = businessSupport;
+    const { branchList, branch } = businessSupport;
     return { branchList, branch };
 }
 

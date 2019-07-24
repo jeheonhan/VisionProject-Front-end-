@@ -18,7 +18,7 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import {getNoticeList, getNoticeDetail} from 'actions/index';
 import GetNoticeDetail from 'components/notice/GetNoticeDetail';
-import { connect } from 'net';
+import { connect } from 'react-redux';
 
 
 const columnData = [
@@ -200,7 +200,9 @@ const columnData = [
 
     getNotice = (event, noticeNo) => {
       event.preventDefault();
-      this.props.getNoticeDetail(noticeNo);
+      if(noticeNo !== undefined){
+        this.props.getNoticeDetail(noticeNo);
+      }
       this.setState({open: true});
     }
 
@@ -229,7 +231,7 @@ const columnData = [
                   
                   {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                   {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
+                    //console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                     const isSelected = this.isSelected(page*rowsPerPage+index);
                     return (
                       <TableRow
@@ -280,8 +282,8 @@ const columnData = [
   }
 
   const mapStateToProps = ({ notice }) => {
-    const{noticeList, noticeDetail} = notice;
-    return{noticeList, notice};
+    const { noticeList , noticeDetail } = notice;
+    return{noticeList, noticeDetail};
   }
   
   export default connect(mapStateToProps, {getNoticeList, getNoticeDetail})(EnhancedTable);

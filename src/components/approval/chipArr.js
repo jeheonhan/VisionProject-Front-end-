@@ -24,8 +24,10 @@ class chipArr extends Component {
   };
 
   render() {
-
-    return (
+    if(this.props.array.length==0){
+     return( <div className="d-flex flex-wrap" style={{padding:"16px"}}>
+        </div>)
+    }else{return (
         <div className="d-flex flex-wrap">
         {this.props.array.map(data => {
           return (
@@ -40,7 +42,7 @@ class chipArr extends Component {
           );
         })}
       </div>
-    );
+    );}
   }
 }
 
