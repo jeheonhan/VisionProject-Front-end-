@@ -193,7 +193,9 @@ export const GET_APPROVAL_FORM_LIST = 'get_approval_form_list';
 export const CARRY_APPROVAL_FORM_LIST = 'carry_approval_form_list';
 export const ADD_APPROVAL_FORM = 'add_approval_form';
 export const DELETE_APPROVAL_FORM = 'delete_approval_form';
-
+export const GET_APPROVAL_FORM_DETAIL = 'get_approval_fom_detail';
+export const CARRY_APPROVAL_FORM_DETAIL = 'carry_approval_fom_detail';
+export const ADD_APPROVAL = 'add_approval';
 
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';

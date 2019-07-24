@@ -91,6 +91,7 @@ class FindEmployee extends React.Component{
 
       const eventHandler = (event, row) => {
         event.preventDefault();
+        if(this.state.array.indexOf(row)===-1){
         this.setState({
           ...this.state,
           index: this.state.index+1,
@@ -98,7 +99,7 @@ class FindEmployee extends React.Component{
             ...this.state.array,
             row,
             ],
-        })
+        })}
       }
 
       
@@ -115,8 +116,8 @@ class FindEmployee extends React.Component{
         <Dialog open={this.props.open} >
           <DialogTitle>결재라인등록</DialogTitle>
           <DialogContent style={{minWidth: '500px', maxWidth: '500px', minHeight:'400px', maxHeight:'400px'}}>
-
-          <List >
+          선택한 사원 순서대로 결재라인이 구성됩니다.
+          <List>
             <TextField
             error
             id="outlined-error"
@@ -129,7 +130,9 @@ class FindEmployee extends React.Component{
             value={this.state.search.searchKeyword}
             fullWidth
             />
-
+            <ChipArr array={this.state.array} handleDelete={this.handleRequestDeleteList}/>
+            <br/>
+            <Divider/>
           {HRCardList && HRCardList.map(row =>
             <ListItem button key={row.employeeNo}>
               <span className="col-sm-2">
@@ -158,9 +161,8 @@ class FindEmployee extends React.Component{
             )}
             
           </List>
-          <Divider/>
-            <br/>
-            <ChipArr array={this.state.array} handleDelete={this.handleRequestDeleteList}/>
+
+
           </DialogContent>
           <DialogActions>
             <Button onClick={() => this.props.handleOk(this.state.array)} color="secondary">
