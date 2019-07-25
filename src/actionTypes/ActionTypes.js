@@ -193,6 +193,8 @@ export const ADD_CODE_RESULT = 'add_code_result';
 export const CONVERT_CODE_USAGE_STATUS = 'convert_code_usage_status';
 export const UPDATE_CODE = 'update_code';
 
+
+
 //결재서양식관리
 export const GET_APPROVAL_FORM_LIST = 'get_approval_form_list';
 export const CARRY_APPROVAL_FORM_LIST = 'carry_approval_form_list';
@@ -200,7 +202,16 @@ export const ADD_APPROVAL_FORM = 'add_approval_form';
 export const DELETE_APPROVAL_FORM = 'delete_approval_form';
 export const GET_APPROVAL_FORM_DETAIL = 'get_approval_fom_detail';
 export const CARRY_APPROVAL_FORM_DETAIL = 'carry_approval_fom_detail';
+
+
+
+//결재관리
 export const ADD_APPROVAL = 'add_approval';
+export const GET_APPROVAL_LIST = 'get_approval_list';
+export const CARRY_APPROVAL_LIST = 'carry_approval_list';
+export const GET_APPROVAL_DETAIL = 'get_approval_detail';
+export const CARRY_APPROVAL_DETAIL = 'carry_approval_detail';
+
 
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';
