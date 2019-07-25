@@ -11,23 +11,20 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
+import { getApprovalFormList, deleteApprovalForm } from 'actions/Approval'
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Note';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import GetStatementDetail from 'components/accounting/GetStatementDetail';
 import { connect } from 'react-redux';
-import { getStatement } from 'actions/index';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import ApprovalFormDetail from 'components/approvalForm/ApprovalFormDetail'
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
-  {id: 'statementNo', align: false, disablePadding: false, label: '전표번호'},
-  {id: 'statementCategoryCodeName', align: true, disablePadding: false, label: '전표구분'},
-  {id: 'statementDetail', align: true, disablePadding: false, label: '전표내용'},
-  {id: 'tradeDate', align: true, disablePadding: false, label: '거래일자'},
-  {id: 'tradeAmount', align: true, disablePadding: false, label: '공급가액'},
+  
+  {id: 'approvalFormNo', align: true, disablePadding: false, label: '결재번호'},
+  {id: 'approvalFormTitle', align: true, disablePadding: false, label: '결재서제목'},
+  {id: 'registrantEmployeeName', align: false, disablePadding: false, label: '작성일자'},
+  {id: 'useCount', align: false, disablePadding: false, label: '작성자'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -50,13 +47,6 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox color="secondary"
-                      indeterminate={numSelected > 0 && numSelected < rowCount}
-                      checked={numSelected === rowCount}
-                      onChange={onSelectAllClick}
-            />
-          </TableCell>
           {columnData.map(column => {
             return (
               <TableCell
@@ -81,16 +71,17 @@ class EnhancedTableHead extends React.Component {
               </TableCell>
             );
           }, this)}
+          <TableCell>삭제</TableCell>
         </TableRow>
       </TableHead>
     );
   }
-}//end of class
+}
 
 
 let EnhancedTableToolbar = props => {
   const {numSelected} = props;
-
+  
   return (
     <Toolbar
       className="table-header">
@@ -100,25 +91,11 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">계좌 목록조회</Typography>
+          <Typography variant="title">결재함</Typography>
         )}
       </div>
       <div className="spacer"/>
       <div className="actions">
-        {numSelected > 0 ? (
-          // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
-        )}
       </div>
     </Toolbar>
   );
@@ -129,24 +106,9 @@ EnhancedTableToolbar.propTypes = {
 };
 
 
-class StatementTable extends React.Component {
-
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      order: 'asc',
-      orderBy: '',
-      selected: [],
-      // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.statementList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
-      page: 0,
-      rowsPerPage: 10,
-      detailDialogOpen: false,
-    };
-  }
-
+class EnhancedTable extends React.Component {
   handleRequestSort = (event, property) => {
+    console.log("★"+property)
     const orderBy = property;
     let order = 'desc';
 
@@ -158,12 +120,11 @@ class StatementTable extends React.Component {
       order === 'desc'
         ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
         : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
-
     this.setState({data, order, orderBy});
   };
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState({selected: this.state.data.map((row, index) => index)});
+      //this.setState({selected: this.state.data.map((row, index) => index)});
       return;
     }
     this.setState({selected: []});
@@ -201,41 +162,67 @@ class StatementTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  //전표 상세조회 다이얼로그 열기
-  statementDetailDialogOpen = () => {
-    this.setState({
-      detailDialogOpen : true
-    })
-  }
-
-  //전표 상세조회 다이얼로그 닫기
-  statementDetailDialogClose = () => {
-    this.setState({
-      detailDialogOpen : false
-    })
-  }
-
-  //전표 상세조회 클릭 이벤트
-  GetStatementDetail = (event, statementNo) => {
+  //휴지통 클릭 시 삭제
+  handleDelete = (event, row) => {
     event.preventDefault();
-    this.props.getStatement(statementNo);
-    this.statementDetailDialogOpen();
+    const data = {approvalFormNo:row.approvalFormNo, approvalFormUsageStatusCodeNo:"02"}
+    if(window.confirm("선택한 결재양식을 삭제하시겠습니까?")){
+      this.props.deleteApprovalForm(data);
+    }
   }
-  
-  
-  render() {
 
-    if(this.props.statementList !== this.state.data){
-      this.setState({
-        data : this.props.statementList
-      })
+
+  //결재양식번호 클릭 시 상세조회 띄우기
+  handleClickApprovalFormNo = (event, row) => {
+    event.preventDefault();
+    this.setState({
+      ...this.state,
+      open: true,
+      targetForm: row
+    })
+  }
+
+  //결재양식상세창 닫기
+  handleClose = (event) => {
+    this.setState({
+      ...this.state,
+      open: false
+    })
+  }
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+      order: 'desc',
+      orderBy: 'codeNo',
+      selected: [],
+      // data에 props로 들어오는 list값 넣어주기.
+      data: this.props.approvalFormList,
+      page: 0,
+      rowsPerPage: 10,
+      targetForm :{
+        approvalFormNo : "",
+        approvalFormTitle : "",
+        approvalForm : "",
+        registrantEmployeeName:"",
+        registrantEmployeeNo:"",
+      }
+    };
+  }
+
+  render() {
+    const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
+
+    const { approvalFormList } = this.props;
+
+    if(approvalFormList !== this.state.data){
+      this.setState({data:approvalFormList})
     }
 
-    const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-  
     return (
-      <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+      <div className="jr-card" style={{marginTop:"5px"}}> 
+        {/* <EnhancedTableToolbar numSelected={selected.length}/> */}
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -253,7 +240,6 @@ class StatementTable extends React.Component {
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
-                  const currVenorNo = row.vendorNo;
                   return (
                     <TableRow
                       hover
@@ -264,17 +250,21 @@ class StatementTable extends React.Component {
                       key={page*rowsPerPage+index}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox color="secondary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
+                      
+                      <TableCell align="left" >
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
+                          {row.approvalFormNo}
+                        </span>
                       </TableCell>
-                      <TableCell align="left"><span onClick={event => this.GetStatementDetail(event, row.statementNo)} style={{cursor:'pointer'}}>{row.statementNo}</span></TableCell>
-                      <TableCell align="left">{row.statementCategoryCodeName}</TableCell>
-                      <TableCell align="left">{row.statementDetail}</TableCell>
-                      <TableCell align="left">{row.tradeDate}</TableCell>
-                      <TableCell align="left">{row.tradeAmount}</TableCell>
+                      <TableCell align="left">
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
+                          {row.approvalFormTitle}
+                        </span>
+                      </TableCell>
+                      <TableCell align="left" >{row.registrantEmployeeName}</TableCell>
+                      <TableCell align="left" >{row.useCount}</TableCell>
+                      <TableCell><DeleteOutlinedIcon onClick={event => this.handleDelete(event, row)}/></TableCell>
                     </TableRow>
-
                   );
                 })}
               </TableBody>
@@ -290,17 +280,20 @@ class StatementTable extends React.Component {
                 </TableRow>
               </TableFooter>
             </Table>
-
-            <GetStatementDetail
-              open={this.state.detailDialogOpen}
-              close={this.statementDetailDialogClose}
-            />
           </div>
         </div>
+        <ApprovalFormDetail 
+          targetForm = {this.state.targetForm} 
+          open={this.state.open} 
+          handleClose={this.handleClose}/>
       </div>
     );
   }
 }
 
+const mapStateToProps = ({ approval }) => {
+    const { approvalFormList } = approval;
+    return { approvalFormList }
+}
 
-export default connect(null, { getStatement })(StatementTable);
+export default connect(mapStateToProps, {getApprovalFormList, deleteApprovalForm})(EnhancedTable);

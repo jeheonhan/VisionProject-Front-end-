@@ -11,23 +11,20 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
+import { getApprovalList, deleteApprovalForm, getApprovalDetail } from 'actions/Approval'
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Note';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import GetStatementDetail from 'components/accounting/GetStatementDetail';
 import { connect } from 'react-redux';
-import { getStatement } from 'actions/index';
+import ApprovalDetailForWaiting from 'components/approval/ApprovalDetailForWaiting'
+import {Clear} from '@material-ui/icons'
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
-  {id: 'statementNo', align: false, disablePadding: false, label: '전표번호'},
-  {id: 'statementCategoryCodeName', align: true, disablePadding: false, label: '전표구분'},
-  {id: 'statementDetail', align: true, disablePadding: false, label: '전표내용'},
-  {id: 'tradeDate', align: true, disablePadding: false, label: '거래일자'},
-  {id: 'tradeAmount', align: true, disablePadding: false, label: '공급가액'},
+  
+  {id: 'approvalNo', align: true, disablePadding: false, label: '결재번호'},
+  {id: 'approvalTitle', align: true, disablePadding: false, label: '결재서제목'},
+  {id: 'submitDate', align: false, disablePadding: false, label: '작성일자'},
+  {id: 'percentage', align: false, disablePadding: false, label: '진행상태'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -50,13 +47,6 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox color="secondary"
-                      indeterminate={numSelected > 0 && numSelected < rowCount}
-                      checked={numSelected === rowCount}
-                      onChange={onSelectAllClick}
-            />
-          </TableCell>
           {columnData.map(column => {
             return (
               <TableCell
@@ -81,16 +71,17 @@ class EnhancedTableHead extends React.Component {
               </TableCell>
             );
           }, this)}
+          <TableCell>취소</TableCell>
         </TableRow>
       </TableHead>
     );
   }
-}//end of class
+}
 
 
 let EnhancedTableToolbar = props => {
   const {numSelected} = props;
-
+  
   return (
     <Toolbar
       className="table-header">
@@ -100,25 +91,11 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">계좌 목록조회</Typography>
+          <Typography variant="title">결재함</Typography>
         )}
       </div>
       <div className="spacer"/>
       <div className="actions">
-        {numSelected > 0 ? (
-          // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
-        )}
       </div>
     </Toolbar>
   );
@@ -129,22 +106,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 
-class StatementTable extends React.Component {
-
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      order: 'asc',
-      orderBy: '',
-      selected: [],
-      // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.statementList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
-      page: 0,
-      rowsPerPage: 10,
-      detailDialogOpen: false,
-    };
-  }
+class EnhancedTable extends React.Component {
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -158,41 +120,15 @@ class StatementTable extends React.Component {
       order === 'desc'
         ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
         : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
-
     this.setState({data, order, orderBy});
   };
-  handleSelectAllClick = (event, checked) => {
-    if (checked) {
-      this.setState({selected: this.state.data.map((row, index) => index)});
-      return;
-    }
-    this.setState({selected: []});
-  };
+
   handleKeyDown = (event, id) => {
     if (keycode(event) === 'space') {
       this.handleClick(event, id);
     }
   };
-  handleClick = (event, id) => {
-    const {selected} = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    this.setState({selected: newSelected});
-  };
+  
   handleChangePage = (event, page) => {
     this.setState({page});
   };
@@ -201,41 +137,120 @@ class StatementTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  //전표 상세조회 다이얼로그 열기
-  statementDetailDialogOpen = () => {
-    this.setState({
-      detailDialogOpen : true
-    })
-  }
 
-  //전표 상세조회 다이얼로그 닫기
-  statementDetailDialogClose = () => {
-    this.setState({
-      detailDialogOpen : false
-    })
-  }
-
-  //전표 상세조회 클릭 이벤트
-  GetStatementDetail = (event, statementNo) => {
+  //휴지통 클릭 시 삭제
+  handleDelete = (event, row) => {
     event.preventDefault();
-    this.props.getStatement(statementNo);
-    this.statementDetailDialogOpen();
+    const data = {approvalFormNo:row.approvalFormNo, approvalFormUsageStatusCodeNo:"02"}
+    if(window.confirm("선택한 결재서류를 상신 취소하시겠습니까? 취소한 결재서류는 반려결재함으로 이동됩니다.")){
+      //this.props.deleteApprovalForm(data);
+    }
   }
-  
-  
-  render() {
 
-    if(this.props.statementList !== this.state.data){
-      this.setState({
-        data : this.props.statementList
-      })
+
+  //결재번호 클릭 시 상세조회 띄우기
+  handleClickApprovalFormNo = (event, row) => {
+    event.preventDefault();
+    this.props.getApprovalDetail(row.approvalNo);
+    this.setState({
+      ...this.state,
+      open: true,
+      // targetForm: "",
+      // targetApproval:this.props.approvalDetail
+    })
+  }
+
+  //결재상세창 닫기
+  handleClose = (event) => {
+    this.setState({
+      ...this.state,
+      open: false
+    })
+  }
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+      order: 'desc',
+      orderBy: 'approvalNo',
+      selected: [],
+      // data에 props로 들어오는 list값 넣어주기.
+      data: this.props.approvalList,
+      page: 0,
+      rowsPerPage: 10,
+      targetApproval : {
+           approvalTitle:""
+          ,approvalContent:""
+          ,firstApprover:{
+                      approverNumbering:null
+                  ,approvalNo:null
+                  ,employeeNo:null
+                  ,signatureImage:""
+                  ,rankCodeName:""
+                  ,employeeName:""
+                  ,ordinal:0
+                  ,approvalStatus:1
+              }
+          ,secondApprover:{
+                  approverNumbering:null
+                      ,approvalNo:null
+                      ,employeeNo:null
+                      ,signatureImage:""
+                      ,rankCodeName:""
+                      ,ordinal:1
+                      ,approvalStatus:0
+                      }
+          ,thirdApprover:{
+                      approverNumbering:null
+                        ,approvalNo:null
+                        ,employeeNo:null
+                        ,signatureImage:""
+                        ,rankCodeName:""
+                        ,ordinal:2
+                        ,approvalStatus:0
+                    }
+          ,fourthApprover:{
+                          approverNumbering:null
+                          ,approvalNo:null
+                          ,employeeNo:null
+                          ,signatureImage:""
+                          ,rankCodeName:""
+                          ,ordinal:3
+                          ,approvalStatus:0
+                      }
+          ,fifthApprover:{
+                          approverNumbering:null
+                          ,approvalNo:null
+                          ,employeeNo:null
+                          ,signatureImage:""
+                          ,rankCodeName:""
+                          ,ordinal:4
+                          ,approvalStatus:0
+                      }
+          ,totalApproverCount:""
+        }
+    };
+  }
+
+  render() {
+    const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
+
+    const { approvalList, approvalDetail } = this.props;
+
+    if(approvalList !== this.state.data){
+      this.setState({data:approvalList})
+    }else{
+    }
+    if(approvalDetail !== this.state.targetApproval){
+      if(approvalDetail!==undefined){
+        this.setState({targetApproval : approvalDetail})
+      }else{
+      }
     }
 
-    const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-  
     return (
-      <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+      <div className="jr-card" style={{marginTop:"5px"}}> 
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -251,9 +266,8 @@ class StatementTable extends React.Component {
                 
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                  console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
+                  const percentage = Math.floor((row.approverCount/row.totalApproverCount)*100)+"%";
                   const isSelected = this.isSelected(page*rowsPerPage+index);
-                  const currVenorNo = row.vendorNo;
                   return (
                     <TableRow
                       hover
@@ -264,17 +278,21 @@ class StatementTable extends React.Component {
                       key={page*rowsPerPage+index}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox color="secondary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
+                      
+                      <TableCell align="left" >
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
+                          {row.approvalNo}
+                        </span>
                       </TableCell>
-                      <TableCell align="left"><span onClick={event => this.GetStatementDetail(event, row.statementNo)} style={{cursor:'pointer'}}>{row.statementNo}</span></TableCell>
-                      <TableCell align="left">{row.statementCategoryCodeName}</TableCell>
-                      <TableCell align="left">{row.statementDetail}</TableCell>
-                      <TableCell align="left">{row.tradeDate}</TableCell>
-                      <TableCell align="left">{row.tradeAmount}</TableCell>
+                      <TableCell align="left">
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
+                          {row.approvalTitle}
+                        </span>
+                      </TableCell>
+                      <TableCell align="left" >{row.submitDate}</TableCell>
+                      <TableCell align="left" >{percentage}</TableCell>
+                      <TableCell><Clear onClick={event => this.handleDelete(event, row)}/></TableCell>
                     </TableRow>
-
                   );
                 })}
               </TableBody>
@@ -290,17 +308,21 @@ class StatementTable extends React.Component {
                 </TableRow>
               </TableFooter>
             </Table>
-
-            <GetStatementDetail
-              open={this.state.detailDialogOpen}
-              close={this.statementDetailDialogClose}
-            />
           </div>
         </div>
+        <ApprovalDetailForWaiting 
+          approvalDetail = {this.state.targetApproval}
+          open={this.state.open} 
+          handleClose={this.handleClose}/>
+          
       </div>
     );
   }
 }
 
+const mapStateToProps = ({ approval }) => {
+    const { approvalList , approvalDetail} = approval;
+    return { approvalList, approvalDetail }
+}
 
-export default connect(null, { getStatement })(StatementTable);
+export default connect(mapStateToProps, {getApprovalList, deleteApprovalForm, getApprovalDetail})(EnhancedTable);

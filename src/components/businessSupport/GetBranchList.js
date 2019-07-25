@@ -244,6 +244,7 @@ const columnData = [
                         tabIndex={-1}
                         key={page*rowsPerPage+index}
                         selected={isSelected}
+                        //className={row.branchStatusCodeNo == '01' ? "" : "bg-grey"}
                       >
                         <TableCell padding="checkbox">
                           <Checkbox color="secondary" checked={isSelected} 

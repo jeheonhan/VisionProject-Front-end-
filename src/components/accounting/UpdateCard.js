@@ -115,7 +115,7 @@ class UpdateCard extends React.Component {
       this.props.getCodeList({ searchKeyword : "cardCategory" });
     }
 
-    if( !this.state.updateFlag) {
+    if(!this.state.updateFlag) {
         if(this.state.card !== cardInfo && cardInfo !== null){
             this.setState({ 
                 updateFlag : true, 

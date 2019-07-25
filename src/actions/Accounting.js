@@ -26,6 +26,11 @@ import {
     GET_STATEMENT_LIST,
     CARRY_STATEMENT_LIST,
     ADD_STATEMENT,
+    GET_STATEMENT,
+    CARRY_STATEMENT,
+    UPDATE_STATEMENT,
+    GET_SALARY_LIST,
+    CARRY_SALARY_LIST,
 } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
@@ -212,6 +217,41 @@ export const carryStatementList = (data) => {
 export const addStatement = (data) => {
     return{
         type: ADD_STATEMENT,
+        payload: data
+    }
+}
+
+export const getStatement = (statementNo) => {
+    return{
+        type: GET_STATEMENT,
+        payload: statementNo
+    }
+}
+
+export const carryStatement = (statement) => {
+    return{
+        type: CARRY_STATEMENT,
+        payload: statement
+    }
+}
+
+export const updateStatement = (statement) => {
+    return{
+        type: UPDATE_STATEMENT,
+        payload: statement
+    }
+}
+
+export const getSalarytList = (search) => {
+    return{
+        type: GET_SALARY_LIST,
+        payload: search
+    }
+}
+
+export const carrySalaryList = (data) => {
+    return{
+        type: CARRY_SALARY_LIST,
         payload: data
     }
 }

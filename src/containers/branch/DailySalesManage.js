@@ -19,8 +19,6 @@ class DailySalesManage extends React.Component{
 
         if( dailySalesList === undefined ) {
             this.props.getDailySalesList(this.state.branchNo)
-        }else{
-            console.log("일 매출 목록조회 실패")
         }
 
         return(

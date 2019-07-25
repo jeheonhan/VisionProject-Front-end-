@@ -16,10 +16,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
-import { getOrderToVendorList } from 'actions/index.js';
-
+import { getOrderToVendorList , getOrderToVendorDetailList  } from 'actions/index.js';
+import GetOrderToVendorDetailList from 'components/productManagement/GetOrderToVendorDetailList';
 let counter = 0;
 
 
@@ -48,7 +47,6 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    console.log("프로덕트컴포넌트")
     const {onSelectAllClick, order, orderBy, numSelected, rowCount} = this.props;
 
     return (
@@ -134,6 +132,23 @@ EnhancedTableToolbar.propTypes = {
 
 
 class EnhancedTable extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+      order: 'asc',
+      orderBy: '',
+      selected: [],
+      // data에 props로 들어오는 list값 넣어주기.
+      data: this.props.OrderToVendorList,
+      page: 0,
+      rowsPerPage: 10,
+      search:{searchKeyword:null},
+      flag: false
+    };
+  }
+  
+
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -189,37 +204,42 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  constructor(props, context) {
-    super(props, context);
 
-    this.state = {
-      order: 'asc',
-      orderBy: '',
-      selected: [],
-      // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.OrderToVendorList,
-      page: 0,
-      rowsPerPage: 10,
-      search:{searchKeyword:null},
-      flag: false
-    };
+  orderToVendorDetailList = (event, orderToVendor) => {
+ 
+    event.preventDefault();
+
+    if(orderToVendor !== undefined) {
+
+      this.props.getOrderToVendorDetailList(orderToVendor);
+    }
+    
+    this.setState({open : true});
   }
+  
+  handleRequestClose = () => {
+    this.setState({open : false});
+  }
+  
 
   render() {
-   
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
-    const { OrderToVendorList } = this.props;
+    const { OrderToVendorList  } = this.props;
+    
 
     if(OrderToVendorList !== this.state.data){
       this.setState({data:OrderToVendorList});
     }
 
-
+    
 
     return (
       <div>
         <EnhancedTableToolbar numSelected={selected.length}/>
+
+
+        
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -251,9 +271,9 @@ class EnhancedTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.orderToVendorNo}</span></TableCell>
+                      <TableCell align="left" ><span onClick={event => this.orderToVendorDetailList(event, row)} style={{cursor:'pointer'}}>{row.orderToVendorNo}</span></TableCell>
                       <TableCell align="left">{row.statementNo}</TableCell>
-                      <TableCell align="left">{row.totalAmount}</TableCell>
+                      <TableCell align="left">{row.totalAmount}</TableCell> 
                       <TableCell align="left">{row.orderToVendorDate}</TableCell>
                       <TableCell align="left">{row.orderToVenStatusCodeName}</TableCell>
                     </TableRow>
@@ -272,6 +292,12 @@ class EnhancedTable extends React.Component {
                 </TableRow>
               </TableFooter>
             </Table>
+
+            { this.props.OrderToVendorDetatilList && (<GetOrderToVendorDetailList
+              open={ this.state.open }
+              handleRequestClose={ this.handleRequestClose }
+              OrderToVendorDetatilList={ this.props.OrderToVendorDetatilList }
+            />)}
           </div>
         </div>
       </div>
@@ -279,12 +305,11 @@ class EnhancedTable extends React.Component {
   }
 }
 const mapStateToProps = ({productionManagement}) => {
-  console.log("프로덕트의 컴포넌트의 커넥트")
-  const { OrderToVendorList } = productionManagement;
-  return { OrderToVendorList };
+  const { OrderToVendorList , OrderToVendorDetatilList } = productionManagement;
+  return { OrderToVendorList , OrderToVendorDetatilList };
 }
 
 
 
-export default connect(mapStateToProps, { getOrderToVendorList })(EnhancedTable);
+export default connect(mapStateToProps, { getOrderToVendorList , getOrderToVendorDetailList})(EnhancedTable);
 

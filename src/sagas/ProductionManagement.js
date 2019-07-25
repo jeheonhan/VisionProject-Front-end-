@@ -1,12 +1,14 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { carryProductList, carryOrderToVendorList, addProduct, getProductList, addProductAccount, getInfoAccount,carryInfoAccount} from 'actions/index';
-import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST, ADD_PRODUCT, GET_INFO_ACCOUNT} from "actionTypes/ActionTypes";
+import { carryProductList, carryOrderToVendorList, 
+    addProduct, getProductList, addProductAccount, 
+    getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList } from 'actions/index';
+import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
+     ADD_PRODUCT, GET_INFO_ACCOUNT, GET_ORDER_TO_VENDOR_DETAIL_LIST} from "actionTypes/ActionTypes";
 
 
 
 const getProductListRequest = async () => {
-    console.log("getProductListRequest() ");
     return await axios({
         method : "GET",
         url : "/pm/selectProductList"
@@ -16,7 +18,6 @@ const getProductListRequest = async () => {
 }  
 
 const getOrderToVendorListRequest = async () => {
-    console.log("getselectOrderToVendorListRequest() ");
     return await axios({
         method : "GET",
         url : "/pm/selectOrderToVendorList"
@@ -26,9 +27,6 @@ const getOrderToVendorListRequest = async () => {
 }  
 
 const addProductRequest = async (data) => {
-    console.log("addProductRequest() 왓냐");
-    console.log("data 왓냐 :: " );
-    console.log(data);
     return await axios({
         method : "POST",
         url : "/pm/addProduct",
@@ -39,7 +37,6 @@ const addProductRequest = async (data) => {
 }  
 
 const getProductAccountRequest = async () => {
-    console.log("getProductAccountRequest 왓냐");
     return await axios({
        method : "GET",
        url : "/pm/addProductPreparing" 
@@ -48,40 +45,46 @@ const getProductAccountRequest = async () => {
     .catch(error => console.log(error))
 }   
 
+const getOrderToVendorDetailListRequest = async (data) => {
+    console.log("start!!")
+    console.log(data);
+    
+    return await axios({
+        method : "POST",
+        url : "/pm/orderToVendorDetailList",
+        data : data
+    })
+    .then(respones => respones.data)
+    .catch(error => console.log(error))
+}
 
 
 
 
 
 function* getselectOrderToVendorListFn(){
-    console.log("getselectOrderToVendorList()1 ");
     const OrderToVendorList = yield call(getOrderToVendorListRequest);
-    console.log("getselectOrderToVendorList()2 ");
     yield put(carryOrderToVendorList(OrderToVendorList));
 }
 
 function* getProductListFn(){
-    console.log("getProductListFn()1 ");
     const ProductList = yield call(getProductListRequest);
-    console.log("getProductListFn()2 ");
     yield put(carryProductList(ProductList));
 }
 
 function* addProductFn({payload}){
-    
-    console.log("addProductFn()1 ");
-    console.log(payload);
     yield call(addProductRequest, payload);
-    console.log("addProductFn()2 ");
     yield put(getProductList());
 }
 
 function* getProductAccountFn(){
-    console.log("가자 Fn() 1");
    const accountIfo = yield call(getProductAccountRequest);
-    console.log("가자 Fn() 2");
-    console.log(accountIfo);
     yield put(carryInfoAccount(accountIfo));
+}
+
+function* getOrderTOVendorDetailListFn({payload}){
+   const orderToVendorListDetail = yield call(getOrderToVendorDetailListRequest,payload);
+    yield put(carryOrderToVendorDetailList(orderToVendorListDetail));
 }
 
 
@@ -91,26 +94,25 @@ function* getProductAccountFn(){
 
 
 export function* getProductListSaga(){
-    console.log("getProductListSaga()");
     yield takeEvery(GET_PRODUCT_LIST, getProductListFn);
 }
 
 
 export function* getselectOrderToVendorListSaga(){
-    console.log("getselectOrderToVendorListSaga()");
     yield takeEvery(GET_ORDER_TO_VENDOR_LIST, getselectOrderToVendorListFn);
 }
 
 export function* addProductSaga(){
-    console.log("addProduct()");
     yield takeEvery(ADD_PRODUCT, addProductFn);
 }
 
 export function* getProductAccountSaga() {
-    console.log("getProductAccountSaga()");
     yield takeEvery(GET_INFO_ACCOUNT, getProductAccountFn)
 }
 
+export function* getOrderToVendorDetailListSaga() {
+    yield takeEvery(GET_ORDER_TO_VENDOR_DETAIL_LIST, getOrderTOVendorDetailListFn)
+}
 
 
 export default function* rootSaga(){
@@ -120,6 +122,7 @@ export default function* rootSaga(){
         fork(getselectOrderToVendorListSaga),
         fork(addProductSaga),
         fork(getProductAccountSaga),
+        fork(getOrderToVendorDetailListSaga),
     ]);
 }
 

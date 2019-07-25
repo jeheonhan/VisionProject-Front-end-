@@ -24,6 +24,8 @@ import {
     GET_ACCOUNT,
     CARRY_ACCOUNT,
     CARRY_STATEMENT_LIST,
+    CARRY_STATEMENT,
+    CARRY_SALARY_LIST,
 } from'../actionTypes/ActionTypes';
 
 const INIT_STATE = {
@@ -192,6 +194,20 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 statementList: action.payload
+            }
+        }
+
+        case CARRY_STATEMENT : {
+            return{
+                ...state,
+                statementInfo : action.payload
+            }
+        }
+
+        case CARRY_SALARY_LIST : {
+            return{
+                ...state,
+                salaryList: action.payload
             }
         }
 

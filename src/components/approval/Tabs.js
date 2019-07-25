@@ -5,11 +5,16 @@ import SwipeableViews from 'react-swipeable-views';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import ApprovalBoxTable from 'components/approval/ApprovalBoxTable'
+import BoxProceed from './BoxProceed';
+import BoxWaiting from './BoxWaiting';
+import BoxReject from './BoxReject';
+import BoxComplete from './BoxComplete';
+import { getApprovalList } from 'actions/Approval'
+import { connect } from 'react-redux';
 
 function TabContainer({children, dir}) {
   return (
-    <div dir={dir} style={{padding: 8 * 3}}>
+    <div dir={dir} style={{padding:"1px"}}>
       {children}
     </div>
   );
@@ -23,6 +28,7 @@ TabContainer.propTypes = {
 class FullWidthTabs extends Component {
   state = {
     value: 0,
+    searchCondition : "2"
   };
 
   handleChange = (event, value) => {
@@ -32,6 +38,13 @@ class FullWidthTabs extends Component {
   handleChangeIndex = index => {
     this.setState({value: index});
   };
+
+  handleSearch = (_searchCondition) => {
+    this.props.getApprovalList({
+      searchCondition:_searchCondition,
+      searchKeyword:"1001"//localStorage.getItem("user").employeeNo
+    });
+  }
 
   render() {
     const {theme} = this.props;
@@ -47,10 +60,10 @@ class FullWidthTabs extends Component {
             variant="fullWidth"
             scrollButtons="on"
           >
-            <Tab className="tab" label="진행결재함" />
-            <Tab className="tab" label="대기결재함" />
-            <Tab className="tab" label="반려결재함" />
-            <Tab className="tab" label="완료결재함" />
+            <Tab className="tab" onClick={() => this.handleSearch("2")} label="진행결재함" />
+            <Tab className="tab" onClick={() => this.handleSearch("1")} label="대기결재함" />
+            <Tab className="tab" onClick={() => this.handleSearch("3")} label="반려결재함" />
+            <Tab className="tab" onClick={() => this.handleSearch("4")} label="완료결재함" />
           </Tabs>
         </AppBar>
         <SwipeableViews
@@ -58,10 +71,10 @@ class FullWidthTabs extends Component {
           index={this.state.value}
           onChangeIndex={this.handleChangeIndex}
         >
-          <TabContainer dir={theme.direction}><ApprovalBoxTable></ApprovalBoxTable></TabContainer>
-          <TabContainer dir={theme.direction}><ApprovalBoxTable></ApprovalBoxTable></TabContainer>
-          <TabContainer dir={theme.direction}><ApprovalBoxTable></ApprovalBoxTable></TabContainer>
-          <TabContainer dir={theme.direction}><ApprovalBoxTable></ApprovalBoxTable></TabContainer>
+          <TabContainer dir={theme.direction}><BoxProceed></BoxProceed></TabContainer>
+          <TabContainer dir={theme.direction}><BoxWaiting></BoxWaiting></TabContainer>
+          {/* <TabContainer dir={theme.direction}><BoxReject></BoxReject></TabContainer>
+          <TabContainer dir={theme.direction}><BoxComplete></BoxComplete></TabContainer> */}
         </SwipeableViews>
       </div>
     );
@@ -72,4 +85,9 @@ FullWidthTabs.propTypes = {
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(null, {withTheme: true})(FullWidthTabs);
+const mapStateToProps = ({ approval }) => {
+  const { approvalList } = approval;
+  return { approvalList }
+}
+
+export default connect(mapStateToProps, {getApprovalList})(withStyles(null, {withTheme: true}) (FullWidthTabs));
