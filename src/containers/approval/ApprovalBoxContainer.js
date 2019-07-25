@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {getApprovalFormList} from 'actions/Approval'
+import {getApprovalList} from 'actions/Approval'
 
 import Tabs from 'components/approval/Tabs'
 
@@ -9,13 +9,25 @@ class ApprovalFormList extends React.Component{
 
     constructor(props) {
         super(props);
+        this.state={
+            searchCondition:"2",
+            searchKeyword:"1001"//localStorage.getItem("user").employeeNo
+        }
       }
 
-    render(){
-        const {approvalFormList} = this.props;
+    // handleSearch = (_searchCondition) => {
+    //     alert("handleSearch")
+    //     this.setState({
+    //         searchCondition: _searchCondition
+    //     })
+    //     this.props.getApprovalList(this.state);
+    // }
 
-        if(approvalFormList===undefined || approvalFormList===''){
-            this.props.getApprovalFormList();
+    render(){
+        const {approvalList} = this.props;
+
+        if(approvalList===undefined || approvalList===''){
+            this.props.getApprovalList(this.state);
             return (<div>&nbsp;&nbsp;LOADING...</div>)
         }
 
@@ -23,14 +35,14 @@ class ApprovalFormList extends React.Component{
            { 
             return(
             <div className="jr-card">
-                <Tabs></Tabs>
+                <Tabs handleSearch={this.handleSearch}></Tabs>
             </div>
         )}
     }
 }
 const mapStateToProps = ({ approval }) => {
-    const { approvalFormList } = approval;
-    return { approvalFormList }
+    const { approvalList } = approval;
+    return { approvalList }
 }
 
-export default connect(mapStateToProps, { getApprovalFormList })(ApprovalFormList)
+export default connect(mapStateToProps, { getApprovalList })(ApprovalFormList)

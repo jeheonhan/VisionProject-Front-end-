@@ -1,4 +1,4 @@
-import { CARRY_APPROVAL_FORM_LIST, GET_APPROVAL_FORM_LIST, CARRY_APPROVAL_FORM_DETAIL } from "actionTypes/ActionTypes";
+import { CARRY_APPROVAL_FORM_LIST, GET_APPROVAL_FORM_LIST, CARRY_APPROVAL_FORM_DETAIL, CARRY_APPROVAL_LIST, CARRY_APPROVAL_DETAIL } from "actionTypes/ActionTypes";
 
 
 const INIT_STATE = {
@@ -23,6 +23,20 @@ switch(action.type){
        return{
            ...state,
            approvalFormDetail : action.payload
+       }
+   }
+
+   case CARRY_APPROVAL_LIST : {
+       return{
+           ...state,
+           approvalList : action.payload
+       }
+   }
+
+   case CARRY_APPROVAL_DETAIL : {
+       return{
+           ...state,
+           approvalDetail : action.payload
        }
    }
 

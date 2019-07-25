@@ -1,7 +1,7 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
-import { GET_APPROVAL_FORM_LIST, ADD_APPROVAL_FORM, DELETE_APPROVAL_FORM, GET_APPROVAL_FORM_DETAIL, ADD_APPROVAL } from "actionTypes/ActionTypes";
+import { GET_APPROVAL_FORM_LIST, ADD_APPROVAL_FORM, DELETE_APPROVAL_FORM, GET_APPROVAL_FORM_DETAIL, ADD_APPROVAL, GET_APPROVAL_LIST, GET_APPROVAL_DETAIL } from "actionTypes/ActionTypes";
 import axios from "axios";
-import { getApprovalFormList, carryApprovalFormList, carryApprovalFormDetail } from "actions";
+import { getApprovalFormList, carryApprovalFormList, carryApprovalFormDetail, carryApprovalList, carryApprovalDetail } from "actions";
 
 const getApprovalFormListAxios = async() =>{
     return await axios({
@@ -51,6 +51,25 @@ const addApprovalAxios = async(action) => {
     .catch(error => console.log(error))
 }
 
+const getApprovalListAxios = async(action) => {
+    return await axios({
+        method:"POST",
+        url:"/approval/getApprovalList",
+        data: action.payload
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
+const getApprovalDetailAxios = async(action) => {
+    return await axios({
+        method: "POST",
+        url: "/approval/getApprovalDetail/"+action.payload,
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
 function* _getApprovalFormList(action){
     const approvalFormList = yield call(getApprovalFormListAxios)
     yield put(carryApprovalFormList(approvalFormList));
@@ -72,7 +91,17 @@ function* getApprovalFormDetail(action){
 }
 
 function* addApproval(action){
-    yield call(addApprovalAxios, action)
+    yield call(addApprovalAxios, action);
+}
+
+function* getApprovalList(action){
+    const approvalList = yield call(getApprovalListAxios, action);
+    yield put(carryApprovalList(approvalList));
+}
+
+function* getApprovalDetail(action){
+    const approvalDetail = yield call(getApprovalDetailAxios, action);
+    yield put(carryApprovalDetail(approvalDetail))
 }
 
 export function* getApprovalFormListSaga(){
@@ -95,11 +124,21 @@ export function* addApprovalSaga(){
     yield takeEvery(ADD_APPROVAL, addApproval)
 }
 
+export function* getApprovalListSaga(){
+    yield takeEvery(GET_APPROVAL_LIST, getApprovalList)
+}
+
+export function* getApprovalDetailSaga(){
+    yield takeEvery(GET_APPROVAL_DETAIL, getApprovalDetail)
+}
+
 export default function* rootSaga(){
     yield all([fork(getApprovalFormListSaga),
                fork(addApprovalFormSaga),
                fork(deleteApprovalFormSaga),
                fork(getApprovalFormDetailSaga),
-               fork(addApprovalSaga)
+               fork(addApprovalSaga),
+               fork(getApprovalListSaga),
+               fork(getApprovalDetailSaga)
             ]);
 }
