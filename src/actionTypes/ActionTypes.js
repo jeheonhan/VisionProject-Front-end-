@@ -230,6 +230,11 @@ export const UPDATE_ACCOUNT = 'update_account';
 export const GET_STATEMENT_LIST = 'get_statement_list';
 export const CARRY_STATEMENT_LIST = 'carry_statement_list';
 export const ADD_STATEMENT = 'add_statement';
+export const GET_STATEMENT = 'get_statement';
+export const CARRY_STATEMENT = 'carry_statement';
+export const UPDATE_STATEMENT = 'update_statement';
+export const GET_SALARY_LIST = 'get_salary_list';
+export const CARRY_SALARY_LIST = 'carry_salary_list';
 
 
 

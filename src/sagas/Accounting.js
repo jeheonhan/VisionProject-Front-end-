@@ -15,6 +15,9 @@ import {
     carryAccount,
     carryStatementList,
     getStatementList,
+    carryStatement,
+    getStatement,
+    carrySalaryList,
 } from 'actions/index';
 import { 
     GET_VENDOR_LIST, 
@@ -34,6 +37,9 @@ import {
     UPDATE_ACCOUNT,
     GET_STATEMENT_LIST,
     ADD_STATEMENT,
+    GET_STATEMENT,
+    UPDATE_STATEMENT,
+    GET_SALARY_LIST,
 } from "actionTypes/ActionTypes";
 
 const getVendorListRequest = async (search) => {
@@ -175,6 +181,35 @@ const insertStatementRequest = async (statement) => {
     .catch(response => console.log(response));
 }
 
+const getStatementRequest = async (statementNo) =>{
+    return await axios({
+        method:"GET",
+        url:"/accounting/getStatementDetail/"+statementNo
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
+const updateStatementRequest = async (_statement) => {
+    return await axios({
+        method:"POST",
+        url:"/accounting/modifyStatement",
+        data:_statement
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
+const getSalaryListRequest = async (search) => {
+    return await axios({
+        method:"POST",
+        url:"/accounting/getSalaryList",
+        data:search
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
 //여기서 payload는 search 도메인을 의미한다.
 function* getVendorListFn({payload}){
     const VendorList = yield call(getVendorListRequest, payload);
@@ -260,7 +295,23 @@ function* getStatementListFn({payload}){
 
 function* addStatementFn({payload}){
     yield call(insertStatementRequest, payload);
-    yield put(getStatementList({ searchKeyword : "" }));
+    yield put(getStatementList({ searchKeyword : "", usageCondition : "01"}));
+}
+
+function* getStatementFn({payload}){
+    const statementInfo = yield call(getStatementRequest, payload);
+    yield put(carryStatement(statementInfo));
+}
+
+function* updateStatementFn({payload}){
+    yield call(updateStatementRequest, payload);
+    yield put(getStatementList({ searchKeyword : "", usageCondition : "01" }));
+    yield put(getStatement(payload.statementNo));
+}
+
+function* getSalaryListFn({payload}){
+    const salaryList = yield call(getSalaryListRequest, payload);
+    yield put(carrySalaryList(salaryList));
 }
 
 export function* getVendorListSaga(){
@@ -331,6 +382,17 @@ export function* addStatementSaga(){
     yield takeEvery(ADD_STATEMENT, addStatementFn);
 }
 
+export function* getStatementSaga(){
+    yield takeEvery(GET_STATEMENT, getStatementFn);
+}
+
+export function* updateStatementSaga(){
+    yield takeEvery(UPDATE_STATEMENT, updateStatementFn);
+}
+
+export function* getSalaryListSaga(){
+    yield takeEvery(GET_SALARY_LIST, getSalaryListFn);
+}
 
 export default function* rootSaga(){
     yield all([
@@ -351,5 +413,9 @@ export default function* rootSaga(){
         fork(updateAccountSaga),
         fork(getStatementListSaga),
         fork(addStatementSaga),
+        fork(getStatementSaga),
+        fork(updateStatementSaga),
+        fork(getSalaryListSaga),
+        
     ]);
 }

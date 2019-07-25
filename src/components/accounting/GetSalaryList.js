@@ -23,11 +23,13 @@ import { getStatement } from 'actions/index';
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
-  {id: 'statementNo', align: false, disablePadding: false, label: '전표번호'},
-  {id: 'statementCategoryCodeName', align: true, disablePadding: false, label: '전표구분'},
-  {id: 'statementDetail', align: true, disablePadding: false, label: '전표내용'},
-  {id: 'tradeDate', align: true, disablePadding: false, label: '거래일자'},
-  {id: 'tradeAmount', align: true, disablePadding: false, label: '공급가액'},
+  {id: 'salaryDate', align: false, disablePadding: false, label: '급여월'},
+  {id: 'employeeNo', align: true, disablePadding: false, label: '사원번호'},
+  {id: 'totalRegularWorkTime', align: true, disablePadding: false, label: '소정근로시간'},
+  {id: 'totalExtendWorkTime', align: true, disablePadding: false, label: '연장근로시간'},
+  {id: 'wage', align: true, disablePadding: false, label: '시급'},
+  {id: 'salaryStatusCodeName', align: true, disablePadding: false, label: '급여상태'},
+  {id: 'individualTotalSalary', align: true, disablePadding: false, label: '개인지급총액'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -139,7 +141,7 @@ class StatementTable extends React.Component {
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.statementList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      data: this.props.salaryList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
       page: 0,
       rowsPerPage: 10,
       detailDialogOpen: false,
@@ -200,34 +202,13 @@ class StatementTable extends React.Component {
     this.setState({rowsPerPage: event.target.value});
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
-
-  //전표 상세조회 다이얼로그 열기
-  statementDetailDialogOpen = () => {
-    this.setState({
-      detailDialogOpen : true
-    })
-  }
-
-  //전표 상세조회 다이얼로그 닫기
-  statementDetailDialogClose = () => {
-    this.setState({
-      detailDialogOpen : false
-    })
-  }
-
-  //전표 상세조회 클릭 이벤트
-  GetStatementDetail = (event, statementNo) => {
-    event.preventDefault();
-    this.props.getStatement(statementNo);
-    this.statementDetailDialogOpen();
-  }
   
   
   render() {
 
-    if(this.props.statementList !== this.state.data){
+    if(this.props.salaryList !== this.state.data){
       this.setState({
-        data : this.props.statementList
+        data : this.props.salaryList
       })
     }
 
@@ -268,10 +249,12 @@ class StatementTable extends React.Component {
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={event => this.GetStatementDetail(event, row.statementNo)} style={{cursor:'pointer'}}>{row.statementNo}</span></TableCell>
+                      <TableCell align="left"><span onClick={event => this.GetStatementDetail(event, row.salaryDate)} style={{cursor:'pointer'}}>{row.statementNo}</span></TableCell>
                       <TableCell align="left">{row.statementCategoryCodeName}</TableCell>
                       <TableCell align="left">{row.statementDetail}</TableCell>
                       <TableCell align="left">{row.tradeDate}</TableCell>
+                      <TableCell align="left">{row.tradeAmount}</TableCell>
+                      <TableCell align="left">{row.tradeAmount}</TableCell>
                       <TableCell align="left">{row.tradeAmount}</TableCell>
                     </TableRow>
 
