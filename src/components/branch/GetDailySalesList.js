@@ -18,7 +18,8 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
-import { getDailySalesList } from 'actions';
+import { getDailySalesList, getDailySalesDetail } from 'actions';
+import GetDailySalesDetail from './GetDailySalesDetail';
 
 
 const columnData = [
@@ -183,12 +184,16 @@ const columnData = [
     };
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-    getBranchDetail = (event, branchNo) => {
+    getDailySalesDetail = ( event, branchDailySales ) => {
       event.preventDefault();
-      if(branchNo !== undefined) {
-        this.props.getBranchDetail(branchNo);
+      if(branchDailySales !== undefined) {
+        this.props.getDailySalesDetail(branchDailySales);
       }
       this.setState({open : true});
+    }
+
+    handleRequestClose = () => {
+      this.setState({open : false});
     }
   
     constructor(props, context) {
@@ -226,7 +231,7 @@ const columnData = [
                   
                   {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                   {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
+                    //console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                     const isSelected = this.isSelected(page*rowsPerPage+index);
                     return (
                       <TableRow
@@ -243,7 +248,7 @@ const columnData = [
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                         </TableCell>
                         <TableCell align="left" >{row.branchNo}</TableCell>
-                        <TableCell align="left"><span onClick={ event => this.getBranchDetail(event, row.branchNo)} style={{cursor:'pointer'}}>{row.salesDate}</span></TableCell>
+                        <TableCell align="left"><span onClick={ event => this.getDailySalesDetail(event, row)} style={{cursor:'pointer'}}>{row.salesDate}</span></TableCell>
                         <TableCell align="left">{row.dailyTotalAmount}</TableCell>
                       </TableRow>
                     );
@@ -261,6 +266,13 @@ const columnData = [
                   </TableRow>
                 </TableFooter>
               </Table>
+
+              { this.props.salesProduct && (<GetDailySalesDetail
+              open={ this.state.open }
+              handleRequestClose={ this.handleRequestClose }
+              salesProduct={ this.props.salesProduct }
+              />)}
+
             </div>
           </div>
         </div>
@@ -269,8 +281,8 @@ const columnData = [
   }
   
   const mapStateToProps = ({ branch }) => {
-    const { dailySalesList } = branch;
-    return { dailySalesList };
+    const { dailySalesList , salesProduct} = branch;
+    return { dailySalesList , salesProduct};
 }
 
-export default connect(mapStateToProps, { getDailySalesList })(EnhancedTable);
+export default connect(mapStateToProps, { getDailySalesList, getDailySalesDetail })(EnhancedTable);

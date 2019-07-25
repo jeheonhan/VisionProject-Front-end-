@@ -1,4 +1,7 @@
-import { GET_DAILY_SALES_LIST, CARRY_DAILY_SALES_LIST } from "actionTypes/ActionTypes";
+import { GET_DAILY_SALES_LIST, 
+        CARRY_DAILY_SALES_LIST, 
+        GET_DAILY_SALES_DETAIL, 
+        CARRY_DAILY_SALES_DETAIL }      from "actionTypes/ActionTypes";
 
 
 
@@ -17,6 +20,19 @@ export default ( state = INIT_STATE, action) => {
             return {
                 ...state,
                 dailySalesList : action.payload
+            }
+        }
+
+        case GET_DAILY_SALES_DETAIL : {
+            return {
+                ...state
+            }
+        }
+
+        case CARRY_DAILY_SALES_DETAIL : {
+            return {
+                ...state,
+                salesProduct : action.payload
             }
         }
 

@@ -238,7 +238,7 @@ export const ADD_STATEMENT = 'add_statement';
 
 
 
-//경영관리
+//경영지원
 export const GET_BRANCH_LIST = 'get_branch_list';
 export const CARRY_BRANCH_LIST = 'carry_branch_list';
 export const GET_BRANCH_DETAIL = 'get_branch_detail';
@@ -253,6 +253,8 @@ export const CARRY_NOTICE_DETAIL = 'carry_notice_detail';
 //지점관리
 export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';
 export const CARRY_DAILY_SALES_LIST = 'carry_daily_sales_list';
+export const GET_DAILY_SALES_DETAIL = 'get_daily_sales_detail';
+export const CARRY_DAILY_SALES_DETAIL = 'carry_daily_sales_detail';
 
 
 
