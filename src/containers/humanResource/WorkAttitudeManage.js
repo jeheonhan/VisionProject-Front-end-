@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { getWorkAttitudeList } from 'actions/HumanResource';
 import CardBox from "components/CardBox";
 import WorkAttitudeList from 'components/humanResource/GetWorkAttitudeList';
+import ModifyWorkAttitude from 'components/humanResource/ModifyWorkAttitude';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class WorkAttitudeManage extends React.Component{
 
@@ -35,8 +37,13 @@ class WorkAttitudeManage extends React.Component{
         return(
             <div>
             <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
-                {workAttitudeList !== undefined ? (<WorkAttitudeList/>):(<div>error</div>)}
+                {workAttitudeList !== undefined ? (<WorkAttitudeList handleModifyOpen={this.handleModifyOpen}/>)
+                                                    :(<div className="loader-view" style={{height: 'calc(100vh - 200px)'}}>
+                                                        <CircularProgress/>
+                                                      </div>)}
             </CardBox>
+            <ModifyWorkAttitude open={this.state.modifyOpen}
+                                handleModifyClose={this.handleModifyClose}/>
             </div>
         );
     }

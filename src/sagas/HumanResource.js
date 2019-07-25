@@ -23,7 +23,29 @@ import { GET_HRCARD_LIST,
          ADD_WORKATTITUDE_CODE,
          GET_DEPARTMENT_LIST,
          ADD_DEPARTMENT,
-         CONVERT_DEPART_USAGE_STATUS, } from "actionTypes/ActionTypes";
+         CONVERT_DEPART_USAGE_STATUS,
+         UPDATE_WORK_ATTITUDE, 
+         UPDATE_WORK_ATTITUDE_CODE,} from "actionTypes/ActionTypes";
+
+const updateWorkAttitudeCodeRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/modifyWorkAttitudeCode",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
+
+const updateWorkAttitudeRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/modifyWorkAttitude",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
 
 const convertDepartUsageRequest = async (_data) => {
     await axios({
@@ -154,6 +176,16 @@ const getAppointListRequest = async (search) => {
     .catch(error => console.log(error));
 }
 
+function* updateWorkAttitudeCode({payload}){
+    yield call(updateWorkAttitudeCodeRequest, payload);
+    yield put(getWorkAttitudeCodeList({searchKeyword:null}));
+}
+
+function* updateWorkAttitudeFn({payload}){
+    yield call(updateWorkAttitudeRequest, payload);
+    yield put(getWorkAttitudeList({searchKeyword:null}));
+}
+
 function* convertDepartUsageFn({payload}){
     yield call(convertDepartUsageRequest, payload);
     yield put(getDepartmentList({searchKeyword:null}));
@@ -218,6 +250,14 @@ function* getAppointListFn({payload}){
     console.log(payload);
     const appointList = yield call(getAppointListRequest, payload);
     yield put(carryAppointList(appointList));
+}
+
+export function* updateWorkAttitudeCodeSaga(){
+    yield takeEvery(UPDATE_WORK_ATTITUDE_CODE, updateWorkAttitudeCode);
+}
+
+export function* updateWorkAttitudeSaga(){
+    yield takeEvery(UPDATE_WORK_ATTITUDE, updateWorkAttitudeFn);
 }
 
 export function* convertDepartUsageSaga(){
@@ -286,5 +326,7 @@ export default function* rootSaga(){
             fork(addWorkAttitudeCodeSaga),
             fork(getDepartmentListSaga),
             fork(addDepartmentSaga),
-            fork(convertDepartUsageSaga)]);
+            fork(convertDepartUsageSaga),
+            fork(updateWorkAttitudeSaga),
+            fork(updateWorkAttitudeCodeSaga)]);
 }

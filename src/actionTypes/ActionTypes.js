@@ -174,6 +174,8 @@ export const GET_DEPARTMENT_LIST = 'get_department_list';
 export const CARRY_DEPARTMENT_LIST = 'carry_department_list';
 export const ADD_DEPARTMENT = 'add_department';
 export const CONVERT_DEPART_USAGE_STATUS = 'convert_depart_usage_status';
+export const UPDATE_WORK_ATTITUDE = 'update_work_attitude';
+export const UPDATE_WORK_ATTITUDE_CODE = 'update_work_attitude_code';
 
 
 

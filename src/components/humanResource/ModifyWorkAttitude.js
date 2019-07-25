@@ -1,13 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { checkedEmployee
-        , checkedDepartment
-        , checkedRank
-        , getCodeList
-        , addAppointment
-        , checkedWorkAttitudeCode
-        , addWorkAttitude
-        , cleanStoreState } from 'actions/index';
+import { checkedWorkAttitudeCode
+        , cleanStoreState
+        , updateWorkAttitude } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -16,7 +11,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FindWorkAttitudeCode from 'components/humanResource/FindWorkAttitudeCode';
-import FindEmployee from 'components/humanResource/FindEmployee';
 import DatePicker from '../date/DatePickers';
 
 
@@ -24,7 +18,9 @@ class FormDialog extends React.Component {
   state = {
     open: false,
     subOpen: false,
-    workAttitudeCodeOpen: false
+    workAttitudeCodeOpen: false,
+    data:null,
+    flag:false
   };
 
   handleClickOpen = () => {
@@ -34,16 +30,6 @@ class FormDialog extends React.Component {
   handleRequestClose = () => {
     this.setState({open: false});
   };
-
-  //자식 컴포넌트 열기
-  handleSubComponentOpen = () => {
-    this.setState({subOpen: true})
-  }
-
-  //자식 컴포넌트 닫기
-  handleSubComponentClose = () => {
-      this.setState({subOpen: false})
-  }
 
   //근태코드 검색 열기
   handleSubWorkAttitudeCodeOpen = () => {
@@ -56,8 +42,7 @@ class FormDialog extends React.Component {
   }
 
   handleChange = name => event => {
-      this.setState({[name]:event.target.value})
-      console.log(this.state)
+      this.setState({data:{...this.state.data,[name]:event.target.value}})
   }
 
   //Date Picker로부터 date정보 받는 call back function
@@ -65,49 +50,70 @@ class FormDialog extends React.Component {
     this.setState({workAttitudeDate:date})
   }
 
+  //수정화면을 닫을 때 기존 state의 값을 지움
+  handleCloseToRemovePreData = () => {
+    this.setState({
+      flag:false
+    });
+    this.props.handleModifyClose();
+  }
+
  
   render() {
 
-    const { checkedEmployeeData, checkedWorkAttitudeCodeData, checkedWorkAttitudeData } = this.props;
+    console.log(this.state)
 
-    console.log("checkedWorkAttitudeCode :: "+ checkedWorkAttitudeCodeData)
+    const { checkedWorkAttitudeCodeData, checkedWorkAttitudeData } = this.props;
+    const { data } = this.state;
+
+    if(!this.state.flag && checkedWorkAttitudeData &&checkedWorkAttitudeData !== this.state.data){
+      this.setState({
+        data:checkedWorkAttitudeData,
+        flag:true
+      })
+    }
+
+    if(checkedWorkAttitudeCodeData && checkedWorkAttitudeCodeData.workAttitudeCodeNo != data.workAttitudeCodeNo){
+      this.setState({
+        data:{...this.state.data, 
+          workAttitudeCodeNo:checkedWorkAttitudeCodeData.workAttitudeCodeNo,
+          workAttitudeCodeName:checkedWorkAttitudeCodeData.workAttitudeCodeName
+        }
+      })
+    }
+    
     const handleSubmit = () => {
-      if(this.state.workAttitudeDate === undefined){
-        alert("당일 날짜로는 근태를 등록할 수 없습니다.")
-      }
-      else if(checkedEmployeeData.employeeNo === undefined){
-        alert("사원번호를 입력하세요.")
-      }
-      else if(checkedWorkAttitudeCodeData.workAttitudeCodeNo === undefined){
+      if(this.state.data.workAttitudeCodeNo === undefined){
         alert("근태코드를 입력하세요.")
       }
+      else if(this.state.data.workAttitudeTime === undefined){
+        alert("시간은 반드시 입력하세요.")
+      }
       else{
-        this.props.addWorkAttitude({workAttitudeDate:this.state.workAttitudeDate, 
-                                   employeeNo:checkedEmployeeData.employeeNo,
-                                   workAttitudeCodeNo:checkedWorkAttitudeCodeData.workAttitudeCodeNo,
-                                   workAttitudeTime:this.state.workAttitudeTime})
-        
-        this.setState({workAttitudeDate:null, workAttitudeTime:null});
-        this.props.cleanStoreState("checkedEmployeeData");
+        this.props.updateWorkAttitude(this.state.data);
         this.props.cleanStoreState("checkedWorkAttitudeCodeData");
-        this.handleRequestClose();
+        this.props.cleanStoreState("checkedWorkAttitudeData");
+        this.setState({
+              flag:false
+        });
+        this.handleCloseToRemovePreData();
       }
     }
   
     return (
       <div>
-        <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
-            등록
-        </Button>
-        <Dialog open={this.state.open} onClose={this.handleRequestClose} maxWidth="xl">
-          <DialogTitle>근태 등록</DialogTitle>
+        <Dialog open={this.props.open} onClose={this.handleCloseToRemovePreData} maxWidth="xl">
+          <DialogTitle>근태 수정</DialogTitle>
           <DialogContent >
             <DialogContentText>
               사원번호 혹은 사원명을 선택한 이후에 발령일자, 발령부서, 발령직급을 선택하시기 바랍니다.
             </DialogContentText>
             
             <div style={{float:"left"}}>
-            <DatePicker callBackDateChange={this.callBackDateChange}></DatePicker>
+            <DatePicker callBackDateChange={this.callBackDateChange} 
+                        value={data && data.workAttitudeDate}
+                        disabled={true}/>
+                      
             </div>
 
             <div style={{float:"left"}}>
@@ -117,9 +123,8 @@ class FormDialog extends React.Component {
               margin="none"
               id="employeeNo"
               label="사원번호"
-            //사원번호 클릭시 자식컴포넌트 Open값을 true로 변경
-              onClick={this.handleSubComponentOpen}
-              value={checkedEmployeeData && checkedEmployeeData.employeeNo}
+              value={data && data.employeeNo}
+              disabled
             />
             </div>
             <div style={{float:"left"}}>
@@ -129,8 +134,8 @@ class FormDialog extends React.Component {
               margin="none"
               id="employeeName"
               label="사원명"
-              onClick={this.handleSubComponentOpen}
-              value={checkedEmployeeData && checkedEmployeeData.employeeName}
+              value={data && data.employeeName}
+              disabled
             />
             </div>
             <div style={{float:"left"}}>
@@ -140,7 +145,7 @@ class FormDialog extends React.Component {
               id="appointDepartCodeName"
               label="근태코드"
               onClick={this.handleSubWorkAttitudeCodeOpen}
-              value={checkedWorkAttitudeCodeData && checkedWorkAttitudeCodeData.workAttitudeCodeNo}
+              value={data && data.workAttitudeCodeNo}
             />
             </div>
             <div style={{float:"left"}}>
@@ -149,7 +154,7 @@ class FormDialog extends React.Component {
               margin="none"
               id="preRankCodeName"
               label="근태명칭"
-              value={checkedWorkAttitudeCodeData && checkedWorkAttitudeCodeData.workAttitudeCodeName}
+              value={data && data.workAttitudeCodeName}
               disabled
             />
             </div>
@@ -160,7 +165,7 @@ class FormDialog extends React.Component {
               id="workAttitudeTime"
               label="시간(분)"
               onChange={this.handleChange('workAttitudeTime')}
-              value={this.state.workAttitudeTime && this.state.workAttitudeTime}
+              value={data && data.workAttitudeTime}
             />
             </div>
           </DialogContent>
@@ -168,17 +173,11 @@ class FormDialog extends React.Component {
             <Button onClick={handleSubmit} color="secondary">
               확인
             </Button>
-            <Button onClick={this.handleRequestClose} color="primary">
+            <Button onClick={this.handleCloseToRemovePreData} color="primary">
               취소
             </Button>
           </DialogActions>
         </Dialog>
-
-        {/* 자식 컴포넌트 open 값이 true면 열림 이때 자기 자신을 닫게 해줄 eventHandler도 props로 전달 */}
-        <FindEmployee open={this.state.subOpen} 
-                    handleSubComponentClose={this.handleSubComponentClose}
-                    checkedEmployee={this.props.checkedEmployee}
-        />
       
         <FindWorkAttitudeCode open={this.state.workAttitudeCodeOpen} 
                               handleSubWorkAttitudeCodeClose={this.handleSubWorkAttitudeCodeClose}
@@ -190,10 +189,8 @@ class FormDialog extends React.Component {
 }
 
 const mapStateToProps = ({ humanResource }) => {
-    const { checkedEmployeeData, checkedWorkAttitudeCodeData, checkedWorkAttitudeData } = humanResource;
-    return { checkedEmployeeData, checkedWorkAttitudeCodeData, checkedWorkAttitudeData };
+    const { checkedWorkAttitudeCodeData, checkedWorkAttitudeData } = humanResource;
+    return {  checkedWorkAttitudeCodeData, checkedWorkAttitudeData };
 }
 
-export default connect(mapStateToProps, { checkedEmployee, checkedDepartment
-                                          , checkedRank, addAppointment, checkedWorkAttitudeCode
-                                          , addWorkAttitude, cleanStoreState })(FormDialog);
+export default connect(mapStateToProps, {  checkedWorkAttitudeCode, cleanStoreState, updateWorkAttitude })(FormDialog);

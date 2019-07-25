@@ -32,7 +32,7 @@ const columnData = [
   {id: 'applyStartTime', align: true, disablePadding: false, label: '시작시간'},
   {id: 'applyEndTime', align: true, disablePadding: false, label: '종료시간'},
   {id: 'workType', align: true, disablePadding: false, label: '반영방식'},
-  {id: 'workDayOfWeek', align: true, disablePadding: false, label: '반영요일'},
+  {id: 'workDayOfWeekName', align: true, disablePadding: false, label: '반영요일'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -193,6 +193,12 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  //수정화면에 Data 보내기
+  handleModifyWorkAttitudeCode = (event, row) => {
+    event.preventDefault();
+    this.props.handleModifyOpen(row);
+  }
+
 
   constructor(props, context) {
     super(props, context);
@@ -256,13 +262,19 @@ class EnhancedTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.workAttitudeCodeNo}</span></TableCell>
+                      <TableCell align="left" >
+                        <span style={{cursor:'pointer'}}
+                              onClick={event => {this.handleModifyWorkAttitudeCode(event, row)}}>
+                          {row.workAttitudeCodeNo}
+                        </span>
+                      </TableCell>
                       <TableCell align="left">{row.workAttitudeCodeName}</TableCell>
                       <TableCell align="left">{row.commuteApplyCode == '02' ? "적용":"미적용"}</TableCell>
                       <TableCell align="left">{row.applyStartTime}</TableCell>
                       <TableCell align="left">{row.applyEndTime}</TableCell>
-                      <TableCell align="left">{row.workType == '01' ? "정상근무":"추가근무"}</TableCell>
-                      <TableCell align="left">{row.workDayOfWeek}</TableCell>
+                      {/* <TableCell align="left">{row.workType == '01' ? "정상근무":"추가근무"}</TableCell> */}
+                      <TableCell align="left">{row.workType == null ? (""):(row.workType == '01' ? "정상근무":"추가근무")}</TableCell>
+                      <TableCell align="left">{row.workDayOfWeekName}</TableCell>
                     </TableRow>
                   );
                 })}

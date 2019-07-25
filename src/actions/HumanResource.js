@@ -23,6 +23,8 @@ import {  GET_HRCARD_LIST
         ADD_DEPARTMENT,
         CONVERT_DEPART_USAGE_STATUS,
         CHECKED_WORKATTITUDE,
+        UPDATE_WORK_ATTITUDE,
+        UPDATE_WORK_ATTITUDE_CODE,
         } from '../actionTypes/ActionTypes';
 
 
@@ -197,6 +199,20 @@ export const addDepartment = (data) => {
 export const convertDepartUsageStatus = (data) => {
     return{
         type: CONVERT_DEPART_USAGE_STATUS,
+        payload: data
+    }
+}
+
+export const updateWorkAttitude = (data) => {
+    return{
+        type: UPDATE_WORK_ATTITUDE,
+        payload: data
+    }
+}
+
+export const updateWorkAttitudeCode = (data) => {
+    return{
+        type: UPDATE_WORK_ATTITUDE_CODE,
         payload: data
     }
 }

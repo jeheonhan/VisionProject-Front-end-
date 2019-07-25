@@ -196,6 +196,7 @@ class EnhancedTable extends React.Component {
   handleModifyWorkAttitude = (event, row) => {
     event.preventDefault();
     this.props.checkedWorkAttitude(row);
+    this.props.handleModifyOpen();
   }
 
 
@@ -262,7 +263,7 @@ class EnhancedTable extends React.Component {
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
                       <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => {event.preventDefault()}}>
+                        <span style={{cursor:'pointer'}} onClick={event => {this.handleModifyWorkAttitude(event, row)}}>
                           {row.workAttitudeNo}
                         </span>
                       </TableCell>

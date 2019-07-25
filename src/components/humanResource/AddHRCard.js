@@ -299,9 +299,9 @@ function AddTextField(props){
                     fullWidth
                 />
             </div> */}
-            <br/><br/><br/><br/>
+            
             <div>
-              <div className="col-md-4 col-6" style={{float:"left"}}>
+              <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="employeeName"
                       label="사원명"
@@ -310,7 +310,7 @@ function AddTextField(props){
                       fullWidth
                   />
               </div>
-              <div className="col-md-4 col-6" style={{float:"left"}}>
+              <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
                 <TextField
                         id="ssn"
                         label="주민등록번호"            
@@ -322,7 +322,7 @@ function AddTextField(props){
               </div>
             </div>
             <div>
-              <div className="col-md-4 col-6" style={{float:"left"}}>
+              <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="employeePhone"
                       label="휴대폰번호"
@@ -331,7 +331,7 @@ function AddTextField(props){
                       fullWidth
                   />
               </div>
-              <div className="col-md-4 col-6"  style={{float:"left"}}>
+              <div className="col-md-4 col-6"  style={{float:"left", display:"inline"}}>
               <TextField
                       id="employeeTel"
                       label="전화번호"
@@ -341,9 +341,8 @@ function AddTextField(props){
                   />
               </div>
             </div>
-            <br/><br/><br/><br/><br/><br/><br/>
             <div>
-              <div className="col-md-4 col-6" tyle={{float:"left"}}>
+              <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="employeeEmail"
                       label="이메일"
@@ -352,19 +351,18 @@ function AddTextField(props){
                       fullWidth
                   />
               </div>
-              <div className="col-md-4 col-6" tyle={{float:"left"}}>
+              <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <DatePicker  label="입사일자" callBackDateChange={callBackDateChange}/>            
               </div>
             </div>
             
-            <div className="col-md-4 col-6">
+            <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <FormControl fullWidth>
                 <InputLabel htmlFor="age-simple">은행 선택</InputLabel>
                 <Select
                   fullWidth
                   onChange={props.handleChange('bankCodeNo')}
                   value={props.state.employee && props.state.employee.account && props.state.employee.account.bankCodeNo}
-                  // input={<Input id="ageSimple1"/>}
                 >
                 
                   {props.bankList && props.bankList.map( bankRow => 
@@ -375,7 +373,7 @@ function AddTextField(props){
                 </FormControl>
             </div>
 
-            <div className="col-md-4 col-6">
+            <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="accountNo"
                       label="계좌번호"
@@ -385,7 +383,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-4 col-6">
+            <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="zipCode"
                       label="우편번호"
@@ -395,7 +393,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-4 col-6">
+            <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="address"
                       label="주소"
@@ -406,7 +404,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-4 col-6">
+            <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="detailAddress"
                       label="상세주소"
@@ -416,7 +414,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-4 col-6">
+            <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="wage"
                       label="시급"
@@ -426,7 +424,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <div className="col-md-4 col-6">
+            <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="refer"
                       label="참조"

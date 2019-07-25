@@ -20,6 +20,8 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import ComposeMail from 'components/mail/ComposeMail';
+import FindDepart from 'components/humanResource/FindDepart';
+import FindRank from 'components/humanResource/FindRank';
 
 let counter = 0;
 
@@ -282,7 +284,8 @@ class EnhancedTable extends React.Component {
                       <TableCell align="left">{row.joinDate}</TableCell>
                       <TableCell align="left">{row.employeePhone}</TableCell>
                       <TableCell align="left">
-                        <IconMailOutline onClick={event => this.handleClickMailOpen(event, row.employeeEmail)} style={{cursor:'pointer'}}/><input type="hidden" value={row.employeeEmail}/>
+                        <IconMailOutline onClick={event => this.handleClickMailOpen(event, row.employeeEmail)} 
+                                        style={{cursor:'pointer'}} htmlColor={"#e65100"}/><input type="hidden" value={row.employeeEmail}/>
                       </TableCell>
                     </TableRow>
                   );
@@ -308,6 +311,10 @@ class EnhancedTable extends React.Component {
                              //onMailSend={this.onMailSend.bind(this)
                              emailForSending={emailForSending}
           />
+        {/* 부서검색 */}
+        <FindDepart/>
+        {/* 직급검색 */}
+        <FindRank/>
       </div>
     );
   }

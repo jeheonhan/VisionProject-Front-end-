@@ -173,16 +173,20 @@ class FormDialog extends React.Component {
             values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"04"});
           }
           else{
-            values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"05"});
+            values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"02"});
           }
         }
         else if(this.state.checkedSaturday){
           if(this.state.checkedSunday){
             values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"06"});
+          }else{
+            values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"05"});
           }
         }
         else if(this.state.checkedSunday){
           values = Object.assign({}, this.state.workAttitudeCode, {workDayOfWeek:"07"});
+        }else{
+          values = this.state.workAttitudeCode;
         }
 
         this.props.addWorkAttitudeCode(values);
