@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import {getOrderToVendorList} from "actions/ProductionManagement";
 import GetOrderToVendorList from 'components/productManagement/GetOrderToVendorList'
-
+import CardBox from "components/CardBox";
 
 
 class OrderToVendorManage extends React.Component{
@@ -22,10 +22,15 @@ class OrderToVendorManage extends React.Component{
         }
 
         return(
+
+            <div>
+          <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
             <div>
 
                 {OrderToVendorList !== undefined ? (<GetOrderToVendorList OrderToVendorList = {OrderToVendorList}></GetOrderToVendorList>):"error"}
 
+            </div>
+            </CardBox>
             </div>
         );
         
