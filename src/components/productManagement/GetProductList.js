@@ -205,10 +205,7 @@ class EnhancedTable extends React.Component {
       rowsPerPage: 10,
       search:{searchKeyword:null},
       flag: false
-   
-
     };
-
 
     const {getInfoAccount} = this.props;
 
@@ -217,7 +214,6 @@ class EnhancedTable extends React.Component {
     };
   }
 
- 
 
   render() {
    
@@ -229,21 +225,8 @@ class EnhancedTable extends React.Component {
       this.setState({data:ProductList});
     }
 
-    
-   
-
-    
-      
-      
-    
-    
-
-
     return (
-     
-
-      
-          
+       
       <div>
         <AddProduct     infoAccount = { getInfoAccount }    >     </AddProduct>
         <EnhancedTableToolbar numSelected={selected.length}/>
@@ -258,6 +241,7 @@ class EnhancedTable extends React.Component {
                 onRequestSort={this.handleRequestSort}
                 rowCount={data.length}
               />
+              
               <TableBody>
                 
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
@@ -287,6 +271,7 @@ class EnhancedTable extends React.Component {
                   );
                 })}
               </TableBody>
+             
               <TableFooter>
                 <TableRow>
                   <TablePagination
@@ -298,7 +283,9 @@ class EnhancedTable extends React.Component {
                   />
                 </TableRow>
               </TableFooter>
+              
             </Table>
+           
           </div>
         </div>
       </div>

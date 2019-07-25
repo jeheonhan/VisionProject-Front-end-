@@ -23,10 +23,15 @@ class ProductionManage extends React.Component{
             }
               return(
                 <div>
+          <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
+                <div>
                       
                   {ProductList !== undefined ? (<GetProductList ProductList={ProductList}></GetProductList>):"error"}
                
                   </div>
+                  </CardBox>
+                  </div>
+                  
               );
 
 
