@@ -6,7 +6,7 @@ import FindEmployeeForApprovalLine from './FindEmployeeForApprovalLine';
 import Button from '@material-ui/core/Button';
 import {CallMade} from '@material-ui/icons';
 import {connect} from 'react-redux';
-import {addApproval} from 'actions/index';
+import {addApproval, getApprovalList} from 'actions/index';
 import {Redirect} from 'react-router-dom';
 
 class AddApproval extends React.Component{
@@ -19,7 +19,7 @@ class AddApproval extends React.Component{
             ,firstApprover:{
                         approverNumbering:null
                     ,approvalNo:null
-                    ,employeeNo:(_firstApprover.employeeNo!==undefined?_firstApprover.employeeNo:"1001")
+                    ,employeeNo:(_firstApprover.employeeNo!==undefined?_firstApprover.employeeNo:"1000")
                     ,signatureImage:"https://papermilkdesign.com/images/line-clipart-transparent-5.png"
                     ,rankCodeName:"담당"
                     ,ordinal:0
@@ -90,6 +90,7 @@ class AddApproval extends React.Component{
 
     renderRedirect = () => {
         if (this.state.redirect) {
+          this.props.getApprovalList({searchCondition:"2", searchKeyword:this.state.firstApprover.employeeNo});
           this.setState({
             ...this.state,
             redirect:false
@@ -199,7 +200,7 @@ class AddApproval extends React.Component{
                     margin="normal"
                     id="registrantEmployeeName"
                     label="등록자"
-                    value={localStorage.getItem("user").employeeName!==undefined ? localStorage.getItem("user").employeeName : "안채은"}
+                    value={localStorage.getItem("user").employeeName!==undefined ? localStorage.getItem("user").employeeName : "박경주"}
                 />
                 </span>
                 
@@ -235,4 +236,4 @@ class AddApproval extends React.Component{
     }
 }
 
-export default connect(null, {addApproval})(AddApproval);
+export default connect(null, {addApproval, getApprovalList})(AddApproval);

@@ -6,6 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import CardBox from 'components/CardBox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import { DialogContent } from '@material-ui/core';
+import { maxWidth, maxHeight } from '@material-ui/system';
 
   class GetBranchDetail extends React.Component {
 
@@ -43,9 +45,9 @@ import ListItem from '@material-ui/core/ListItem';
           >
           
           <DialogTitle align="center">지점 상세보기</DialogTitle>
-                
-          <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
-            
+          
+          <DialogContent style={{minWidth: '800px', maxWidth: '800px', minHeight:'400px', maxHeight:'400px'}}>
+
               <List>
                 <ListItem>
                   <div>지점번호 : {this.state.branch.branchNo}</div>
@@ -96,7 +98,9 @@ import ListItem from '@material-ui/core/ListItem';
                 </ListItem>
                 
               </List>
-          </CardBox>
+
+          </DialogContent>
+
                  <DialogActions align="centery">
                     <Button onClick={this.props.handleRequestClose} color="secondary">
                         닫기

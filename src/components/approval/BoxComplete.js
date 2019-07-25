@@ -21,10 +21,10 @@ import ApprovalFormDetail from 'components/approvalForm/ApprovalFormDetail'
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
   
-  {id: 'approvalFormNo', align: true, disablePadding: false, label: '결재양식번호'},
-  {id: 'approvalFormTitle', align: true, disablePadding: false, label: '결재양식명'},
-  {id: 'registrantEmployeeName', align: false, disablePadding: false, label: '등록자'},
-  {id: 'useCount', align: false, disablePadding: false, label: '누적사용횟수'},
+  {id: 'approvalFormNo', align: true, disablePadding: false, label: '결재번호'},
+  {id: 'approvalFormTitle', align: true, disablePadding: false, label: '결재서제목'},
+  {id: 'registrantEmployeeName', align: false, disablePadding: false, label: '작성일자'},
+  {id: 'useCount', align: false, disablePadding: false, label: '작성자'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -221,7 +221,7 @@ class EnhancedTable extends React.Component {
     }
 
     return (
-      <div>
+      <div className="jr-card" style={{marginTop:"5px"}}> 
         {/* <EnhancedTableToolbar numSelected={selected.length}/> */}
         <div className="flex-auto">
           <div className="table-responsive-material">
