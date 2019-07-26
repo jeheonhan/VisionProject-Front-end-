@@ -9,7 +9,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import { connect } from 'react-redux';
-import { getWorkAttitudeCodeList } from 'actions/HumanResource';
+import { getWorkAttitudeCodeList, checkedWorkAttitudeCode } from 'actions/index';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Radio from '@material-ui/core/Radio';
@@ -135,4 +135,4 @@ const mapStateToProps = ({ humanResource }) => {
   return { workAttitudeCodeList }
 }
 
-export default connect(mapStateToProps, { getWorkAttitudeCodeList })(FindWorkAttitudeCode);
+export default connect(mapStateToProps, { getWorkAttitudeCodeList, checkedWorkAttitudeCode })(FindWorkAttitudeCode);
