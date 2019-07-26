@@ -1,4 +1,4 @@
-import { GET_APPROVAL_FORM_LIST, CARRY_APPROVAL_FORM_LIST, ADD_APPROVAL_FORM, DELETE_APPROVAL_FORM, GET_APPROVAL_FORM_DETAIL, CARRY_APPROVAL_FORM_DETAIL, ADD_APPROVAL, CARRY_APPROVAL_LIST, GET_APPROVAL_LIST, CARRY_APPROVAL_DETAIL, GET_APPROVAL_DETAIL } from "actionTypes/ActionTypes";
+import { GET_APPROVAL_FORM_LIST, CARRY_APPROVAL_FORM_LIST, ADD_APPROVAL_FORM, DELETE_APPROVAL_FORM, GET_APPROVAL_FORM_DETAIL, CARRY_APPROVAL_FORM_DETAIL, ADD_APPROVAL, CARRY_APPROVAL_LIST, GET_APPROVAL_LIST, CARRY_APPROVAL_DETAIL, GET_APPROVAL_DETAIL, MODIFY_APPROVAL_STATUS } from "actionTypes/ActionTypes";
 
 export const getApprovalFormList = () => {
     return{
@@ -73,5 +73,13 @@ export const carryApprovalDetail = (data) => {
     return{
         type: CARRY_APPROVAL_DETAIL,
         payload : data
+    }
+}
+
+export const modifyApprovalStatus = (_url, _searchKeyword) => {
+    return{
+        type: MODIFY_APPROVAL_STATUS,
+        url : _url,
+        searchKeyword : _searchKeyword
     }
 }

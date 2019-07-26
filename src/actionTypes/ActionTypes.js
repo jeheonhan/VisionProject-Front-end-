@@ -213,6 +213,7 @@ export const GET_APPROVAL_LIST = 'get_approval_list';
 export const CARRY_APPROVAL_LIST = 'carry_approval_list';
 export const GET_APPROVAL_DETAIL = 'get_approval_detail';
 export const CARRY_APPROVAL_DETAIL = 'carry_approval_detail';
+export const MODIFY_APPROVAL_STATUS = 'modify_approval_status';
 
 
 //회계관리

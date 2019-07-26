@@ -3,14 +3,13 @@ import axios from 'axios';
 import { SEND_EMAIL } from 'actionTypes/ActionTypes';
 
 const sendEmailRequest = async (_data) => {
-    console.log("몇번!!!");
-    // await axios({
-    //     method:"POST",
-    //     url:"/common/sendEmail",
-    //     data:_data
-    // })
-    // .then(response => console.log(response))
-    // .catch(error => console.log(error))
+    await axios({
+        method:"POST",
+        url:"/common/sendEmail",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
 }
 
 function* sendEmailFn({payload}){
