@@ -73,7 +73,7 @@ class FormDialog extends React.Component {
       })
     }
 
-    if(checkedWorkAttitudeCodeData && checkedWorkAttitudeCodeData.workAttitudeCodeNo != data.workAttitudeCodeNo){
+    if(checkedWorkAttitudeCodeData && data && checkedWorkAttitudeCodeData.workAttitudeCodeNo != data.workAttitudeCodeNo){
       this.setState({
         data:{...this.state.data, 
           workAttitudeCodeNo:checkedWorkAttitudeCodeData.workAttitudeCodeNo,

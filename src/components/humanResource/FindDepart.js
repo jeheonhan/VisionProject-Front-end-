@@ -61,7 +61,7 @@ class FindDepart extends React.Component{
       }
 
     return(        
-        <Dialog open={this.props.open}  maxWidth="xl">
+        <Dialog open={this.props.open} onClose={this.props.handleSubDepartComponentClose} maxWidth="xl">
           <DialogTitle>부서 검색</DialogTitle>
           <DialogContent >
 

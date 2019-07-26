@@ -425,7 +425,7 @@ class FormDialog extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleSubmit} color="secondary">
-              확인
+              수정
             </Button>
             <Button onClick={this.handleRequestClose} color="primary">
               취소
