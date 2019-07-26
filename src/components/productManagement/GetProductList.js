@@ -50,6 +50,10 @@ class EnhancedTableHead extends React.Component {
     this.props.onRequestSort(event, property);
   };
 
+  sortProduct = () => {
+    console.log("왓냐 ;;;.........")
+  };
+
   render() {
     
     const {onSelectAllClick, order, orderBy, numSelected, rowCount} = this.props;
@@ -79,7 +83,7 @@ class EnhancedTableHead extends React.Component {
                   <TableSortLabel
                     active={orderBy === column.id}
                     direction={order}
-                    onClick={this.createSortHandler(column.id)}
+                    onClick={ column.id == 'quantity'? this.sortProduct()     :   this.createSortHandler(column.id)             }
                   >
                     {/* 칼럼명 나타나는 영역 */}
                     {column.label}
@@ -228,7 +232,7 @@ class EnhancedTable extends React.Component {
     return (
        
       <div>
-        <AddProduct     infoAccount = { getInfoAccount }    >     </AddProduct>
+        
         <EnhancedTableToolbar numSelected={selected.length}/>
         <div className="flex-auto">
           <div className="table-responsive-material">
@@ -287,6 +291,7 @@ class EnhancedTable extends React.Component {
             </Table>
            
           </div>
+         
         </div>
       </div>
     );

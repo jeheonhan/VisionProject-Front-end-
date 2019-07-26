@@ -17,8 +17,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
-import { getOrderToVendorList , getOrderToVendorDetailList  } from 'actions/index.js';
+import { getOrderToVendorList , getOrderToVendorDetailList, updateOrderToVendorCode  } from 'actions/index.js';
 import GetOrderToVendorDetailList from 'components/productManagement/GetOrderToVendorDetailList';
+
 let counter = 0;
 
 
@@ -220,6 +221,26 @@ class EnhancedTable extends React.Component {
   handleRequestClose = () => {
     this.setState({open : false});
   }
+
+  updateOrderToVendorList = (event,orderToVendor) => {
+    event.preventDefault();
+    console.log("값왓냐")
+    console.log(orderToVendor);
+    if(orderToVendor !== undefined){
+      console.log("if문 들어왓냐")
+      
+      this.props.updateOrderToVendorCode(orderToVendor);
+      console.log("OrderToVendorList값")
+      console.log(this.props.OrderToVendorList)
+      this.setState({
+        ...this.state , 
+        data:this.props.OrderToVendorList   });
+        
+    }
+
+
+
+  }
   
 
   render() {
@@ -258,6 +279,7 @@ class EnhancedTable extends React.Component {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
                   return (
+                  
                     <TableRow
                       hover
                       onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
@@ -267,7 +289,7 @@ class EnhancedTable extends React.Component {
                       key={page*rowsPerPage+index}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">
+                      <TableCell padding="checkbox">                            
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
@@ -275,7 +297,9 @@ class EnhancedTable extends React.Component {
                       <TableCell align="left">{row.statementNo}</TableCell>
                       <TableCell align="left">{row.totalAmount}</TableCell> 
                       <TableCell align="left">{row.orderToVendorDate}</TableCell>
-                      <TableCell align="left">{row.orderToVenStatusCodeName}</TableCell>
+                      <TableCell align="left">{row.orderToVenStatusCodeName} 
+                        {row.orderToVenStatusCodeNo == '01' ? <span onClick={event => this.updateOrderToVendorList(event, row)} style={{cursor:'pointer', color:'red'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 발주취소</span> : null}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -311,5 +335,5 @@ const mapStateToProps = ({productionManagement}) => {
 
 
 
-export default connect(mapStateToProps, { getOrderToVendorList , getOrderToVendorDetailList})(EnhancedTable);
+export default connect(mapStateToProps, { getOrderToVendorList , getOrderToVendorDetailList, updateOrderToVendorCode})(EnhancedTable);
 

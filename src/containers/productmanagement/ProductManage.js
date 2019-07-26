@@ -3,15 +3,25 @@ import GetProductList from 'components/productManagement/GetProductList';
 import { connect } from 'react-redux';
 import { getProductList } from "actions/ProductionManagement";
 import CardBox from "components/CardBox";
+import AddProduct from "components/productManagement/AddProduct";
+import {  getInfoAccount } from 'actions/index';
 
 class ProductionManage extends React.Component{
     
     constructor(props){
         super(props);
-        console.log("123")
+        console.log("123");
+
+        const {getInfoAccount} = this.props;
+
+    if({getInfoAccount} !== undefined){
+      getInfoAccount();
+    };
    
     }
 
+
+    
 
         render(){
           console.log("컨테이너의 컴포넌트")
@@ -30,6 +40,9 @@ class ProductionManage extends React.Component{
                
                   </div>
                   </CardBox>
+                <div align="right">
+                  <AddProduct  infoAccount = { getInfoAccount } >  </AddProduct>
+                  </div>
                   </div>
                   
               );
@@ -39,10 +52,10 @@ class ProductionManage extends React.Component{
 }
 
   const mapStateToProps = ({productionManagement}) => {
-    console.log("mapStateToProps1")
+
     const { ProductList } = productionManagement;
     return { ProductList };
   }
   
   
-  export default connect(mapStateToProps, { getProductList })(ProductionManage);
+  export default connect(mapStateToProps, { getProductList,  getInfoAccount })(ProductionManage);

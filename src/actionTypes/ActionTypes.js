@@ -287,7 +287,10 @@ export const CARRY_PRODUCT_LIST = 'carry_product_list';
 export const GET_ORDER_TO_VENDOR_LIST = 'get_order_to_vendor_list';
 export const CARRY_ORDER_TO_VENDOR_LIST = 'carry_order_to_vendor_list';
 export const ADD_PRODUCT = 'add_product';
-export const GET_INFO_ACCOUNT = 'get_info_account';
-export const CARRY_INFO_ACCOUNT = 'carry_info_account';
 export const GET_ORDER_TO_VENDOR_DETAIL_LIST = 'get_order_to_vendor_detail_list';
 export const CARRY_ORDER_TO_VENDOR_DETAIL_LIST = 'carry_order_to_vendor_detail_list';
+export const UPDATE_ORDER_TO_VENDOR_CODE = 'update_order_to_vendor_code';
+export const GET_INFO_ACCOUNT = 'get_info_account';
+export const CARRY_INFO_ACCOUNT = 'carry_info_account';
+export const ADD_ORDER_TO_VENDOR = 'add_order_to_vendor';
+
