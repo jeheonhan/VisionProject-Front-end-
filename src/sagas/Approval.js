@@ -1,7 +1,7 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
-import { GET_APPROVAL_FORM_LIST, ADD_APPROVAL_FORM, DELETE_APPROVAL_FORM, GET_APPROVAL_FORM_DETAIL, ADD_APPROVAL, GET_APPROVAL_LIST, GET_APPROVAL_DETAIL } from "actionTypes/ActionTypes";
+import { GET_APPROVAL_FORM_LIST, ADD_APPROVAL_FORM, DELETE_APPROVAL_FORM, GET_APPROVAL_FORM_DETAIL, ADD_APPROVAL, GET_APPROVAL_LIST, GET_APPROVAL_DETAIL, MODIFY_APPROVAL_STATUS } from "actionTypes/ActionTypes";
 import axios from "axios";
-import { getApprovalFormList, carryApprovalFormList, carryApprovalFormDetail, carryApprovalList, carryApprovalDetail } from "actions";
+import { getApprovalFormList, carryApprovalFormList, carryApprovalFormDetail, carryApprovalList, carryApprovalDetail, getApprovalList } from "actions";
 
 const getApprovalFormListAxios = async() =>{
     return await axios({
@@ -70,6 +70,21 @@ const getApprovalDetailAxios = async(action) => {
     .catch(error => console.log(error))
 }
 
+const modifyApprovalStatusAxios = async(action) => {
+    return await axios({
+        method:"POST",
+        url:"/approval/modifyApprovalStatus/"+action.url
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
+function* modifyApproval(action){
+    yield call(modifyApprovalStatusAxios, action);
+    const _searchKeyword = action.searchKeyword
+    yield put(getApprovalList({"searchCondition":"1", "searchKeyword":_searchKeyword}));
+}
+
 function* _getApprovalFormList(action){
     const approvalFormList = yield call(getApprovalFormListAxios)
     yield put(carryApprovalFormList(approvalFormList));
@@ -94,7 +109,7 @@ function* addApproval(action){
     yield call(addApprovalAxios, action);
 }
 
-function* getApprovalList(action){
+function* _getApprovalList(action){
     const approvalList = yield call(getApprovalListAxios, action);
     yield put(carryApprovalList(approvalList));
 }
@@ -125,11 +140,15 @@ export function* addApprovalSaga(){
 }
 
 export function* getApprovalListSaga(){
-    yield takeEvery(GET_APPROVAL_LIST, getApprovalList)
+    yield takeEvery(GET_APPROVAL_LIST, _getApprovalList)
 }
 
 export function* getApprovalDetailSaga(){
     yield takeEvery(GET_APPROVAL_DETAIL, getApprovalDetail)
+}
+
+export function* modifyApprovalStatusSaga(){
+    yield takeEvery(MODIFY_APPROVAL_STATUS, modifyApproval)
 }
 
 export default function* rootSaga(){
@@ -139,6 +158,7 @@ export default function* rootSaga(){
                fork(getApprovalFormDetailSaga),
                fork(addApprovalSaga),
                fork(getApprovalListSaga),
-               fork(getApprovalDetailSaga)
+               fork(getApprovalDetailSaga),
+               fork(modifyApprovalStatusSaga)
             ]);
 }

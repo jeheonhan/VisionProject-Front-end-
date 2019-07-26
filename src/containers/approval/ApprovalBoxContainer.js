@@ -10,18 +10,10 @@ class ApprovalFormList extends React.Component{
     constructor(props) {
         super(props);
         this.state={
-            searchCondition:"2",
-            searchKeyword:"1001"//localStorage.getItem("user").employeeNo
+            searchCondition:"1",
+            searchKeyword:"1002"//localStorage.getItem("user").employeeNo
         }
       }
-
-    // handleSearch = (_searchCondition) => {
-    //     alert("handleSearch")
-    //     this.setState({
-    //         searchCondition: _searchCondition
-    //     })
-    //     this.props.getApprovalList(this.state);
-    // }
 
     render(){
         const {approvalList} = this.props;
@@ -35,7 +27,7 @@ class ApprovalFormList extends React.Component{
            { 
             return(
             <div className="jr-card">
-                <Tabs handleSearch={this.handleSearch}></Tabs>
+                <Tabs></Tabs>
             </div>
         )}
     }

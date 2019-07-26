@@ -8,6 +8,7 @@ import {CallMade} from '@material-ui/icons';
 import {connect} from 'react-redux';
 import {addApproval, getApprovalList} from 'actions/index';
 import {Redirect} from 'react-router-dom';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 class AddApproval extends React.Component{
     constructor(props){
@@ -65,6 +66,8 @@ class AddApproval extends React.Component{
             ,totalApproverCount:""
             ,open:false
             ,redirect:false
+            ,warning:false
+            ,success:false
         }
     }
 
@@ -78,14 +81,24 @@ class AddApproval extends React.Component{
     handleSend = (event) =>{
         event.preventDefault();
         if(this.state.secondApprover.employeeNo===null){
-            alert("결재라인을 등록해주세요")
+            this.setState({
+                warning:true,
+                warningText:"결재라인을 등록해주세요"
+            })
+            return;
         }else{
             this.props.addApproval(this.state);
-            alert("작성하신 결재서류가 상신되었습니다. 결재함으로 이동합니다.")
             this.setState({
-                redirect:true,
+                success:true,
             })
         }
+    }
+
+    onConfirm = () => {
+        this.setState({
+            success:false,
+            redirect:true,
+        })
     }
 
     renderRedirect = () => {
@@ -127,10 +140,19 @@ class AddApproval extends React.Component{
         this.setState({[name]: event.target.value});
       };
 
+    warningOk = () => {
+        this.setState({
+            warning:false
+        })
+    }
+
     handleClickOk = (data) => {
         for(const aprvr in data){
             if(data[aprvr].employeeNo===this.state.firstApprover.employeeNo){
-                alert("작성자는 '담당'으로 결재라인에 포함되며, 추가할 수 없습니다.");
+                this.setState({
+                    warning:true,
+                    warningText:<div dangerouslySetInnerHTML={ {__html: "작성자는 '담당'으로 결재라인에 포함되며, <br> 추가할 수 없습니다."} }/>
+                })
                 return;
             }
         }
@@ -231,6 +253,20 @@ class AddApproval extends React.Component{
             <Button style={{float:"right"}} variant="contained" color="primary" className="jr-btn jr-btn-lg" onClick={this.handleSend}>
                 <CallMade/>상신
             </Button>
+            <SweetAlert show={this.state.warning}
+                    warning
+                    confirmBtnText="확인"
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title=""
+                    onConfirm={this.warningOk}
+            >
+                {this.state.warningText}
+            </SweetAlert>
+            <SweetAlert show={this.state.success} success title=""
+                    onConfirm={this.onConfirm}>
+                        작성하신 결재서류가 상신되었습니다. <br/>결재함으로 이동합니다.
+            </SweetAlert>
             </div>
         );
     }

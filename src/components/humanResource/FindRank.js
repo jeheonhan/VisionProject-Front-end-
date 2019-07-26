@@ -63,7 +63,7 @@ class FindRank extends React.Component{
       }
 
     return(        
-        <Dialog open={this.props.open}  maxWidth="xl">
+        <Dialog open={this.props.open} onClose={this.props.handleSubRankComponentClose} maxWidth="xl">
           <DialogTitle>직급 검색</DialogTitle>
           <DialogContent >
 
