@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import GetStatementDetail from 'components/accounting/GetStatementDetail';
+import UpdateSalary from 'components/accounting/UpdateSalary';
 import { connect } from 'react-redux';
 import { getStatement } from 'actions/index';
 
@@ -24,7 +24,7 @@ import { getStatement } from 'actions/index';
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
   {id: 'salaryDate', align: false, disablePadding: false, label: '급여월'},
-  {id: 'employeeNo', align: true, disablePadding: false, label: '사원번호'},
+  {id: 'employeeName', align: true, disablePadding: false, label: '사원명'},
   {id: 'totalRegularWorkTime', align: true, disablePadding: false, label: '소정근로시간'},
   {id: 'totalExtendWorkTime', align: true, disablePadding: false, label: '연장근로시간'},
   {id: 'wage', align: true, disablePadding: false, label: '시급'},
@@ -131,7 +131,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 
-class StatementTable extends React.Component {
+class SalaryTable extends React.Component {
 
   constructor(props, context) {
     super(props, context);
@@ -144,7 +144,7 @@ class StatementTable extends React.Component {
       data: this.props.salaryList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
       page: 0,
       rowsPerPage: 10,
-      detailDialogOpen: false,
+      updateSalaryDialogOpen: false
     };
   }
 
@@ -203,6 +203,26 @@ class StatementTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
   
+  //급여수정 다이얼로그 열기
+  openUpdateSalaryDialog = () => {
+    this.setState({
+      updateSalaryDialogOpen : true
+    })
+  }
+
+  //급여수정 다이얼로그 닫기
+  closeUpdateSalaryDialog = () => {
+    this.setState({
+      updateSalaryDialogOpen : false
+    })
+  }
+  
+  //급여수정 화면 띄우기
+  updateSalaryDialog = (event, salaryNumbering) => {
+    event.preventDefault();
+    this.openUpdateSalaryDialog();
+    
+  }
   
   render() {
 
@@ -234,7 +254,7 @@ class StatementTable extends React.Component {
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
-                  const currVenorNo = row.vendorNo;
+
                   return (
                     <TableRow
                       hover
@@ -249,13 +269,13 @@ class StatementTable extends React.Component {
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={event => this.GetStatementDetail(event, row.salaryDate)} style={{cursor:'pointer'}}>{row.statementNo}</span></TableCell>
-                      <TableCell align="left">{row.statementCategoryCodeName}</TableCell>
-                      <TableCell align="left">{row.statementDetail}</TableCell>
-                      <TableCell align="left">{row.tradeDate}</TableCell>
-                      <TableCell align="left">{row.tradeAmount}</TableCell>
-                      <TableCell align="left">{row.tradeAmount}</TableCell>
-                      <TableCell align="left">{row.tradeAmount}</TableCell>
+                      <TableCell align="left"><span onClick={event => this.updateSalaryDialog(event, row.salaryNumbering)} style={{cursor:'pointer'}}>{row.salaryDate}</span></TableCell>
+                      <TableCell align="left">{row.employeeName}</TableCell>
+                      <TableCell align="left">{row.totalRegularWorkTime}</TableCell>
+                      <TableCell align="left">{row.totalExtendWorkTime}</TableCell>
+                      <TableCell align="left">{row.wage}</TableCell>
+                      <TableCell align="left">{row.salaryStatusCodeName}</TableCell>
+                      <TableCell align="left">{row.individualTotalSalary}</TableCell>
                     </TableRow>
 
                   );
@@ -274,9 +294,9 @@ class StatementTable extends React.Component {
               </TableFooter>
             </Table>
 
-            <GetStatementDetail
-              open={this.state.detailDialogOpen}
-              close={this.statementDetailDialogClose}
+            <UpdateSalary
+              open={this.state.updateSalaryDialogOpen}
+              close={this.closeUpdateSalaryDialog}
             />
           </div>
         </div>
@@ -286,4 +306,4 @@ class StatementTable extends React.Component {
 }
 
 
-export default connect(null, { getStatement })(StatementTable);
+export default connect(null, { getStatement })(SalaryTable);

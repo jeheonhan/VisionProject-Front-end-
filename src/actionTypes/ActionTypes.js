@@ -248,8 +248,11 @@ export const CARRY_STATEMENT = 'carry_statement';
 export const UPDATE_STATEMENT = 'update_statement';
 export const GET_SALARY_LIST = 'get_salary_list';
 export const CARRY_SALARY_LIST = 'carry_salary_list';
-
-
+export const CHECK_DUPLICATE_SALARYDATE = 'check_duplicate_salaryDate';
+export const CARRY_DUPLICATE_SALARYDATE = 'carry_duplicate_salaryDate';
+export const ADD_SALARY = 'add_salary';
+export const UPDATE_SALARY = 'update_salary';
+export const GET_SALARY = 'get_salary';
 
 
 

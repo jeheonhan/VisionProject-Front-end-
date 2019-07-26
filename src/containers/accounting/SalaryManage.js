@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import { getSalaryList } from "actions/index";
 import CardBox from "components/CardBox";
-import GetStatementList from 'components/accounting/GetStatementList';
+import GetSalaryList from 'components/accounting/GetSalaryList';
 
 class SalaryManage extends React.Component{
 
