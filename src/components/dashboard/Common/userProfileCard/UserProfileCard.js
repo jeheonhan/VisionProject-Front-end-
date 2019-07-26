@@ -43,7 +43,9 @@ export default function UserProfileCard(props){
         </div>
 
         <img className="rounded-circle size-90 avatar-shadow mb-3"
-             src={`/img/${props.simpleHRCardDetail.profileImage}`} alt="Team Member"/>
+             src={props.simpleHRCardDetail.profileImage ? `/img/${props.simpleHRCardDetail.profileImage}`
+              :require("assets/images/placeholder.jpg")} alt="Team Member" />
+        
 
         <div className="hd-content" >
           <h5 className="mb-0 text-white">{props.simpleHRCardDetail.employeeName}</h5><br/>

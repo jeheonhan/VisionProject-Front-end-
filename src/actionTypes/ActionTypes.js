@@ -213,6 +213,7 @@ export const GET_APPROVAL_LIST = 'get_approval_list';
 export const CARRY_APPROVAL_LIST = 'carry_approval_list';
 export const GET_APPROVAL_DETAIL = 'get_approval_detail';
 export const CARRY_APPROVAL_DETAIL = 'carry_approval_detail';
+export const MODIFY_APPROVAL_STATUS = 'modify_approval_status';
 
 
 //회계관리
@@ -264,18 +265,26 @@ export const GET_BRANCH_LIST = 'get_branch_list';
 export const CARRY_BRANCH_LIST = 'carry_branch_list';
 export const GET_BRANCH_DETAIL = 'get_branch_detail';
 export const CARRY_BRANCH_DETAIL = 'carry_branch_detail';
+export const ADD_BRANCH = 'add_branch';
+export const ADD_BRANCH_RESULT = 'add_branch_result';
+export const GET_LOCAL_LIST = 'get_local_list';
+export const CARRY_LOCAL_LIST = 'carry_local_list';
 
 //공지사항
 export const GET_NOTICE_LIST = 'get_notice_list';
 export const CARRY_NOTICE_LIST = 'carry_notice_list';
 export const GET_NOTICE_DETAIL = 'get_notice_detail';
 export const CARRY_NOTICE_DETAIL = 'carry_notice_detail';
+export const ADD_NOTICE = 'add_notice';
+export const ADD_NOTICE_RESULT = 'add_notice_result';
 
 //지점관리
 export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';
 export const CARRY_DAILY_SALES_LIST = 'carry_daily_sales_list';
 export const GET_DAILY_SALES_DETAIL = 'get_daily_sales_detail';
 export const CARRY_DAILY_SALES_DETAIL = 'carry_daily_sales_detail';
+export const ADD_DAILY_SALES = 'add_daily_sales';
+export const ADD_DAILY_SALES_RESULT = 'add_daily_sales_result';
 
 
 
@@ -290,7 +299,10 @@ export const CARRY_PRODUCT_LIST = 'carry_product_list';
 export const GET_ORDER_TO_VENDOR_LIST = 'get_order_to_vendor_list';
 export const CARRY_ORDER_TO_VENDOR_LIST = 'carry_order_to_vendor_list';
 export const ADD_PRODUCT = 'add_product';
-export const GET_INFO_ACCOUNT = 'get_info_account';
-export const CARRY_INFO_ACCOUNT = 'carry_info_account';
 export const GET_ORDER_TO_VENDOR_DETAIL_LIST = 'get_order_to_vendor_detail_list';
 export const CARRY_ORDER_TO_VENDOR_DETAIL_LIST = 'carry_order_to_vendor_detail_list';
+export const UPDATE_ORDER_TO_VENDOR_CODE = 'update_order_to_vendor_code';
+export const GET_INFO_ACCOUNT = 'get_info_account';
+export const CARRY_INFO_ACCOUNT = 'carry_info_account';
+export const ADD_ORDER_TO_VENDOR = 'add_order_to_vendor';
+

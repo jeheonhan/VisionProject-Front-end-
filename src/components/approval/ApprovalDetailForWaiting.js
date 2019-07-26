@@ -12,7 +12,11 @@ import CardBox from 'components/CardBox';
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom';
 import Approver from './approver';
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import {CheckCircle, Clear} from '@material-ui/icons';
+import SweetAlert from 'react-bootstrap-sweetalert'
+import {modifyApprovalStatus} from 'actions/index'
+import Fab from '@material-ui/core/Fab';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -32,7 +36,7 @@ class FullScreenDialog extends React.Component {
             // ,fourthApprover:this.props.approvalDetail.fourthApprover
             // ,fifthApprover:this.props.approvalDetail.fifthApprover
             // ,totalApproverCount:this.props.approvalDetail.totalApproverCount
-            // ,open:false
+             ,open:false
         }
     }
 
@@ -48,6 +52,39 @@ class FullScreenDialog extends React.Component {
       }}/>
     }
   }
+
+  handleOK = () => {
+    this.setState({
+      open:true,
+      text:"승인"
+    })
+  }
+
+  handleReject = () => {
+    this.setState({
+      open:true,
+      text:"반려"
+    })
+  }
+
+  onConfirm = () => {
+    const employeeNo = "1001"//localStorage.getItem("user").employeeNo !==undefined ? localStorage.getItem("user").employeeNo : "1001"
+    const approvalOrReturn = this.state.text==="승인" ? "approval" : "return";
+    const _url = this.state.approvalDetail.approvalNo+"/"+employeeNo+"/"+approvalOrReturn
+    this.props.modifyApprovalStatus(_url, employeeNo);
+
+    this.setState({
+      open:false
+    });
+
+    this.props.handleClose();
+  };
+
+  onCancel = () => {
+    this.setState({
+      open:false
+    })
+  };
 
   render() {
       console.log(this.props.approvalDetail)
@@ -81,7 +118,7 @@ class FullScreenDialog extends React.Component {
                   </Toolbar>
                 </AppBar>
                 <div>
-                <span style={{float:"left", paddingLeft:"10px"}}>
+                <span style={{paddingLeft:"15px"}}>
                       <TextField 
                         readOnly
                           margin="normal"
@@ -89,8 +126,17 @@ class FullScreenDialog extends React.Component {
                           label="등록자"
                           value={this.state.approvalDetail.firstApprover.employeeName}
                       />
+                     <span style={{marginLeft:"35%"}}>
+                      <Button onClick={this.handleOK} style={{marginTop:"25px", width:"150px"}} variant="contained" color="secondary" className="jr-btn">
+                        <CheckCircle/>
+                        <span>결재</span>
+                      </Button>
+                      <Button onClick={this.handleReject} style={{marginTop:"25px", width:"150px"}} variant="contained" color="primary" className="jr-btn">
+                        <Clear/>
+                        <span>반려</span>
+                      </Button>
                       </span>
-                <span><Button>결재</Button><Button>반려</Button></span>
+                </span>
                       <span style={{float:"right"}}>
                      
                       <Approver arr={[this.state.approvalDetail.firstApprover, this.state.approvalDetail.secondApprover, this.state.approvalDetail.thirdApprover, this.state.approvalDetail.fourthApprover, this.state.approvalDetail.fifthApprover]}/>
@@ -108,6 +154,19 @@ class FullScreenDialog extends React.Component {
                   </div>
                   <Divider/>
                   <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside ><div style={{padding:"50px"}} dangerouslySetInnerHTML={{__html:this.state.approvalDetail.approvalContent}}/></CardBox>
+                  <SweetAlert show={this.state.open}
+                                  custom
+                                  showCancel
+                                  confirmBtnText="확인"
+                                  cancelBtnText="취소"
+                                  confirmBtnBsStyle="primary"
+                                  cancelBtnBsStyle="default"
+                                  customIcon={this.state.text==='승인' ? 'https://cdn4.iconfinder.com/data/icons/business-elements-14/48/bl_279_confirmation_check_mark_agree_confirm_paper_hand-512.png' : 'https://tchol.org/images/access-denied-png-1.png'}
+                                  title={"이 결재서류를 "+this.state.text+"하시겠습니까?"}
+                                  onConfirm={this.onConfirm}
+                                  onCancel={this.onCancel}
+                      >
+                  </SweetAlert>
               </Dialog>
             </div>
           );
@@ -122,4 +181,4 @@ const mapStateToProps = ({approval}) => {
     return {};
 }
 
-export default connect(mapStateToProps, {}) (FullScreenDialog);
+export default connect(mapStateToProps, {modifyApprovalStatus}) (FullScreenDialog);

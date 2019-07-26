@@ -207,6 +207,7 @@ const columnData = [
     }
 
     handleRequestClose = () => {
+      this.props.getNoticeDetail({...this.state.noticeNo});
       this.setState({open : false});
     }
   

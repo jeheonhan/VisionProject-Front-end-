@@ -5,8 +5,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
-import { DialogContent } from '@material-ui/core';
-import { TableRow, TableCell } from '@material-ui/core';
 
 
 function Transition(props) {

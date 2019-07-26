@@ -3,10 +3,13 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
-import CardBox from 'components/CardBox';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
+import Slide from '@material-ui/core/Slide';
 import { DialogContent } from '@material-ui/core';
+
+
+function Transition(props) {
+  return <Slide direction="down" {...props} />;
+}
 
   class GetDailySalesDetail extends React.Component {
 
@@ -40,6 +43,7 @@ import { DialogContent } from '@material-ui/core';
         
           <Dialog            
             open={this.props.open}
+            TransitionComponent={Transition}
             //onClose={this.props.handleRequestClose}
           >
           

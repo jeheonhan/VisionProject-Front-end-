@@ -27,8 +27,8 @@ TabContainer.propTypes = {
 
 class FullWidthTabs extends Component {
   state = {
-    value: 0,
-    searchCondition : "2"
+    value: 1,
+    searchCondition : "1"
   };
 
   handleChange = (event, value) => {
@@ -42,7 +42,7 @@ class FullWidthTabs extends Component {
   handleSearch = (_searchCondition) => {
     this.props.getApprovalList({
       searchCondition:_searchCondition,
-      searchKeyword:"1001"//localStorage.getItem("user").employeeNo
+      searchKeyword:"1000"//localStorage.getItem("user").employeeNo
     });
   }
 
@@ -73,8 +73,8 @@ class FullWidthTabs extends Component {
         >
           <TabContainer dir={theme.direction}><BoxProceed></BoxProceed></TabContainer>
           <TabContainer dir={theme.direction}><BoxWaiting></BoxWaiting></TabContainer>
-          {/* <TabContainer dir={theme.direction}><BoxReject></BoxReject></TabContainer>
-          <TabContainer dir={theme.direction}><BoxComplete></BoxComplete></TabContainer> */}
+          <TabContainer dir={theme.direction}><BoxReject></BoxReject></TabContainer>
+          <TabContainer dir={theme.direction}><BoxComplete></BoxComplete></TabContainer>
         </SwipeableViews>
       </div>
     );

@@ -11,20 +11,21 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { getApprovalFormList, deleteApprovalForm } from 'actions/Approval'
+import { getApprovalList, deleteApprovalForm, getApprovalDetail } from 'actions/Approval'
 import Tooltip from '@material-ui/core/Tooltip';
 import { connect } from 'react-redux';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import ApprovalFormDetail from 'components/approvalForm/ApprovalFormDetail'
+import ApprovalDetail from 'components/approval/ApprovalDetail';
+import SimpleHRCard from 'components/humanResource/SimpleHRCard'
+import {Clear} from '@material-ui/icons'
+import {getSimpleHRCardByEmployeeNo} from 'actions/index'
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
   
-  {id: 'approvalFormNo', align: true, disablePadding: false, label: '결재번호'},
-  {id: 'approvalFormTitle', align: true, disablePadding: false, label: '결재서제목'},
-  {id: 'registrantEmployeeName', align: false, disablePadding: false, label: '작성일자'},
-  {id: 'useCount', align: false, disablePadding: false, label: '작성자'},
+  {id: 'approvalNo', align: true, disablePadding: false, label: '결재번호'},
+  {id: 'approvalTitle', align: true, disablePadding: false, label: '결재서제목'},
+  {id: 'submitDate', align: false, disablePadding: false, label: '작성일자'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -71,7 +72,7 @@ class EnhancedTableHead extends React.Component {
               </TableCell>
             );
           }, this)}
-          <TableCell>삭제</TableCell>
+          
         </TableRow>
       </TableHead>
     );
@@ -107,8 +108,8 @@ EnhancedTableToolbar.propTypes = {
 
 
 class EnhancedTable extends React.Component {
+
   handleRequestSort = (event, property) => {
-    console.log("★"+property)
     const orderBy = property;
     let order = 'desc';
 
@@ -122,38 +123,13 @@ class EnhancedTable extends React.Component {
         : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
     this.setState({data, order, orderBy});
   };
-  handleSelectAllClick = (event, checked) => {
-    if (checked) {
-      //this.setState({selected: this.state.data.map((row, index) => index)});
-      return;
-    }
-    this.setState({selected: []});
-  };
+
   handleKeyDown = (event, id) => {
     if (keycode(event) === 'space') {
       this.handleClick(event, id);
     }
   };
-  handleClick = (event, id) => {
-    const {selected} = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    this.setState({selected: newSelected});
-  };
+  
   handleChangePage = (event, page) => {
     this.setState({page});
   };
@@ -162,31 +138,40 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  //휴지통 클릭 시 삭제
-  handleDelete = (event, row) => {
-    event.preventDefault();
-    const data = {approvalFormNo:row.approvalFormNo, approvalFormUsageStatusCodeNo:"02"}
-    if(window.confirm("선택한 결재양식을 삭제하시겠습니까?")){
-      this.props.deleteApprovalForm(data);
-    }
-  }
 
-
-  //결재양식번호 클릭 시 상세조회 띄우기
+  //결재번호 클릭 시 상세조회 띄우기
   handleClickApprovalFormNo = (event, row) => {
     event.preventDefault();
+    this.props.getApprovalDetail(row.approvalNo);
     this.setState({
       ...this.state,
       open: true,
-      targetForm: row
+      // targetForm: "",
+      // targetApproval:this.props.approvalDetail
     })
   }
 
-  //결재양식상세창 닫기
+  //결재상세창 닫기
   handleClose = (event) => {
     this.setState({
       ...this.state,
       open: false
+    })
+  }
+
+  //인사카드
+  handleCard = (event, empNo) => {
+    event.preventDefault();
+    this.props.getSimpleHRCardByEmployeeNo(empNo);
+    this.setState({
+      cardOpen:true
+    })
+  }
+
+  handleSimpleHRCardClose = (event) => {
+    event.preventDefault();
+    this.setState({
+      cardOpen:false
     })
   }
 
@@ -195,34 +180,84 @@ class EnhancedTable extends React.Component {
 
     this.state = {
       order: 'desc',
-      orderBy: 'codeNo',
+      orderBy: 'approvalNo',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.approvalFormList,
+      data: this.props.approvalList,
       page: 0,
       rowsPerPage: 10,
-      targetForm :{
-        approvalFormNo : "",
-        approvalFormTitle : "",
-        approvalForm : "",
-        registrantEmployeeName:"",
-        registrantEmployeeNo:"",
-      }
+      targetApproval : {
+           approvalTitle:""
+          ,approvalContent:""
+          ,firstApprover:{
+                      approverNumbering:null
+                  ,approvalNo:null
+                  ,employeeNo:null
+                  ,signatureImage:""
+                  ,rankCodeName:""
+                  ,employeeName:""
+                  ,ordinal:0
+                  ,approvalStatus:1
+              }
+          ,secondApprover:{
+                  approverNumbering:null
+                      ,approvalNo:null
+                      ,employeeNo:null
+                      ,signatureImage:""
+                      ,rankCodeName:""
+                      ,ordinal:1
+                      ,approvalStatus:0
+                      }
+          ,thirdApprover:{
+                      approverNumbering:null
+                        ,approvalNo:null
+                        ,employeeNo:null
+                        ,signatureImage:""
+                        ,rankCodeName:""
+                        ,ordinal:2
+                        ,approvalStatus:0
+                    }
+          ,fourthApprover:{
+                          approverNumbering:null
+                          ,approvalNo:null
+                          ,employeeNo:null
+                          ,signatureImage:""
+                          ,rankCodeName:""
+                          ,ordinal:3
+                          ,approvalStatus:0
+                      }
+          ,fifthApprover:{
+                          approverNumbering:null
+                          ,approvalNo:null
+                          ,employeeNo:null
+                          ,signatureImage:""
+                          ,rankCodeName:""
+                          ,ordinal:4
+                          ,approvalStatus:0
+                      }
+          ,totalApproverCount:""
+        }
     };
   }
 
   render() {
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
-    const { approvalFormList } = this.props;
+    const { approvalList, approvalDetail } = this.props;
 
-    if(approvalFormList !== this.state.data){
-      this.setState({data:approvalFormList})
+    if(approvalList !== this.state.data){
+      this.setState({data:approvalList})
+    }else{
+    }
+    if(approvalDetail !== this.state.targetApproval){
+      if(approvalDetail!==undefined){
+        this.setState({targetApproval : approvalDetail})
+      }else{
+      }
     }
 
     return (
       <div className="jr-card" style={{marginTop:"5px"}}> 
-        {/* <EnhancedTableToolbar numSelected={selected.length}/> */}
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -238,7 +273,7 @@ class EnhancedTable extends React.Component {
                 
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                  console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
+                  const percentage = Math.floor((row.approverCount/row.totalApproverCount)*100)+"%";
                   const isSelected = this.isSelected(page*rowsPerPage+index);
                   return (
                     <TableRow
@@ -253,17 +288,15 @@ class EnhancedTable extends React.Component {
                       
                       <TableCell align="left" >
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
-                          {row.approvalFormNo}
+                          {row.approvalNo}
                         </span>
                       </TableCell>
                       <TableCell align="left">
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
-                          {row.approvalFormTitle}
+                          {row.approvalTitle}
                         </span>
                       </TableCell>
-                      <TableCell align="left" >{row.registrantEmployeeName}</TableCell>
-                      <TableCell align="left" >{row.useCount}</TableCell>
-                      <TableCell><DeleteOutlinedIcon onClick={event => this.handleDelete(event, row)}/></TableCell>
+                      <TableCell align="left" >{row.submitDate}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -282,8 +315,8 @@ class EnhancedTable extends React.Component {
             </Table>
           </div>
         </div>
-        <ApprovalFormDetail 
-          targetForm = {this.state.targetForm} 
+        <ApprovalDetail 
+          approvalDetail = {this.state.targetApproval}
           open={this.state.open} 
           handleClose={this.handleClose}/>
       </div>
@@ -292,8 +325,8 @@ class EnhancedTable extends React.Component {
 }
 
 const mapStateToProps = ({ approval }) => {
-    const { approvalFormList } = approval;
-    return { approvalFormList }
+    const { approvalList , approvalDetail} = approval;
+    return { approvalList, approvalDetail }
 }
 
-export default connect(mapStateToProps, {getApprovalFormList, deleteApprovalForm})(EnhancedTable);
+export default connect(mapStateToProps, {getApprovalList, getSimpleHRCardByEmployeeNo, getApprovalDetail})(EnhancedTable);
