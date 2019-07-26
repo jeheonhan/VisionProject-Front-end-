@@ -17,8 +17,6 @@ class BranchManage extends React.Component{
 
         if(branchList === undefined){
             this.props.getBranchList(this.state.search);
-        }else{
-            console.log("Fail")
         }
 
         return(
