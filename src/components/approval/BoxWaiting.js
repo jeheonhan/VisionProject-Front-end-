@@ -14,8 +14,10 @@ import Typography from '@material-ui/core/Typography';
 import { getApprovalList, deleteApprovalForm, getApprovalDetail } from 'actions/Approval'
 import Tooltip from '@material-ui/core/Tooltip';
 import { connect } from 'react-redux';
-import ApprovalDetailForWaiting from 'components/approval/ApprovalDetailForWaiting'
+import ApprovalDetailForWaiting from 'components/approval/ApprovalDetailForWaiting';
+import SimpleHRCard from 'components/humanResource/SimpleHRCard'
 import {Clear} from '@material-ui/icons'
+import {getSimpleHRCardByEmployeeNo} from 'actions/index'
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -24,7 +26,7 @@ const columnData = [
   {id: 'approvalNo', align: true, disablePadding: false, label: '결재번호'},
   {id: 'approvalTitle', align: true, disablePadding: false, label: '결재서제목'},
   {id: 'submitDate', align: false, disablePadding: false, label: '작성일자'},
-  {id: 'percentage', align: false, disablePadding: false, label: '진행상태'},
+  {id: 'employeeName', align: false, disablePadding: false, label: '작성자'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -71,7 +73,7 @@ class EnhancedTableHead extends React.Component {
               </TableCell>
             );
           }, this)}
-          <TableCell>취소</TableCell>
+          
         </TableRow>
       </TableHead>
     );
@@ -138,16 +140,6 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
 
-  //휴지통 클릭 시 삭제
-  handleDelete = (event, row) => {
-    event.preventDefault();
-    const data = {approvalFormNo:row.approvalFormNo, approvalFormUsageStatusCodeNo:"02"}
-    if(window.confirm("선택한 결재서류를 상신 취소하시겠습니까? 취소한 결재서류는 반려결재함으로 이동됩니다.")){
-      //this.props.deleteApprovalForm(data);
-    }
-  }
-
-
   //결재번호 클릭 시 상세조회 띄우기
   handleClickApprovalFormNo = (event, row) => {
     event.preventDefault();
@@ -165,6 +157,22 @@ class EnhancedTable extends React.Component {
     this.setState({
       ...this.state,
       open: false
+    })
+  }
+
+  //인사카드
+  handleCard = (event, empNo) => {
+    event.preventDefault();
+    this.props.getSimpleHRCardByEmployeeNo(empNo);
+    this.setState({
+      cardOpen:true
+    })
+  }
+
+  handleSimpleHRCardClose = (event) => {
+    event.preventDefault();
+    this.setState({
+      cardOpen:false
     })
   }
 
@@ -290,8 +298,7 @@ class EnhancedTable extends React.Component {
                         </span>
                       </TableCell>
                       <TableCell align="left" >{row.submitDate}</TableCell>
-                      <TableCell align="left" >{percentage}</TableCell>
-                      <TableCell><Clear onClick={event => this.handleDelete(event, row)}/></TableCell>
+                      <TableCell align="left" style={{cursor:'pointer'}} onClick={event => this.handleCard(event, row.firstApprover.employeeNo)}>{row.firstApprover.employeeName}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -314,7 +321,7 @@ class EnhancedTable extends React.Component {
           approvalDetail = {this.state.targetApproval}
           open={this.state.open} 
           handleClose={this.handleClose}/>
-          
+        <SimpleHRCard open={this.state.cardOpen} handleSimpleHRCardClose={this.handleSimpleHRCardClose}/>
       </div>
     );
   }
@@ -325,4 +332,4 @@ const mapStateToProps = ({ approval }) => {
     return { approvalList, approvalDetail }
 }
 
-export default connect(mapStateToProps, {getApprovalList, deleteApprovalForm, getApprovalDetail})(EnhancedTable);
+export default connect(mapStateToProps, {getApprovalList, getSimpleHRCardByEmployeeNo, getApprovalDetail})(EnhancedTable);
