@@ -56,8 +56,8 @@ function* getBranchDetailFn({payload}){
     yield put(carryBranchDetail(branch));
 }
 
-function* getLocalListFn({payload}){
-    const localList = yield call(getLocalListRequest, payload);
+function* getLocalListFn(){
+    const localList = yield call(getLocalListRequest);
     yield put(carryLocalList(localList));
 }
 

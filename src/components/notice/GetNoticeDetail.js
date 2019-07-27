@@ -35,6 +35,7 @@ class GetNoticeDetail extends React.Component {
         <Dialog
           open={this.props.open}
           TransitionComponent={Transition}
+          maxWidth=""
         >
           <AppBar className="position-relative" >
             <Toolbar className="bg-deep-orange">

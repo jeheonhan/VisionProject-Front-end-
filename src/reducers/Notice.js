@@ -1,7 +1,8 @@
 import { GET_NOTICE_LIST, 
         CARRY_NOTICE_LIST, 
         GET_NOTICE_DETAIL, 
-        CARRY_NOTICE_DETAIL } from 'actionTypes/ActionTypes';
+        CARRY_NOTICE_DETAIL, 
+        ADD_NOTICE} from 'actionTypes/ActionTypes';
 
 const INIT_STATE = 
     {
@@ -41,6 +42,12 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 noticeDetail: action.payload
+            }
+        }
+
+        case ADD_NOTICE : {
+            return {
+                ...state
             }
         }
 
