@@ -20,6 +20,8 @@ import {
     carrySalaryList,
     carryDuplicateSalaryDate,
     getSalaryList,
+    carrySalary,
+    carrySalaryBookList,
 } from 'actions/index';
 import { 
     GET_VENDOR_LIST, 
@@ -45,6 +47,8 @@ import {
     CHECK_DUPLICATE_SALARYDATE,
     ADD_SALARY,
     UPDATE_SALARY,
+    GET_SALARY,
+    GET_SALARY_BOOK_LIST,
 } from "actionTypes/ActionTypes";
 
 const getVendorListRequest = async (search) => {
@@ -243,6 +247,25 @@ const updateSalaryRequest = async (salary) => {
     .catch(response => console.log(response));
 }
 
+const getSalaryRequest = async (salaryNumbering) =>{
+    return await axios({
+        method:"GET",
+        url:"/accounting/getSalaryDetail/"+salaryNumbering
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
+const getSalaryBookListRequest = async (search) => {
+    return await axios({
+        method:"POST",
+        url:"/accounting/getSalaryBookList",
+        data:search
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
 //여기서 payload는 search 도메인을 의미한다.
 function* getVendorListFn({payload}){
     const VendorList = yield call(getVendorListRequest, payload);
@@ -362,6 +385,16 @@ function* updateSalaryFn({payload}){
     yield put(getSalaryList({ searchKeyword : "" }));
 }
 
+function* getSalaryFn({payload}){
+    const salaryInfo = yield call(getSalaryRequest, payload);
+    yield put(carrySalary(salaryInfo));
+}
+
+function* getSalaryBookListFn({payload}){
+    const salaryBookList = yield call(getSalaryBookListRequest, payload);
+    yield put(carrySalaryBookList(salaryBookList));
+}
+
 export function* getVendorListSaga(){
     yield takeEvery(GET_VENDOR_LIST, getVendorListFn);
 }
@@ -454,6 +487,15 @@ export function* updateSalarySaga(){
     yield takeEvery(UPDATE_SALARY, updateSalaryFn);
 }
 
+export function* getSalarySaga(){
+    yield takeEvery(GET_SALARY, getSalaryFn);
+}
+
+export function* getSalaryBookListSaga(){
+    yield takeEvery(GET_SALARY_BOOK_LIST, getSalaryBookListFn);
+}
+
+
 export default function* rootSaga(){
     yield all([
         fork(getVendorListSaga),
@@ -479,6 +521,7 @@ export default function* rootSaga(){
         fork(checkDuplicateSalaryDateSaga),
         fork(addSalarySaga),
         fork(updateSalarySaga),
-        
+        fork(getSalarySaga),
+        fork(getSalaryBookListSaga),
     ]);
 }

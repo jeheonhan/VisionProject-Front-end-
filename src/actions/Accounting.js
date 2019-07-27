@@ -35,6 +35,10 @@ import {
     CARRY_DUPLICATE_SALARYDATE,
     ADD_SALARY,
     UPDATE_SALARY,
+    GET_SALARY,
+    CARRY_SALARY,
+    GET_SALARY_BOOK_LIST,
+    CARRY_SALARY_BOOK_LIST,
 } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
@@ -285,5 +289,33 @@ export const updateSalary = (salary) => {
     return{
         type: UPDATE_SALARY,
         payload: salary
+    }
+}
+
+export const getSalary = (salaryNumbering) => {
+    return{
+        type: GET_SALARY,
+        payload: salaryNumbering
+    }
+}
+
+export const carrySalary = (salary) => {
+    return{
+        type: CARRY_SALARY,
+        payload: salary
+    }
+}
+
+export const getSalaryBookList = (search) => {
+    return{
+        type: GET_SALARY_BOOK_LIST,
+        payload: search
+    }
+}
+
+export const carrySalaryBookList = (data) => {
+    return{
+        type: CARRY_SALARY_BOOK_LIST,
+        payload: data
     }
 }

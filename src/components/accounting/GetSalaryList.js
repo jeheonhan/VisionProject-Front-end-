@@ -18,7 +18,7 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import UpdateSalary from 'components/accounting/UpdateSalary';
 import { connect } from 'react-redux';
-import { getStatement } from 'actions/index';
+import { getSalary } from 'actions/index';
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -220,6 +220,7 @@ class SalaryTable extends React.Component {
   //급여수정 화면 띄우기
   updateSalaryDialog = (event, salaryNumbering) => {
     event.preventDefault();
+    this.props.getSalary(salaryNumbering);
     this.openUpdateSalaryDialog();
     
   }
@@ -306,4 +307,4 @@ class SalaryTable extends React.Component {
 }
 
 
-export default connect(null, { getStatement })(SalaryTable);
+export default connect(null, { getSalary })(SalaryTable);

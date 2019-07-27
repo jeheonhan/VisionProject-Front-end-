@@ -254,6 +254,10 @@ export const CARRY_DUPLICATE_SALARYDATE = 'carry_duplicate_salaryDate';
 export const ADD_SALARY = 'add_salary';
 export const UPDATE_SALARY = 'update_salary';
 export const GET_SALARY = 'get_salary';
+export const CARRY_SALARY = 'carry_salary';
+export const GET_SALARY_BOOK_LIST = 'get_salary_book_list';
+export const CARRY_SALARY_BOOK_LIST = 'carry_salary_book_list';
+
 
 
 
