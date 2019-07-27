@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { getCodeList, 
-         addHRCard,
          checkedDepartment,
-         checkedRank } from 'actions/index';
+         checkedRank,
+         updateHRCard,
+         cleanStoreState } from 'actions/index';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -87,7 +88,9 @@ class FullScreenDialog extends React.Component {
       }
     },
     departOpen:false,
-    rankOpen:false
+    rankOpen:false,
+    flag:false,
+    modifyAble:false
   };
 
   //인사카드 등록창 열기
@@ -98,13 +101,14 @@ class FullScreenDialog extends React.Component {
   //인사카드 등록창 닫기
   handleClickClose = () => {
     this.setState({
-      employee:{
-        account:{
-  
-        }
-      },
-      open:false
+      open:false,
+      flag:false,
+      modifyAble:false
     })
+    this.props.cleanStoreState('HRCardDetailData');
+    this.props.cleanStoreState('checkedRankData');
+    this.props.cleanStoreState('checkedDepartData')
+    this.props.handleModifyHRCardClose();
   }
 
   handleRequestClose = () => {
@@ -166,16 +170,39 @@ class FullScreenDialog extends React.Component {
     })
   }
 
+  //수정 활성화
+  handleModifyEnable = () => {
+      this.setState({
+          modifyAble:true
+      })
+  }
+
+//   //Close
+//   handleChangeClose = () => {
+//       this.setState({
+//           flag:false
+//       });
+//       this.props.handleModifyHRCardClose();
+//   }
+
   //Submit
   handleSubmit = () => {
-    this.props.addHRCard(this.state.employee);
+    this.props.updateHRCard(this.state.employee);
     this.handleClickClose()
   }
 
   render() {
 
-    const { bankList, checkedDepartData, checkedRankData } = this.props;
+    const { bankList, checkedDepartData, checkedRankData, HRCardDetailData } = this.props;
 
+    console.log(HRCardDetailData)
+
+    if(!this.state.flag && HRCardDetailData && HRCardDetailData !== this.state.employee){
+        this.setState({
+            employee:HRCardDetailData,
+            flag:true
+        })
+    }
     if(bankList === undefined){
       this.props.getCodeList({searchKeyword:"bank"});
     }
@@ -202,12 +229,9 @@ class FullScreenDialog extends React.Component {
 
     return (
       <div>
-        <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
-            등록
-        </Button>
         <Dialog
           fullScreen
-          open={this.state.open}
+          open={this.props.open}
           onClose={this.handleRequestClose}
           TransitionComponent={Transition}
         >
@@ -218,36 +242,40 @@ class FullScreenDialog extends React.Component {
               <Typography variant="title" color="inherit" style={{
                 flex: 1,
               }}>
-                인사카드 등록
+                인사카드 상세조회/수정
               </Typography>
-              <Button onClick={this.handleRequestClose} color="inherit">
+              <Button onClick={this.handleClickClose} color="inherit">
                 닫기
               </Button>
             </Toolbar>
           </AppBar>
               
-          <div  align="center">
+          {this.state.employee && (<div  align="center">
           <CardBox styleName="col-lg-8" cardStyle="p-0" headerOutside>
             <AddTextField handleChange={this.handleChange} 
               handleProfileImgUpload={this.handleProfileImgUpload}
               handleSignatureImgUpload={this.handleSignatureImgUpload}
               stateValue={this.state} bankList={bankList}
-              state={this.state}
+              employee={this.state.employee}
               handleAddress={this.handleAddress}
               handleDatePicker={this.handleDatePicker}
               checkedDepartment={this.props.checkedDepartment}
               checkedRank={this.props.checkedRank}
               />
           </CardBox>
-          <Button variant="contained" className="jr-btn bg-deep-orange text-white" 
-                onClick={this.handleSubmit} >
-            전송
-          </Button>
+          {!this.state.modifyAble ? (<Button variant="contained" className="jr-btn bg-deep-orange text-white" 
+                                        onClick={this.handleModifyEnable} >
+                                        수정
+                                    </Button>)
+                                    :(<Button variant="contained" className="jr-btn bg-deep-orange text-white" 
+                                        onClick={this.handleSubmit} >
+                                        전송
+                                    </Button>)}
           <Button variant="contained" className="jr-btn bg-deep-orange text-white"  
-                    onClick={this.handleChangeClose}>
-            취소
+                    onClick={this.handleClickClose}>
+              닫기
           </Button>
-          </div>
+          </div>)}
 
         </Dialog>
       </div>
@@ -257,11 +285,11 @@ class FullScreenDialog extends React.Component {
 
 const mapStateToProps = ({ code, humanResource }) => {
   const { bankList } = code;
-  const { checkedDepartData, checkedRankData} = humanResource;
-  return { bankList, checkedDepartData, checkedRankData };
+  const { checkedDepartData, checkedRankData, HRCardDetailData} = humanResource;
+  return { bankList, checkedDepartData, checkedRankData, HRCardDetailData };
 }
 
-export default connect(mapStateToProps, { getCodeList, addHRCard, checkedDepartment, checkedRank })(FullScreenDialog);
+export default connect(mapStateToProps, { getCodeList, updateHRCard, checkedDepartment, checkedRank, cleanStoreState })(FullScreenDialog);
 
 
 //입력창
@@ -298,23 +326,28 @@ function AddTextField(props){
       props.handleDatePicker(_date);
     }
 
+
     //프로필 파일업로드 화면 열기
     const handleOnClickFileUpload = (e) => {
       document.getElementById('profileInputFile').click();
     }
 
-    //서명/도장 업로드 열기
+    //서명 파일업로드 화면 열기
     const handleOnClickSignUpload = (e) => {
       document.getElementById('signatureFile').click();
     }
 
     //우편번호 창 열기 [ref로 자식 컴포넌트 직접 접근하여 자식컴포넌트의 function을 사용]
     const handlePostOpen = () => {
-      post.current.handleClickOpen();
-    }
+        post.current.handleClickOpen();
+      }
 
     //상위 Component의 state 값에 profileImage가 저장되어 있으면 가져옴
-    const { profileFile, departCodeName, rankCodeName, ssn, employeePhone } = props.state.employee;
+    const { employee, stateValue } = props;
+
+
+    console.log("-------------------")
+    console.log(employee.employeePhone)
 
     return(
         <div >
@@ -323,7 +356,7 @@ function AddTextField(props){
                 flex: 1,
                 float:"initial"
               }}>
-                인사카드 등록
+                  {!stateValue.modifyAble ? "인사카드 상세조회":"인사카드 수정"}
           <br/><br/>
               </Typography>
               <br/>
@@ -332,7 +365,8 @@ function AddTextField(props){
               <br/><br/>
                 <div className="jr-card" style={{width:"160px",height:"150px"}} align="center">
                   <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
-                    <Avatar className="size-100" alt="Remy Sharp" src={profileFile ? `${profileFile.base64}`:require("assets/images/noneProfile.png")}/>
+                    <Avatar className="size-100" alt="Remy Sharp" 
+                            src={employee.profileFile ? `${employee.profileFile.base64}`:require("assets/images/noneProfile.png")}/>
                   </Tooltip>   
                 </div>
                 <div style={{position:"relative", top:"-25px"}}>
@@ -347,47 +381,43 @@ function AddTextField(props){
               <TextField
                       id="employeeName"
                       label="사원명"
+                      value={employee.employeeName}
                       onChange={props.handleChange('employeeName')}
                       margin="normal"
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
               </div>
-              {/* <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
-                <TextField
-                        id="ssn"
-                        label="주민등록번호"            
-                        onChange={props.handleChange('ssn')}
-                        margin="normal"
-                        fullWidth
-                    >
-                  </TextField>
-              </div> */}
               <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
                   <FormControl  fullWidth margin="normal" >
                     <InputLabel htmlFor="cardNo">주민등록번호</InputLabel>
                       <Input
                         id="ssn"
                         inputComponent={SsnMaskCustom}
-                        value={ssn ? `${ssn}`:''}
+                        value={employee.ssn ? `${employee.ssn}`:''}
                         inputProps={{
                         'aria-label': 'Description',
                         }}
                         onChange={props.handleChange('ssn')}
-                        
+                        disabled={!stateValue.modifyAble}
+                        variant="outlined"
                       />
                   </FormControl>
               </div>
               <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
-              <DatePicker  label="입사일자" callBackDateChange={callBackDateChange}/>            
+              <DatePicker  label="입사일자" callBackDateChange={callBackDateChange}
+                            disabled={!stateValue.modifyAble}/>            
               </div>
 
               <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <TextField
                       id="employeeEmail"
                       label="이메일"
+                      value={employee.employeeEmail}
                       onChange={props.handleChange('employeeEmail')}
                       margin="normal"
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
               </div>
               <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
@@ -396,12 +426,13 @@ function AddTextField(props){
                       <Input
                         id="employeePhone"
                         inputComponent={phoneMaskCustom}
-                        value={employeePhone ? `${employeePhone}`:''}
+                        value={employee.employeePhone ? `${employee.employeePhone}`:''}
                         inputProps={{
                         'aria-label': 'Description',
                         }}
                         onChange={props.handleChange('employeePhone')}
                         fullWidth
+                        disabled={!stateValue.modifyAble}
                       />
                   </FormControl>
                 </div>
@@ -409,31 +440,35 @@ function AddTextField(props){
               <TextField
                       id="employeeTel"
                       label="전화번호"
+                      value={employee.employeeTel}
                       onChange={props.handleChange('employeeTel')}
                       margin="normal"
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
               </div>
             <div className="col-md-4 col-6"  style={{float:"left", display:"inline"}}>
               <TextField
                       id="employeeTel"
                       label="부서"
-                      // onChange={props.handleChange('employeeTel')}
+                    //   onChange={props.handleChange('employeeTel')}
                       onClick={handleFindDepartOpen}
-                      value={departCodeName}
+                      value={employee.departCodeName}
                       margin="normal"
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
               </div>
               <div className="col-md-4 col-6"  style={{float:"left", display:"inline"}}>
               <TextField
                       id="employeeTel"
                       label="직급"
-                      // onChange={props.handleChange('employeeTel')}
+                    //   onChange={props.handleChange('employeeTel')}
                       onClick={handleFindRankOpen}
-                      value={rankCodeName}
+                      value={employee.rankCodeName}
                       margin="normal"
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
               </div>
 
@@ -442,11 +477,13 @@ function AddTextField(props){
                 id="select-currency"
                 select
                 label="급여통장"
-                value={props.state.employee && props.state.employee.account && props.state.employee.account.bankCodeNo}
+                value={employee && employee.account && employee.account.bankCodeNo}
                 onChange={props.handleChange('bankCodeNo')}
                 SelectProps={{}}
+                //helperText="급여 받으실 통장을 선택하세요."
                 margin="normal"
                 fullWidth
+                disabled={!stateValue.modifyAble}
               >
               {props.bankList && props.bankList.map( bankRow => 
                       (<MenuItem value={bankRow.codeNo}>{bankRow.codeName}</MenuItem>)
@@ -458,9 +495,11 @@ function AddTextField(props){
               <TextField
                       id="accountNo"
                       label="계좌번호"
+                      value={employee.account.accountNo}
                       onChange={props.handleChange('accountNo')}
                       margin="normal"
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
             </div>
 
@@ -468,9 +507,11 @@ function AddTextField(props){
               <TextField
                       id="wage"
                       label="시급"
+                      value={employee.wage}
                       margin="normal"
                       onChange={props.handleChange('wage')}
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
             </div>
 
@@ -484,8 +525,9 @@ function AddTextField(props){
                       label="우편번호"
                       margin="normal"
                       onClick={handlePostOpen}
-                      value={props.state.employee.zipCode}
+                      value={employee.zipCode}
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
             </div>
 
@@ -497,9 +539,9 @@ function AddTextField(props){
                       label="주소"
                       margin="normal"
                       onClick={handlePostOpen}
-                      value={props.state.employee.address}
+                      value={employee.address}
                       fullWidth
-                      //multiline={true}
+                      disabled={!stateValue.modifyAble}
                   />
             </div>
 
@@ -507,9 +549,11 @@ function AddTextField(props){
               <TextField
                       id="detailAddress"
                       label="상세주소"
+                      value={employee.detailAddress}
                       margin="normal"
                       onChange={props.handleChange('detailAddress')}
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
             </div>
 
@@ -519,9 +563,11 @@ function AddTextField(props){
               <TextField
                       id="refer"
                       label="참조"
+                      value={employee.refer}
                       margin="normal"
                       onChange={props.handleChange('refer')}
                       fullWidth
+                      disabled={!stateValue.modifyAble}
                   />
             </div>
 

@@ -176,6 +176,9 @@ export const ADD_DEPARTMENT = 'add_department';
 export const CONVERT_DEPART_USAGE_STATUS = 'convert_depart_usage_status';
 export const UPDATE_WORK_ATTITUDE = 'update_work_attitude';
 export const UPDATE_WORK_ATTITUDE_CODE = 'update_work_attitude_code';
+export const GET_HRCARD_DETAIL = 'get_hrcard_detail';
+export const CARRY_HRCARD_DETAIL = 'carry_hrcard_detail';
+export const UPDATE_HRCARD = 'update_hrcard';
 
 
 
