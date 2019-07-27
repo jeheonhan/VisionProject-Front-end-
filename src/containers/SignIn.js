@@ -16,7 +16,7 @@ class SignIn extends React.Component {
   constructor() {
     super();
     this.state = {
-      id: 'trueId',
+      userId: 'trueId',
       password: 'truePwd'
     }
   }
@@ -33,11 +33,9 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const {
-      id,
-      password
-    } = this.state;
+    
     const {showMessage, loader, alertMessage} = this.props;
+    console.log(this.state)
     return (
       <div
         className="app-login-container d-flex justify-content-center align-items-center animated slideInUpTiny animation-duration-3">
@@ -64,7 +62,7 @@ class SignIn extends React.Component {
                   <TextField
                     label="ID"
                     fullWidth
-                    onChange={(event) => this.setState({id: event.target.value}) }
+                    onChange={(event) => this.setState({userId: event.target.value}) }
                     //defaultValue={this.state.id}
                     margin="normal"
                     className="mt-1 my-sm-3"
@@ -86,7 +84,7 @@ class SignIn extends React.Component {
                       this.props.showAuthLoader();
                       //userSignIn(user)은 actions/Auth.js의 action : {type: SIGNIN_USER, payload: user}을 return하는 함수
                       // 이 action이 발생해서 sagas/Auth.js의 function* signInUser()이 실행됨
-                      this.props.userSignIn({id, password});
+                      this.props.userSignIn(this.state);
                     }} variant="contained" className="jr-btn bg-red text-white" size="large">
                       {/* 영어로 쓰면 버튼에서 대문자로 바뀜 */}
                       <IntlMessages id="appModule.signIn"/>
