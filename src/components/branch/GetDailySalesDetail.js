@@ -1,7 +1,9 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import DialogActions from '@material-ui/core/DialogActions';
 import Slide from '@material-ui/core/Slide';
 import { DialogContent } from '@material-ui/core';
@@ -44,10 +46,22 @@ function Transition(props) {
           <Dialog            
             open={this.props.open}
             TransitionComponent={Transition}
+            maxWidth=""
             //onClose={this.props.handleRequestClose}
           >
           
-          <DialogTitle align="center">일매출 상세보기</DialogTitle>
+          <AppBar className="position-relative" >
+            <Toolbar className="bg-secondary">
+              <Typography variant="title" color="inherit" style={{
+                flex: 1,
+                minWidth: '500px',
+                }} 
+                align="center"
+                >
+                일매출 상세조회
+              </Typography>
+            </Toolbar>
+          </AppBar>
 
             <DialogContent style={{minWidth: '500px', maxWidth: '500px', minHeight:'400px', maxHeight:'400px'}}>
                     <div>

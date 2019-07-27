@@ -138,12 +138,14 @@ const columnData = [
       }
   
       const data =
+
         order === 'desc'
           ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
           : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
   
       this.setState({data, order, orderBy});
     };
+
     handleSelectAllClick = (event, checked) => {
       if (checked) {
         this.setState({selected: this.state.data.map((row, index) => index)});

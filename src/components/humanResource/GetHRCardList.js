@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getHRCardList } from 'actions';
+import { getHRCardList, getHRCardDetail } from 'actions';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Table from '@material-ui/core/Table';
@@ -212,6 +212,13 @@ class EnhancedTable extends React.Component {
     })
   }
 
+  //수정화면 열기 및 getHRCardDetail Action 발생
+  handleModifyHRCard = (event, employeeNo) => {
+    event.preventDefault();
+    this.props.getHRCardDetail(employeeNo)
+    this.props.handleModifyHRCardOpen();
+  }
+
   constructor(props, context) {
     super(props, context);
 
@@ -277,8 +284,16 @@ class EnhancedTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell>
-                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.employeeNo}</span></TableCell>
-                      <TableCell align="left">{row.employeeName}</TableCell>
+                      <TableCell align="left" >
+                        <span style={{cursor:'pointer'}} onClick={event => {this.handleModifyHRCard(event, row.employeeNo)}}>
+                          {row.employeeNo}
+                        </span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <span style={{cursor:'pointer'}} onClick={event => {this.handleModifyHRCard(event, row.employeeNo)}}>
+                          {row.employeeName}
+                        </span>
+                      </TableCell>
                       <TableCell align="left">{row.departCodeName}</TableCell>
                       <TableCell align="left">{row.rankCodeName}</TableCell>
                       <TableCell align="left">{row.joinDate}</TableCell>
@@ -324,4 +339,4 @@ const mapStateToProps = ({humanResource}) => {
   return { HRCardList };
 }
 
-export default connect(mapStateToProps, { getHRCardList })(EnhancedTable);
+export default connect(mapStateToProps, { getHRCardList, getHRCardDetail })(EnhancedTable);

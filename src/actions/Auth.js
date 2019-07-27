@@ -13,7 +13,6 @@ import {
 } from 'actionTypes/ActionTypes';
 
 export const userSignIn = (user) => {
-    console.log("userSignIn");
     return {
         type: SIGNIN_USER,
         payload: user

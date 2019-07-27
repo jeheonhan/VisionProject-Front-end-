@@ -5,11 +5,12 @@ import { carryProductList, carryOrderToVendorList,
     getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, getOrderToVendorList } from 'actions/index';
 import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
      ADD_PRODUCT, GET_INFO_ACCOUNT, GET_ORDER_TO_VENDOR_DETAIL_LIST
-    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR} from "actionTypes/ActionTypes";
+    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH} from "actionTypes/ActionTypes";
 
 
 
 const getProductListRequest = async () => {
+    console.log("들어와라 셀렉트프로덕트릿")
     return await axios({
         method : "GET",
         url : "/pm/selectProductList"
@@ -38,6 +39,7 @@ const addProductRequest = async (data) => {
 }  
 
 const getProductAccountRequest = async () => {
+    console.log("물픔등록할때 쓰는거 왓냐")
     return await axios({
        method : "GET",
        url : "/pm/addProductPreparing" 
@@ -75,6 +77,15 @@ const addOrderToVendorRequest = async (data) => {
         url : "/pm/addOrderToVendor",
         data : data
     })
+    .catch(error => console.log(error))
+}
+
+const addOrderBranchAxios = async (action) => {
+    return await axios({
+        method:"POST",
+        url:"/pm/addOrderFromBranch",
+        data : action.payload
+    })
 }
 
 
@@ -88,6 +99,8 @@ function* getselectOrderToVendorListFn(){
 
 function* getProductListFn(){
     const ProductList = yield call(getProductListRequest);
+    console.log("프로덕트리스트")
+    console.log(ProductList)
     yield put(carryProductList(ProductList));
 }
 
@@ -119,6 +132,9 @@ function* addOrderToVendorFn({payload}) {
     yield put(getOrderToVendorList());
 }
 
+function* addOrderBranchFn(action){
+    yield call (addOrderBranchAxios, action);
+}
 
 
 
@@ -154,6 +170,10 @@ export function* addOrderToVendorSaga() {
     yield takeEvery(ADD_ORDER_TO_VENDOR, addOrderToVendorFn)
 }
 
+export function* addOrderBranchSaga(){
+    yield takeEvery(ADD_ORDER_BRANCH, addOrderBranchFn)
+}
+
 export default function* rootSaga(){
     console.log("rootSaga()");
     yield all([
@@ -164,6 +184,7 @@ export default function* rootSaga(){
         fork(getOrderToVendorDetailListSaga),
         fork(updateOrderToVendorCOdeSaga),
         fork(addOrderToVendorSaga), 
+        fork(addOrderBranchSaga)
     ]);
 }
 
