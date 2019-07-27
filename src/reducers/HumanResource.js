@@ -13,7 +13,8 @@ import { GET_HRCARD_LIST,
          CHECKED_WORKATTITUDE_CODE,
          CHECKED_APPOINTMENT_ROW_DATA,
          CARRY_DEPARTMENT_LIST,
-         CHECKED_WORKATTITUDE} from "actionTypes/ActionTypes";
+         CHECKED_WORKATTITUDE,
+         CARRY_HRCARD_DETAIL} from "actionTypes/ActionTypes";
 
 
 const INIT_STATE = 
@@ -141,6 +142,13 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 departmentList: action.payload
+            }
+        }
+
+        case CARRY_HRCARD_DETAIL : {
+            return{
+                ...state,
+                HRCardDetailData: action.payload
             }
         }
 

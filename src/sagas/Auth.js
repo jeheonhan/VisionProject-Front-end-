@@ -8,16 +8,15 @@ import { showAuthMessage, userSignInSuccess, userSignOutSuccess, convertLoader }
 import axios from 'axios';
 
 
-const signInUserWithEmailPasswordRequest = async (id, pwd) => {
+const signInUserWithIdPasswordRequest = async (_data) => {
  
     return await  axios({
         method:'POST',
-        url:'/login',
-        dataType:'json',
-        data: {"id":id, "pwd":pwd}
+        url:'/user/loginUser',
+        //dataType:'json',
+        data: _data
     }).then(authUser => authUser.data)
       .catch(error => error);
-
     }
     
     
@@ -28,20 +27,19 @@ const signOutRequest = async () =>{
 
 
 
-function* signInUserWithEmailPassword({payload}) {
+function* signInUserWithIdPassword({payload}) {
     
-    const {id, password} = payload;
+    //const {id, password} = payload;
 
     try {
-        const signInUser = yield call(signInUserWithEmailPasswordRequest, id, password);
-
-        // if (signInUser === '') {
-        //     //yield put(showAuthMessage(signInUser.message));
-        //     alert("로그인 실패");
-        //     yield put(convertLoader());
-        // } else 
-        {
-            localStorage.setItem('user', signInUser);
+        const signInUser = yield call(signInUserWithIdPasswordRequest, payload);
+        console.log(signInUser);
+        if(signInUser.loginFlag == false){
+            alert("로그인 실패");
+            yield put(convertLoader());
+        }
+        else{
+            localStorage.setItem('user', JSON.stringify(signInUser));
             yield put(userSignInSuccess(signInUser));
         }
     } catch (error) {
@@ -60,7 +58,7 @@ function* signOut() {
 
 
 export function* signInUser() {
-    yield takeEvery(SIGNIN_USER, signInUserWithEmailPassword);
+    yield takeEvery(SIGNIN_USER, signInUserWithIdPassword);
 }
 
 export function* signOutUser() {
