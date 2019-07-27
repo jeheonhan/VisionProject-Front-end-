@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
-
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -47,7 +47,9 @@ class FullScreenDialog extends React.Component {
       salesPrice : '',
       quantity : '',
       vendorNo : '',
+      vendorName : '',
     }
+    
   };
 
 
@@ -56,13 +58,23 @@ class FullScreenDialog extends React.Component {
     
     e.preventDefault();
 
-    this.setState({
-      ...this.state,
-      product : {
-        ...this.state.product,
-      [e.target.name] : e.target.value,
-      }
-    });
+    if(e.target.name == 'vendor'){
+      this.setState({
+        product:{
+          ...this.state.product,
+          vendorName:e.target.value.vendorName,
+          vendorNo:e.target.value.vendorNo
+        }
+      })
+    }else{
+      this.setState({
+        ...this.state,
+        product : {
+          ...this.state.product,
+        [e.target.name] : e.target.value,
+        }
+      });
+    }
 
     console.log(this.state.product);
   };
@@ -99,11 +111,11 @@ class FullScreenDialog extends React.Component {
 
     this.handleClickClose()
   }
+  //랜더링은 setState할때와 reducer가 store값을 세팅할때임.
 
   render() {
     const {infoAccount} = this.props;
-    console.log("startastatrastat");
-    console.log(infoAccount);
+    
    
     return (
       <div>
@@ -112,7 +124,6 @@ class FullScreenDialog extends React.Component {
             등록
         </Button>
         <Dialog
-          fullScreen
           open={this.state.open}
           onClose={this.handleRequestClose}
           TransitionComponent={Transition}
@@ -123,7 +134,10 @@ class FullScreenDialog extends React.Component {
               </IconButton>
               <Typography variant="title" color="inherit" style={{
                 flex: 1,
-              }}>
+                minWidth: '485px',
+              }}
+              align="center"
+              >
                 물품 등록
               </Typography>
               <Button onClick={this.handleRequestClose} color="inherit">
@@ -186,20 +200,42 @@ class FullScreenDialog extends React.Component {
     />
     <br />
     </div>
+
+
+
+        
+
     <div className="col-md-3 col-3" >
     <TextField
-      name="vendorNo"
-      label="번호"
-      value= {this.state.name}
+      name="vendor"
+      label="거래처선택"
+      select
+      value= {this.state.product.vendorName}
       onChange={this.handleChange}
       margin="normal"
+      helperText="거래처를 선택하세요"
       fullWidth
-    />
+    >
+      {infoAccount && infoAccount.map( option => (
+
+<MenuItem  key={option} value={option}>
+{option.vendorName} 
+
+</MenuItem>
+
+  //셀릭트바에서 거래처명을 클릭했을때 거래처명과 거래처번호를 둘 다 넘기는 방법을 몰라서 물어봤었음
+  //1. handlechange에서 이벤트의 vendorname을 가져와서 for문으로 vendorNo을 가져온다고하고(index함수사용)
+  //2. 새로운 함수를 만들어서 set해준다고함.
+  //3. 하나의 함수에서만 쓸거라면 map으로 객체정보를 다 가져오니 이 객체를 넘겨서 set해줘도됨
+
+
+))}
+ </TextField>
     <br />
     </div>
    
   </div>
-);
+
           <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleSubmit}>전송</Button>
         </Dialog>
       </div>
