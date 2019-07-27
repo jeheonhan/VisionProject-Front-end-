@@ -6,6 +6,14 @@ import CustomScrollbars from 'util/CustomScrollbars';
 
 
 class SidenavContent extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      user:JSON.parse(localStorage.getItem('user'))
+    }
+  }
+
   componentDidMount() {
     const {history} = this.props;
     const that = this;
@@ -102,197 +110,224 @@ class SidenavContent extends Component {
   }
 
   render() {
-    return (
-      <CustomScrollbars className=" scrollbar">
-        <ul className="nav-menu">
 
-          <li className="nav-header">
-            <IntlMessages id="sidebar.main"/>
-          </li>
+    const { user } = this.state
 
-          <li className="menu no-arrow">
-            <NavLink className="prepend-icon" to="/app/notice">
-              <i className="zmdi zmdi-check-square zmdi-hc-fw"/>
-              <span className="nav-text">공지사항</span>
-            </NavLink>
-          </li>
+    if(user.employeeNo !== null){
+      return (
+        <CustomScrollbars className=" scrollbar">
+          <ul className="nav-menu">
+  
+            <li className="nav-header">
+              <IntlMessages id="sidebar.main"/>
+            </li>
+  
+            <li className="menu no-arrow">
+              <NavLink className="prepend-icon" to="/app/notice">
+                <i className="zmdi zmdi-check-square zmdi-hc-fw"/>
+                <span className="nav-text">공지사항</span>
+              </NavLink>
+            </li>
+  
+            <li className="menu collapse-box">
+              <Button>
+                <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
+                  <span className="nav-text">인사관리</span>
+              </Button>
+              <ul className="sub-menu">
+                <li>
+                  <NavLink className="prepend-icon" to="/app/humanResource/humanResourceCard">
+                    <span className="nav-text">인사카드관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/humanResource/appointment">
+                    <span className="nav-text">인사발령관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/humanResource/department">
+                    <span className="nav-text">부서관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/humanResource/workAttitude">
+                    <span className="nav-text">근태관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/humanResource/workAttitudeCode">
+                    <span className="nav-text">근태코드관리</span>
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+  
+            <li className="menu collapse-box">
+              <Button>
+                <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
+                  <span className="nav-text">회계관리</span>
+              </Button>
+              <ul className="sub-menu">
+                <li>
+                  <NavLink className="prepend-icon" to="/app/accounting/vendor">
+                    <span className="nav-text">거래처관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/accounting/card">
+                    <span className="nav-text">카드관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/accounting/account">
+                    <span className="nav-text">계좌관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/accounting/statement">
+                    <span className="nav-text">전표관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/accounting/salary">
+                    <span className="nav-text">급여관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/accounting/salaryBook">
+                    <span className="nav-text">급여대장관리</span>
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+  
+            <li className="menu collapse-box">
+              <Button>
+                <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
+                  <span className="nav-text">생산관리</span>
+              </Button>
+              <ul className="sub-menu">
+                <li>
+                  <NavLink className="prepend-icon" to="/app/productionManagement/product">
+                    <span className="nav-text">물품관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/productionManagement/orderToVendor">
+                    <span className="nav-text">발주관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/productionManagement/orderFromBranch">
+                    <span className="nav-text">주문관리</span>
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+  
+            <li className="menu collapse-box">
+              <Button>
+                <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
+                  <span className="nav-text">경영관리</span>
+              </Button>
+              <ul className="sub-menu">
+                <li>
+                  <NavLink className="prepend-icon" to="/app/businessSupport/addBranch">
+                    <span className="nav-text">신규가맹등록</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/businessSupport/branch">
+                    <span className="nav-text">지점관리</span>
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+  
+            <li className="menu no-arrow">
+              <NavLink className="prepend-icon" to="/app/code">
+                <i className="zmdi zmdi-key zmdi-hc-fw"/>
+                <span className="nav-text">코드관리</span>
+              </NavLink>
+            </li>
+  
+            <li className="menu collapse-box">
+              <Button>
+                <i className="zmdi zmdi-collection-item-8 zmdi-hc-fw" />
+                  <span className="nav-text">결재관리</span>
+              </Button>
+              <ul className="sub-menu">
+                <li>
+                  <NavLink className="prepend-icon" to="/app/approval/approvalForm">
+                    <span className="nav-text">결재양식관리</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/approval/approvalRequest">
+                    <span className="nav-text">결재요청</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/approval/approvalBox">
+                    <span className="nav-text">결재함</span>
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+            
+          </ul>
+        </CustomScrollbars>
+      );
+    }
 
-          <li className="menu collapse-box">
-            <Button>
-              <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
-                <span className="nav-text">인사관리</span>
-            </Button>
-            <ul className="sub-menu">
-              <li>
-                <NavLink className="prepend-icon" to="/app/humanResource/humanResourceCard">
-                  <span className="nav-text">인사카드관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/humanResource/appointment">
-                  <span className="nav-text">인사발령관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/humanResource/department">
-                  <span className="nav-text">부서관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/humanResource/workAttitude">
-                  <span className="nav-text">근태관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/humanResource/workAttitudeCode">
-                  <span className="nav-text">근태코드관리</span>
-                </NavLink>
-              </li>
-            </ul>
-          </li>
-
-          <li className="menu collapse-box">
-            <Button>
-              <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
-                <span className="nav-text">회계관리</span>
-            </Button>
-            <ul className="sub-menu">
-              <li>
-                <NavLink className="prepend-icon" to="/app/accounting/vendor">
-                  <span className="nav-text">거래처관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/accounting/card">
-                  <span className="nav-text">카드관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/accounting/account">
-                  <span className="nav-text">계좌관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/accounting/statement">
-                  <span className="nav-text">전표관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/accounting/salary">
-                  <span className="nav-text">급여관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/accounting/salaryBook">
-                  <span className="nav-text">급여대장관리</span>
-                </NavLink>
-              </li>
-            </ul>
-          </li>
-
-          <li className="menu collapse-box">
-            <Button>
-              <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
-                <span className="nav-text">생산관리</span>
-            </Button>
-            <ul className="sub-menu">
-              <li>
-                <NavLink className="prepend-icon" to="/app/productionManagement/product">
-                  <span className="nav-text">물품관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/productionManagement/orderToVendor">
-                  <span className="nav-text">발주관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/productionManagement/orderFromBranch">
+    else{
+      return (
+        <CustomScrollbars className=" scrollbar">
+          <ul className="nav-menu">
+  
+            <li className="nav-header">
+              <IntlMessages id="sidebar.main"/>
+            </li>
+  
+            <li className="menu no-arrow">
+              <NavLink className="prepend-icon" to="/app/notice">
+                <i className="zmdi zmdi-check-square zmdi-hc-fw"/>
+                <span className="nav-text">공지사항</span>
+              </NavLink>
+            </li>
+  
+            <li className="menu no-arrow">
+              <NavLink className="prepend-icon" to="/app/dailySales">
+                <i className="zmdi zmdi-calendar zmdi-hc-fw"/>
+                <span className="nav-text">일매출조회</span>
+              </NavLink>
+            </li>
+  
+            <li className="menu collapse-box">
+              <Button>
+                <i className="zmdi zmdi-shopping-cart zmdi-hc-fw"/>
                   <span className="nav-text">주문관리</span>
-                </NavLink>
-              </li>
-            </ul>
-          </li>
-
-          <li className="menu collapse-box">
-            <Button>
-              <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
-                <span className="nav-text">경영관리</span>
-            </Button>
-            <ul className="sub-menu">
-              <li>
-                <NavLink className="prepend-icon" to="/app/businessSupport/addBranch">
-                  <span className="nav-text">신규가맹등록</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/businessSupport/branch">
-                  <span className="nav-text">지점관리</span>
-                </NavLink>
-              </li>
-            </ul>
-          </li>
-
-          <li className="menu no-arrow">
-            <NavLink className="prepend-icon" to="/app/code">
-              <i className="zmdi zmdi-key zmdi-hc-fw"/>
-              <span className="nav-text">코드관리</span>
-            </NavLink>
-          </li>
-
-          <li className="menu collapse-box">
-            <Button>
-              <i className="zmdi zmdi-collection-item-8 zmdi-hc-fw" />
-                <span className="nav-text">결재관리</span>
-            </Button>
-            <ul className="sub-menu">
-              <li>
-                <NavLink className="prepend-icon" to="/app/approval/approvalForm">
-                  <span className="nav-text">결재양식관리</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/approval/approvalRequest">
-                  <span className="nav-text">결재요청</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/approval/approvalBox">
-                  <span className="nav-text">결재함</span>
-                </NavLink>
-              </li>
-            </ul>
-          </li>
-
-          <li className="menu no-arrow">
-            <NavLink className="prepend-icon" to="/app/dailySales">
-              <i className="zmdi zmdi-calendar zmdi-hc-fw"/>
-              <span className="nav-text">일매출조회</span>
-            </NavLink>
-          </li>
-
-          <li className="menu collapse-box">
-            <Button>
-              <i className="zmdi zmdi-shopping-cart zmdi-hc-fw"/>
-                <span className="nav-text">주문관리</span>
-            </Button>
-            <ul className="sub-menu">
-              <li>
-                <NavLink className="prepend-icon" to="/app/branch/orderRequest">
-                  <span className="nav-text">주문요청</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink className="prepend-icon" to="/app/branch/orderManage">
-                  <span className="nav-text">내주문관리</span>
-                </NavLink>
-              </li>
-            </ul>
-          </li>
-          
-        </ul>
-      </CustomScrollbars>
-    );
+              </Button>
+              <ul className="sub-menu">
+                <li>
+                  <NavLink className="prepend-icon" to="/app/branch/orderRequest">
+                    <span className="nav-text">주문요청</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className="prepend-icon" to="/app/branch/orderManage">
+                    <span className="nav-text">내주문관리</span>
+                  </NavLink>
+                </li>
+              </ul>
+            </li>
+            
+          </ul>
+        </CustomScrollbars>
+      );
+    }
+    
   }
 }
 

@@ -10,6 +10,7 @@ import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
 
 
 const getProductListRequest = async () => {
+    console.log("들어와라 셀렉트프로덕트릿")
     return await axios({
         method : "GET",
         url : "/pm/selectProductList"
@@ -38,6 +39,7 @@ const addProductRequest = async (data) => {
 }  
 
 const getProductAccountRequest = async () => {
+    console.log("물픔등록할때 쓰는거 왓냐")
     return await axios({
        method : "GET",
        url : "/pm/addProductPreparing" 
@@ -97,6 +99,8 @@ function* getselectOrderToVendorListFn(){
 
 function* getProductListFn(){
     const ProductList = yield call(getProductListRequest);
+    console.log("프로덕트리스트")
+    console.log(ProductList)
     yield put(carryProductList(ProductList));
 }
 

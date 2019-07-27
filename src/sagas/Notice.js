@@ -22,6 +22,16 @@ const getNoticeDetailRequest = async (noticeNo) => {
     .catch(error => console.log(error))
 }
 
+const addNoticeRequest = async (notice) => {
+    return await axios({
+        method:"POST",
+        url:"/notice/addNotice",
+        data:notice
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
 function* getNoticeListFn({payload}){
     const noticeList = yield call(getNoticeListRequest, payload);
     yield put(carryNoticeList(noticeList));

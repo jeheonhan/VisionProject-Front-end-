@@ -11,6 +11,7 @@ class UserInfo extends React.Component {
   state = {
     anchorEl: null,
     open: false,
+    user:JSON.parse(localStorage.getItem('user'))
   };
 
   handleClick = event => {
@@ -22,16 +23,22 @@ class UserInfo extends React.Component {
   };
 
   render() {
+
+    const { user } = this.state
+
     return (
       <div className="user-profile d-flex flex-row align-items-center">
         <Avatar
           alt='...'
-          src={'https://via.placeholder.com/150x150'}
+           src={user.employeeNo && (user.profileImage ? `/img/${user.profileImage}`:require("assets/images/placeholder.jpg"))}
+          //                       :(user.branchNo && require("assets/images/noneProfile.png"))}
           className="user-avatar "
-        />
+        >{user.branchNo && user.branchName.charAt(0)}</Avatar>
         <div className="user-detail">
-          <h4 className="user-name" onClick={this.handleClick}>Robert Johnson <i
-            className="zmdi zmdi-caret-down zmdi-hc-fw align-middle"/>
+          <h4 className="user-name" onClick={this.handleClick}>
+            {user.employeeNo? (user.employeeName+" "+user.memberCodeName)
+                            :(user.branchName)}
+          <i className="zmdi zmdi-caret-down zmdi-hc-fw align-middle"/>
           </h4>
         </div>
         <Menu className="user-info"

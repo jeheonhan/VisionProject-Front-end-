@@ -9,9 +9,8 @@ import {  getInfoAccount } from 'actions/index';
 class ProductionManage extends React.Component{
     
     constructor(props){
-        super(props);
-        console.log("123");
-
+        
+      super(props);
         const {getInfoAccount} = this.props;
 
     if({getInfoAccount} !== undefined){

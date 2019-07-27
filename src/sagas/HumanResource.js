@@ -10,7 +10,8 @@ import { carryHRCardList,
          getWorkAttitudeList,
          getWorkAttitudeCodeList,
          carryDepartmentList, 
-         getDepartmentList} from 'actions/index';
+         getDepartmentList,
+         carryHRCardDetail} from 'actions/index';
 import { GET_HRCARD_LIST, 
          GET_APPOINT_LIST, 
          ADD_APPOINTMENT, 
@@ -25,7 +26,28 @@ import { GET_HRCARD_LIST,
          ADD_DEPARTMENT,
          CONVERT_DEPART_USAGE_STATUS,
          UPDATE_WORK_ATTITUDE, 
-         UPDATE_WORK_ATTITUDE_CODE,} from "actionTypes/ActionTypes";
+         UPDATE_WORK_ATTITUDE_CODE,
+         GET_HRCARD_DETAIL,
+         UPDATE_HRCARD,} from "actionTypes/ActionTypes";
+
+const updateHRCardRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/modifyHumanResourceCard",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
+
+const getHRCardDetailRequest = async (_data) => {
+    return await axios({
+        method:"GET",
+        url:"/hr/getHumanResourceCardDetail/"+_data
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
 
 const updateWorkAttitudeCodeRequest = async (_data) => {
     await axios({
@@ -176,6 +198,16 @@ const getAppointListRequest = async (search) => {
     .catch(error => console.log(error));
 }
 
+function* updateHRCardFn({payload}){
+    yield call(updateHRCardRequest, payload);
+    yield put(getHRCardList({searchKeyword:null}));
+}
+
+function* getHRCardDetailFn({payload}){
+    const HRCardDetail = yield call(getHRCardDetailRequest, payload);
+    yield put(carryHRCardDetail(HRCardDetail));
+}
+
 function* updateWorkAttitudeCode({payload}){
     yield call(updateWorkAttitudeCodeRequest, payload);
     yield put(getWorkAttitudeCodeList({searchKeyword:null}));
@@ -250,6 +282,14 @@ function* getAppointListFn({payload}){
     console.log(payload);
     const appointList = yield call(getAppointListRequest, payload);
     yield put(carryAppointList(appointList));
+}
+
+export function* updateHRCardSaga(){
+    yield takeEvery(UPDATE_HRCARD, updateHRCardFn);
+}
+
+export function* getHRCardDetailSaga(){
+    yield takeEvery(GET_HRCARD_DETAIL, getHRCardDetailFn);
 }
 
 export function* updateWorkAttitudeCodeSaga(){
@@ -328,5 +368,7 @@ export default function* rootSaga(){
             fork(addDepartmentSaga),
             fork(convertDepartUsageSaga),
             fork(updateWorkAttitudeSaga),
-            fork(updateWorkAttitudeCodeSaga)]);
+            fork(updateWorkAttitudeCodeSaga),
+            fork(getHRCardDetailSaga),
+            fork(updateHRCardSaga)]);
 }

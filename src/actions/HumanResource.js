@@ -25,6 +25,9 @@ import {  GET_HRCARD_LIST
         CHECKED_WORKATTITUDE,
         UPDATE_WORK_ATTITUDE,
         UPDATE_WORK_ATTITUDE_CODE,
+        GET_HRCARD_DETAIL,
+        CARRY_HRCARD_DETAIL,
+        UPDATE_HRCARD,
         } from '../actionTypes/ActionTypes';
 
 
@@ -213,6 +216,27 @@ export const updateWorkAttitude = (data) => {
 export const updateWorkAttitudeCode = (data) => {
     return{
         type: UPDATE_WORK_ATTITUDE_CODE,
+        payload: data
+    }
+}
+
+export const getHRCardDetail = (data) => {
+    return{
+        type: GET_HRCARD_DETAIL,
+        payload: data
+    }
+}
+
+export const carryHRCardDetail = (data) => {
+    return{
+        type: CARRY_HRCARD_DETAIL,
+        payload: data
+    }
+}
+
+export const updateHRCard = (data) => {
+    return{
+        type: UPDATE_HRCARD,
         payload: data
     }
 }
