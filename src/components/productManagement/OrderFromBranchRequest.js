@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Iamport from 'react-iamport';
+import OrderBranchRequestTable from 'components/productManagement/OrderBranchRequestTable'
 import {connect} from 'react-redux'
+import { getProductList } from 'actions/index';
+
 
 class OrderFromBranchRequest extends React.Component{
 
@@ -12,20 +15,30 @@ class OrderFromBranchRequest extends React.Component{
   }
 
     render(){
+      const { ProductList } = this.props;
+
+            if(ProductList === undefined){
+              this.props.getProductList();
+              return(
+                <div>Loading...</div>
+              );
+            }
 
       return (
           <div>
-            
+            <OrderBranchRequestTable ProductList={ProductList}/>
           </div>
       );
     }
 }
   
-  const mapStateToProps = (state) => {
-    return state;
-  }
+const mapStateToProps = ({productionManagement}) => {
 
-  export default connect(mapStateToProps)(OrderFromBranchRequest);
+  const { ProductList } = productionManagement;
+  return { ProductList };
+}
+
+  export default connect(mapStateToProps, {getProductList})(OrderFromBranchRequest);
   
 
 

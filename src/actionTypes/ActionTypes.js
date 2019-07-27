@@ -216,6 +216,10 @@ export const CARRY_APPROVAL_DETAIL = 'carry_approval_detail';
 export const MODIFY_APPROVAL_STATUS = 'modify_approval_status';
 
 
+//주문관리
+export const ADD_ORDER_BRANCH = 'add_order_branch';
+
+
 //회계관리
 export const GET_VENDOR_LIST = 'get_vendor_list';
 export const CARRY_VENDOR_LIST = 'carry_vendor_list';

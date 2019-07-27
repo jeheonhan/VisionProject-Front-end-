@@ -5,7 +5,7 @@ import { carryProductList, carryOrderToVendorList,
     getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, getOrderToVendorList } from 'actions/index';
 import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
      ADD_PRODUCT, GET_INFO_ACCOUNT, GET_ORDER_TO_VENDOR_DETAIL_LIST
-    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR} from "actionTypes/ActionTypes";
+    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH} from "actionTypes/ActionTypes";
 
 
 
@@ -75,6 +75,15 @@ const addOrderToVendorRequest = async (data) => {
         url : "/pm/addOrderToVendor",
         data : data
     })
+    .catch(error => console.log(error))
+}
+
+const addOrderBranchAxios = async (action) => {
+    return await axios({
+        method:"POST",
+        url:"/pm/addOrderFromBranch",
+        data : action.payload
+    })
 }
 
 
@@ -119,6 +128,9 @@ function* addOrderToVendorFn({payload}) {
     yield put(getOrderToVendorList());
 }
 
+function* addOrderBranchFn(action){
+    yield call (addOrderBranchAxios, action);
+}
 
 
 
@@ -154,6 +166,10 @@ export function* addOrderToVendorSaga() {
     yield takeEvery(ADD_ORDER_TO_VENDOR, addOrderToVendorFn)
 }
 
+export function* addOrderBranchSaga(){
+    yield takeEvery(ADD_ORDER_BRANCH, addOrderBranchFn)
+}
+
 export default function* rootSaga(){
     console.log("rootSaga()");
     yield all([
@@ -164,6 +180,7 @@ export default function* rootSaga(){
         fork(getOrderToVendorDetailListSaga),
         fork(updateOrderToVendorCOdeSaga),
         fork(addOrderToVendorSaga), 
+        fork(addOrderBranchSaga)
     ]);
 }
 
