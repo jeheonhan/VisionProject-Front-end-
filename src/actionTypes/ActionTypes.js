@@ -179,6 +179,9 @@ export const UPDATE_WORK_ATTITUDE_CODE = 'update_work_attitude_code';
 export const GET_HRCARD_DETAIL = 'get_hrcard_detail';
 export const CARRY_HRCARD_DETAIL = 'carry_hrcard_detail';
 export const UPDATE_HRCARD = 'update_hrcard';
+export const UPDATE_APPOINT_STATUS = 'update_appoint_status';
+export const CONVERT_WORKATTITUDE_USE_STATUS = 'convert_workattitude_use_status';
+export const CONVERT_WORKATTITUDE_CODE_USE_STATUS = 'convert_workattitude_code_use_status';
 
 
 

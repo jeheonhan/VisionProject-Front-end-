@@ -39,8 +39,17 @@ class FormDialog extends React.Component {
  }
 
  handleSubmit = () => {
-     this.props.addDepartment(this.state);
-     this.props.handleAddDepartClose();
+
+    if(this.state.departCodeName == null){
+      alert("부서명을 반드시 입력하세요")
+    }else if(this.state.accessMenuCodeNo == null){
+      alert("접근가능메뉴를 입력하세요.")
+    }else if(this.state.departInfo == null){
+      alert("업무소개를 입력하세요.")
+    }else{
+      this.props.addDepartment(this.state);
+      this.props.handleAddDepartClose();
+    }
  }
 
   render() {
@@ -69,8 +78,8 @@ class FormDialog extends React.Component {
           <DialogTitle>부서등록</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              To subscribe to this website, please enter your email address here. We will send
-              updates occationally.
+              신규부서 등록시에 반드시 접근가능메뉴를 신중하게 
+              설정하여주시기바랍니다.
             </DialogContentText>
             <TextField
               autoFocus
