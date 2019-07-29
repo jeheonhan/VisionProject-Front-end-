@@ -19,7 +19,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
 import { getOrderToVendorList , getOrderToVendorDetailList, updateOrderToVendorCode  } from 'actions/index.js';
 import GetOrderToVendorDetailList from 'components/productManagement/GetOrderToVendorDetailList';
-
+import {Delete} from '@material-ui/icons'
 let counter = 0;
 
 
@@ -222,7 +222,7 @@ class EnhancedTable extends React.Component {
     this.setState({open : false});
   }
 
-  updateOrderToVendorList = (event,orderToVendor) => {
+  updateOrderToVendorList = (event, orderToVendor) => {
     event.preventDefault();
     console.log("값왓냐")
     console.log(orderToVendor);
@@ -297,8 +297,21 @@ class EnhancedTable extends React.Component {
                       <TableCell align="left">{row.statementNo}</TableCell>
                       <TableCell align="left">{row.totalAmount}</TableCell> 
                       <TableCell align="left">{row.orderToVendorDate}</TableCell>
-                      <TableCell align="left">{row.orderToVenStatusCodeName} 
-                        {row.orderToVenStatusCodeNo == '01' ? <span onClick={event => this.updateOrderToVendorList(event, row)} style={{cursor:'pointer', color:'red'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 발주취소</span> : null}
+                      
+                      
+                      
+                      <TableCell align="left">{row.orderToVenStatusCodeName }
+               
+                        
+
+
+
+                        {row.orderToVenStatusCodeNo == '01' ? <span onClick=
+                        {event => this.updateOrderToVendorList(event, row)} style={{cursor:'pointer', color:'red'}}>                     
+                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <Delete/> 발주취소
+                        </span> : null}
+
                       </TableCell>
                     </TableRow>
                   );

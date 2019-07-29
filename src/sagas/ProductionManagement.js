@@ -2,10 +2,11 @@ import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
 import { carryProductList, carryOrderToVendorList, 
     addProduct, getProductList, addProductAccount, 
-    getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, getOrderToVendorList } from 'actions/index';
+    getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, getOrderToVendorList, getOrderToVendorDetailList } from 'actions/index';
 import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
      ADD_PRODUCT, GET_INFO_ACCOUNT, GET_ORDER_TO_VENDOR_DETAIL_LIST
-    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH} from "actionTypes/ActionTypes";
+    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH , 
+    UPDATE_ORDER_TO_VEN_ITEM_CODE    } from "actionTypes/ActionTypes";
 
 
 
@@ -61,8 +62,7 @@ const getOrderToVendorDetailListRequest = async (data) => {
 
 const updateOrderToVendorCodeRequest = async (data) => {
 
-    console.log(data.statementNo);
-    console.log(data.orderToVendorNo);
+
     return await axios({
         method : "GET" ,
         url : "/pm/modifyOrderToVenCode/"+data.statementNo+"/"+data.orderToVendorNo
@@ -71,7 +71,7 @@ const updateOrderToVendorCodeRequest = async (data) => {
 
 const addOrderToVendorRequest = async (data) => {
     console.log("addOrderToVendorRequest 데이터왓냐");
-    console.log(data)
+
     return await axios({
         method : "POST" , 
         url : "/pm/addOrderToVendor",
@@ -88,6 +88,16 @@ const addOrderBranchAxios = async (action) => {
     })
 }
 
+const updateOrderToVenItemCodeRequest = async (data) => {
+    console.log("updateCode")
+    console.log(data)
+    return await axios({
+        method : "POST",
+        url:"/pm/modifyOrderToVenItemCode",
+        data : data
+    })
+    .catch(error => console.log(error))
+}   
 
 
 
@@ -100,7 +110,7 @@ function* getselectOrderToVendorListFn(){
 function* getProductListFn(){
     const ProductList = yield call(getProductListRequest);
     console.log("프로덕트리스트")
-    console.log(ProductList)
+   
     yield put(carryProductList(ProductList));
 }
 
@@ -121,9 +131,10 @@ function* getOrderTOVendorDetailListFn({payload}){
 
 function* updateOrderToVendorCodeFn({payload}) {
     console.log("updateOrderToVendorCodeFn들어왓냐");
+    console.log(payload.orderToVenStatusCodeName);
     yield call(updateOrderToVendorCodeRequest, payload);
     console.log("updateOrderToVendorCodeRequest수행다 끝냇냐");
-    yield put(getOrderToVendorList());
+    yield put(getOrderToVendorList(payload));
 }
 
 function* addOrderToVendorFn({payload}) {
@@ -134,6 +145,17 @@ function* addOrderToVendorFn({payload}) {
 
 function* addOrderBranchFn(action){
     yield call (addOrderBranchAxios, action);
+}
+
+function* updateOrderToVenItemCodeFn({payload}){
+    console.log("updateOrderToVenItemCodeFn 왓냐");
+    console.log({payload});
+    yield call (updateOrderToVenItemCodeRequest, payload);
+
+    const orderToVendorListDetail = yield call(getOrderToVendorDetailListRequest);
+    console.log("orderToVendorListDetail 값은??");
+    console.log(orderToVendorListDetail);
+    yield put(getOrderToVendorDetailList(payload));
 }
 
 
@@ -174,6 +196,10 @@ export function* addOrderBranchSaga(){
     yield takeEvery(ADD_ORDER_BRANCH, addOrderBranchFn)
 }
 
+export function* updateOrderToVenItemCodeSaga(){
+    yield takeEvery(UPDATE_ORDER_TO_VEN_ITEM_CODE, updateOrderToVenItemCodeFn)
+}
+
 export default function* rootSaga(){
     console.log("rootSaga()");
     yield all([
@@ -184,7 +210,8 @@ export default function* rootSaga(){
         fork(getOrderToVendorDetailListSaga),
         fork(updateOrderToVendorCOdeSaga),
         fork(addOrderToVendorSaga), 
-        fork(addOrderBranchSaga)
+        fork(addOrderBranchSaga),
+        fork(updateOrderToVenItemCodeSaga),
     ]);
 }
 

@@ -316,4 +316,5 @@ export const UPDATE_ORDER_TO_VENDOR_CODE = 'update_order_to_vendor_code';
 export const GET_INFO_ACCOUNT = 'get_info_account';
 export const CARRY_INFO_ACCOUNT = 'carry_info_account';
 export const ADD_ORDER_TO_VENDOR = 'add_order_to_vendor';
+export const UPDATE_ORDER_TO_VEN_ITEM_CODE = 'update_order_to_ven_item_code';
 

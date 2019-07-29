@@ -57,13 +57,22 @@ class FullScreenDialog extends React.Component {
   handleChange = (e) => {
     
     e.preventDefault();
+    var _vendorName;
 
-    if(e.target.name == 'vendor'){
+
+    if(e.target.name == 'vendorNo'){
+      if(this.props.infoAccount !== null){
+        this.props.infoAccount.map(element => {
+          if(element.vendorNo == e.target.value){
+            _vendorName = element.vendorName;
+          }
+        })
+      }
       this.setState({
         product:{
           ...this.state.product,
-          vendorName:e.target.value.vendorName,
-          vendorNo:e.target.value.vendorNo
+          vendorName:_vendorName,
+          vendorNo:e.target.value
         }
       })
     }else{
@@ -118,8 +127,9 @@ class FullScreenDialog extends React.Component {
     
    
     return (
+      
       <div>
-
+      
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
             등록
         </Button>
@@ -204,24 +214,26 @@ class FullScreenDialog extends React.Component {
 
 
         
-
+      
     <div className="col-md-3 col-3" >
     <TextField
-      name="vendor"
+      name="vendorNo"
       label="거래처선택"
       select
-      value= {this.state.product.vendorName}
+      value= {this.state.product.vendorNo && this.state.product.vendorNo}
       onChange={this.handleChange}
       margin="normal"
       helperText="거래처를 선택하세요"
       fullWidth
+      //셀렉트바에서는 값을 하나만 넘겨야함.
+      //객체인채로 보내도 되는데 그러면 셀렉트바에서는 원하는 값이 안뜸.
     >
       {infoAccount && infoAccount.map( option => (
 
-<MenuItem  key={option} value={option}>
-{option.vendorName} 
+        <MenuItem  key={option.vendorNo} value={option.vendorNo}>
+        {option.vendorName} 
 
-</MenuItem>
+        </MenuItem>
 
   //셀릭트바에서 거래처명을 클릭했을때 거래처명과 거래처번호를 둘 다 넘기는 방법을 몰라서 물어봤었음
   //1. handlechange에서 이벤트의 vendorname을 가져와서 for문으로 vendorNo을 가져온다고하고(index함수사용)
