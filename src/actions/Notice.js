@@ -3,7 +3,9 @@ import {GET_NOTICE_LIST,
         GET_NOTICE_DETAIL, 
         CARRY_NOTICE_DETAIL, 
         ADD_NOTICE, 
-        ADD_NOTICE_RESULT} from '../actionTypes/ActionTypes';
+        ADD_NOTICE_RESULT,
+        GET_NOTICE_HEADER_LIST,
+        CARRY_NOTICE_HEADER_LIST} from '../actionTypes/ActionTypes';
 
 export const getNoticeList = (search) => {
     return {
@@ -43,6 +45,20 @@ export const addNotice = (notice) => {
 export const addNoticeResult = (data) => {
     return {
         type: ADD_NOTICE_RESULT,
+        payload: data
+    }
+}
+
+export const getNoticeHeaderList = () => {
+    //console.log("getNoticeHeaderList Action :::::::")
+    return {
+        type: GET_NOTICE_HEADER_LIST
+    }
+}
+
+export const carryNoticeHeaderList = (data) => {
+    return {
+        type: CARRY_NOTICE_HEADER_LIST,
         payload: data
     }
 }

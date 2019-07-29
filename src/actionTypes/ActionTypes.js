@@ -298,6 +298,8 @@ export const GET_NOTICE_DETAIL = 'get_notice_detail';
 export const CARRY_NOTICE_DETAIL = 'carry_notice_detail';
 export const ADD_NOTICE = 'add_notice';
 export const ADD_NOTICE_RESULT = 'add_notice_result';
+export const GET_NOTICE_HEADER_LIST = 'get_notice_header_list';
+export const CARRY_NOTICE_HEADER_LIST = 'carry_notice_header_list';
 
 //지점관리
 export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';

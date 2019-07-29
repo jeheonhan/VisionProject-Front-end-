@@ -142,6 +142,12 @@ const columnData = [
         order === 'desc'
           ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
           : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+
+          if(property==='viewCount'||property==='noticeNo'){
+            order === 'desc'
+            ? this.state.data.sort((a, b) => (b[orderBy] - a[orderBy] ))
+            : this.state.data.sort((a, b) => (a[orderBy] - b[orderBy] ));
+        }
   
       this.setState({data, order, orderBy});
     };
@@ -190,11 +196,11 @@ const columnData = [
       super(props, context);
   
       this.state = {
-        order: 'asc',
-        orderBy: '',
+        order: 'desc',
+        orderBy: 'noticeNo',
         selected: [],
         // data에 props로 들어오는 list값 넣어주기.
-        data: this.props.noticeList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+        data: this.props.noticeList.sort((a, b) => (b.noticeNo - a.noticeNo)),
         page: 0,
         rowsPerPage: 10,
       };
@@ -210,6 +216,7 @@ const columnData = [
 
     handleRequestClose = () => {
       this.props.getNoticeDetail({...this.state.noticeNo});
+      this.props.getNoticeList();
       this.setState({open : false});
     }
   

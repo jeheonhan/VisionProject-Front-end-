@@ -23,7 +23,7 @@ const getBranchDetailRequest = async (branchNo) => {
 }
 
 const getLocalListRequest = async () => {
-    console.log("getLocalList :::::: ")
+    //console.log("getLocalList :::::: ")
     return await axios({
         method:"GET",
         url:"/bs/getLocalList"
