@@ -6,6 +6,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import DialogActions from '@material-ui/core/DialogActions';
 import Slide from '@material-ui/core/Slide';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 import { DialogContent } from '@material-ui/core';
 
 
@@ -13,15 +20,46 @@ function Transition(props) {
   return <Slide direction="down" {...props} />;
 }
 
-  class GetDailySalesDetail extends React.Component {
+// const StyledTableCell = withStyles(theme => ({
+//     head: {
+//       backgroundColor: theme.palette.common.black,
+//       color: theme.palette.common.white,
+//     },
+//     body: {
+//       fontSize: 14,
+//     },
+//   }))(TableCell);
 
-    constructor(props){
+//   const StyledTableRow = withStyles(theme => ({
+//     root: {
+//       '&:nth-of-type(odd)': {
+//         backgroundColor: theme.palette.background.default,
+//       },
+//     },
+//   }))(TableRow);
 
-      super(props);
+//   const useStyles = makeStyles(theme => ({
+//     root: {
+//       width: '100%',
+//       marginTop: theme.spacing(3),
+//       overflowX: 'auto',
+//     },
+//     table: {
+//       minWidth: 700,
+//     },
+//   }));
 
-      this.state = {
-        salesProduct : this.props.salesProduct,
-      }
+//   const classes = useStyles();
+
+class GetDailySalesDetail extends React.Component {
+  
+  constructor(props){
+    
+    super(props);
+    
+    this.state = {
+      salesProduct : this.props.salesProduct,
+    }
   }
      
     /*handleClickOpen = () => {
@@ -62,31 +100,44 @@ function Transition(props) {
               </Typography>
             </Toolbar>
           </AppBar>
-
-            <DialogContent style={{minWidth: '500px', maxWidth: '500px', minHeight:'400px', maxHeight:'400px'}}>
-                    <div>
-                        {this.state.salesProduct.map((row) => {
+                  <div>
+                        {/* <Paper className={classes.root}>
+                        <Table className={classes.table}>
+                          <TableHead>
+                            <TableRow>
+                              <StyledTableCell align="right">No</StyledTableCell>
+                              <StyledTableCell align="right">메뉴번호</StyledTableCell>
+                              <StyledTableCell align="right">메뉴이름</StyledTableCell>
+                              <StyledTableCell align="right">판매단가</StyledTableCell>
+                              <StyledTableCell align="right">판매수량</StyledTableCell>
+                              <StyledTableCell align="right">판매금액</StyledTableCell>
+                              <StyledTableCell align="right">판매일자</StyledTableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
                             
-                            return(
-                                <div>
-                                    <div>지점번호 : {row.branchNo}</div>
-                                    <div>매출일자 : {row.salesDate}</div>
-                                    <div>메뉴번호 : {row.menuNo}</div>
-                                    <div>메뉴 : {row.menuName}</div>
-                                    <div>메뉴가격 : {row.salesPrice}</div>
-                                    <div>판매수량 : {row.salesQuantity}</div>
-                                    <div>판매금액 : {row.salesAmount}</div>
-                                </div>
-                            );
-                            })}
-                    </div>
-            </DialogContent>
-                    
-                    <DialogActions align="centery">
-                        <Button onClick={this.props.handleRequestClose} color="secondary">
-                            닫기
-                        </Button>
-                    </DialogActions>
+                  {this.state.salesProduct.map((row) => {
+                              <StyledTableRow key={row.salesNumbering}>
+                                <StyledTableCell component="th" scope="row">
+                                  {row.salesNumbering}
+                                </StyledTableCell>
+                                <StyledTableCell align="right">{row.menuNo}</StyledTableCell>
+                                <StyledTableCell align="right">{row.menuName}</StyledTableCell>
+                                <StyledTableCell align="right">{row.salesPrice}</StyledTableCell>
+                                <StyledTableCell align="right">{row.salesQuantity}</StyledTableCell>
+                                <StyledTableCell align="right">{row.salesAmount}</StyledTableCell>
+                                <StyledTableCell align="right">{row.salesDate}</StyledTableCell>
+                              </StyledTableRow>
+                        })}
+                          </TableBody>
+                        </Table>
+                      </Paper> */}
+                  </div>
+                      <DialogActions align="centery">
+                          <Button onClick={this.props.handleRequestClose} color="secondary">
+                              닫기
+                          </Button>
+                      </DialogActions>
           </Dialog>
       );
     }

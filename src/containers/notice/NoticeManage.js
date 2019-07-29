@@ -9,7 +9,10 @@ class NoticeManage extends React.Component{
 
     constructor(props){
         super(props);
-        this.state = {search:{serachKeyword:null}}
+        this.state = {search:{
+            searchCondition:'2',
+            searchKeyword:'01'
+            }}
     }
 
     render(){

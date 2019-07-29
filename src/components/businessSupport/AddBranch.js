@@ -8,6 +8,20 @@ import MenuItem from '@material-ui/core/MenuItem';
 import GetPostCode from 'components/accounting/GetPostCode';
 import { connect } from 'react-redux';
 import { getLocalList, addBranch } from 'actions/index';
+import MaskedInput from 'react-text-mask';
+
+class SsnMaskCustom extends React.Component {
+  render() {
+    return (
+      <MaskedInput
+        {...this.props}
+        mask={[ /\d/, /\d/, /\d/, /\d/,  /\d/,  /\d/, '-', /\d/, /\d/, /\d/, /\d/,  /\d/,  /\d/,  /\d/]}
+        placeholderChar={'\u2000'}
+        //showMask
+      />
+    );
+  }
+}
 
 
 class AddBranch extends React.Component{

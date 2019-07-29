@@ -5,6 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
+import CardBox from 'components/CardBox';
 
 
 function Transition(props) {
@@ -51,15 +52,17 @@ class GetNoticeDetail extends React.Component {
           </AppBar>
 
               <br/>
-              <div align="center">
-              <h2><strong>{this.state.notice.noticeTitle}</strong></h2>
+              <div align="left">
+              <h2><strong>&nbsp;&nbsp;{this.state.notice.noticeTitle}</strong></h2>
               </div>
               <br/>
               <div  align="left">
-                  <table>
+                  <table class="table" border="0">
                     <tr>
                         <th>작성자</th>
                         <td>{this.state.notice.employeeName} ({this.state.notice.departCodeName})</td>
+                        <th></th>
+                        <td></td>
                     </tr>
                     <tr>
                       <th>등록일</th>
@@ -67,8 +70,14 @@ class GetNoticeDetail extends React.Component {
                       <th>조회수</th>
                       <td>{this.state.notice.viewCount}</td>
                     </tr>
+                    <tr>
+                      <th></th>
+                      <td></td>
+                      <th></th>
+                      <td></td>
+                    </tr>
                   </table>
-                    {this.state.notice.content}
+                  <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside ><div style={{padding:"50px"}} dangerouslySetInnerHTML={{__html:this.state.notice.content}}/></CardBox>
               </div>
               <Button onClick={this.props.handleRequestClose} aria-label="Close" >닫기</Button>
         </Dialog>
