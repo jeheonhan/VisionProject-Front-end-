@@ -264,6 +264,10 @@ export const GET_SALARY = 'get_salary';
 export const CARRY_SALARY = 'carry_salary';
 export const GET_SALARY_BOOK_LIST = 'get_salary_book_list';
 export const CARRY_SALARY_BOOK_LIST = 'carry_salary_book_list';
+export const GET_ANALYZE_SALARY_BOOK_LIST ='get_analyze_salary_book_list';
+export const CARRY_ANALYZE_SALARY_BOOK_LIST ='carry_analyze_salary_book_list';
+
+
 
 
 
