@@ -68,7 +68,7 @@ class FullScreenDialog extends React.Component {
   }
 
   onConfirm = () => {
-    const employeeNo = "1001"//localStorage.getItem("user").employeeNo !==undefined ? localStorage.getItem("user").employeeNo : "1001"
+    const employeeNo = JSON.parse(localStorage.getItem("user")).employeeNo;
     const approvalOrReturn = this.state.text==="승인" ? "approval" : "return";
     const _url = this.state.approvalDetail.approvalNo+"/"+employeeNo+"/"+approvalOrReturn
     this.props.modifyApprovalStatus(_url, employeeNo);

@@ -39,6 +39,8 @@ import {
     CARRY_SALARY,
     GET_SALARY_BOOK_LIST,
     CARRY_SALARY_BOOK_LIST,
+    GET_ANALYZE_SALARY_BOOK_LIST,
+    CARRY_ANALYZE_SALARY_BOOK_LIST,
 } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
@@ -316,6 +318,20 @@ export const getSalaryBookList = (search) => {
 export const carrySalaryBookList = (data) => {
     return{
         type: CARRY_SALARY_BOOK_LIST,
+        payload: data
+    }
+}
+
+export const getAnalyzeSalaryBookList = (salaryDate) => {
+    return{
+        type: GET_ANALYZE_SALARY_BOOK_LIST,
+        payload: salaryDate
+    }
+}
+
+export const carryAnalyzeSalaryBookList = (data) => {
+    return{
+        type: CARRY_ANALYZE_SALARY_BOOK_LIST,
         payload: data
     }
 }

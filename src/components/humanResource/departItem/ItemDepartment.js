@@ -10,7 +10,7 @@ export default function ItemDepartment(props){
   }
 
   return(
-    <div className={`${styleName}`} >
+    <div className={`${styleName}`}  style={{maxHeight:"480px", minHeight:"480px"}}>
         <div className={values.departUsageStatusCodeNo == '01' ? `${headerStyle}`:"package-header bg-grey lighten-1 text-white"}>
           <span className="price">{values.departCodeName}</span>
           <h4 className="letter-spacing-base text-uppercase mb-0">department</h4>

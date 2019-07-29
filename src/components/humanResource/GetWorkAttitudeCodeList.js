@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getWorkAttitudeList } from 'actions';
+import { getWorkAttitudeList, convertWorkAttitudeCodeUseStatus } from 'actions/index';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Table from '@material-ui/core/Table';
@@ -16,10 +16,9 @@ import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Note';
+import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconMailOutline from '@material-ui/icons/MailOutline';
-import ComposeMail from 'components/mail/ComposeMail';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 
 
@@ -112,8 +111,8 @@ let EnhancedTableToolbar = props => {
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
+          <Tooltip title="삭제">
+            <IconButton aria-label="삭제" onClick={props.handleOpenDeleteWorkAttitude}>
               <DeleteIcon/>
             </IconButton>
           </Tooltip>
@@ -200,6 +199,30 @@ class EnhancedTable extends React.Component {
   }
 
 
+   //근태 삭제 Confirm 열기
+   handleOpenDeleteWorkAttitude = () => {
+    this.setState({
+      deleteConfirmShow:true
+    })
+  }
+
+  //근태 삭제 Confirm 확인
+  onConfirmDelete = () => {
+    this.props.convertWorkAttitudeCodeUseStatus(this.state.selected)
+    this.setState({
+      deleteConfirmShow:false,
+      selected:[]
+    })
+  }
+
+  //근태 삭제 Confirm 취소
+  onCancelDelete = () => {
+    this.setState({
+      deleteConfirmShow:false
+    })
+  }
+
+
   constructor(props, context) {
     super(props, context);
 
@@ -213,7 +236,8 @@ class EnhancedTable extends React.Component {
       rowsPerPage: 10,
       search:{searchKeyword:null},
       flag: false,
-      composeMail:false
+      composeMail:false,
+      deleteConfirmShow:false
     };
   }
 
@@ -230,7 +254,9 @@ class EnhancedTable extends React.Component {
 
     return (
       <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+        <EnhancedTableToolbar 
+            numSelected={selected.length}
+            handleOpenDeleteWorkAttitude={this.handleOpenDeleteWorkAttitude}/>
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -246,21 +272,20 @@ class EnhancedTable extends React.Component {
                 
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                  console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
-                  const isSelected = this.isSelected(page*rowsPerPage+index);
+                  const isSelected = this.isSelected(row.workAttitudeCodeNo);
                   return (
                     <TableRow
                       hover
-                      onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
+                      onKeyDown={event => this.handleKeyDown(event, row.workAttitudeCodeNo)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
-                      key={page*rowsPerPage+index}
+                      key={row.workAttitudeCodeNo}
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox color="primary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
+                                  onClick={event => this.handleClick(event, row.workAttitudeCodeNo)}/>
                       </TableCell>
                       <TableCell align="left" >
                         <span style={{cursor:'pointer'}}
@@ -293,6 +318,16 @@ class EnhancedTable extends React.Component {
             </Table>
           </div>
         </div>
+        <SweetAlert show={this.state.deleteConfirmShow}
+                    warning
+                    showCancel
+                    confirmBtnText={"Yes"}
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title={"해당 근태코드를 삭제하시겠습니까?"}
+                    onConfirm={this.onConfirmDelete}
+                    onCancel={this.onCancelDelete}
+        ></SweetAlert>
       </div>
     );
   }
@@ -302,4 +337,4 @@ const mapStateToProps = ({ humanResource }) => {
   return { workAttitudeCodeList };
 }
 
-export default connect(mapStateToProps, { getWorkAttitudeList })(EnhancedTable);
+export default connect(mapStateToProps, { getWorkAttitudeList, convertWorkAttitudeCodeUseStatus })(EnhancedTable);

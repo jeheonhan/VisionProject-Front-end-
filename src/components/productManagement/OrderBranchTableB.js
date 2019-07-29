@@ -11,20 +11,24 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { getApprovalFormList, deleteApprovalForm } from 'actions/Approval'
+import { modifyOrderBranchStatus } from 'actions/index'
 import Tooltip from '@material-ui/core/Tooltip';
 import { connect } from 'react-redux';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import ApprovalFormDetail from 'components/approvalForm/ApprovalFormDetail'
+import ProductionManagement from 'reducers/ProductionManagement';
+import { RemoveShoppingCart } from '@material-ui/icons'
+import OrderBranchDetail from 'components/productManagement/OrderBranchDetail'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
   
-  {id: 'approvalFormNo', align: true, disablePadding: false, label: '결재양식번호'},
-  {id: 'approvalFormTitle', align: true, disablePadding: false, label: '결재양식명'},
-  {id: 'registrantEmployeeName', align: false, disablePadding: false, label: '등록자'},
-  {id: 'useCount', align: false, disablePadding: false, label: '누적사용횟수'},
+  {id: 'orderFromBranchNo', align: true, disablePadding: false, label: '주문번호'},
+  {id: 'orderDate', align: true, disablePadding: false, label: '주문일자'},
+  {id: 'orderFromBranchTotalAmount', align: false, disablePadding: false, label: '주문총금액'},
+  {id: 'orderFromBranchStatusCodeName', align: false, disablePadding: false, label: '주문서상태'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -71,7 +75,7 @@ class EnhancedTableHead extends React.Component {
               </TableCell>
             );
           }, this)}
-          <TableCell>삭제</TableCell>
+          <TableCell></TableCell>
         </TableRow>
       </TableHead>
     );
@@ -91,7 +95,7 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">결재양식 목록조회</Typography>
+          <Typography variant="title">주문서목록조회</Typography>
         )}
       </div>
       <div className="spacer"/>
@@ -161,27 +165,47 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  //휴지통 클릭 시 삭제
-  handleDelete = (event, row) => {
+  //카트 클릭 시 삭제 알러트 띄우기
+  onCancelOrderAlert = (event, _row) => {
     event.preventDefault();
-    const data = {approvalFormNo:row.approvalFormNo, approvalFormUsageStatusCodeNo:"02"}
-    if(window.confirm("선택한 결재양식을 삭제하시겠습니까?")){
-      this.props.deleteApprovalForm(data);
-    }
+    this.setState({
+      row:_row,
+      warning:true,
+    })
+  }
+
+  warningOk = () => {
+    this.setState({
+        warning:false
+    })
+    this.handleCancelOrder()
+}
+onCancel = () => {
+  this.setState({
+      warning:false
+  })
+}
+
+  //카트 클릭 시 삭제
+  handleCancelOrder = (event, row) => {
+    const statusCode = "04"
+    let data = this.state.row;
+    data.orderFromBranchStatusCodeNo=statusCode;
+    this.props.modifyOrderBranchStatus(data);
   }
 
 
-  //결재양식번호 클릭 시 상세조회 띄우기
-  handleClickApprovalFormNo = (event, row) => {
+  //주문번호 클릭 시 상세조회 띄우기
+  handleClickNo = (event, row) => {
     event.preventDefault();
     this.setState({
       ...this.state,
       open: true,
-      targetForm: row
+      targetOB: row
     })
   }
 
-  //결재양식상세창 닫기
+  //주문상세창 닫기
   handleClose = (event) => {
     this.setState({
       ...this.state,
@@ -197,31 +221,49 @@ class EnhancedTable extends React.Component {
       orderBy: 'codeNo',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.approvalFormList,
+      data: this.props.orderBranchList,
       page: 0,
       rowsPerPage: 10,
-      targetForm :{
-        approvalFormNo : "",
-        approvalFormTitle : "",
-        approvalForm : "",
-        registrantEmployeeName:"",
-        registrantEmployeeNo:"",
-      }
+      warning:false,
+      targetOB :{
+        statementNo:null
+        ,orderFromBranchNo:null
+        ,orderFromBranchStatusCodeNo:null
+        ,orderFromBranchStatusCodeName:null
+        ,orderFromBranchTotalAmount:""
+        ,branchName:""
+        ,branchNo:""
+        ,orderDate:""
+        ,accountNo:""
+        ,orderFromBranchProductList:[
+             {
+             numbering:null
+             ,productNo:""
+             ,productName:null
+             ,price:""
+             ,orderFromBranchProductStatusCodeNo:null
+             ,orderFromBranchProductStatusCodeName:null
+             ,orderFromBranchNo:null
+             ,orderFromBranchProductQuantity:""
+             ,orderFromBranchProductAmount:""
+             }
+           ]
+     }
     };
   }
 
   render() {
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
-    const { approvalFormList } = this.props;
+    const { orderBranchList } = this.props;
 
-    if(approvalFormList !== this.state.data){
-      this.setState({data:approvalFormList})
+    if(orderBranchList !== this.state.data){
+      this.setState({data:orderBranchList})
     }
 
     return (
-      <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+      <div className="jr-card">
+        {/* <EnhancedTableToolbar numSelected={selected.length}/> */}
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -239,6 +281,36 @@ class EnhancedTable extends React.Component {
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
+                  if(row.orderFromBranchStatusCodeName==='주문대기'){
+                    return (
+                    <TableRow
+                      hover
+                      onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
+                      role="checkbox"
+                      aria-checked={isSelected}
+                      tabIndex={-1}
+                      key={page*rowsPerPage+index}
+                      selected={isSelected}
+                    >
+                      
+                      <TableCell align="left" >
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickNo(event, row)}>
+                          {row.orderFromBranchNo}
+                        </span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickNo(event, row)}>
+                          {row.orderDate}
+                        </span>
+                      </TableCell>
+                      <TableCell align="left" >{row.orderFromBranchTotalAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
+                      <TableCell align="left"  size="small" >{row.orderFromBranchStatusCodeName}</TableCell>
+                        <TableCell align="left" padding="checkbox"><span style={{cursor:'pointer'}}  onClick={(event) => this.onCancelOrderAlert(event, row)}>
+                      <RemoveShoppingCart/>
+                        </span></TableCell>
+                    </TableRow>
+                  );
+                  }
                   return (
                     <TableRow
                       hover
@@ -251,18 +323,14 @@ class EnhancedTable extends React.Component {
                     >
                       
                       <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
-                          {row.approvalFormNo}
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickNo(event, row)}>
+                          {row.orderFromBranchNo}
                         </span>
                       </TableCell>
-                      <TableCell align="left">
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
-                          {row.approvalFormTitle}
-                        </span>
-                      </TableCell>
-                      <TableCell align="left" >{row.registrantEmployeeName}</TableCell>
-                      <TableCell align="left" >{row.useCount}</TableCell>
-                      <TableCell><DeleteOutlinedIcon onClick={event => this.handleDelete(event, row)}/></TableCell>
+                      <TableCell align="left">{row.orderDate}</TableCell>
+                      <TableCell align="left" >{row.orderFromBranchTotalAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
+                      <TableCell align="left"  size="small" >{row.orderFromBranchStatusCodeName}</TableCell>
+                      <TableCell align="left" padding="checkbox"  ></TableCell>
                     </TableRow>
                   );
                 })}
@@ -281,18 +349,30 @@ class EnhancedTable extends React.Component {
             </Table>
           </div>
         </div>
-        <ApprovalFormDetail 
-          targetForm = {this.state.targetForm} 
-          open={this.state.open} 
-          handleClose={this.handleClose}/>
+        <OrderBranchDetail targetOB={this.state.targetOB} 
+                            open={this.state.open} 
+                            handleClose={this.handleClose}/>
+        <SweetAlert show={this.state.warning}
+                    warning
+                    showCancel
+                    confirmBtnText="네, 취소합니다"
+                    cancelBtnText="나가기"
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title="주문취소 요청이 본사로 전달됩니다."
+                    onConfirm={this.warningOk}
+                    onCancel={this.onCancel}
+            >
+                주문을 취소하시겠습니까?
+            </SweetAlert>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ approval }) => {
-    const { approvalFormList } = approval;
-    return { approvalFormList }
+const mapStateToProps = ({ productionManagement }) => {
+    const { orderBranchList } = productionManagement;
+    return { orderBranchList }
 }
 
-export default connect(mapStateToProps, {getApprovalFormList, deleteApprovalForm})(EnhancedTable);
+export default connect(mapStateToProps, {modifyOrderBranchStatus})(EnhancedTable);

@@ -21,32 +21,13 @@ class FullScreenDialog extends React.Component {
 
     constructor(props){
         super(props);
-        const employeeNo = localStorage.getItem("user").employeeNo!==undefined ? localStorage.getItem("user").employeeNo : "1001"
-        const employeeName = localStorage.getItem("user").employeeName!==undefined ? localStorage.getItem("user").employeeName : "안채은"
         this.state = {
             ...this.state,
             approvalFormTitle : "",
             approvalForm : "",
-            registrantEmployeeName: employeeName,
-            registrantEmployeeNo : employeeNo
         }
     }
 
-
-
-  handleTitle = (event) => {
-      this.setState({
-        ...this.state,
-        approvalFormTitle : event.target.value
-      })
-  }
-
-  handleForm = (event) => {
-      this.setState({
-          ...this.state,
-          approvalForm : event.editor.getData()
-      })
-  }
 
   handleAddApproval = (event, _formNo) => {
     event.preventDefault();

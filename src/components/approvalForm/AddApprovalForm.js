@@ -21,14 +21,11 @@ class FullScreenDialog extends React.Component {
 
     constructor(props){
         super(props);
-        const employeeNo = localStorage.getItem("user").employeeNo!==undefined ? localStorage.getItem("user").employeeNo : "1001"
-        const employeeName = localStorage.getItem("user").employeeName!==undefined ? localStorage.getItem("user").employeeName : "안채은"
         this.state = {
-            ...this.state,
             approvalFormTitle : "",
             approvalForm : "",
-            registrantEmployeeName: employeeName,
-            registrantEmployeeNo : employeeNo
+            registrantEmployeeName: JSON.parse(localStorage.getItem("user")).employeeName,
+            registrantEmployeeNo : JSON.parse(localStorage.getItem("user")).employeeNo
         }
     }
 
@@ -59,14 +56,10 @@ class FullScreenDialog extends React.Component {
     this.handleRequestClose();
   }
   handleRequestClose = () => {
-    const employeeNo = localStorage.getItem("user").employeeNo!==undefined ? localStorage.getItem("user").employeeNo : "1001"
-    const employeeName = localStorage.getItem("user").employeeName!==undefined ? localStorage.getItem("user").employeeName : "안채은"
     this.setState({
       open: false,
       approvalFormTitle : "",
       approvalForm : "",
-      registrantEmployeeName: employeeName,
-      registrantEmployeeNo : employeeNo
     });
   };
 
