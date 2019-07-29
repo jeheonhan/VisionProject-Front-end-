@@ -29,6 +29,7 @@ import {
     CARRY_DUPLICATE_SALARYDATE,
     CARRY_SALARY,
     CARRY_SALARY_BOOK_LIST,
+    CARRY_ANALYZE_SALARY_BOOK_LIST,
 } from'../actionTypes/ActionTypes';
 
 const INIT_STATE = {
@@ -232,6 +233,13 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 salaryBookList: action.payload
+            }
+        }
+
+        case CARRY_ANALYZE_SALARY_BOOK_LIST : {
+            return{
+                ...state,
+                analyzeSalaryBookList: action.payload
             }
         }
 

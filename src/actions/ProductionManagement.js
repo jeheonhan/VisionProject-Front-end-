@@ -2,7 +2,7 @@ import {
     GET_PRODUCT_LIST , CARRY_PRODUCT_LIST , CARRY_ORDER_TO_VENDOR_LIST ,
     GET_ORDER_TO_VENDOR_LIST ,ADD_PRODUCT , GET_INFO_ACCOUNT ,
     CARRY_INFO_ACCOUNT , GET_ORDER_TO_VENDOR_DETAIL_LIST , CARRY_ORDER_TO_VENDOR_DETAIL_LIST ,
-    UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH
+    UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH, CARRY_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, CARRY_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS
 } from '../actionTypes/ActionTypes';
 
 
@@ -85,5 +85,26 @@ export const addOrderBranch = (data) => {
     return{
         type:ADD_ORDER_BRANCH,
         payload : data
+    }
+}
+
+export const getOrderBranchList = (data) => {
+    return{
+        type:GET_ORDER_BRANCH_LIST,
+        payload: data
+    }
+}
+
+export const carryOrderBranchList = (data) => {
+    return{
+        type:CARRY_ORDER_BRANCH_LIST,
+        payload:data
+    }
+}
+
+export const modifyOrderBranchStatus = (data) => {
+    return{
+        type:MODIFY_ORDER_BRANCH_STATUS,
+        payload:data
     }
 }

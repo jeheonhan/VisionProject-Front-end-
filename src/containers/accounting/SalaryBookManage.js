@@ -1,38 +1,168 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { getAnalyzeSalaryBookList } from "actions/index";
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-const SalaryBookManage = ({styleName, salaryBook}) => {
+import PropTypes from 'prop-types';
+import {Pie, PieChart, ResponsiveContainer, Tooltip} from 'recharts';
 
-  const {salaryDate, salaryBookName, totalSalary} = salaryBook;
-  return (
-    <div className={`timeline-item ${styleName}`}>
-      <div className="timeline-badge timeline-img">
-        {styleName.includes("timeline-inverted") ?
-          <img className="size-60" src={require("assets/images/pentagon.png")} alt="Pentagon" title="Pentagon"/> :
-          <img className="size-60" src={require("assets/images/pentagon.png")} alt="Pentagon" title="Pentagon"/>}
-      </div>
 
-      <div className="timeline-panel ">
-        <div className="timeline-panel-scroll">
-          <div className="timeline-panel-header">
+class SalaryBookManage extends React.Component{
 
-            <div className="timeline-header-img timeline-left">
-              <img className="size-60 rounded-circle" src={require("assets/images/favicon-32x32.png")} alt="Pentagon" title="Pentagon"/>
+  constructor(props){
+    super(props);
+    this.state = {
+      analizeOpen : false
+    }
+  }
+
+  //급여대장 분석창 열기
+  analizeDialogOpen = () => {
+    this.setState({
+      analizeOpen : true
+    })
+  }
+
+  //급여대장 분석창 닫기
+  analizeDialogClose = () => {
+    this.setState({
+      analizeOpen : false
+    })
+  }
+
+  //급여대장 분석창 클릭시 이벤트
+  analize(event, getSalaryDate){
+    event.preventDefault();
+    var findText = getSalaryDate.indexOf("/");
+    var pureSalaryDate = getSalaryDate.substring(0,findText) + getSalaryDate.substring(findText+1, getSalaryDate.length);
+    this.props.getAnalyzeSalaryBookList(pureSalaryDate);
+    this.analizeDialogOpen();
+  }
+  
+  render(){
+
+  //급여대장 분석창 Tooltip
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent, index}) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  
+    return (
+      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
+  const { styleName, salaryBook } = this.props;
+  const {salaryDate, salaryBookName, totalSalary, totalEmpolyeeNumber, totalRegularWorkTime, totalExtendWorkTime, avgWage } = salaryBook;
+  
+  let reviseDepartSalary = [];
+  let reviseRankSalary = [];
+
+  if(this.props.analyzeSalaryBookList !== undefined){
+    this.props.analyzeSalaryBookList[0].map((data) => {
+      reviseDepartSalary.push({name: data.departCodeName, value:Number(data.totalSalary)})
+    })
+  }
+
+  if(this.props.analyzeSalaryBookList !== undefined){
+    this.props.analyzeSalaryBookList[1].map((data) => {
+      reviseRankSalary.push({name: data.rankCodeName, value:Number(data.totalSalary)})
+    })
+  }
+  
+    return (
+
+      <div className={`timeline-item ${styleName}`}>
+        <div className="timeline-badge timeline-img">
+            <span onClick={ event => this.analize(event, salaryDate) } style={{cursor:'pointer'}}>
+              <img className="size-60" src={require("assets/images/pentagon_1.png")} alt="Pentagon" title="Pentagon"/>
+            </span>
+        </div>
+
+        <div className="timeline-panel">
+          <div className="timeline-panel-scroll">
+
+            <div className="timeline-panel-header">
+              <div className="timeline-header-img timeline-left">
+                  <img className="size-60 rounded-circle" src={require("assets/images/visionLogoSecond.png")} alt="Pentagon" title="Pentagon"/>
+              </div>
+              <div className="timeline-heading">
+                <h5>{salaryDate}</h5>
+                <h3 className="timeline-title">{salaryBookName}</h3>
+              </div>
             </div>
-            <div className="timeline-heading">
-              <h5>{salaryDate}</h5>
-              <h3 className="timeline-title">{salaryBookName}</h3>
+            {/* end of header */}
+            <div className="timeline-body">
+              <span className="timeline-left" style={{paddingLeft:"200"}}>
+                <div>
+                  <p className="card-text">직원수 : {totalEmpolyeeNumber} 명 </p>
+                </div>
+                <div>
+                  <p className="card-text">평균 시급 : {avgWage} 원 </p>
+                </div>
+              </span>
+              <span>
+                <div>
+                  <p className="card-text">총 소정근로시간(분) : {totalRegularWorkTime} 분 </p>
+                </div>
+                <div>
+                  <p className="card-text">총 연장근로시간(분) : {totalExtendWorkTime} 분 </p>
+                </div>
+                <p/>
+              </span>
+              <div>
+                <p className="card-text">총 급여지출 : {totalSalary} 원 </p>
+              </div>
             </div>
-          </div>
-          <div className="timeline-body">
-            <p className="card-text">{totalSalary} </p>
-            <p className="card-text">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
-            <p className="card-text">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
-            <p className="card-text">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            {/* end of body */}
           </div>
         </div>
+        {/* end of timeline panel */}
+
+      <Dialog open={this.state.analizeOpen} onClose={this.analizeDialogClose}>
+        <DialogTitle>
+          {salaryBookName} 분석
+        </DialogTitle>
+        <DialogContent style={{maxWidth:"400px", minWidth:"400px", maxHeight:"350px", minHeight:"350px"}}>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie data={reviseDepartSalary} 
+                   outerRadius={60} 
+                   fill="#3367d6"
+                   labelLine={false}
+                   label={renderCustomizedLabel}
+              />
+              <Pie data={reviseRankSalary} 
+                   innerRadius={70} 
+                   outerRadius={90} 
+                   fill="#ffc658"
+                   label
+              />
+              <Tooltip/>
+            </PieChart>
+          </ResponsiveContainer>
+        </DialogContent>
+        
+      </Dialog>
       </div>
-    </div>
-  )
+      
+
+    )
+  }
 };
 
-export default SalaryBookManage;
+SalaryBookManage.propTypes = {
+  dataKey: PropTypes.node,
+};
+
+const mapStateToProps = ({ accounting }) => {
+  const { analyzeSalaryBookList } = accounting;
+  return { analyzeSalaryBookList }
+}
+
+export default connect(mapStateToProps, { getAnalyzeSalaryBookList })(SalaryBookManage);

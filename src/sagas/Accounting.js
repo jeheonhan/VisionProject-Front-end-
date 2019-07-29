@@ -22,6 +22,7 @@ import {
     getSalaryList,
     carrySalary,
     carrySalaryBookList,
+    carryAnalyzeSalaryBookList,
 } from 'actions/index';
 import { 
     GET_VENDOR_LIST, 
@@ -49,6 +50,7 @@ import {
     UPDATE_SALARY,
     GET_SALARY,
     GET_SALARY_BOOK_LIST,
+    GET_ANALYZE_SALARY_BOOK_LIST,
 } from "actionTypes/ActionTypes";
 
 const getVendorListRequest = async (search) => {
@@ -266,6 +268,15 @@ const getSalaryBookListRequest = async (search) => {
     .catch(response => console.log(response));
 }
 
+const getAnalyzeSalaryBookRequest = async (salaryDate) =>{
+    return await axios({
+        method:"GET",
+        url:"/accounting/getAnalyzeSalaryBook/"+salaryDate
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
 //여기서 payload는 search 도메인을 의미한다.
 function* getVendorListFn({payload}){
     const VendorList = yield call(getVendorListRequest, payload);
@@ -395,6 +406,11 @@ function* getSalaryBookListFn({payload}){
     yield put(carrySalaryBookList(salaryBookList));
 }
 
+function* getAnalyzeSalaryBookFn({payload}){
+    const analyzeSalaryBookList = yield call(getAnalyzeSalaryBookRequest, payload);
+    yield put(carryAnalyzeSalaryBookList(analyzeSalaryBookList));
+}
+
 export function* getVendorListSaga(){
     yield takeEvery(GET_VENDOR_LIST, getVendorListFn);
 }
@@ -495,6 +511,9 @@ export function* getSalaryBookListSaga(){
     yield takeEvery(GET_SALARY_BOOK_LIST, getSalaryBookListFn);
 }
 
+export function* getAnalyzeSalaryBookSaga(){
+    yield takeEvery(GET_ANALYZE_SALARY_BOOK_LIST, getAnalyzeSalaryBookFn);
+}
 
 export default function* rootSaga(){
     yield all([
@@ -523,5 +542,6 @@ export default function* rootSaga(){
         fork(updateSalarySaga),
         fork(getSalarySaga),
         fork(getSalaryBookListSaga),
+        fork(getAnalyzeSalaryBookSaga),
     ]);
 }

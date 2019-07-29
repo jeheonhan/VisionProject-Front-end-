@@ -18,7 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { checkedApointmentRowData } from 'actions/index';
+import { checkedApointmentRowData, updateAppointStatus } from 'actions/index';
 
 let counter = 0;
 
@@ -217,6 +217,21 @@ class EnhancedTable extends React.Component {
     this.props.handleSimpleHRCardOpen();
   }
 
+  //발령상태 변경
+  handleClickAppointStatus = (event, rowData) => {
+    event.preventDefault();
+    
+    if(rowData.appointmentStatusCodeNo == '01'){
+      console.log(rowData)
+      this.props.updateAppointStatus(Object.assign({},rowData,{appointmentStatusCodeNo:'02'}))
+    }else if(rowData.appointmentStatusCodeNo == '02'){
+      alert("이미 확정된 상태는 변경할 수 없습니다.")
+    }
+    else if(rowData.appointmentStatusCodeNo == '03'){
+      alert("이미 취소된 상태는 변경할 수 없습니다.")
+    }
+  }
+
   constructor(props, context) {
     super(props, context);
 
@@ -296,7 +311,9 @@ class EnhancedTable extends React.Component {
                       <TableCell align="left">{row.preRankCodeName}</TableCell>
                       <TableCell align="left">{row.appointRankCodeName}</TableCell>
                       <TableCell align="left">{row.reference}</TableCell>
-                      <TableCell align="left">{row.appointmentStatusCodeName}</TableCell>
+                      <TableCell align="left" style={{cursor:'pointer'}} onClick={event => {this.handleClickAppointStatus(event,row)}}>
+                        {row.appointmentStatusCodeName}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -325,4 +342,4 @@ const mapStateToProps = ({ humanResource }) => {
   return { appointList }
 }
 
-export default connect(mapStateToProps,{ getAppointList, checkedApointmentRowData })(EnhancedTable);
+export default connect(mapStateToProps,{ getAppointList, checkedApointmentRowData, updateAppointStatus })(EnhancedTable);

@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { getWorkAttitudeList
-        ,checkedWorkAttitude } from 'actions';
+        ,checkedWorkAttitude
+        ,getSimpleHRCardByEmployeeNo
+        ,convertWorkAttitudeUseStatus } from 'actions';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Table from '@material-ui/core/Table';
@@ -17,8 +19,10 @@ import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Note';
+import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import SimpleHRCard from 'components/humanResource/SimpleHRCard';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 
 
@@ -111,8 +115,8 @@ let EnhancedTableToolbar = props => {
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
+          <Tooltip title="삭제">
+            <IconButton aria-label="삭제" onClick={props.handleDeleteWorkAttitude}>
               <DeleteIcon/>
             </IconButton>
           </Tooltip>
@@ -199,6 +203,51 @@ class EnhancedTable extends React.Component {
     this.props.handleModifyOpen();
   }
 
+  //사원번호 클릭시 사원 프로필 보기
+  handleClickEmployeeNo = (event, employeeNo) => {
+    event.preventDefault();
+    this.props.getSimpleHRCardByEmployeeNo(employeeNo);
+    this.handleSimpleHRCardOpen();
+  }
+
+  //사원 프로필 화면 열기
+  handleSimpleHRCardOpen = () => {
+    this.setState({
+      simpleCardOpen:true
+    })
+  }
+
+  //사원 프로필 화면 닫기
+  handleSimpleHRCardClose = () => {
+    this.setState({
+      simpleCardOpen:false
+    })
+  }
+
+  //근태 삭제 Confirm 열기
+  handleDeleteWorkAttitude = () => {
+    this.setState({
+      deleteConfirmShow:true
+    })
+    //this.props.convertWorkAttitudeUseStatus(this.state.selected);
+  }
+
+  //근태 삭제 Confirm 확인
+  onConfirmDelete = () => {
+    this.props.convertWorkAttitudeUseStatus(this.state.selected);
+    this.setState({
+      deleteConfirmShow:false,
+      selected:[]
+    })
+  }
+
+  //근태 삭제 Confirm 취소
+  onCancelDelete = () => {
+    this.setState({
+      deleteConfirmShow:false
+    })
+  }
+
 
   constructor(props, context) {
     super(props, context);
@@ -213,11 +262,14 @@ class EnhancedTable extends React.Component {
       rowsPerPage: 10,
       search:{searchKeyword:null},
       flag: false,
-      composeMail:false
+      composeMail:false,
+      simpleCardOpen:false,
+      deleteConfirmShow:false
     };
   }
 
   render() {
+    console.log(this.state.selected);
    
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
@@ -230,7 +282,10 @@ class EnhancedTable extends React.Component {
 
     return (
       <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+        <EnhancedTableToolbar
+         numSelected={selected.length}
+         handleDeleteWorkAttitude={this.handleDeleteWorkAttitude}
+        />
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -246,29 +301,37 @@ class EnhancedTable extends React.Component {
                 
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                  console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
-                  const isSelected = this.isSelected(page*rowsPerPage+index);
+                  // const isSelected = this.isSelected(page*rowsPerPage+index);
+                  const isSelected = this.isSelected(row.workAttitudeNo);
                   return (
                     <TableRow
                       hover
-                      onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
+                      //onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
+                      onKeyDown={event => this.handleKeyDown(event, row.workAttitudeNo)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
-                      key={page*rowsPerPage+index}
+                      //key={page*rowsPerPage+index}
+                      key={row.workAttitudeNo}
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox color="primary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
+                                  onClick={event => this.handleClick(event, row.workAttitudeNo)}/>
                       </TableCell>
-                      <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => {this.handleModifyWorkAttitude(event, row)}}>
+                      <TableCell align="left" onClick={event => {this.handleModifyWorkAttitude(event, row)}} style={{cursor:'pointer'}}>
+                        <span  >
                           {row.workAttitudeNo}
                         </span>
                       </TableCell>
-                      <TableCell align="left">{row.employeeNo}</TableCell>
-                      <TableCell align="left">{row.employeeName}</TableCell>
+                      <TableCell align="left">
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickEmployeeNo(event, row.employeeNo)}>
+                          {row.employeeNo}
+                        </span></TableCell>
+                      <TableCell align="left">
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickEmployeeNo(event, row.employeeNo)}>
+                          {row.employeeName}
+                        </span></TableCell>
                       <TableCell align="left">{row.workAttitudeCodeNo}</TableCell>
                       <TableCell align="left">{row.workAttitudeCodeName}</TableCell>
                       <TableCell align="left">{row.workAttitudeTime}</TableCell>
@@ -291,6 +354,17 @@ class EnhancedTable extends React.Component {
             </Table>
           </div>
         </div>
+        <SimpleHRCard open={this.state.simpleCardOpen} handleSimpleHRCardClose={this.handleSimpleHRCardClose}/>
+        <SweetAlert show={this.state.deleteConfirmShow}
+                    warning
+                    showCancel
+                    confirmBtnText={"Yes"}
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title={"해당 근태정보를 삭제하시겠습니까?"}
+                    onConfirm={this.onConfirmDelete}
+                    onCancel={this.onCancelDelete}
+        ></SweetAlert>
       </div>
     );
   }
@@ -300,4 +374,4 @@ const mapStateToProps = ({ humanResource }) => {
   return { workAttitudeList };
 }
 
-export default connect(mapStateToProps, { getWorkAttitudeList, checkedWorkAttitude })(EnhancedTable);
+export default connect(mapStateToProps, { getWorkAttitudeList, checkedWorkAttitude, getSimpleHRCardByEmployeeNo, convertWorkAttitudeUseStatus })(EnhancedTable);

@@ -28,7 +28,40 @@ import { GET_HRCARD_LIST,
          UPDATE_WORK_ATTITUDE, 
          UPDATE_WORK_ATTITUDE_CODE,
          GET_HRCARD_DETAIL,
-         UPDATE_HRCARD,} from "actionTypes/ActionTypes";
+         UPDATE_HRCARD,
+         UPDATE_APPOINT_STATUS,
+         CONVERT_WORKATTITUDE_USE_STATUS,
+         CONVERT_WORKATTITUDE_CODE_USE_STATUS} from "actionTypes/ActionTypes";
+
+const convertWorkAttitudeCodeUseStatusRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/convertWorkAttitudeCodeUsageStatus",
+        data: _data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
+
+const convertWorkAttitudeUseStatusRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/convertWorkAttitudeUsageStatus",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
+
+const updateAppointStatusRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/modifyAppointmentStatus",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
 
 const updateHRCardRequest = async (_data) => {
     await axios({
@@ -198,6 +231,21 @@ const getAppointListRequest = async (search) => {
     .catch(error => console.log(error));
 }
 
+function* convertWorkAttitudeCodeUseStatusFn({payload}){
+    yield call(convertWorkAttitudeCodeUseStatusRequest, payload);
+    yield put(getWorkAttitudeCodeList({searchKeyword:null}));
+}
+
+function* convertWorkAttitudeUseStatusFn({payload}){
+    yield call(convertWorkAttitudeUseStatusRequest, payload);
+    yield put(getWorkAttitudeList({searchKeyword:null}));
+}
+
+function* updateAppointStatusFn({payload}){
+    yield call(updateAppointStatusRequest, payload);
+    yield put(getAppointList({searchKeyword:null}));
+}
+
 function* updateHRCardFn({payload}){
     yield call(updateHRCardRequest, payload);
     yield put(getHRCardList({searchKeyword:null}));
@@ -282,6 +330,18 @@ function* getAppointListFn({payload}){
     console.log(payload);
     const appointList = yield call(getAppointListRequest, payload);
     yield put(carryAppointList(appointList));
+}
+
+export function* convertWorkAttitudeCodeSaga(){
+    yield takeEvery(CONVERT_WORKATTITUDE_CODE_USE_STATUS, convertWorkAttitudeCodeUseStatusFn);
+}
+
+export function* convertWorkAttitudeUseStatusSaga(){
+    yield takeEvery(CONVERT_WORKATTITUDE_USE_STATUS, convertWorkAttitudeUseStatusFn);
+}
+
+export function* updateAppointStatusSaga(){
+    yield takeEvery(UPDATE_APPOINT_STATUS, updateAppointStatusFn);
 }
 
 export function* updateHRCardSaga(){
@@ -370,5 +430,8 @@ export default function* rootSaga(){
             fork(updateWorkAttitudeSaga),
             fork(updateWorkAttitudeCodeSaga),
             fork(getHRCardDetailSaga),
-            fork(updateHRCardSaga)]);
+            fork(updateHRCardSaga),
+            fork(updateAppointStatusSaga),
+            fork(convertWorkAttitudeUseStatusSaga),
+            fork(convertWorkAttitudeCodeSaga)]);
 }

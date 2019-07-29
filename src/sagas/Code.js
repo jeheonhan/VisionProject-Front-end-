@@ -114,12 +114,10 @@ function* convertCodeUsage(action){
 }
 
 export function* getCodeListSaga(){
-    //console.log("/sagas/Code.js getCodeListSaga() 실행☆")
     yield takeEvery(GET_CODE_LIST, getCodeList);
 }
 
 export function* getGroupCodeListSaga(){
-    //console.log("/sagas/Code.js getGroupCodeListSaga() 실행");
     yield takeEvery(GET_GROUP_CODE_LIST, getGroupCodeList);
 }
 

@@ -65,10 +65,13 @@ class AddVendor extends React.Component {
           <p/>
             
           <div align="center">  
-            <CardBox styleName="col-lg-4" heading="거래처 등록">
+            <div>
+              <img className="size-60" src={require("assets/images/VisionLogo.png")}/>
+            </div>
+            <CardBox styleName="col-lg-6">
               <AddTextFields 
-                bankCodeList={ bankList } 
-                vendorCodeList={ vendorList } 
+                bankList={ bankList && bankList } 
+                vendorList={ vendorList && vendorList } 
                 handleRequestClose={this.handleRequestClose }
                 addVendor={this.props.addVendor }/>
             </CardBox>
@@ -92,8 +95,15 @@ function AddTextFields(props) {
   
   //const 선언시에는 []가 필요하지만, 값을 대입할때는 다 받기때문에 안써도 무방하다.
   //const는 뒤에 오는 값을 알아서 판별해서 대입하기 때문에 다 받을 수 있다.
-  const vendorList = props.vendorCodeList;
-  const bankList = props.bankCodeList;
+  const { vendorList, bankList } = props;
+
+  //DOM 객체에 접근하여 특정 컴포넌트 정보를 얻어오는 것이 ref. class 컴포넌트와 함수 컴포넌트에 따라
+  //사용방법이 다르다. 함수 컴포넌트에는 useRef를 선언하며 변수명을 특정 컴포넌트에 부여하여 사용한다.
+  // <div style={{display:"none"}}>
+  //   <GetPostCode getPostcode={props.handleAddress} ref={post}></GetPostCode>
+  // </div>
+  const post = React.useRef();
+
   
   //Hook이란 특별한 함수, useState는 Hook 중 하나인데 state를 함수 컴포넌트에서 사용할 수 있게 해준다.
   //Hook은 함수 컴포넌트에서 React의 특징을 갖게 해주는 함수. Hook은 항상 use라는 키워드로 시작
@@ -133,6 +143,11 @@ function AddTextFields(props) {
     console.log(values);
   };
 
+  //우편번호 창 열기 [ref로 자식 컴포넌트 직접 접근하여 자식컴포넌트의 function을 사용]
+  const handlePostOpen = () => {
+    post.current.handleClickOpen();
+  }
+
   const handlePostcode = (zipCode, address) => {
     setValues({
       ...values,
@@ -148,7 +163,20 @@ function AddTextFields(props) {
 
     return (
       <form className="row" noValidate autoComplete="off">
-        <div className="col-md-12 col-12">
+        <div  className="col-md-12 col-6">
+          <br/>
+            <Typography align="left" variant="h6" color="textPrimary" style={{
+              flex: 1,
+              float:"initial",
+              paddingLeft:"15px",
+              display:"block",
+            }}>
+              거래처 정보를 입력해주세요
+            </Typography>
+          <br/>
+        </div>
+
+        <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="vendorName"
             label="거래처명"
@@ -159,7 +187,7 @@ function AddTextFields(props) {
             fullWidth
           />
         </div>
-        <div className="col-md-12 col-12">
+        <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="representativeName"
             label="대표자명"
@@ -170,7 +198,7 @@ function AddTextFields(props) {
             fullWidth
           />
         </div>
-        <div className="col-md-12 col-12">
+        <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="vendorTel"
             label="거래처 전화번호"
@@ -181,7 +209,7 @@ function AddTextFields(props) {
             fullWidth
           />
         </div>
-        <div className="col-md-12 col-12">
+        <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="vendorPhone"
             label="거래처 휴대폰번호"
@@ -193,35 +221,37 @@ function AddTextFields(props) {
           />
         </div>
 
-        <div className="col-md-6 col-6">
-          <GetPostCode getPostcode={ handlePostcode }/>
+        <div style={{display:"none"}}>
+          <GetPostCode getPostcode={ handlePostcode } ref={post}/>
         </div>
 
-        <div className="col-md-6 col-6">
+        <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="zipCode"
             label="우편번호"
             placeholder="우편번호"
             value={values.zipCode}
-            onChange={handleChange('zipCode')}
+            onClick={handlePostOpen}
+            // onChange={handleChange('zipCode')}
             margin="normal"
             fullWidth
           />
 
         </div>
-          <div className="col-md-12 col-12">
+        <div className="col-md-8 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="address"
             label="주소"
             placeholder="주소"
             value={values.address}
-            onChange={handleChange('address')}
+            onClick={handlePostOpen}
+            // onChange={handleChange('address')}
             margin="normal"
             fullWidth
           />
         </div>
         
-        <div className="col-md-12 col-12">
+        <div className="col-md-12 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="detailAddress"
             label="상세주소"
@@ -233,7 +263,7 @@ function AddTextFields(props) {
           />
         </div>
 
-        <div className="col-md-12 col-12">
+        <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="vendorCategoryCodeNo"
             select
@@ -252,7 +282,7 @@ function AddTextFields(props) {
             ))}
           </TextField>
         </div>
-        <div className="col-md-12 col-12">
+        <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="bankCodeNo"
             select
@@ -271,7 +301,7 @@ function AddTextFields(props) {
             ))}
           </TextField>
         </div>
-        <div className="col-md-12 col-12">
+        <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="accountNo"
             label="계좌번호"
@@ -282,7 +312,7 @@ function AddTextFields(props) {
             fullWidth
           />
         </div>
-        <div className="col-md-12 col-12">
+        <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="accountHolder"
             label="예금주명"
@@ -294,7 +324,7 @@ function AddTextFields(props) {
           />
         </div>
      
-        <div className="col-md-12 col-12">
+        <div className="col-md-12 col-12" style={{paddingTop:"40px"}}>
           <Button className="jr-btn text-uppercase btn-block" color="default" onClick={() => {submitFn()}}>등록하기</Button>
         </div>
         
