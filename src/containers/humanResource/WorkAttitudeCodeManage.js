@@ -41,7 +41,7 @@ class WorkAttitudeCodeManage extends React.Component{
         return(
             <div>
             <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
-                {workAttitudeCodeList !== undefined ? (<GetWorkAttitudeCodeList handleModifyOpen={this.handleModifyOpen}/>):(<div>error</div>)}
+                {workAttitudeCodeList !== undefined ? (<GetWorkAttitudeCodeList handleModifyOpen={this.handleModifyOpen}/>):(<div></div>)}
             </CardBox>
             <ModifyWorkAttitudeCode open={this.state.modifyOpen} 
                                     handleModifyClose={this.handleModifyClose}

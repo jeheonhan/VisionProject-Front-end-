@@ -28,6 +28,9 @@ import {  GET_HRCARD_LIST
         GET_HRCARD_DETAIL,
         CARRY_HRCARD_DETAIL,
         UPDATE_HRCARD,
+        UPDATE_APPOINT_STATUS,
+        CONVERT_WORKATTITUDE_USE_STATUS,
+        CONVERT_WORKATTITUDE_CODE_USE_STATUS,
         } from '../actionTypes/ActionTypes';
 
 
@@ -237,6 +240,27 @@ export const carryHRCardDetail = (data) => {
 export const updateHRCard = (data) => {
     return{
         type: UPDATE_HRCARD,
+        payload: data
+    }
+}
+
+export const updateAppointStatus = (data) => {
+    return{
+        type: UPDATE_APPOINT_STATUS,
+        payload: data
+    }
+}
+
+export const convertWorkAttitudeUseStatus = (data) => {
+    return{
+        type: CONVERT_WORKATTITUDE_USE_STATUS,
+        payload: data
+    }
+}
+
+export const convertWorkAttitudeCodeUseStatus = (data) => {
+    return{
+        type: CONVERT_WORKATTITUDE_CODE_USE_STATUS,
         payload: data
     }
 }

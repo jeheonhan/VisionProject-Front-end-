@@ -30,6 +30,10 @@ import MaskedInput from 'react-text-mask';
 import Input from '@material-ui/core/Input';
 import SaveIcon from '@material-ui/icons/Save';
 import clsx from 'clsx';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 //주민등록번호 Mask
 class SsnMaskCustom extends React.Component {
@@ -298,6 +302,7 @@ function AddTextField(props){
     const classes = useStyles();
 
     const post = React.useRef();
+    const signature = React.useRef();
 
     const[value, setValue] = React.useState({findDepartOpen:false, findRankOpen:false});
 
@@ -337,6 +342,11 @@ function AddTextField(props){
       document.getElementById('signatureFile').click();
     }
 
+      //서명도장 다이얼로그 열기
+      const handleOnClickSignOpen = () => {
+        signature.current.handleRequestOpen();
+      }
+
     //우편번호 창 열기 [ref로 자식 컴포넌트 직접 접근하여 자식컴포넌트의 function을 사용]
     const handlePostOpen = () => {
         post.current.handleClickOpen();
@@ -366,7 +376,8 @@ function AddTextField(props){
                 <div className="jr-card" style={{width:"160px",height:"150px"}} align="center">
                   <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
                     <Avatar className="size-100" alt="Remy Sharp" 
-                            src={employee.profileFile ? `${employee.profileFile.base64}`:require("assets/images/noneProfile.png")}/>
+                            src={employee.profileFile ? `${employee.profileFile.base64}`
+                                :(employee.profileImage? '/img/'+employee.profileImage:require("assets/images/noneProfile.png"))}/>
                   </Tooltip>   
                 </div>
                 <div style={{position:"relative", top:"-25px"}}>
@@ -406,7 +417,8 @@ function AddTextField(props){
               </div>
               <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <DatePicker  label="입사일자" callBackDateChange={callBackDateChange}
-                            disabled={!stateValue.modifyAble}/>            
+                            disabled={!stateValue.modifyAble}
+                            value={employee.joinDate}/>            
               </div>
 
               <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
@@ -571,7 +583,7 @@ function AddTextField(props){
                   />
             </div>
 
-            <Button variant="contained" size="small" className={classes.button} onClick={handleOnClickSignUpload}>
+            <Button variant="contained" size="small" className={classes.button} onClick={handleOnClickSignOpen}>
               <SaveIcon className={clsx(classes.leftIcon, classes.iconSmall)} />
               서명/도장
             </Button>
@@ -606,9 +618,81 @@ function AddTextField(props){
               handleSubRankComponentClose={handleFindRankClose}
               checkedRank={props.checkedRank}
               />
-            
+             <SignatureDialog ref={signature} 
+                             handleOnClickSignUpload={handleOnClickSignUpload}
+                             employee={employee}
+                             signatureFile={employee.signatureFile && employee.signatureFile}/>
+         
          
 
         </div>
     );
+}
+
+class SignatureDialog extends React.Component {
+  state = {
+    open: false,
+  };
+
+  handleRequestOpen = () => {
+    this.setState({open:true});
+  }
+
+  handleRequestClose = () => {
+    this.setState({open: false});
+  };
+
+  render() {
+    const classes = makeStyles(theme => ({
+      button: {
+        margin: theme.spacing(1),
+      },
+      leftIcon: {
+        marginRight: theme.spacing(1),
+      },
+      rightIcon: {
+        marginLeft: theme.spacing(1),
+      },
+      iconSmall: {
+        fontSize: 20,
+      },
+    }));
+
+    const { signatureFile } = this.props;
+    
+    return (
+      <div>
+        <Dialog open={this.state.open} onClose={this.handleRequestClose}>
+          <DialogTitle align="center">
+            {"서명/사인 등록"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText align="center">
+                <div className="jr-card" style={{width:"160px",height:"150px"}} align="center">
+                  <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
+                    <Avatar className="size-100" alt="Remy Sharp" 
+                            src={signatureFile? `${signatureFile.base64}`
+                                                 : (this.props.employee.signatureImage? "/img/"+this.props.employee.signatureImage
+                                                                                        : require("assets/images/stamp.png"))}/>
+                  </Tooltip>   
+                </div>
+                  <Button variant="contained" color="default" className={classes.button} 
+                      onClick={this.props.handleOnClickSignUpload} >
+                    서명/도장
+                    <CloudUploadIcon className={classes.rightIcon} />
+                  </Button>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleRequestClose} color="primary">
+              확인
+            </Button>
+            <Button onClick={this.handleRequestClose} color="secondary">
+              취소
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
 }
