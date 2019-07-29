@@ -18,7 +18,7 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
-import { getProductList, getInfoAccount, addOrderBranch } from 'actions/index';
+import { getProductList, getInfoAccount, addOrderBranch, getOrderBranchList } from 'actions/index';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -166,7 +166,7 @@ class EnhancedTable extends React.Component {
         ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
         : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
-    if(property==='salesPrice'){
+    if(property==='salesPrice'||property==='productNo'){
         order === 'desc'
         ? this.state.data.sort((a, b) => (b[orderBy] - a[orderBy] ))
         : this.state.data.sort((a, b) => (a[orderBy] - b[orderBy] ));
@@ -187,26 +187,20 @@ class EnhancedTable extends React.Component {
       this.handleClick(event, id);
     }
   };
-  handleClick = (event, id) => {
-    const {selected} = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
+  handleClick = (event, _productNo) => {
+    //어딨는지 찾기
+    const thisIndex = this.state.data.findIndex(prod => prod.productNo===_productNo);
+    const result = parseInt(thisIndex/this.state.rowsPerPage, 10); 
+    const remainder = (thisIndex%this.state.rowsPerPage);
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    this.setState({selected: newSelected});
+    let newSelected = [(result*this.state.rowsPerPage)+remainder];
+    this.setState({selected: newSelected, page:result});
+    setTimeout(() => {this.handleClickEmptySelected()}, 2000);
+    return;      
   };
+  handleClickEmptySelected = () => {
+    this.setState({selected: []});
+  }
   handleChangePage = (event, page) => {
     this.setState({page});
   };
@@ -219,6 +213,12 @@ class EnhancedTable extends React.Component {
     let _quantity = parseInt(event.target.value, 10);
     if(isNaN(_quantity)){
       _quantity = 0
+    }
+    if(_quantity>row.quantity){
+      _quantity = row.quantity;
+    }
+    if(row.quantity==0){
+      return this.onLackQuantity();
     }
     if(_quantity<=0){
       if(key==-1){
@@ -246,8 +246,6 @@ class EnhancedTable extends React.Component {
              ,price:row.salesPrice
              ,orderFromBranchProductQuantity:_quantity
              ,orderFromBranchProductAmount:row.salesPrice*_quantity
-             ,page:this.state.page
-             ,key:this.state.page*this.state.rowsPerPage+index
              })
         }
       })
@@ -258,8 +256,6 @@ class EnhancedTable extends React.Component {
         ,price:row.salesPrice
         ,orderFromBranchProductQuantity:_quantity
         ,orderFromBranchProductAmount:row.salesPrice*_quantity
-        ,page:this.state.page
-        ,key:this.state.page*this.state.rowsPerPage+index
         };
       list.splice(key,1,updatedProd)
 
@@ -273,15 +269,6 @@ class EnhancedTable extends React.Component {
     }
   };
   
-   handleClickChip = (data) => {
-    const chipData = this.state.orderBranch.orderFromBranchProductList;
-    const chipToDelete = chipData.indexOf(data);
-    const thisIs = chipData[chipToDelete];
-    this.setState({
-      page:thisIs.page,
-      selected:[thisIs.key]
-    })
-  }
 
     handleRequestDeleteList = data => () => {
       const chipData = this.state.orderBranch.orderFromBranchProductList;
@@ -294,15 +281,29 @@ class EnhancedTable extends React.Component {
     };
 
     onSuccessIamport = () => {
-      this.props.addOrderBranch(this.state.orderBranch)
+      this.props.addOrderBranch(this.state.orderBranch);
+      setTimeout(() => {this.props.getOrderBranchList({searchKeyword:JSON.parse(localStorage.getItem("user")).branchNo})}, 2000);
       this.setState({
         success:true
       })
+      
     }
 
     onFailIamport = () => {
+      let _warningText = "결제가 취소되었습니다.";
+      if(this.state.orderBranch.orderFromBranchProductList.length==0){
+        _warningText = "상품을 먼저 담아주세요."
+      }
       this.setState({
-        warning:true
+        warning:true,
+        warningText: _warningText
+      })
+    }
+
+    onLackQuantity = () => {
+      this.setState({
+        warning:true,
+        warningText:"현재 재고가 없는 상품입니다."
       })
     }
 
@@ -338,19 +339,19 @@ renderRedirect = () => {
 
     this.state = {
       order: 'asc',
-      orderBy: '',
+      orderBy: 'productNo',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.ProductList,
+      data: this.props.ProductList.sort((a, b) => (a["productNo"] - b["productNo"] )),
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 5,
       search:{searchKeyword:null},
       flag: false,
       positionLeft:0,
       orderBranch : {
-        orderFromBranchTotalAmount:"1300"
-        ,branchName:"대사관로점"//localStorage.getItem("user").branchName
-        ,branchNo:"b1005"//localStorage.getItem("user").branchNo
+        orderFromBranchTotalAmount:""
+        ,branchName:JSON.parse(localStorage.getItem("user")).branchName
+        ,branchNo:JSON.parse(localStorage.getItem("user")).branchNo
         ,orderDate:moment().format("YYYY/MM/DD")
         ,accountNo:"138294382947"
         ,orderFromBranchProductList:[
@@ -369,6 +370,8 @@ renderRedirect = () => {
 
     const { ProductList } = this.props;
 
+    const reverseArr = this.state.orderBranch.orderFromBranchProductList.slice();
+    reverseArr.reverse()
     if(ProductList !== this.state.data){
       this.setState({data:ProductList});
     }
@@ -379,7 +382,7 @@ renderRedirect = () => {
     this.state.orderBranch.orderFromBranchProductList.map((prod) => {
       return total += prod.orderFromBranchProductAmount
     })}
-
+    
     return (
       <div className="jr-card">
         {this.renderRedirect()}
@@ -389,9 +392,9 @@ renderRedirect = () => {
           <div>
             <div className="jr-card shadow border-0 bg-secondary text-white"  style={{padding:"5px", width:"80%", float:"left"}}>
                 <OrderFromBranchCartArr 
-                  cart={this.state.orderBranch.orderFromBranchProductList} 
+                  cart={reverseArr} 
                   handleDelete={this.handleRequestDeleteList}
-                  handleClick={this.handleClickChip}/>
+                  handleClick={this.handleClick}/>
             </div>
 
 
@@ -401,8 +404,12 @@ renderRedirect = () => {
               pg: 'inicis',
               pay_method: 'card',
               merchant_uid: 'merchant_' + new Date().getTime(),
-              name: this.state.orderBranch.orderFromBranchProductList.length==0 ? "" : this.state.orderBranch.orderFromBranchProductList[0].productName+(this.state.orderBranch.orderFromBranchProductList.length>1 ? " 외 "+this.state.orderBranch.orderFromBranchProductList.length-1+"개" : ""),
-              amount: total,
+              name:  this.state.orderBranch.orderFromBranchProductList.length==0 ? "":(this.state.orderBranch.orderFromBranchProductList[0].productName + (this.state.orderBranch.orderFromBranchProductList.length>1 ? (" 외 "+(this.state.orderBranch.orderFromBranchProductList.length-1)+"개") : "")),
+              amount: 100, //total,
+              buyer_email: '',
+              buyer_tel: '',
+              buyer_addr: '',
+              buyer_postcode: '',
               buyer_name: this.state.orderBranch.branchName,
               m_redirect_url: 'http://localhost:3000/app/branch/orderManage',
             }}
@@ -450,7 +457,6 @@ renderRedirect = () => {
                       tabIndex={-1}
                       key={page*rowsPerPage+index}
                       selected={isSelected}
-                      style={this.state.selected ? {background:"orange", transitionDuration:"0.1s"} : {}}
                     >
                       {/* <TableCell padding="checkbox">
                         <Checkbox color="primary" checked={isSelected} 
@@ -477,6 +483,7 @@ renderRedirect = () => {
               <TableFooter>
                 <TableRow>
                   <TablePagination
+                    rowsPerPageOptions={[5, 8, 10, 20]}
                     count={data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
@@ -499,7 +506,7 @@ renderRedirect = () => {
                     title=""
                     onConfirm={this.warningOk}
             >
-                결제가 취소되었습니다.
+                {this.state.warningText}
             </SweetAlert>
             <SweetAlert show={this.state.success} success title=""
                     onConfirm={this.onConfirm}>
@@ -519,4 +526,4 @@ const mapStateToProps = ({productionManagement}) => {
 
 
                    
-export default connect(mapStateToProps,  {addOrderBranch} )(EnhancedTable);
+export default connect(mapStateToProps,  {addOrderBranch, getOrderBranchList} )(EnhancedTable);

@@ -221,6 +221,9 @@ export const MODIFY_APPROVAL_STATUS = 'modify_approval_status';
 
 //주문관리
 export const ADD_ORDER_BRANCH = 'add_order_branch';
+export const GET_ORDER_BRANCH_LIST = 'get_order_branch';
+export const CARRY_ORDER_BRANCH_LIST = 'carry_order_branch';
+export const MODIFY_ORDER_BRANCH_STATUS = 'modify_order_branch_staus';
 
 
 //회계관리

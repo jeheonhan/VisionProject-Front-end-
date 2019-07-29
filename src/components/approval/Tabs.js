@@ -42,7 +42,7 @@ class FullWidthTabs extends Component {
   handleSearch = (_searchCondition) => {
     this.props.getApprovalList({
       searchCondition:_searchCondition,
-      searchKeyword:"1000"//localStorage.getItem("user").employeeNo
+      searchKeyword:JSON.parse(localStorage.getItem("user")).employeeNo
     });
   }
 

@@ -34,7 +34,7 @@ class ChipsArray extends Component {
   //  handleClick() {
   //   alert('You clicked the Chip.'); // eslint-disable-line no-alert
   // }
-
+  
   render() {
     if(this.props.cart===null||this.props.cart.length==0){
       return (
@@ -52,7 +52,7 @@ class ChipsArray extends Component {
             style={{marginTop:"0px", marginRight:"5px"}}
             label={data.productName.length>6 ? data.productName.substr(0,6)+"... "+data.orderFromBranchProductQuantity+"개" : data.productName+" "+data.orderFromBranchProductQuantity+"개"}
             key={data.productNo}
-            onClick={() => this.props.handleClick(data)}
+            onClick={(event) => this.props.handleClick(event, data.productNo)}
             onDelete={this.props.handleDelete(data)}
              />
           );

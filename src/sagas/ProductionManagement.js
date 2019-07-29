@@ -2,10 +2,10 @@ import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
 import { carryProductList, carryOrderToVendorList, 
     addProduct, getProductList, addProductAccount, 
-    getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, getOrderToVendorList } from 'actions/index';
+    getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, getOrderToVendorList, caarryOrderBranch, carryOrderBranch, carryOrderBranchList, getOrderBranchList } from 'actions/index';
 import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
      ADD_PRODUCT, GET_INFO_ACCOUNT, GET_ORDER_TO_VENDOR_DETAIL_LIST
-    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH} from "actionTypes/ActionTypes";
+    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH, GET_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS} from "actionTypes/ActionTypes";
 
 
 
@@ -88,7 +88,23 @@ const addOrderBranchAxios = async (action) => {
     })
 }
 
+const getOrderBranchAxios = async(action) => {
+    return await axios({
+        method:"POST",
+        url:"/pm/getOrderFromBranchList",
+        data:action.payload
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
 
+const modifyOrderFromBranchAxios = async(action) => {
+    return await axios({
+        method:"POST",
+        url:"/pm/modifyOrderFromBranchStatus",
+        data:action.payload
+    })
+}
 
 
 
@@ -133,9 +149,19 @@ function* addOrderToVendorFn({payload}) {
 }
 
 function* addOrderBranchFn(action){
-    yield call (addOrderBranchAxios, action);
+    yield call(addOrderBranchAxios, action);
 }
 
+function* getOrderBranchFn(action){
+    const result = yield call(getOrderBranchAxios, action)
+    yield put(carryOrderBranchList(result));
+    getProductListFn();
+}
+
+function* modifyOrderBranchFn(action){
+    yield call(modifyOrderFromBranchAxios, action);
+    yield put(getOrderBranchList({searchKeyword:JSON.parse(localStorage.getItem("user")).branchNo}))
+}
 
 
 
@@ -174,6 +200,14 @@ export function* addOrderBranchSaga(){
     yield takeEvery(ADD_ORDER_BRANCH, addOrderBranchFn)
 }
 
+export function* getOrderBranchSaga(){
+    yield takeEvery(GET_ORDER_BRANCH_LIST, getOrderBranchFn)
+}
+
+export function* modifyOrderBranchStatusSaga(){
+    yield takeEvery(MODIFY_ORDER_BRANCH_STATUS, modifyOrderBranchFn)
+}
+
 export default function* rootSaga(){
     console.log("rootSaga()");
     yield all([
@@ -184,7 +218,9 @@ export default function* rootSaga(){
         fork(getOrderToVendorDetailListSaga),
         fork(updateOrderToVendorCOdeSaga),
         fork(addOrderToVendorSaga), 
-        fork(addOrderBranchSaga)
+        fork(addOrderBranchSaga),
+        fork(getOrderBranchSaga),
+        fork(modifyOrderBranchStatusSaga)
     ]);
 }
 

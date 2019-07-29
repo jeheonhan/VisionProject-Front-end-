@@ -12,16 +12,15 @@ import SweetAlert from 'react-bootstrap-sweetalert'
 
 class AddApproval extends React.Component{
     constructor(props){
-        const _firstApprover = localStorage.getItem("user");
         super(props);
         this.state={
-            approvalTitle:_firstApprover.employeeName+"_"+this.props.formName
+            approvalTitle:JSON.parse(localStorage.getItem("user")).employeeName+"_"+this.props.formName
             ,approvalContent:this.props.form
             ,firstApprover:{
                         approverNumbering:null
                     ,approvalNo:null
-                    ,employeeNo:(_firstApprover.employeeNo!==undefined?_firstApprover.employeeNo:"1000")
-                    ,signatureImage:"https://papermilkdesign.com/images/line-clipart-transparent-5.png"
+                    ,employeeNo:JSON.parse(localStorage.getItem("user")).employeeNo
+                    ,signatureImage:JSON.parse(localStorage.getItem("user")).signatureImage
                     ,rankCodeName:"담당"
                     ,ordinal:0
                     ,approvalStatus:1
@@ -222,7 +221,7 @@ class AddApproval extends React.Component{
                     margin="normal"
                     id="registrantEmployeeName"
                     label="등록자"
-                    value={localStorage.getItem("user").employeeName!==undefined ? localStorage.getItem("user").employeeName : "박경주"}
+                    value={JSON.parse(localStorage.getItem("user")).employeeName}
                 />
                 </span>
                 
