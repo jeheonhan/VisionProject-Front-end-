@@ -308,6 +308,8 @@ export const GET_DAILY_SALES_DETAIL = 'get_daily_sales_detail';
 export const CARRY_DAILY_SALES_DETAIL = 'carry_daily_sales_detail';
 export const ADD_DAILY_SALES = 'add_daily_sales';
 export const ADD_DAILY_SALES_RESULT = 'add_daily_sales_result';
+export const GET_SALES_MENU_LIST = 'get_sales_menu_list';
+export const CARRY_SALES_MENU_LIST = 'carry_sales_menu_list';
 
 
 

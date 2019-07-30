@@ -105,8 +105,8 @@ class AddNotice extends React.Component {
 
       render(){
 
-        console.log(this.state.notice);
-        console.log(this.state.notice.noticeHeaderCodeNo)
+        //console.log(this.state.notice);
+        //console.log(this.state.notice.noticeHeaderCodeNo)
         const { noticeHeaderList } = this.props;
 
         if(noticeHeaderList == undefined ){
