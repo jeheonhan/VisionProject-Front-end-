@@ -4,8 +4,14 @@ import {
     CARRY_INFO_ACCOUNT , GET_ORDER_TO_VENDOR_DETAIL_LIST , CARRY_ORDER_TO_VENDOR_DETAIL_LIST ,
     UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH, UPDATE_ORDER_TO_VEN_ITEM_CODE, CARRY_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, CARRY_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS
 } from '../actionTypes/ActionTypes';
+import {SEND_SHIPPING} from '../actionTypes/ActionTypes';
 
-
+export const sendShipping = (data) => {
+    return{
+        type: SEND_SHIPPING,
+        payload: data
+    }
+}
 
 export const getProductList = () => {
     return {

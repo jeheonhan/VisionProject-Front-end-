@@ -70,6 +70,7 @@ class AddApproval extends React.Component{
         }
     }
 
+    //사원검색 component open
     handleOpen = () => {
         this.setState({
             ...this.state,
@@ -77,6 +78,15 @@ class AddApproval extends React.Component{
         })
     }
 
+    //사원검색 컴포넌트 close
+    handleClose = () =>{
+        this.setState({
+            ...this.state,
+            open:false
+        })
+    }
+
+    //상신 버튼 click했을 때
     handleSend = (event) =>{
         event.preventDefault();
         if(this.state.secondApprover.employeeNo===null){
@@ -93,6 +103,7 @@ class AddApproval extends React.Component{
         }
     }
 
+    //상신 alert 확인 눌렀을 때 
     onConfirm = () => {
         this.setState({
             success:false,
@@ -100,6 +111,7 @@ class AddApproval extends React.Component{
         })
     }
 
+    //결재함으로 이동시키는 메서드
     renderRedirect = () => {
         if (this.state.redirect) {
           this.props.getApprovalList({searchCondition:"2", searchKeyword:this.state.firstApprover.employeeNo});
@@ -114,13 +126,7 @@ class AddApproval extends React.Component{
         }
       }
 
-    handleClose = () =>{
-        this.setState({
-            ...this.state,
-            open:false
-        })
-    }
-
+    //결재서제목 handler
     handleTitle = (event) => {
         this.setState({
           ...this.state,
@@ -128,6 +134,7 @@ class AddApproval extends React.Component{
         })
     }
 
+    //결재서내용 handler
     handleForm = (event) => {
         this.setState({
             ...this.state,
@@ -135,17 +142,16 @@ class AddApproval extends React.Component{
         })
     }
 
-    handleChange = name => event => {
-        this.setState({[name]: event.target.value});
-      };
-
+    //경고 alert 확인버튼 눌렀을 때
     warningOk = () => {
         this.setState({
             warning:false
         })
     }
 
+    //사원검색 컴포넌트 확인 눌렀을 떄 
     handleClickOk = (data) => {
+        //작성자가 결재라인에 포함되는지 확인
         for(const aprvr in data){
             if(data[aprvr].employeeNo===this.state.firstApprover.employeeNo){
                 this.setState({
@@ -156,12 +162,21 @@ class AddApproval extends React.Component{
             }
         }
         const size = data.length;
+        //결재라인에 네명 이상 등록되었는지 확인
+        if(size>=5){
+            this.setState({
+                warning:true,
+                warningText:<div dangerouslySetInnerHTML={ {__html: "결재라인은 작성자를 제외하고,<br> 최대 네 명까지 가능합니다."} }/>
+            })
+            return;
+        }
+        //결재자 등록하기
         let defaultValue = {approverNumbering:null
                 ,approvalNo:null
                 ,employeeNo:null
-                ,signatureImage:"https://papermilkdesign.com/images/line-clipart-transparent-5.png"
-                ,rankCodeName:""
-                ,ordinal:1
+                ,signatureImage:null
+                ,rankCodeName:null
+                ,ordinal:null
                 ,approvalStatus:null
                 }
         let second = defaultValue;
@@ -216,23 +231,22 @@ class AddApproval extends React.Component{
         return(
             <div className="jr-card" style={{paddingBottom:"60px"}}>
                 {this.renderRedirect()}
-                <span style={{float:"left", paddingLeft:"10px"}}>
-                <TextField 
-                    margin="normal"
-                    id="registrantEmployeeName"
-                    label="등록자"
-                    value={JSON.parse(localStorage.getItem("user")).employeeName}
-                />
-                </span>
-                
-                <span style={{float:"right"}}>
+
+
+                <div style={{display:"inline", marginLeft:"0px"}}>
+                <span style={{float:"right", marginTop:"1%", marginLeft:"0px"}}>
                 <FindEmployeeForApprovalLine 
+                    style={{display:"inline"}}
                     open={this.state.open} 
                     handleOpen={this.handleOpen} 
                     handleClose={this.handleClose}
                     handleOk={this.handleClickOk}/>
                 <Approver arr={[this.state.firstApprover, this.state.secondApprover, this.state.thirdApprover, this.state.fourthApprover, this.state.fifthApprover]}/>
                 </span>
+                </div>
+
+                
+                <div className="col-md-5" style={{marginRight:'0px', padding:"0px"}}>
                 <TextField
                     error
                     fullWidth
@@ -243,15 +257,32 @@ class AddApproval extends React.Component{
                     variant="outlined"
                     onChange={this.handleTitle}
                 />
+                </div>
+
+                <div className="col-md-5" style={{marginRight:'0px'}}>
+                <TextField 
+                    margin="normal"
+                    id="registrantEmployeeName"
+                    label="등록자"
+                    value={JSON.parse(localStorage.getItem("user")).employeeName}
+                />
+                </div>
+                
+
+
+                <div style={{display:"block", marginTop:"2%"}}>
             <ApprovalFormCKEditor 
                 handleForm={this.handleForm} 
                 content={this.state.approvalContent}
                 >
             </ApprovalFormCKEditor>
+            </div>
             
             <Button style={{float:"right"}} variant="contained" color="primary" className="jr-btn jr-btn-lg" onClick={this.handleSend}>
                 <CallMade/>상신
             </Button>
+
+            {/* 경고alert */}
             <SweetAlert show={this.state.warning}
                     warning
                     confirmBtnText="확인"
@@ -262,6 +293,8 @@ class AddApproval extends React.Component{
             >
                 {this.state.warningText}
             </SweetAlert>
+
+            {/* 상신alert */}
             <SweetAlert show={this.state.success} success title=""
                     onConfirm={this.onConfirm}>
                         작성하신 결재서류가 상신되었습니다. <br/>결재함으로 이동합니다.

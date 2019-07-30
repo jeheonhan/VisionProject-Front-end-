@@ -8,8 +8,18 @@ import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
     , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH , GET_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS,
     UPDATE_ORDER_TO_VEN_ITEM_CODE    } from "actionTypes/ActionTypes";
 
+import {SEND_SHIPPING} from 'actionTypes/ActionTypes';
+import {} from 'actions/index';
 
 
+const sendShippingAxios = async (action) => {
+    return await axios({
+        method:"POST",
+        url:"/pm/modifyOrderFromBranchProductStatus",
+        data:action.payload
+    })
+    .catch(error => console.log(error))
+}
 const getProductListRequest = async () => {
     console.log("들어와라 셀렉트프로덕트릿")
     return await axios({
@@ -118,6 +128,11 @@ const modifyOrderFromBranchAxios = async(action) => {
 
 
 
+function * sendShippingFn(action){
+    yield call(sendShippingAxios, action)
+    yield put(getOrderBranchList({}))
+}
+
 function* getselectOrderToVendorListFn(){
     const OrderToVendorList = yield call(getOrderToVendorListRequest);
     yield put(carryOrderToVendorList(OrderToVendorList));
@@ -191,6 +206,9 @@ export function* getProductListSaga(){
     yield takeEvery(GET_PRODUCT_LIST, getProductListFn);
 }
 
+export function* sendShippingSaga(){
+    yield takeEvery(SEND_SHIPPING, sendShippingFn)
+}
 
 export function* getselectOrderToVendorListSaga(){
     yield takeEvery(GET_ORDER_TO_VENDOR_LIST, getselectOrderToVendorListFn);
@@ -237,6 +255,7 @@ export function* modifyOrderBranchStatusSaga(){
 export default function* rootSaga(){
     console.log("rootSaga()");
     yield all([
+        fork(sendShippingSaga),
         fork(getProductListSaga),
         fork(getselectOrderToVendorListSaga),
         fork(addProductSaga),

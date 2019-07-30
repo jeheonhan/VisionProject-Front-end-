@@ -107,7 +107,7 @@ class FindEmployee extends React.Component{
 
     return( 
       <span>
-        <Button style={{marginTop:"50px", marginLeft:"150px", float:"left"}} 
+        <Button style={{marginTop:"50px", float:"left"}} 
                 variant="contained" 
                 color="primary"
                 onClick={this.props.handleOpen}>
