@@ -45,6 +45,7 @@ const getNoticeHeaderListRequest = async () => {
 
 function* getNoticeListFn({payload}){
     const noticeList = yield call(getNoticeListRequest, payload);
+    console.log(noticeList)
     yield put(carryNoticeList(noticeList));
 }
 
