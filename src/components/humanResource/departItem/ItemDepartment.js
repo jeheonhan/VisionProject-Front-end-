@@ -9,6 +9,10 @@ export default function ItemDepartment(props){
     props.handleDepartUsageStatus(values);
   }
 
+  const handleConfirmDepartmentDelete = () => {
+
+  }
+
   return(
     <div className={`${styleName}`}  style={{maxHeight:"480px", minHeight:"480px"}}>
         <div className={values.departUsageStatusCodeNo == '01' ? `${headerStyle}`:"package-header bg-grey lighten-1 text-white"}>
@@ -37,7 +41,11 @@ export default function ItemDepartment(props){
 
         <div className="package-footer">
           {/* <span className={`jr-link ${footerStyle}`} onClick={handleConvertUsage}>상태 변경</span> */}
-          <span className={values.departUsageStatusCodeNo == '01' ? `jr-link ${footerStyle}`:"btn btn-default bg-grey lighten-1 text-white"} onClick={handleConvertUsage}>상태 변경</span>
+          <span className={values.departUsageStatusCodeNo == '01' ? `jr-link 
+              ${footerStyle}`:"btn btn-default bg-grey lighten-1 text-white"} onClick={handleConvertUsage}>상태 변경</span>
+              <span className={values.departUsageStatusCodeNo == '01' ? `jr-link 
+                ${footerStyle}`:"btn btn-default bg-grey lighten-1 text-white"} 
+                onClick={event => {event.preventDefault(); props.handleDeleteDepartmentOpen(values)}}>영구 삭제</span>
         </div>
       </div>
   );

@@ -4,7 +4,7 @@ import asyncComponent from '../../../util/asyncComponent';
 
 const Home = ({match}) => (
     <div >
-       <video src={require("assets/videos/stoneVision.mp4")} autoPlay="autoPlay" muted="muted"
+       <video src={require("assets/videos/lastVision.mp4")} autoPlay="autoPlay" muted="muted"
         width="100%" height=""/>
     </div>
 );

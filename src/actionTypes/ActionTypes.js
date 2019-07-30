@@ -182,6 +182,11 @@ export const UPDATE_HRCARD = 'update_hrcard';
 export const UPDATE_APPOINT_STATUS = 'update_appoint_status';
 export const CONVERT_WORKATTITUDE_USE_STATUS = 'convert_workattitude_use_status';
 export const CONVERT_WORKATTITUDE_CODE_USE_STATUS = 'convert_workattitude_code_use_status';
+export const CONVERT_DEPARTMENT_DELETE = 'convert_department_delete';
+export const GET_COMMUTE_LIST = 'get_commute_list';
+export const CARRY_COMMUTE_LIST = 'carry_commute_list';
+export const ADD_GO_TO_WORK = 'add_go_to_work';
+export const ADD_LEAVE_WORK = 'add_leave_work';
 
 
 

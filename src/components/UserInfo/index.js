@@ -5,6 +5,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import {userSignOut} from 'actions/Auth';
 import IntlMessages from 'util/IntlMessages';
+import {NavLink, withRouter} from 'react-router-dom';
 
 class UserInfo extends React.Component {
 
@@ -56,11 +57,13 @@ class UserInfo extends React.Component {
         >
           <MenuItem onClick={this.handleRequestClose}>
             <i className="zmdi zmdi-account zmdi-hc-fw mr-2"/>
-            <IntlMessages id="popup.profile"/>
+            내정보보기
           </MenuItem>
-          <MenuItem onClick={this.handleRequestClose}>
-            <i className="zmdi zmdi-settings zmdi-hc-fw mr-2"/>
-            <IntlMessages id="popup.setting"/>
+          <MenuItem>
+            <NavLink to="/app/commute">
+              <i className="zmdi zmdi-settings zmdi-hc-fw mr-2"/>
+              출퇴근기록
+            </NavLink>
           </MenuItem>
           <MenuItem onClick={() => {
             this.handleRequestClose();

@@ -11,7 +11,10 @@ import { carryHRCardList,
          getWorkAttitudeCodeList,
          carryDepartmentList, 
          getDepartmentList,
-         carryHRCardDetail} from 'actions/index';
+         carryHRCardDetail,
+         getCodeList,
+         carryCommuteList,
+         getCommuteList} from 'actions/index';
 import { GET_HRCARD_LIST, 
          GET_APPOINT_LIST, 
          ADD_APPOINTMENT, 
@@ -31,7 +34,51 @@ import { GET_HRCARD_LIST,
          UPDATE_HRCARD,
          UPDATE_APPOINT_STATUS,
          CONVERT_WORKATTITUDE_USE_STATUS,
-         CONVERT_WORKATTITUDE_CODE_USE_STATUS} from "actionTypes/ActionTypes";
+         CONVERT_WORKATTITUDE_CODE_USE_STATUS,
+         CONVERT_DEPARTMENT_DELETE,
+         GET_COMMUTE_LIST,
+         ADD_GO_TO_WORK,
+         ADD_LEAVE_WORK,
+        } from "actionTypes/ActionTypes";
+
+const addLeaveWorkRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/updateLeaveWorkTime",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error));
+}
+
+const addGoToWorkRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/addCommute",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
+
+const getCommuteListRequest = async (employeeNo) => {
+    return await axios({
+        method:"GET",
+        url:"/hr/getCommuteList/"+employeeNo
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
+const convertDepartDeleteRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/hr/modifyDepartment",
+        data:_data
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+}
 
 const convertWorkAttitudeCodeUseStatusRequest = async (_data) => {
     await axios({
@@ -231,6 +278,27 @@ const getAppointListRequest = async (search) => {
     .catch(error => console.log(error));
 }
 
+function* addLevaeWorkFn({payload}){
+    yield call(addLeaveWorkRequest, payload);
+    yield put(getCommuteList(payload.employeeNo));
+}
+
+function* addGoToWorkFn({payload}){
+    yield call(addGoToWorkRequest, payload);
+    yield put(getCommuteList(payload.employeeNo));
+}
+
+function* getCommuteListFn({payload}){
+    const commuteList = yield call(getCommuteListRequest, payload);
+    yield put(carryCommuteList(commuteList));
+}
+
+function* convertDepartmentDeleteFn({payload}){
+    yield call(convertDepartDeleteRequest, payload);
+    yield put(getDepartmentList({searchKeyword:null}));
+    yield put(getCodeList({searchKeyword:'depart'}));
+}
+
 function* convertWorkAttitudeCodeUseStatusFn({payload}){
     yield call(convertWorkAttitudeCodeUseStatusRequest, payload);
     yield put(getWorkAttitudeCodeList({searchKeyword:null}));
@@ -327,9 +395,24 @@ function* addAppointmentFn({payload}){
 }
 
 function* getAppointListFn({payload}){
-    console.log(payload);
     const appointList = yield call(getAppointListRequest, payload);
     yield put(carryAppointList(appointList));
+}
+
+export function* addLeaveWorkSaga(){
+    yield takeEvery(ADD_LEAVE_WORK, addLevaeWorkFn);
+}
+
+export function* addGoToWorkSaga(){
+    yield takeEvery(ADD_GO_TO_WORK, addGoToWorkFn);
+}
+
+export function* getCommuteListSaga(){
+    yield takeEvery(GET_COMMUTE_LIST, getCommuteListFn);
+}
+
+export function* convertDepartmentDeleteSaga(){
+    yield takeEvery(CONVERT_DEPARTMENT_DELETE, convertDepartmentDeleteFn);
 }
 
 export function* convertWorkAttitudeCodeSaga(){
@@ -433,5 +516,9 @@ export default function* rootSaga(){
             fork(updateHRCardSaga),
             fork(updateAppointStatusSaga),
             fork(convertWorkAttitudeUseStatusSaga),
-            fork(convertWorkAttitudeCodeSaga)]);
+            fork(convertWorkAttitudeCodeSaga),
+            fork(convertDepartmentDeleteSaga),
+            fork(getCommuteListSaga),
+            fork(addGoToWorkSaga),
+            fork(addLeaveWorkSaga)]);
 }

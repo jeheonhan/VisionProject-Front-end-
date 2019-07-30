@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getDepartmentList, convertDepartUsageStatus } from 'actions/index';
+import { getDepartmentList, convertDepartUsageStatus, convertDepartmentDelete } from 'actions/index';
 import ItemDepartment from "./departItem/ItemDepartment";
 import AddItemDepartment from './departItem/AddItemDepartment';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 class GetDepartList extends React.Component{
 
@@ -11,8 +12,35 @@ class GetDepartList extends React.Component{
         this.state = {
             search:{searchKeyword:null},
             data:null,
-            flag:false
+            flag:false,
+            deleteConfirmShow:false
         }
+    }
+
+    //부서 삭제 Confirm 열기
+    handleDeleteDepartmentOpen = (_depart) => {
+        this.setState({
+        deleteConfirmShow:true,
+        depart:_depart
+        })
+        //this.props.convertWorkAttitudeUseStatus(this.state.selected);
+    }
+
+    //부서 삭제 Confirm 확인
+    onConfirmDelete = () => {
+        this.props.convertDepartmentDelete(this.state.depart)
+        this.setState({
+        deleteConfirmShow:false,
+        depart:null
+        })
+    }
+
+    //부서 삭제 Confirm 취소
+    onCancelDelete = () => {
+        this.setState({
+        deleteConfirmShow:false,
+        depart:null
+        })
     }
 
     
@@ -59,6 +87,8 @@ class GetDepartList extends React.Component{
                             footerStyle="btn btn-default bg-secondary lighten-1 text-white"
                             values = {row}
                             handleDepartUsageStatus={handleDepartUsageStatus}
+                            convertDepartmentDelete={this.props.convertDepartmentDelete}
+                            handleDeleteDepartmentOpen={this.handleDeleteDepartmentOpen}
                             />
                         </div>
                 )})}
@@ -70,7 +100,17 @@ class GetDepartList extends React.Component{
                             footerStyle="btn btn-default bg-secondary lighten-1 text-white"
                             handleAddDepartOpen={this.props.handleAddDepartOpen}
                             />
-                        </div>
+                </div>
+                <SweetAlert show={this.state.deleteConfirmShow}
+                    warning
+                    showCancel
+                    confirmBtnText={"Yes"}
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title={"해당 부서를 영구삭제하시겠습니까?"}
+                    onConfirm={this.onConfirmDelete}
+                    onCancel={this.onCancelDelete}
+                ></SweetAlert>
             </div>
         );
     }
@@ -81,4 +121,4 @@ const mapStateToProps = ({ humanResource }) => {
     return { departmentList };
 }
 
-export default connect(mapStateToProps, { getDepartmentList, convertDepartUsageStatus })(GetDepartList);
+export default connect(mapStateToProps, { getDepartmentList, convertDepartUsageStatus, convertDepartmentDelete })(GetDepartList);

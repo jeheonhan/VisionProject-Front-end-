@@ -31,6 +31,11 @@ import {  GET_HRCARD_LIST
         UPDATE_APPOINT_STATUS,
         CONVERT_WORKATTITUDE_USE_STATUS,
         CONVERT_WORKATTITUDE_CODE_USE_STATUS,
+        CONVERT_DEPARTMENT_DELETE,
+        GET_COMMUTE_LIST,
+        CARRY_COMMUTE_LIST,
+        ADD_GO_TO_WORK,
+        ADD_LEAVE_WORK
         } from '../actionTypes/ActionTypes';
 
 
@@ -261,6 +266,41 @@ export const convertWorkAttitudeUseStatus = (data) => {
 export const convertWorkAttitudeCodeUseStatus = (data) => {
     return{
         type: CONVERT_WORKATTITUDE_CODE_USE_STATUS,
+        payload: data
+    }
+}
+
+export const convertDepartmentDelete = (data) => {
+    return{
+        type: CONVERT_DEPARTMENT_DELETE,
+        payload: data
+    }
+}
+
+export const getCommuteList = (employeeNo) => {
+    return{
+        type: GET_COMMUTE_LIST,
+        payload: employeeNo
+    }
+}
+
+export const carryCommuteList = (data) => {
+    return{
+        type: CARRY_COMMUTE_LIST,
+        payload: data
+    }
+}
+
+export const addGoToWork = (data) => {
+    return{
+        type: ADD_GO_TO_WORK,
+        payload: data
+    }
+}
+
+export const addLeaveWork = (data) => {
+    return{
+        type: ADD_LEAVE_WORK,
         payload: data
     }
 }

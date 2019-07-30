@@ -14,7 +14,8 @@ import { GET_HRCARD_LIST,
          CHECKED_APPOINTMENT_ROW_DATA,
          CARRY_DEPARTMENT_LIST,
          CHECKED_WORKATTITUDE,
-         CARRY_HRCARD_DETAIL} from "actionTypes/ActionTypes";
+         CARRY_HRCARD_DETAIL,
+         CARRY_COMMUTE_LIST} from "actionTypes/ActionTypes";
 
 
 const INIT_STATE = 
@@ -149,6 +150,13 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 HRCardDetailData: action.payload
+            }
+        }
+
+        case CARRY_COMMUTE_LIST : {
+            return{
+                ...state,
+                commuteList: action.payload
             }
         }
 
