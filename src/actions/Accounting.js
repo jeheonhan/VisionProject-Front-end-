@@ -41,6 +41,7 @@ import {
     CARRY_SALARY_BOOK_LIST,
     GET_ANALYZE_SALARY_BOOK_LIST,
     CARRY_ANALYZE_SALARY_BOOK_LIST,
+    DELETE_VENDOR,
 } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
@@ -333,5 +334,12 @@ export const carryAnalyzeSalaryBookList = (data) => {
     return{
         type: CARRY_ANALYZE_SALARY_BOOK_LIST,
         payload: data
+    }
+}
+
+export const deleteVendor = (vendorNoList) => {
+    return{
+        type: DELETE_VENDOR,
+        payload: vendorNoList
     }
 }
