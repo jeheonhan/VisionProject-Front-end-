@@ -12,9 +12,68 @@ import { connect } from 'react-redux';
 import { addVendor, getCodeList } from 'actions/index';
 import GetPostCode from 'components/accounting/GetPostCode'
 
+import MaskedInput from 'react-text-mask';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';  
+
+//지역전화번호코드
+const localPhoneCode = [
+  { value: '02', label: '02', }, { value: '051', label: '051', }, { value: '053', label: '053', },
+  { value: '032', label: '032', }, { value: '062', label: '062', }, { value: '042', label: '042', },
+  { value: '052', label: '052', }, { value: '044', label: '044', }, { value: '031', label: '031', }, 
+  { value: '033', label: '033', }, { value: '043', label: '043', }, { value: '041', label: '041', },
+  { value: '063', label: '063', }, { value: '061', label: '061', }, { value: '054', label: '054', },
+  { value: '055', label: '055', }, { value: '064', label: '064', },
+];
+
+
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
+
+//거래처 휴대폰번호 정규식
+class vendorPhoneMask extends React.Component {
+  render() {
+    return (
+      <MaskedInput
+        {...this.props}
+        mask={[ /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+        placeholderChar={'\u2000'}
+        // showMask
+      />
+    );
+  }
+}
+
+//거래처 서울 전화번호 정규식
+class vendorTelSeoulMask extends React.Component {
+  render() {
+    return (
+      <MaskedInput
+        {...this.props}
+        mask={[ /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+        placeholderChar={'\u2000'}
+        // showMask
+      />
+    );
+  }
+}
+
+//거래처 지방 전화번호 정규식
+class vendorTelLocalMask extends React.Component {
+  render() {
+    return (
+      <MaskedInput
+        {...this.props}
+        mask={[ /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+        placeholderChar={'\u2000'}
+        // showMask
+      />
+    );
+  }
+}
+
 
 //import할 이름은 alias니 내 마음대로 이름을 바꿔도됨
 class AddVendor extends React.Component {
@@ -68,7 +127,7 @@ class AddVendor extends React.Component {
             <div>
               <img className="size-60" src={require("assets/images/VisionLogo.png")}/>
             </div>
-            <CardBox styleName="col-lg-6">
+            <CardBox styleName="col-lg-7">
               <AddTextFields 
                 bankList={ bankList && bankList } 
                 vendorList={ vendorList && vendorList } 
@@ -104,7 +163,6 @@ function AddTextFields(props) {
   // </div>
   const post = React.useRef();
 
-  
   //Hook이란 특별한 함수, useState는 Hook 중 하나인데 state를 함수 컴포넌트에서 사용할 수 있게 해준다.
   //Hook은 함수 컴포넌트에서 React의 특징을 갖게 해주는 함수. Hook은 항상 use라는 키워드로 시작
   //useState를 사용해서 values라는 변수를 선언한다. useState의 인자로 넘기는 것은 state의 초기값.
@@ -114,6 +172,7 @@ function AddTextFields(props) {
   const [values, setValues] = useState({
     vendorName:"",
     representativeName:"",
+    localPhoneCode:"02",
     vendorTel:"",
     vendorPhone:"",
     vendorCategoryCodeNo:"",
@@ -136,6 +195,8 @@ function AddTextFields(props) {
       setValues({...values, vendorAccount:{...values.vendorAccount, [name]:event.target.value}})
     }else if(name === 'accountHolder'){
       setValues({...values, vendorAccount:{...values.vendorAccount, [name]:event.target.value}})
+    }else if(name === 'localPhoneCode'){
+      setValues({ ...values, vendorTel:'', [name]: event.target.value})
     }else{
       setValues({ ...values, [name]: event.target.value });
 
@@ -180,10 +241,13 @@ function AddTextFields(props) {
           <TextField
             id="vendorName"
             label="거래처명"
-            placeholder="거래처명"
+            placeholder="거래처명 입력"
             value={values.vendorName}
             onChange={handleChange('vendorName')}
             margin="normal"
+            InputLabelProps={{
+              shrink: true,
+            }}
             fullWidth
           />
         </div>
@@ -191,61 +255,100 @@ function AddTextFields(props) {
           <TextField
             id="representativeName"
             label="대표자명"
-            placeholder="대표자명"
+            placeholder="대표자명 입력"
             value={values.representativeName}
             onChange={handleChange('representativeName')}
             margin="normal"
+            InputLabelProps={{
+              shrink: true,
+            }}
             fullWidth
           />
         </div>
-        <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
+        <div className="col-md-2 col-6" style={{float:"left", display:"inline"}}>
           <TextField
-            id="vendorTel"
-            label="거래처 전화번호"
-            placeholder="거래처 전화번호"
-            value={values.vendorTel}
-            onChange={handleChange('vendorTel')}
+            id="localPhoneCode"
+            select
+            label="지역번호"
+            value={values.localPhoneCode}
+            onChange={handleChange('localPhoneCode')}
+            SelectProps={{}}
             margin="normal"
             fullWidth
-          />
+          >
+            {localPhoneCode.map(option => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </div>
+        <div className="col-md-4 col-6" style={{paddingLeft:"0px", float:"left", display:"inline"}}>
+          <FormControl className="mb-3" fullWidth margin='normal'>
+            <InputLabel htmlFor="vendorTel">거래처 전화번호</InputLabel>
+              <Input
+                id="vendorTel"
+                value={values.vendorTel}
+                inputComponent={values.localPhoneCode === '02' ? vendorTelSeoulMask : vendorTelLocalMask}
+                className="w-100 mb-3"
+                inputProps={{
+                'aria-label': 'Description',
+                }}
+                onChange={handleChange('vendorTel')}
+                placeholder="숫자만 입력 가능합니다"
+                
+              />
+          </FormControl>
         </div>
         <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
-          <TextField
-            id="vendorPhone"
-            label="거래처 휴대폰번호"
-            placeholder="거래처 휴대폰번호"
-            value={values.vendorPhone}
-            onChange={handleChange('vendorPhone')}
-            margin="normal"
-            fullWidth
-          />
+          <FormControl className="mb-3" fullWidth margin='normal'>
+            <InputLabel htmlFor="vendorPhone">거래처 휴대폰번호</InputLabel>
+              <Input
+                id="vendorPhone"
+                value={values.vendorPhone}
+                inputComponent={vendorPhoneMask}
+                className="w-100 mb-3"
+                inputProps={{
+                'aria-label': 'Description',
+                }}
+                onChange={handleChange('vendorPhone')}
+                placeholder="숫자만 입력 가능합니다"
+                
+              />
+          </FormControl>
         </div>
 
         <div style={{display:"none"}}>
           <GetPostCode getPostcode={ handlePostcode } ref={post}/>
         </div>
 
-        <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
+        <div className="col-md-2 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="zipCode"
             label="우편번호"
-            placeholder="우편번호"
+            placeholder="클릭해주세요"
             value={values.zipCode}
             onClick={handlePostOpen}
             // onChange={handleChange('zipCode')}
+            InputLabelProps={{
+              shrink: true,
+            }}
             margin="normal"
             fullWidth
           />
 
         </div>
-        <div className="col-md-8 col-6" style={{float:"left", display:"inline"}}>
+        <div className="col-md-10 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="address"
             label="주소"
-            placeholder="주소"
+            placeholder="클릭해주세요"
             value={values.address}
             onClick={handlePostOpen}
             // onChange={handleChange('address')}
+            InputLabelProps={{
+              shrink: true,
+            }}
             margin="normal"
             fullWidth
           />
@@ -255,9 +358,12 @@ function AddTextFields(props) {
           <TextField
             id="detailAddress"
             label="상세주소"
-            placeholder="상세주소"
+            placeholder="상세주소를 입력해주세요"
             value={values.detailAddress}
             onChange={handleChange('detailAddress')}
+            InputLabelProps={{
+              shrink: true,
+            }}
             margin="normal"
             fullWidth
           />
@@ -305,27 +411,41 @@ function AddTextFields(props) {
           <TextField
             id="accountNo"
             label="계좌번호"
-            placeholder="계좌번호"
+            placeholder="숫자만 입력 가능합니다"
             value={values.vendorAccount.accountNo}
             onChange={handleChange('accountNo')}
             margin="normal"
+            InputLabelProps={{
+              shrink: true,
+            }}
             fullWidth
+            helperText="- 는 제외하고 입력해주세요"
           />
         </div>
         <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
             id="accountHolder"
             label="예금주명"
-            placeholder="예금주명"
+            placeholder="예금주명 입력"
             value={values.vendorAccount.accountHolder}
             onChange={handleChange('accountHolder')}
+            InputLabelProps={{
+              shrink: true,
+            }}
             margin="normal"
             fullWidth
           />
         </div>
      
         <div className="col-md-12 col-12" style={{paddingTop:"40px"}}>
-          <Button className="jr-btn text-uppercase btn-block" color="default" onClick={() => {submitFn()}}>등록하기</Button>
+          <Button 
+            className="jr-btn text-uppercase btn-block" 
+            color="default" 
+            onClick={() => {submitFn()}}
+            size="large"
+          >
+            등록하기
+          </Button>
         </div>
         
       </form>

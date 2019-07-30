@@ -16,14 +16,8 @@ class ProductionManage extends React.Component{
     if({getInfoAccount} !== undefined){
       getInfoAccount();
     };
-   
     }
-
-
-    
-
         render(){
-          console.log("컨테이너의 컴포넌트")
             
             const { ProductList } = this.props;
 
@@ -45,16 +39,15 @@ class ProductionManage extends React.Component{
                   </div>
                   
               );
-
-
         }
 }
 
   const mapStateToProps = ({productionManagement}) => {
 
     const { ProductList } = productionManagement;
+    console.log("ProductList ------");
+    console.log(ProductList);
     return { ProductList };
   }
-  
   
   export default connect(mapStateToProps, { getProductList,  getInfoAccount })(ProductionManage);

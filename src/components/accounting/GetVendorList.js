@@ -14,16 +14,18 @@ import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Note';
+import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import GetBankInfo from 'components/accounting/GetBankInfo';
 import UpdateVendor from 'components/accounting/UpdateVendor';
 import GetVendorAddress from 'components/accounting/GetVendorAddress';
-import { getVendor, updateVendor, getCodeList, getVendorBank, getVendorAddress } from "actions/index";
+import { getVendor, updateVendor, getVendorList, getCodeList, getVendorBank, getVendorAddress, deleteVendor } from "actions/index";
 import { connect } from 'react-redux';
-import IconHome from '@material-ui/icons/Home'
-import IconPayment from '@material-ui/icons/Payment'
+import IconHome from '@material-ui/icons/Home';
+import IconPayment from '@material-ui/icons/Payment';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
+import SearchBox from 'components/SearchBox';
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -52,6 +54,8 @@ class EnhancedTableHead extends React.Component {
     this.props.onRequestSort(event, property);
   };
 
+
+
   render() {
     const {onSelectAllClick, order, orderBy, numSelected, rowCount} = this.props;
 
@@ -59,7 +63,7 @@ class EnhancedTableHead extends React.Component {
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
-            <Checkbox color="secondary"
+            <Checkbox color="primary"
                       indeterminate={numSelected > 0 && numSelected < rowCount}
                       checked={numSelected === rowCount}
                       onChange={onSelectAllClick}
@@ -94,10 +98,27 @@ class EnhancedTableHead extends React.Component {
     );
   }
 }//end of class
+// 여기까지는 테이블에서 칼럼 이름에 해당함
 
 
 let EnhancedTableToolbar = props => {
+
   const {numSelected} = props;
+  const [value, setValue] = React.useState({searchKeyword : ''});
+
+  const updateSearchKeyword = (event) => {
+    setValue({
+      searchKeyword: event.target.value,
+    });
+    console.log(value.searchKeyword)
+  }
+
+  const searchActivity = (event) => {
+    event.preventDefault();
+    props.getVendorList(value)
+  }
+
+
 
   return (
     <Toolbar
@@ -112,21 +133,30 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
+
+      <SearchBox 
+        styleName="d-none d-sm-block" 
+        placeholder="거래처번호/명"
+        onChange={updateSearchKeyword}
+        value={value.searchKeyword}
+        onClick={ event => searchActivity(event) }
+      />
+      
       <div className="actions">
-        {numSelected > 0 ? (
-          // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
-        )}
+          {numSelected > 0 ? (
+            // 툴팁 내용
+            <Tooltip title="삭제">
+              <IconButton aria-label="삭제" onClick={ props.updateUsageStatus }>
+                <DeleteIcon/>
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Filter list">
+              <IconButton aria-label="Filter list">
+                <FilterListIcon/>
+              </IconButton>
+            </Tooltip>
+          )}
       </div>
     </Toolbar>
   );
@@ -146,17 +176,16 @@ class VendorTable extends React.Component {
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.VendorList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      data: this.props.VendorList,
       page: 0,
       rowsPerPage: 10,
       open: false,
       subOpen: false,
-      addressOpen: false
+      addressOpen: false,
+      warning: false,
     };
   }
   //이체정보 다이얼로그를 띄우는데 필요한 플래그 state
-
-
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -173,6 +202,8 @@ class VendorTable extends React.Component {
 
     this.setState({data, order, orderBy});
   };
+  
+  //전체선택
   handleSelectAllClick = (event, checked) => {
     if (checked) {
       this.setState({selected: this.state.data.map((row, index) => index)});
@@ -180,37 +211,46 @@ class VendorTable extends React.Component {
     }
     this.setState({selected: []});
   };
+
   handleKeyDown = (event, id) => {
     if (keycode(event) === 'space') {
       this.handleClick(event, id);
     }
   };
+
   handleClick = (event, id) => {
+    event.preventDefault();
     const {selected} = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
+    //기존에 없던 값일때, 기존배열에 새로 붙여서 새로운 배열 반환
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
+    //기존 배열에서 제일 처음에 있을때, 첫 값 빼고 전부 잘라서 새로운 배열 반환
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
+    //기존 배열에서 제일 마지막에 있을때, 마지막 값만 빼고 잘라서 새로운 배열 반환
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
+    //처음, 끝값이 아니면 자신의 위치 구해서 배열 만들어서 반환
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1),
       );
     }
-
     this.setState({selected: newSelected});
   };
+
   handleChangePage = (event, page) => {
     this.setState({page});
   };
+
   handleChangeRowsPerPage = event => {
     this.setState({rowsPerPage: event.target.value});
   };
+
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   //거래처 이체정보 클릭시 발생 이벤트
@@ -275,8 +315,28 @@ class VendorTable extends React.Component {
     this.setState({addressOpen : false});
   }
 
-  render() {
+  //거래처 삭제시 발생 이벤트 삭제확인 다이얼로그 띄움
+  updateUsageStatus = () => {
+    this.setState({ warning : true })
+  }
 
+  //거래처 삭제 확인 버튼
+  deleteFile = () => {
+    this.props.deleteVendor(this.state.selected);
+    this.setState({
+      warning: false,
+      selected: []
+    })
+  };
+
+  //거래처 삭제 취소 버튼
+  onCancelDelete = () => {
+    this.setState({
+      warning: false
+    })
+  };
+
+  render() {
     if(this.props.VendorList !== this.state.data){
       this.setState({
         data : this.props.VendorList
@@ -287,7 +347,12 @@ class VendorTable extends React.Component {
   
     return (
       <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+        {/* EnhancedTableToolbar에 함수를 주면 위에있는 함수형 컴포넌트에 사용할 수 있다 */}
+        <EnhancedTableToolbar 
+          numSelected={selected.length}
+          updateUsageStatus={this.updateUsageStatus}  
+          getVendorList={this.props.getVendorList}
+        />
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -304,8 +369,8 @@ class VendorTable extends React.Component {
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
-                  const isSelected = this.isSelected(page*rowsPerPage+index);
-                  const currVenorNo = row.vendorNo;
+                  const isSelected = this.isSelected(row.vendorNo);
+                  
                   return (
                     <TableRow
                       hover
@@ -317,8 +382,8 @@ class VendorTable extends React.Component {
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox color="secondary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
+                        <Checkbox color="primary" checked={isSelected} 
+                                  onClick={event => this.handleClick(event, row.vendorNo)}/>
                       </TableCell>
                       <TableCell align="left" ><span onClick={ event => this.updateVendorDialog(event, row.vendorNo) } style={{cursor:'pointer'}}>{row.vendorNo}</span></TableCell>
                       <TableCell align="left" >{row.vendorName}</TableCell>
@@ -364,6 +429,21 @@ class VendorTable extends React.Component {
               open={ this.state.addressOpen }
               close={ this.addressVendorClose }
             />
+
+            <SweetAlert 
+              show={this.state.warning}
+              warning
+              showCancel
+              confirmBtnText="삭제"
+              confirmBtnBsStyle="danger"
+              cancelBtnBsStyle="default"
+              cancelBtnText="닫기"
+              title="삭제하시겠습니까?"
+              onConfirm={this.deleteFile}
+              onCancel={this.onCancelDelete}
+            >
+              삭제시 복구가 불가능합니다
+            </SweetAlert>
                 
           </div>
         </div>
@@ -372,5 +452,12 @@ class VendorTable extends React.Component {
   }
 }
 
-export default connect(null, { getVendor, updateVendor, getCodeList, getVendorBank, getVendorAddress })(VendorTable);
+export default connect(null, { getVendor,
+                               updateVendor,
+                               getVendorList,
+                               getCodeList, 
+                               getVendorBank, 
+                               getVendorAddress,
+                               deleteVendor,
+                              })(VendorTable);
 

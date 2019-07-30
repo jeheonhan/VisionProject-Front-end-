@@ -19,14 +19,14 @@ class AddAccount extends React.Component {
   state = {
     open: false,
     accountRegNo : "",
-	accountNo : "",
-	accountUsageStatusCodeNo : "",
-	accountHolder : "",
-	bankCodeNo : "",
-	bankCodeName : "",
-	reference : "",
-	accountCategoryCodeNo : "",
-	accountCategoryCodeName : "",
+    accountNo : "",
+    accountUsageStatusCodeNo : "",
+    accountHolder : "",
+    bankCodeNo : "",
+    bankCodeName : "",
+    reference : "",
+    accountCategoryCodeNo : "",
+    accountCategoryCodeName : "",
   };
 
   //계좌등록 다이얼로그 열기
@@ -182,7 +182,13 @@ class AddAccount extends React.Component {
                     </div>
 
                     <div className="col-md-12 col-12">
-                        <Button className="jr-btn text-uppercase btn-block" color="default" onClick={(event) => {this.submitAccount(event)}}>등록하기</Button>
+                        <Button 
+                          className="jr-btn text-uppercase btn-block"
+                          size="large" 
+                          color="default" 
+                          onClick={(event) => {this.submitAccount(event)}}>
+                          등록하기
+                        </Button>
                     </div>
               </form>
 

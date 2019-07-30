@@ -27,7 +27,7 @@ TabContainer.propTypes = {
 
 class FullWidthTabs extends Component {
   state = {
-    value: 1,
+    value: 0,
     searchCondition : "1"
   };
 

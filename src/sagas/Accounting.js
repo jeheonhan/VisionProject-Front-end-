@@ -51,6 +51,7 @@ import {
     GET_SALARY,
     GET_SALARY_BOOK_LIST,
     GET_ANALYZE_SALARY_BOOK_LIST,
+    DELETE_VENDOR,
 } from "actionTypes/ActionTypes";
 
 const getVendorListRequest = async (search) => {
@@ -277,6 +278,17 @@ const getAnalyzeSalaryBookRequest = async (salaryDate) =>{
     .catch(response => console.log(response));
 }
 
+//사용상태 변경은 복수처리가 가능하도록 서버로 vendorNo를 String 형식의 배열로 보낸다.
+const deleteVendorRequest = async (vendorNoList) => {
+    return await axios({
+        method:"POST",
+        url:"/accounting/convertVendorUsageStatus",
+        data: vendorNoList
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
 //여기서 payload는 search 도메인을 의미한다.
 function* getVendorListFn({payload}){
     const VendorList = yield call(getVendorListRequest, payload);
@@ -411,6 +423,11 @@ function* getAnalyzeSalaryBookFn({payload}){
     yield put(carryAnalyzeSalaryBookList(analyzeSalaryBookList));
 }
 
+function* deleteVendorFn({payload}){
+    yield call(deleteVendorRequest, payload);
+    yield put(getVendorList({ searchKeyword : "" }));
+}
+
 export function* getVendorListSaga(){
     yield takeEvery(GET_VENDOR_LIST, getVendorListFn);
 }
@@ -515,6 +532,10 @@ export function* getAnalyzeSalaryBookSaga(){
     yield takeEvery(GET_ANALYZE_SALARY_BOOK_LIST, getAnalyzeSalaryBookFn);
 }
 
+export function* deleteVendorSaga(){
+    yield takeEvery(DELETE_VENDOR, deleteVendorFn);
+}
+
 export default function* rootSaga(){
     yield all([
         fork(getVendorListSaga),
@@ -543,5 +564,6 @@ export default function* rootSaga(){
         fork(getSalarySaga),
         fork(getSalaryBookListSaga),
         fork(getAnalyzeSalaryBookSaga),
+        fork(deleteVendorSaga),
     ]);
 }

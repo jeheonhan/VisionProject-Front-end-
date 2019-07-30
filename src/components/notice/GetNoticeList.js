@@ -215,13 +215,21 @@ const columnData = [
     }
 
     handleRequestClose = () => {
-      this.props.getNoticeDetail({...this.state.noticeNo});
-      this.props.getNoticeList();
+      //this.props.getNoticeDetail({...this.state.noticeNo});
+      this.props.getNoticeList({searchCondition:null});
       this.setState({open : false});
     }
   
     render() {
+
+      const { noticeList } = this.props;
       const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
+
+      if(noticeList && noticeList != this.state.data){
+        this.setState({
+          data:noticeList.sort((a, b) => (b.noticeNo - a.noticeNo))
+        })
+      }
   
       return (
         <div>
