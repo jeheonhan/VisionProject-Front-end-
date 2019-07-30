@@ -16,7 +16,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
 import { getDailySalesList, getDailySalesDetail } from 'actions';
 import GetDailySalesDetail from './GetDailySalesDetail';
@@ -211,6 +210,11 @@ const columnData = [
     }
   
     render() {
+
+      // if(this.state.branchNo !== this.props.branchNo){
+      //   getDailySalesList(this.props.branchNo);
+      // }
+
       const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
   
       return (
