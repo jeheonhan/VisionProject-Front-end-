@@ -16,10 +16,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
-import { getProductList, getInfoAccount } from 'actions/index';
-import AddProduct from './AddProduct';
+import {  getInfoAccount } from 'actions/index';
+
 
 
 

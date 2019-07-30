@@ -2,16 +2,22 @@ import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
 import { carryProductList, carryOrderToVendorList, 
     addProduct, getProductList, addProductAccount, 
-    getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, getOrderToVendorList, getOrderToVendorDetailList, caarryOrderBranch, carryOrderBranch, carryOrderBranchList, getOrderBranchList } from 'actions/index';
+    getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, 
+    getOrderToVendorList, getOrderToVendorDetailList, caarryOrderBranch,
+     carryOrderBranch, carryOrderBranchList, getOrderBranchList ,
+     getProductListForOrder , carryProductListForOrder
+    } from 'actions/index';
 import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
      ADD_PRODUCT, GET_INFO_ACCOUNT, GET_ORDER_TO_VENDOR_DETAIL_LIST
-    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH , GET_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS,
-    UPDATE_ORDER_TO_VEN_ITEM_CODE    } from "actionTypes/ActionTypes";
+    , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH ,
+     GET_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS,
+    UPDATE_ORDER_TO_VEN_ITEM_CODE ,
+    GET_PRODUCT_LIST_FOR_ORDER
+} from "actionTypes/ActionTypes";
 
 
 
 const getProductListRequest = async () => {
-    console.log("들어와라 셀렉트프로덕트릿")
     return await axios({
         method : "GET",
         url : "/pm/selectProductList"
@@ -116,6 +122,15 @@ const modifyOrderFromBranchAxios = async(action) => {
     })
 }
 
+const getProductListForOrderRequest = async () => {
+    return await axios({
+        method : "GET",
+        url : "/pm/selectProductList"
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
 
 
 function* getselectOrderToVendorListFn(){
@@ -125,8 +140,6 @@ function* getselectOrderToVendorListFn(){
 
 function* getProductListFn(){
     const ProductList = yield call(getProductListRequest);
-    console.log("프로덕트리스트")
-   
     yield put(carryProductList(ProductList));
 }
 
@@ -146,15 +159,11 @@ function* getOrderTOVendorDetailListFn({payload}){
 }
 
 function* updateOrderToVendorCodeFn({payload}) {
-    console.log("updateOrderToVendorCodeFn들어왓냐");
-    console.log(payload.orderToVenStatusCodeName);
     yield call(updateOrderToVendorCodeRequest, payload);
-    console.log("updateOrderToVendorCodeRequest수행다 끝냇냐");
     yield put(getOrderToVendorList(payload));
 }
 
 function* addOrderToVendorFn({payload}) {
-    console.log("addOrderToVendorFn들어왓냐");
     yield call(addOrderToVendorRequest, payload);
     yield put(getOrderToVendorList());
 }
@@ -170,10 +179,8 @@ function* getOrderBranchFn(action){
 }
 
 function* updateOrderToVenItemCodeFn({payload}){
-    console.log("updateOrderToVenItemCodeFn 왓냐");
-    console.log({payload});
-    yield call (updateOrderToVenItemCodeRequest, payload);
 
+    yield call (updateOrderToVenItemCodeRequest, payload);
     const orderToVendorListDetail = yield call(getOrderToVendorDetailListRequest);
     console.log("orderToVendorListDetail 값은??");
     console.log(orderToVendorListDetail);
@@ -183,6 +190,13 @@ function* updateOrderToVenItemCodeFn({payload}){
 function* modifyOrderBranchFn(action){
     yield call(modifyOrderFromBranchAxios, action);
     yield put(getOrderBranchList({searchKeyword:JSON.parse(localStorage.getItem("user")).branchNo}))
+}
+
+function* getProductListForOrderFn(){
+   const productListForOrder = yield call(getProductListForOrderRequest);
+   console.log("productListForOrder :: 값은???")
+   console.log(productListForOrder);
+    yield put(carryProductListForOrder(productListForOrder))
 }
 
 
@@ -209,12 +223,10 @@ export function* getOrderToVendorDetailListSaga() {
 }
 
 export function* updateOrderToVendorCOdeSaga() {
-    console.log("updateOrderToVendorCOdeSaga들어왓냐")
     yield takeEvery(UPDATE_ORDER_TO_VENDOR_CODE, updateOrderToVendorCodeFn)
 }
 
 export function* addOrderToVendorSaga() {
-    console.log("addOrderToVendorSaga들어왓냐");
     yield takeEvery(ADD_ORDER_TO_VENDOR, addOrderToVendorFn)
 }
 
@@ -234,8 +246,11 @@ export function* modifyOrderBranchStatusSaga(){
     yield takeEvery(MODIFY_ORDER_BRANCH_STATUS, modifyOrderBranchFn)
 }
 
+export function* productListForOrderSaga(){
+    yield takeEvery(GET_PRODUCT_LIST_FOR_ORDER, getProductListForOrderFn)
+}
+
 export default function* rootSaga(){
-    console.log("rootSaga()");
     yield all([
         fork(getProductListSaga),
         fork(getselectOrderToVendorListSaga),
@@ -247,7 +262,8 @@ export default function* rootSaga(){
         fork(addOrderBranchSaga),
         fork(updateOrderToVenItemCodeSaga),
         fork(getOrderBranchSaga),
-        fork(modifyOrderBranchStatusSaga)
+        fork(modifyOrderBranchStatusSaga),
+        fork(productListForOrderSaga)
     ]);
 }
 
