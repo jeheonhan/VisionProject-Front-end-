@@ -227,6 +227,7 @@ export const ADD_ORDER_BRANCH = 'add_order_branch';
 export const GET_ORDER_BRANCH_LIST = 'get_order_branch';
 export const CARRY_ORDER_BRANCH_LIST = 'carry_order_branch';
 export const MODIFY_ORDER_BRANCH_STATUS = 'modify_order_branch_staus';
+export const SEND_SHIPPING = 'send_shipping';
 
 
 //회계관리
@@ -310,6 +311,8 @@ export const GET_DAILY_SALES_DETAIL = 'get_daily_sales_detail';
 export const CARRY_DAILY_SALES_DETAIL = 'carry_daily_sales_detail';
 export const ADD_DAILY_SALES = 'add_daily_sales';
 export const ADD_DAILY_SALES_RESULT = 'add_daily_sales_result';
+export const GET_SALES_MENU_LIST = 'get_sales_menu_list';
+export const CARRY_SALES_MENU_LIST = 'carry_sales_menu_list';
 
 
 
@@ -331,4 +334,5 @@ export const GET_INFO_ACCOUNT = 'get_info_account';
 export const CARRY_INFO_ACCOUNT = 'carry_info_account';
 export const ADD_ORDER_TO_VENDOR = 'add_order_to_vendor';
 export const UPDATE_ORDER_TO_VEN_ITEM_CODE = 'update_order_to_ven_item_code';
-
+export const CARRY_PRODUCT_LIST_FOR_ORDER = 'carry_product_list_for_order';
+export const GET_PRODUCT_LIST_FOR_ORDER = 'get_ProductList_for_order';

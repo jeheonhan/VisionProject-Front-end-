@@ -9,7 +9,6 @@ class DailySalesManage extends React.Component{
 
     constructor(props){
         super(props);
-        this.state = {branchNo:'b1003'} 
         // ################# 로그인시 세션에서 지점번호 가져와야함. ###########################
     }
 
@@ -18,7 +17,7 @@ class DailySalesManage extends React.Component{
         const { dailySalesList } = this.props;
 
         if( dailySalesList === undefined ) {
-            this.props.getDailySalesList(this.state.branchNo)
+            this.props.getDailySalesList(JSON.parse(localStorage.getItem("user")).branchNo)
         }
 
         return(

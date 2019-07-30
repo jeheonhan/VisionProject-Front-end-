@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
-import OrderFromBranchTableB from "components/productManagement/OrderBranchTableB";
+import OrderFromBranchTableC from "components/productManagement/OrderBranchTableC";
 import { getOrderBranchList } from "actions/index"
 
 
@@ -18,7 +18,7 @@ class OrderFromBranchRequestContainer extends React.Component{
             )
         }
         return(
-          <OrderFromBranchTableB/>
+          <OrderFromBranchTableC/>
         );
     }
 }

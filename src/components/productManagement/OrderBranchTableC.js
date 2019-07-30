@@ -18,17 +18,19 @@ import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import ApprovalFormDetail from 'components/approvalForm/ApprovalFormDetail'
 import ProductionManagement from 'reducers/ProductionManagement';
 import { RemoveShoppingCart } from '@material-ui/icons'
-import OrderBranchDetail from 'components/productManagement/OrderBranchDetail'
+import OrderBranchDetailCompany from 'components/productManagement/OrderBranchDetailCompany'
 import SweetAlert from 'react-bootstrap-sweetalert'
-
+import {Done} from '@material-ui/icons';
+import ShippingDialog from 'components/productManagement/ShippingDialog'
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
   
   {id: 'orderFromBranchNo', align: true, disablePadding: false, label: '주문번호'},
+  {id: 'branchName', align: true, disablePadding: false, label: '지점명'},
   {id: 'orderDate', align: true, disablePadding: false, label: '주문일자'},
-  {id: 'orderFromBranchTotalAmount', align: false, disablePadding: false, label: '주문총금액'},
   {id: 'orderFromBranchStatusCodeName', align: false, disablePadding: false, label: '주문서상태'},
+  {id: 'leftProdToShip', align: false, disablePadding: false, label: '출하대기상품'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -122,6 +124,12 @@ class EnhancedTable extends React.Component {
       order === 'desc'
         ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
         : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+
+    if(property==='leftProdToShip'){
+        order === 'desc'
+        ? this.state.data.sort((a, b) => (b[orderBy] - a[orderBy] ))
+        : this.state.data.sort((a, b) => (a[orderBy] - b[orderBy] ));
+    }
     this.setState({data, order, orderBy});
   };
   handleSelectAllClick = (event, checked) => {
@@ -186,8 +194,8 @@ onCancel = () => {
 }
 
   //카트 클릭 시 삭제
-  handleCancelOrder = (event, row) => {
-    const statusCode = "04"
+  handleCancelOrder = () => {
+    const statusCode = "05"
     let data = this.state.row;
     data.orderFromBranchStatusCodeNo=statusCode;
     this.props.modifyOrderBranchStatus(data);
@@ -212,6 +220,23 @@ onCancel = () => {
     })
   }
 
+  //미배송다이얼로그
+  onShippingDialog = (event, row) => {
+      if(event!=null){
+          event.preventDefault();
+      }
+      this.setState({
+        shippingOpen:true,
+        row:row,
+        shipList:row.orderFromBranchProductList,
+        shipOrderStatus : row.orderFromBranchStatusCodeNo
+      })
+  }
+  
+  onShippingDialogClose = () => {
+    this.setState({shippingOpen: false});
+  };
+
   constructor(props, context) {
     super(props, context);
 
@@ -224,6 +249,8 @@ onCancel = () => {
       page: 0,
       rowsPerPage: 10,
       warning:false,
+      shippingOpen:false,
+      shipList:[],
       targetOB :{
         statementNo:null
         ,orderFromBranchNo:null
@@ -260,6 +287,17 @@ onCancel = () => {
       this.setState({data:orderBranchList})
     }
 
+    if(this.state.row!=null && this.state.row!==undefined){
+        const obForDialog = orderBranchList[orderBranchList.findIndex((orderBranch) => orderBranch.orderFromBranchNo===this.state.row.orderFromBranchNo)];
+        if( (obForDialog.orderFromBranchProductList !== this.state.shipList) && this.state.shippingOpen){
+            this.setState({
+                row:obForDialog,
+                shipList:obForDialog.orderFromBranchProductList,
+                shipOrderStatus : obForDialog.orderFromBranchStatusCodeNo
+            })
+          }
+    }
+    
     return (
       <div className="jr-card">
         {/* <EnhancedTableToolbar numSelected={selected.length}/> */}
@@ -280,8 +318,7 @@ onCancel = () => {
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
-                  if(row.orderFromBranchStatusCodeName==='주문대기'){
-                    return (
+                  return (
                     <TableRow
                       hover
                       onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
@@ -299,36 +336,21 @@ onCancel = () => {
                       </TableCell>
                       <TableCell align="left">
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickNo(event, row)}>
-                          {row.orderDate}
-                        </span>
-                      </TableCell>
-                      <TableCell align="left" >{row.orderFromBranchTotalAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
-                      <TableCell align="left"  size="small" >{row.orderFromBranchStatusCodeName}<span style={{paddingLeft:"25px", cursor:'pointer'}}  onClick={(event) => this.onCancelOrderAlert(event, row)}>
-                      <RemoveShoppingCart/>
-                        </span></TableCell>
-                    </TableRow>
-                  );
-                  }
-                  return (
-                    <TableRow
-                      hover
-                      onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={page*rowsPerPage+index}
-                      selected={isSelected}
-                    >
-                      
-                      <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickNo(event, row)}>
-                          {row.orderFromBranchNo}
+                          {row.branchName}
                         </span>
                       </TableCell>
                       <TableCell align="left">{row.orderDate}</TableCell>
-                      <TableCell align="left" >{row.orderFromBranchTotalAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
-                      <TableCell align="left"  size="small" >{row.orderFromBranchStatusCodeName}</TableCell>
-                    </TableRow>
+                      <TableCell align="left"  size="small" >{row.orderFromBranchStatusCodeName}{ 
+                            row.orderFromBranchStatusCodeNo==="04" && 
+                            <span style={{cursor:'pointer', paddingLeft:"25px"}}  onClick={(event) => this.onCancelOrderAlert(event, row)}>
+                                <Done/>
+                            </span>
+                            }</TableCell>
+                      <TableCell align="left" >
+                      {row.orderFromBranchStatusCodeNo==="01" || row.orderFromBranchStatusCodeNo==="03" ? <span style={{cursor:'pointer'}}  onClick={(event) => this.onShippingDialog(event, row)}>{row.leftProdToShip}</span> : <span style={{cursor:'pointer'}}  onClick={(event) => this.onShippingDialog(event, row)}><i class="zmdi zmdi-minus zmdi-hc-1x"></i></span>}
+                      </TableCell>
+                   
+                   </TableRow>
                   );
                 })}
               </TableBody>
@@ -346,9 +368,13 @@ onCancel = () => {
             </Table>
           </div>
         </div>
-        <OrderBranchDetail targetOB={this.state.targetOB} 
+        <OrderBranchDetailCompany targetOB={this.state.targetOB} 
                             open={this.state.open} 
                             handleClose={this.handleClose}/>
+        <ShippingDialog open={this.state.shippingOpen}
+                        cancel={this.onShippingDialogClose}
+                        productList={this.state.shipList}
+                        status={this.state.shipOrderStatus}/>
         <SweetAlert show={this.state.warning}
                     warning
                     showCancel
@@ -356,7 +382,7 @@ onCancel = () => {
                     cancelBtnText="나가기"
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
-                    title="주문취소 요청이 본사로 전달됩니다."
+                    title="주문이 취소됩니다."
                     onConfirm={this.warningOk}
                     onCancel={this.onCancel}
             >

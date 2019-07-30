@@ -28,6 +28,7 @@ export default (state = INIT_STATE, action) => {
         }
 
         case CARRY_NOTICE_LIST : {
+            console.log(action.payload)
             return{
                 ...state,
                 noticeList: action.payload
