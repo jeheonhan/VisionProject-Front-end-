@@ -4,10 +4,8 @@ import Dialog from '@material-ui/core/Dialog';
 import {Card, CardBody, CardHeader, CardSubtitle, CardText} from 'reactstrap';
 import { connect } from 'react-redux';
 import { checkDuplicateSalaryDate, addSalary } from 'actions/index';
-
 import moment from 'moment';
 import MonthPickers from 'components/accounting/MonthPickers';
-
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 class AddSalary extends Component {
@@ -34,6 +32,7 @@ class AddSalary extends Component {
     this.setState({
       success : false
     })
+    this.handleRequestClose();
   }
 
   //등록실패알람 켜기
@@ -71,7 +70,7 @@ class AddSalary extends Component {
       if(this.props.salaryDateResult){
         this.props.addSalary(this.state.salaryDate);
         this.openSuccessAlarm();
-        this.handleRequestClose();
+        
       }else{
         this.openWarningAlarm();
       }

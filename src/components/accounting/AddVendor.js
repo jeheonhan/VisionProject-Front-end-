@@ -11,11 +11,11 @@ import TextField from '@material-ui/core/TextField';
 import { connect } from 'react-redux';
 import { addVendor, getCodeList } from 'actions/index';
 import GetPostCode from 'components/accounting/GetPostCode'
-
 import MaskedInput from 'react-text-mask';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';  
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 //지역전화번호코드
 const localPhoneCode = [
@@ -170,21 +170,22 @@ function AddTextFields(props) {
   //대괄호를 사용하는 문법은 "배열 구조 분해" 왼쪽의 변수는 사용하고 싶은 이름으로 변경가능. 배열구조분해라는 특별한 방법으로 변수를
   //선언해주었기 때문에 [0]이나 [1]로 배열에 접근하는 것은 좋지 않다.
   const [values, setValues] = useState({
-    vendorName:"",
-    representativeName:"",
-    localPhoneCode:"02",
-    vendorTel:"",
-    vendorPhone:"",
-    vendorCategoryCodeNo:"",
+    vendorName : "",
+    representativeName :"",
+    localPhoneCode : "02", 
+    vendorTel : "",
+    vendorPhone : "",
+    vendorCategoryCodeNo : "",
     //도메인 안에 도메인에 값을 넣으려면 그냥 보내면 안되고 inner json으로 보내야 한다.
-    vendorAccount :{
-      bankCodeNo:"",
-      accountNo:"",
-      accountHolder:""
+    vendorAccount : {
+      bankCodeNo : "",
+      accountNo : "",
+      accountHolder : ""
     },
-    zipCode:"",
-    address:"",
-    detailAddress:""
+    zipCode : "",
+    address : "",
+    detailAddress : "",
+    success : false,
   });
 
   //inner json을 입력하려면 우선 임시방편으로 else if로 사용해서 직접 nested json에 넣는 수 밖에 없을듯
@@ -209,17 +210,36 @@ function AddTextFields(props) {
     post.current.handleClickOpen();
   }
 
+  //가져온 우편번호, 주소 값 저장
   const handlePostcode = (zipCode, address) => {
     setValues({
       ...values,
-      zipCode:zipCode,
-      address:address
+      zipCode : zipCode,
+      address : address
     })
   };
 
+  //거래처 등록하기
   const submitFn = () => {
       props.addVendor(values);
-      props.handleRequestClose();
+      openSuccessAlarm();
+  }
+
+  //등록성공알람 켜기
+  const openSuccessAlarm = () => {
+    setValues({
+      ...values,
+      success : true
+    })
+  }
+
+  //등록성공알람 끄기
+  const closeSuccessAlarm = () => {
+    setValues({
+      ...values,
+      success : false
+    })
+    props.handleRequestClose();
   }
 
     return (
@@ -447,6 +467,17 @@ function AddTextFields(props) {
             등록하기
           </Button>
         </div>
+
+        <SweetAlert 
+          show={values.success} 
+          success 
+          title="등록완료"
+          onConfirm={closeSuccessAlarm}
+          confirmBtnText="확인"
+          confirmBtnBsStyle="danger"
+          >
+          등록에 성공했습니다
+        </SweetAlert>
         
       </form>
     );

@@ -24,7 +24,6 @@ import { connect } from 'react-redux';
 import IconHome from '@material-ui/icons/Home';
 import IconPayment from '@material-ui/icons/Payment';
 import SweetAlert from 'react-bootstrap-sweetalert';
-
 import SearchBox from 'components/SearchBox';
 
 //칼럼명 지어주는 곳
@@ -206,7 +205,7 @@ class VendorTable extends React.Component {
   //전체선택
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState({selected: this.state.data.map((row, index) => index)});
+      this.setState({selected: this.state.data.map((row, index) => row.vendorNo)});
       return;
     }
     this.setState({selected: []});

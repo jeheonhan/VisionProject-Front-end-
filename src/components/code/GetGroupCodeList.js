@@ -15,15 +15,15 @@ class GetGroupCodeList extends React.Component {
 
   render(){
     return (
-
-      <Card className="shadow border-0" align="right">
-       
+      <Card className="shadow border-0" align="center">
       <CardBody>
-        <h4 className="card-title">{this.props.title}&nbsp;&nbsp;
-        <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClick}>
-          <i className="zmdi zmdi-search zmdi-hc-fw"/>
+        <br/>
+        <h3 className="font-weight-light">{this.props.title}</h3>
+        <h4><i class="zmdi zmdi-quote zmdi-hc-1x zmdi-hc-flip-horizontal"></i>&nbsp;{this.props.engCode}&nbsp;<i class="zmdi zmdi-quote zmdi-hc-1x"></i></h4>
+        <br/>
+        <Button style={{backgroundColor:"#ae402d"}} fullWidth variant="contained" className="jr-btn text-white" onClick={this.handleClick}>
+          <i className="zmdi zmdi-search zmdi-hc-fw  zmdi-hc-2x"/>
         </Button>
-        </h4>
       </CardBody>
     </Card>
 

@@ -1,6 +1,7 @@
 import React from "react";
 import CardBox from "components/CardBox";
 import GetCardList from 'components/accounting/GetCardList';
+import GetCardThumbnails from 'components/accounting/GetCardThumbnails';
 import { getCardList } from 'actions';
 import { connect } from 'react-redux';
 
@@ -23,9 +24,13 @@ class CardManage extends React.Component{
         this.props.getCardList(this.state.search);
     }
         return (
-            <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
-                {cardList !== undefined ? (<GetCardList cardList={cardList}></GetCardList>) : "error" }
-            </CardBox>
+            
+            // <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
+            //     {cardList !== undefined ? (<GetCardList cardList={cardList}></GetCardList>) : "error" }
+            // </CardBox>
+            <div>
+                {cardList !== undefined ? (<GetCardThumbnails cardList={cardList && cardList}></GetCardThumbnails>) : "error" }
+            </div>
         )
     }
 }//end of class

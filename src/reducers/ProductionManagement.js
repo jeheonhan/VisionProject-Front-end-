@@ -9,11 +9,7 @@ import { GET_PRODUCT_LIST, CARRY_PRODUCT_LIST ,
 
 
 const INIT_STATE = {
-productNo : "",
-productName : "",
-purchasePrice : "",
-salesPrice : "",
-quantity : "",
+
 
 };
 
@@ -110,7 +106,6 @@ switch(action.type){
    }
 
    case CARRY_PRODUCT_LIST_FOR_ORDER : {
-       alert(action.payload)
        return {
            ...state,
            ProductListForOrder : action.payload

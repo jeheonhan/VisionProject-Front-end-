@@ -9,6 +9,7 @@ import {connect} from 'react-redux';
 import {addApproval, getApprovalList} from 'actions/index';
 import {Redirect} from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert'
+import moment from 'moment';
 
 class AddApproval extends React.Component{
     constructor(props){
@@ -259,12 +260,18 @@ class AddApproval extends React.Component{
                 />
                 </div>
 
-                <div className="col-md-5" style={{marginRight:'0px'}}>
+                <div className="col-md-5 manage-margin" style={{marginRight:'0px'}}>
                 <TextField 
                     margin="normal"
                     id="registrantEmployeeName"
                     label="등록자"
                     value={JSON.parse(localStorage.getItem("user")).employeeName}
+                />
+                <TextField 
+                    margin="normal"
+                    id="registrantEmployeeName"
+                    label="작성일자"
+                    value={moment().format("YYYY/MM/DD")}
                 />
                 </div>
                 

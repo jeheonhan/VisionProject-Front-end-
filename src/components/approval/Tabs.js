@@ -48,7 +48,6 @@ class FullWidthTabs extends Component {
 
   render() {
     const {theme} = this.props;
-
     return (
       <div className="w-100">
         <AppBar position="static" color="default">

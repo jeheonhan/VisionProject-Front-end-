@@ -10,7 +10,7 @@ class ApprovalFormList extends React.Component{
     constructor(props) {
         super(props);
         this.state={
-            searchCondition:"1",
+            searchCondition:"2",
             searchKeyword:JSON.parse(localStorage.getItem("user")).employeeNo
         }
       }
