@@ -4,6 +4,9 @@ import GetGroupCodeList from "components/code/GetGroupCodeList"
 import CardBox from "components/CardBox";
 import { connect } from 'react-redux';
 import { getGroupCodeList, getCodeList, getForCodeDetail } from "actions/Code";
+import Button from '@material-ui/core/Button';
+import Slider from "react-slick";
+
 
 class CodeManage extends React.Component{
 
@@ -13,6 +16,8 @@ class CodeManage extends React.Component{
           redirect : false,
           search : {searchKeyword:""}
         }
+        this.next = this.next.bind(this);
+        this.previous = this.previous.bind(this);
     }
 
     handleClick = (_searchKeyword) => {
@@ -37,6 +42,38 @@ class CodeManage extends React.Component{
       }
     }
 
+    next() {
+      this.slider.slickNext();
+    }
+    previous() {
+      this.slider.slickPrev();
+    }
+
+    options2 = {
+      dots: true,
+      arrows: false,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 4,
+      slidesToScroll: 4,
+      appendDots: dots => (
+        <div>
+          <ul> 
+          <Button variant="contained" className="jr-btn bg-white jr-btn-xs" onClick={this.previous}>
+          <i class="zmdi zmdi-chevron-left zmdi-hc-5x"></i>
+          </Button>
+            {dots.map((item, index) => {
+              return (
+                <li style={{color:"#CC4F3A"}} key={index}>{item.props.children}</li>
+              );
+            })}
+        <Button style={{marginLeft:"10px"}} variant="contained" className="jr-btn jr-btn-xs bg-white" onClick={this.next}>
+        <i class="zmdi zmdi-chevron-right zmdi-hc-5x"></i>
+        </Button></ul>
+        </div>
+      )
+    };
+
     render(){
       const { groupCodeList } = this.props;
       if(groupCodeList === undefined){
@@ -53,16 +90,22 @@ class CodeManage extends React.Component{
           this.props.getForCodeDetail(this.state.search);
         }
       return (
-        groupCodeList.map((code, index) => {
-        return (<div className="col-lg-3 col-sm-4 col-4" style={{float:"left"}} key={index}>
-                {this.renderRedirect()}
+        <div>
+          {this.renderRedirect()}
+          
+<Slider className="mb-4 slick-app-frame" ref={c => (this.slider = c)} {...this.options2} style={{clear:"both"}}>
+        {groupCodeList.map((code, index) => {
+        return (<div className="slick-slide-item" key={index}>
                 <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside >
-                    <GetGroupCodeList action={this.handleClick} title={code.groupCodeName} code={code.groupCode} list={code.codeList}></GetGroupCodeList>
+                    <GetGroupCodeList engCode={code.groupCode} action={this.handleClick} title={code.groupCodeName} code={code.groupCode} list={code.codeList}></GetGroupCodeList>
                 </CardBox>
                 </div>
-               )
+              )
         }
-        ))
+        )}
+      </Slider>
+          </div>
+        )
       }
     }
 

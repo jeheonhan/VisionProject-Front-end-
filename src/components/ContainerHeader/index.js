@@ -13,7 +13,9 @@ const getDisplayString = (sub) => {
 const getUrlString = (path, sub, index) => {
   if (index === 0) {
     return '#/';
-  } else {
+  }else if(path==="app/code/detail" && sub==="code"){
+    return '/app/code/';
+  }else {
     return '#/' + path.split(sub)[0] + sub;
   }
 };
