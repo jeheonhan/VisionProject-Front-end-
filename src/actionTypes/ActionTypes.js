@@ -279,6 +279,7 @@ export const CARRY_SALARY_BOOK_LIST = 'carry_salary_book_list';
 export const GET_ANALYZE_SALARY_BOOK_LIST ='get_analyze_salary_book_list';
 export const CARRY_ANALYZE_SALARY_BOOK_LIST ='carry_analyze_salary_book_list';
 export const DELETE_VENDOR = 'delete_vendor';
+export const DELETE_CARD = 'delete_card';
 
 
 

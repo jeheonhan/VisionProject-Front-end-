@@ -2,18 +2,17 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import GetPostCode from 'components/accounting/GetPostCode'
 import MenuItem from '@material-ui/core/MenuItem';
 import { updateVendor, cleanStoreState,getCodeList } from 'actions/index'
 import { connect } from 'react-redux';
-
 import MaskedInput from 'react-text-mask';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input'
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 //지역전화번호코드
 const localPhoneCode = [
@@ -79,6 +78,7 @@ class UpdateVendor extends React.Component {
       this.state = {
         
         updateFlag : false,
+        success : false,
       }
   }
 
@@ -112,10 +112,29 @@ class UpdateVendor extends React.Component {
       
   };
 
+  //거래처 수정 요청
   submitFn = () => {
     this.props.updateVendor(this.state.vendor);
     this.setState({ updateFlag : false });
     this.props.cleanStoreState('vendorInfo');
+    this.openSuccessAlarm();
+    
+  }
+
+  //수정성공알람 켜기
+  openSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      success : true
+    })
+  }
+
+  //수정성공알람 끄기
+  closeSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      success : false
+    })
     this.props.close();
   }
 
@@ -368,6 +387,18 @@ class UpdateVendor extends React.Component {
                 닫기
               </Button>
           </DialogContent>
+
+          <SweetAlert 
+            show={this.state.success} 
+            success 
+            title="수정완료"
+            onConfirm={this.closeSuccessAlarm}
+            confirmBtnText="확인"
+            confirmBtnBsStyle="danger"
+            >
+            수정에 성공했습니다
+          </SweetAlert>
+
         </Dialog>
       </div>
     );

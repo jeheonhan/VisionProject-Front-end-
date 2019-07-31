@@ -52,6 +52,7 @@ import {
     GET_SALARY_BOOK_LIST,
     GET_ANALYZE_SALARY_BOOK_LIST,
     DELETE_VENDOR,
+    DELETE_CARD,
 } from "actionTypes/ActionTypes";
 
 const getVendorListRequest = async (search) => {
@@ -289,6 +290,16 @@ const deleteVendorRequest = async (vendorNoList) => {
     .catch(response => console.log(response));
 }
 
+const deleteCardRequest = async (cardNoList) => {
+    return await axios({
+        method:"POST",
+        url:"/accounting/convertCardUsageStatus",
+        data: cardNoList
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
 //여기서 payload는 search 도메인을 의미한다.
 function* getVendorListFn({payload}){
     const VendorList = yield call(getVendorListRequest, payload);
@@ -428,6 +439,11 @@ function* deleteVendorFn({payload}){
     yield put(getVendorList({ searchKeyword : "" }));
 }
 
+function* deleteCardFn({payload}){
+    yield call(deleteCardRequest, payload);
+    yield put(getCardList({ searchKeyword : "" }));
+}
+
 export function* getVendorListSaga(){
     yield takeEvery(GET_VENDOR_LIST, getVendorListFn);
 }
@@ -536,6 +552,10 @@ export function* deleteVendorSaga(){
     yield takeEvery(DELETE_VENDOR, deleteVendorFn);
 }
 
+export function* deleteCardSaga(){
+    yield takeEvery(DELETE_CARD, deleteCardFn);
+}
+
 export default function* rootSaga(){
     yield all([
         fork(getVendorListSaga),
@@ -565,5 +585,6 @@ export default function* rootSaga(){
         fork(getSalaryBookListSaga),
         fork(getAnalyzeSalaryBookSaga),
         fork(deleteVendorSaga),
+        fork(deleteCardSaga),
     ]);
 }

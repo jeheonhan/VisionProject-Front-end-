@@ -14,11 +14,13 @@ import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Note';
+import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
-import { getCard } from 'actions/index';
+import { getCard, deleteCard, getCardList } from 'actions/index';
 import UpdateCard from 'components/accounting/UpdateCard';
+import SearchBox from 'components/SearchBox';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -53,7 +55,7 @@ class EnhancedTableHead extends React.Component {
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
-            <Checkbox color="secondary"
+            <Checkbox color="primary"
                       indeterminate={numSelected > 0 && numSelected < rowCount}
                       checked={numSelected === rowCount}
                       onChange={onSelectAllClick}
@@ -92,6 +94,19 @@ class EnhancedTableHead extends React.Component {
 
 let EnhancedTableToolbar = props => {
   const {numSelected} = props;
+  const [value, setValue] = React.useState({searchKeyword : ''});
+
+  const updateSearchKeyword = (event) => {
+    setValue({
+      searchKeyword: event.target.value,
+    });
+    console.log(value.searchKeyword)
+  }
+
+  const searchActivity = (event) => {
+    event.preventDefault();
+    props.getCardList(value)
+  }
 
   return (
     <Toolbar
@@ -106,11 +121,20 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
+
+      <SearchBox 
+        styleName="d-none d-sm-block" 
+        placeholder="카드번호/카드명"
+        onChange={updateSearchKeyword}
+        value={value.searchKeyword}
+        onClick={ event => searchActivity(event) }
+      />
+
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
+          <Tooltip title="삭제">
+            <IconButton aria-label="삭제" onClick={ props.updateUsageStatus }>
               <DeleteIcon/>
             </IconButton>
           </Tooltip>
@@ -141,11 +165,11 @@ class CardTable extends React.Component {
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.cardList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      data: this.props.cardList,
       page: 0,
       rowsPerPage: 10,
       updateOpen: false,
-
+      warning: false,
     };
   }
 
@@ -164,19 +188,22 @@ class CardTable extends React.Component {
 
     this.setState({data, order, orderBy});
   };
+
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState({selected: this.state.data.map((row, index) => index)});
+      this.setState({selected: this.state.data.map((row, index) => row.cardRegNo)});
       return;
     }
     this.setState({selected: []});
   };
+
   handleKeyDown = (event, id) => {
     if (keycode(event) === 'space') {
       this.handleClick(event, id);
     }
   };
   handleClick = (event, id) => {
+    event.preventDefault();
     const {selected} = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -223,6 +250,27 @@ class CardTable extends React.Component {
     this.updateCardDialogOpen();
   }
 
+  //카드 삭제시 발생 이벤트 삭제확인 다이얼로그 띄움
+  updateUsageStatus = () => {
+    this.setState({ warning : true })
+  }
+
+  //거래처 삭제 확인 버튼
+  deleteFile = () => {
+    this.props.deleteCard(this.state.selected);
+    this.setState({
+      warning: false,
+      selected: []
+    })
+  };
+
+  //거래처 삭제 취소 버튼
+  onCancelDelete = () => {
+    this.setState({
+      warning: false
+    })
+  };
+
   render() {
 
     if(this.props.cardList !== this.state.data){
@@ -235,7 +283,11 @@ class CardTable extends React.Component {
   
     return (
       <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+        <EnhancedTableToolbar 
+          numSelected={selected.length}
+          updateUsageStatus={this.updateUsageStatus}  
+          getCardList={this.props.getCardList}
+        />
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -252,8 +304,8 @@ class CardTable extends React.Component {
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
-                  const isSelected = this.isSelected(page*rowsPerPage+index);
-                  const currVenorNo = row.vendorNo;
+                  const isSelected = this.isSelected(row.cardRegNo);
+                  
                   return (
                     <TableRow
                       hover
@@ -265,8 +317,8 @@ class CardTable extends React.Component {
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox color="secondary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
+                        <Checkbox color="primary" checked={isSelected} 
+                                  onClick={event => this.handleClick(event, row.cardRegNo)}/>
                       </TableCell>
                       <TableCell align="left"><span onClick={ event => this.updateCard(event, row.cardRegNo) } style={{cursor:'pointer'}}>{row.cardRegNo}</span></TableCell>
                       <TableCell align="left">{row.cardNo}</TableCell>
@@ -297,6 +349,21 @@ class CardTable extends React.Component {
               open={this.state.updateOpen}
               close={this.updateCardDialogClose}
             />
+
+            <SweetAlert 
+              show={this.state.warning}
+              warning
+              showCancel
+              confirmBtnText="삭제"
+              confirmBtnBsStyle="danger"
+              cancelBtnBsStyle="default"
+              cancelBtnText="닫기"
+              title="삭제하시겠습니까?"
+              onConfirm={this.deleteFile}
+              onCancel={this.onCancelDelete}
+            >
+              삭제시 복구가 불가능합니다
+            </SweetAlert>
             
           </div>
         </div>
@@ -305,4 +372,6 @@ class CardTable extends React.Component {
   }
 }
 
-export default connect(null, {getCard})(CardTable);
+export default connect(null, { getCard,
+                               deleteCard,
+                               getCardList})(CardTable);
