@@ -56,9 +56,14 @@ class UserInfo extends React.Component {
               }}
         >
           <MenuItem onClick={this.handleRequestClose}>
-            <i className="zmdi zmdi-account zmdi-hc-fw mr-2"/>
-            내정보보기
+            <NavLink to={user.employeeNo? "/app/getMyInfo/employee":"/app/getMyInfo/branch"}>
+              <i className="zmdi zmdi-account zmdi-hc-fw mr-2"/>
+              내정보보기
+            </NavLink>
           </MenuItem>
+
+
+
           <MenuItem>
             <NavLink to="/app/commute">
               <i className="zmdi zmdi-settings zmdi-hc-fw mr-2"/>

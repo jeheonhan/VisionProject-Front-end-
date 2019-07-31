@@ -275,6 +275,10 @@ class EnhancedTable extends React.Component {
 
     const { workAttitudeList } = this.props;
 
+    if(workAttitudeList == undefined){
+      this.props.getWorkAttitudeList(this.state.search)
+    }
+
     if(workAttitudeList !== this.state.data){
       this.setState({data:workAttitudeList});
     }
@@ -295,12 +299,12 @@ class EnhancedTable extends React.Component {
                 orderBy={orderBy}
                 onSelectAllClick={this.handleSelectAllClick}
                 onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
+                rowCount={data && data.length}
               />
               <TableBody>
                 
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
-                {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                {data && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   // const isSelected = this.isSelected(page*rowsPerPage+index);
                   const isSelected = this.isSelected(row.workAttitudeNo);
                   return (
@@ -343,7 +347,7 @@ class EnhancedTable extends React.Component {
               <TableFooter>
                 <TableRow>
                   <TablePagination
-                    count={data.length}
+                    count={data && data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={this.handleChangePage}

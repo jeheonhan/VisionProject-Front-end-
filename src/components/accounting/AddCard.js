@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { checkedEmployee, getCodeList, addCard  } from 'actions/index';
+import { checkedEmployee, getCodeList, addCard, cleanStoreState  } from 'actions/index';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,19 +13,13 @@ import TextField from '@material-ui/core/TextField';
 import MaskedInput from 'react-text-mask';
 import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
-import FileBase64 from 'react-file-base64';
+import FileBase64 from 'components/base64/react-file-base64';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-
 import FindEmployee from 'components/humanResource/FindEmployee';
 import FindAccount from 'components/accounting/FindAccount';
-
-import Tooltip from '@material-ui/core/Tooltip';
-import Avatar from '@material-ui/core/Avatar';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { compose } from 'redux';
-import { withStyles } from '@material-ui/styles';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 class TextMaskCustom extends React.Component {
   render() {
@@ -34,27 +28,10 @@ class TextMaskCustom extends React.Component {
         {...this.props}
         mask={[ /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/  ]}
         placeholderChar={'\u2000'}
-        showMask
       />
     );
   }
 }
-
-//파일업로드용 makeStyles
-const useStyles = makeStyles(theme => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  leftIcon: {
-    marginRight: theme.spacing(1),
-  },
-  rightIcon: {
-    marginLeft: theme.spacing(1),
-  },
-  iconSmall: {
-    fontSize: 20,
-  },
-}));
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -82,10 +59,12 @@ class AddCard extends React.Component {
       cardImage : "",
       cardUsageStatusCodeNo : "",
       accountNo : "",
-      cardNo : '    -    -    -    ',
+      cardNo : '',
+      cardImageFile : '',
       open: false,
       findEmployeeOpen : false,
       findAccountOpen : false,
+      success : false,
     }
 
   }
@@ -127,7 +106,9 @@ class AddCard extends React.Component {
 
   //프로필 사진 업로드
   handleProfileImgUpload = (files) => {
-    this.setState({cardImage:files})
+    this.setState({
+      cardImageFile : files
+    })
   }
 
   //계좌번호 입력
@@ -137,18 +118,50 @@ class AddCard extends React.Component {
     })
   }
 
+  //카드 등록값 입력
   handleChange = name => event => {
     this.setState({ ...this.state, [name]: event.target.value });
     console.log(this.state);
   };
   
 
+  //등록성공알람 켜기
+  openSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      success : true
+    })
+  }
+
+  //등록성공알람 끄기
+  closeSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      success : false
+    })
+    this.handleRequestClose()
+  }
+
   
   render() {
     
     const { cardList, cardCategoryList } = this.props;
     
-    // const classes  = this.props.useStyles();
+    //파일업로드용 makeStyles
+    const classes = makeStyles(theme => ({
+      button: {
+        margin: theme.spacing(1),
+      },
+      leftIcon: {
+        marginRight: theme.spacing(1),
+      },
+      rightIcon: {
+        marginLeft: theme.spacing(1),
+      },
+      iconSmall: {
+        fontSize: 20,
+      },
+    }));
 
     //왜 굳이 const로 만들어서 줬지? 그냥 this.props로 줘도 되지 않나
     //this.props 하나로 다 받을 수 있어서 재사용성을 높을 듯?
@@ -162,6 +175,7 @@ class AddCard extends React.Component {
       this.props.getCodeList({ searchKeyword : "cardCategory" });
     }
  
+    //카드등록
     const submitCard = () => {
       
       this.props.addCard({
@@ -169,12 +183,27 @@ class AddCard extends React.Component {
         cardCategoryCodeNo : this.state.cardCategoryCodeNo,
         cardName : this.state.cardName,
         cardCompanyCodeNo : this.state.cardCompanyCodeNo,
-        cardImage : "http://placehold.it/320x100",
+        cardImageFile : this.state.cardImageFile,
         accountNo : this.state.accountNo,
         cardNo : this.state.cardNo,
       })
-  
-      this.handleRequestClose()
+      this.setState({
+        cardRegNo : "",
+        cardManager : "",
+        cardManagerName : "",
+        cardCategoryCodeNo : "",
+        cardCategoryCodeName : "",
+        cardName : "",
+        cardCompanyCodeNo : "",
+        cardCompanyCodeName : "",
+        cardImage : "",
+        cardUsageStatusCodeNo : "",
+        accountNo : "",
+        cardNo : '',
+        cardImageFile : ''
+      });
+      this.props.cleanStoreState("checkedEmployeeData");
+      this.openSuccessAlarm()
     }
     
     return (
@@ -204,10 +233,10 @@ class AddCard extends React.Component {
           <p/>
 
           <div align="center">
-            <CardBox styleName="col-lg-8">
+            <CardBox styleName="col-lg-6" >
               <form className="row" noValidate autoComplete="off">
 
-                <div  className="col-md-12 col-6">
+                <div className="col-md-12 col-6">
                   <br/>
                     <Typography align="left" variant="h6" color="textPrimary" style={{
                       flex: 1,
@@ -220,24 +249,22 @@ class AddCard extends React.Component {
                   <br/>
                 </div>
 
-                <div className="col-md-4 col-6" style={{float:"left"}}>
+                <div className="col-md-12 col-6" style={{float:"left"}}>
                   <br/><br/>
-                    <div className="jr-card" style={{width:"160px",height:"150px"}} align="center">
-                      <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
-                        <Avatar className="size-100" alt="Remy Sharp" src={require("assets/images/noneProfile.png")}/>
-                      </Tooltip>   
+                    <div className="card-media card-img-top" style={{paddingBottom:"30px"}}>
+                       <img src={ this.state.cardImageFile ? `${this.state.cardImageFile.base64}` : require("assets/images/visionLogoSecond.png")} style={{width: 300, height: 200}}/>
                     </div>
-                    <div style={{position:"relative", top:"-25px"}}>
-                      <Button variant="contained" color="default" className={useStyles.button} 
-                            onClick={this.handleOnClickFileUpload}>
-                        카드사진
-                        <CloudUploadIcon className={useStyles.rightIcon} />
-                      </Button>
-                    </div>               
                 </div>
+                <div className="col-md-12 col-6">
+                  <Button variant="contained" color="default" className={classes.button} 
+                        onClick={this.handleOnClickFileUpload}>
+                    카드사진  
+                    <CloudUploadIcon className={classes.rightIcon} />
+                  </Button>
+                </div>      
 
-                <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
-                  <FormControl className="mb-3" fullWidth>
+                <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
+                  <FormControl className="mb-3" fullWidth margin='normal'>
                     <InputLabel htmlFor="cardNo">카드번호</InputLabel>
                       <Input
                         id="cardNo"
@@ -248,20 +275,19 @@ class AddCard extends React.Component {
                         'aria-label': 'Description',
                         }}
                         onChange={this.handleChange('cardNo')}
+                        placeholder="카드번호 입력"
                       />
-                        <FormHelperText>카드번호를 정확히 입력해주세요</FormHelperText>
                   </FormControl>
                 </div>
 
-                <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
+                <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
                   <TextField
                     id="cardName"
                     label="카드명"
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    placeholder="카드명"
-                    helperText="카드명을 입력해주세요"
+                    placeholder="카드명 입력"
                     value={this.state.cardName}
                     fullWidth
                     margin="normal"
@@ -269,7 +295,7 @@ class AddCard extends React.Component {
                   />
                 </div>
 
-                <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
+                <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}> 
                   <TextField
                     id="cardCompanyCodeNo"
                     select
@@ -289,7 +315,7 @@ class AddCard extends React.Component {
                   </TextField>
                 </div>
 
-                <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
+                <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
                     <TextField
                         id="cardCategoryCodeNo"
                         select
@@ -308,7 +334,8 @@ class AddCard extends React.Component {
                     ))}
                     </TextField>
                 </div>
-                <div className="col-md-8 col-12">
+
+                <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
                   {/* 카드관리자와 관리자 번호는 직접 건들지 않아서 onChange를 안줘도 됨*/}
                   <TextField
                     margin="normal"
@@ -321,7 +348,7 @@ class AddCard extends React.Component {
                     fullWidth
                   />
                 </div>
-                <div className="col-md-8 col-12">
+                <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
                   <TextField
                     margin="normal"
                     id="cardManagerName"
@@ -332,7 +359,7 @@ class AddCard extends React.Component {
                     fullWidth
                   />
                 </div>
-                <div className="col-md-8 col-12">
+                <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
                   {/* 카드관리자와 관리자 번호는 직접 건들지 않아서 onChange를 안줘도 됨*/}
                   <TextField
                     margin="normal"
@@ -346,7 +373,7 @@ class AddCard extends React.Component {
                 </div>
 
                 <div style={{display:"none"}} >
-                  프로필 사진
+                  카드 사진
                   <FileBase64 
                     multiple={false}
                     onDone = {this.handleProfileImgUpload}
@@ -354,7 +381,7 @@ class AddCard extends React.Component {
                     />
                 </div>
 
-                <div className="col-md-12 col-12">
+                <div className="col-md-12 col-12" style={{paddingTop:"40px"}}>
                   <Button className="jr-btn text-uppercase btn-block" color="default" onClick={() => {submitCard()}}>등록하기</Button>
                 </div>
 
@@ -368,7 +395,16 @@ class AddCard extends React.Component {
                   handleFindAccountClose={this.handleFindAccountClose}
                   getAccountNo = {this.getAccountNo}
                 />
-
+                <SweetAlert 
+                  show={this.state.success} 
+                  success 
+                  title="등록완료"
+                  onConfirm={this.closeSuccessAlarm}
+                  confirmBtnText="확인"
+                  confirmBtnBsStyle="danger"
+                  >
+                  등록에 성공했습니다
+                </SweetAlert>
 
               </form>
             </CardBox>
@@ -386,5 +422,4 @@ class AddCard extends React.Component {
     return { checkedEmployeeData, cardList, cardCategoryList };
   }
 
-export default connect(mapStateToProps, {checkedEmployee, getCodeList, addCard})(AddCard);
-// export default compose(withStyles( withStyles(useStyles)), connect(mapStateToProps, {checkedEmployee, getCodeList, addCard}))(AddCard);
+export default connect(mapStateToProps, {checkedEmployee, getCodeList, addCard, cleanStoreState})(AddCard);

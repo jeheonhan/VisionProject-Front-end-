@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getHRCardList, getHRCardDetail } from 'actions';
+import { getHRCardList, getHRCardDetail, cleanStoreState } from 'actions';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Table from '@material-ui/core/Table';
@@ -22,6 +22,8 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 import ComposeMail from 'components/mail/ComposeMail';
 import FindDepart from 'components/humanResource/FindDepart';
 import FindRank from 'components/humanResource/FindRank';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 let counter = 0;
 
@@ -112,7 +114,18 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
-      <div className="actions">
+      퇴사자조회
+      <Switch
+              color="primary"
+                classes={{
+                  checked: 'text-secondary',
+                  //bar: 'bg-primary',
+                }}
+                checked={props.checkedSearch=='02'? true:false}
+              onChange={props.handleSearchResign}
+              />
+    
+      {/* <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
           <Tooltip title="수정">
@@ -127,7 +140,7 @@ let EnhancedTableToolbar = props => {
             </IconButton>
           </Tooltip>
         )}
-      </div>
+      </div> */}
     </Toolbar>
   );
 };
@@ -140,6 +153,26 @@ EnhancedTableToolbar.propTypes = {
 class EnhancedTable extends React.Component {
 
 
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+      order: 'asc',
+      orderBy: '',
+      selected: [],
+      // data에 props로 들어오는 list값 넣어주기.
+      data: this.props.HRCardList,
+      page: 0,
+      rowsPerPage: 10,
+      search:{searchKeyword:null},
+      flag: false,
+      composeMail:false
+    };
+  }
+
+  componentWillUnmount(){
+    this.props.cleanStoreState("HRCardList");
+  }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -211,6 +244,7 @@ class EnhancedTable extends React.Component {
       composeMail:false
     })
   }
+  
 
   //수정화면 열기 및 getHRCardDetail Action 발생
   handleModifyHRCard = (event, employeeNo) => {
@@ -219,40 +253,44 @@ class EnhancedTable extends React.Component {
     this.props.handleModifyHRCardOpen();
   }
 
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      order: 'asc',
-      orderBy: '',
-      selected: [],
-      // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.HRCardList,
-      page: 0,
-      rowsPerPage: 10,
-      search:{searchKeyword:null},
-      flag: false,
-      composeMail:false
-    };
+  handleSearchResign = () => {
+    if(this.state.search.searchCondition == '02'){
+      this.setState({
+        search:{searchCondition:"01"}
+      })
+      this.props.getHRCardList(Object.assign({},this.state.search,{searchCondition:"01"}))
+    }else{
+      this.setState({
+        search:{searchCondition:"02"}
+      })
+      this.props.getHRCardList(Object.assign({},this.state.search,{searchCondition:"02"}))
+    }
   }
+
 
   render() {
    
-    const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
+    const {data, order, orderBy, selected, rowsPerPage, page, search} = this.state;
 
     const { HRCardList } = this.props;
 
     const { emailForSending } = this.state;
 
+    if(HRCardList == undefined){
+      this.props.getHRCardList(this.state.search)
+    }
     if(HRCardList !== this.state.data){
       this.setState({data:HRCardList});
     }
 
+    console.log(this.state)
 
 
     return (
       <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+        <EnhancedTableToolbar numSelected={selected.length}
+                               handleSearchResign={this.handleSearchResign}
+                               checkedSearch={this.state.search.searchCondition}/>
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -262,12 +300,12 @@ class EnhancedTable extends React.Component {
                 orderBy={orderBy}
                 onSelectAllClick={this.handleSelectAllClick}
                 onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
+                rowCount={data && data.length}
               />
               <TableBody>
                 
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
-                {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                {data && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
                   return (
@@ -309,7 +347,7 @@ class EnhancedTable extends React.Component {
               <TableFooter>
                 <TableRow>
                   <TablePagination
-                    count={data.length}
+                    count={data && data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={this.handleChangePage}
@@ -339,4 +377,4 @@ const mapStateToProps = ({humanResource}) => {
   return { HRCardList };
 }
 
-export default connect(mapStateToProps, { getHRCardList, getHRCardDetail })(EnhancedTable);
+export default connect(mapStateToProps, { getHRCardList, getHRCardDetail, cleanStoreState })(EnhancedTable);

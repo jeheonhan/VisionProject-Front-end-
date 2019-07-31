@@ -35,6 +35,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+
 //주민등록번호 Mask
 class SsnMaskCustom extends React.Component {
   render() {
@@ -94,7 +95,8 @@ class FullScreenDialog extends React.Component {
     departOpen:false,
     rankOpen:false,
     flag:false,
-    modifyAble:false
+    modifyAble:false,
+    resignFlag:false
   };
 
   //인사카드 등록창 열기
@@ -174,20 +176,45 @@ class FullScreenDialog extends React.Component {
     })
   }
 
+  //퇴사일자 Date Picker로부터 값 받아오기
+  handleResignDatePicker = (date) => {
+    this.setState({
+      employee:{...this.state.employee,
+        resignDate:date}
+    })
+  }
+
   //수정 활성화
   handleModifyEnable = () => {
       this.setState({
-          modifyAble:true
+          modifyAble:true,
       })
   }
 
-//   //Close
-//   handleChangeClose = () => {
-//       this.setState({
-//           flag:false
-//       });
-//       this.props.handleModifyHRCardClose();
-//   }
+   //퇴사여부 Y시
+  handleChangeResign = (event) => {
+    event.preventDefault();
+    if(event.target.value == 'Y'){
+      this.setState({
+        resignFlag:true,
+        employee:{
+          ...this.state.employee,
+          resignation:event.target.value
+        }
+      })
+    }
+    else{
+      this.setState({
+        resignFlag:false,
+        employee:{
+          ...this.state.employee,
+          resignation:event.target.value,
+          resignDate:null,
+          resignReason:null
+        }
+      })
+    }
+  }
 
   //Submit
   handleSubmit = () => {
@@ -263,8 +290,10 @@ class FullScreenDialog extends React.Component {
               employee={this.state.employee}
               handleAddress={this.handleAddress}
               handleDatePicker={this.handleDatePicker}
+              handleResignDatePicker={this.handleResignDatePicker}
               checkedDepartment={this.props.checkedDepartment}
               checkedRank={this.props.checkedRank}
+              handleChangeResign={this.handleChangeResign}
               />
           </CardBox>
           {!this.state.modifyAble ? (<Button variant="contained" className="jr-btn bg-deep-orange text-white" 
@@ -304,7 +333,7 @@ function AddTextField(props){
     const post = React.useRef();
     const signature = React.useRef();
 
-    const[value, setValue] = React.useState({findDepartOpen:false, findRankOpen:false});
+    const[value, setValue] = React.useState({findDepartOpen:false, findRankOpen:false, });
 
     //부서검색 열기
     const handleFindDepartOpen = () => {
@@ -331,6 +360,11 @@ function AddTextField(props){
       props.handleDatePicker(_date);
     }
 
+    //퇴사일자 값 받기
+    const callBackResignDate = (_date) => {
+      props.handleResignDatePicker(_date)
+    }
+
 
     //프로필 파일업로드 화면 열기
     const handleOnClickFileUpload = (e) => {
@@ -342,10 +376,10 @@ function AddTextField(props){
       document.getElementById('signatureFile').click();
     }
 
-      //서명도장 다이얼로그 열기
-      const handleOnClickSignOpen = () => {
-        signature.current.handleRequestOpen();
-      }
+    //서명도장 다이얼로그 열기
+    const handleOnClickSignOpen = () => {
+      signature.current.handleRequestOpen();
+    }
 
     //우편번호 창 열기 [ref로 자식 컴포넌트 직접 접근하여 자식컴포넌트의 function을 사용]
     const handlePostOpen = () => {
@@ -355,9 +389,11 @@ function AddTextField(props){
     //상위 Component의 state 값에 profileImage가 저장되어 있으면 가져옴
     const { employee, stateValue } = props;
 
+   
+
 
     console.log("-------------------")
-    console.log(employee.employeePhone)
+    console.log(employee)
 
     return(
         <div >
@@ -461,7 +497,7 @@ function AddTextField(props){
               </div>
             <div className="col-md-4 col-6"  style={{float:"left", display:"inline"}}>
               <TextField
-                      id="employeeTel"
+                      id="departCodeName"
                       label="부서"
                     //   onChange={props.handleChange('employeeTel')}
                       onClick={handleFindDepartOpen}
@@ -473,7 +509,7 @@ function AddTextField(props){
               </div>
               <div className="col-md-4 col-6"  style={{float:"left", display:"inline"}}>
               <TextField
-                      id="employeeTel"
+                      id="rankCodeName"
                       label="직급"
                     //   onChange={props.handleChange('employeeTel')}
                       onClick={handleFindRankOpen}
@@ -482,6 +518,43 @@ function AddTextField(props){
                       fullWidth
                       disabled={!stateValue.modifyAble}
                   />
+              </div>
+              <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
+                <TextField
+                    id="select-currency"
+                    select
+                    label="퇴사여부"
+                    value={employee && employee.resignation && employee.resignation}
+                    // onChange={props.handleChange('resignation')}
+                    onChange={props.handleChangeResign}
+                    SelectProps={{}}
+                    //helperText="급여 받으실 통장을 선택하세요."
+                    margin="normal"
+                    fullWidth
+                    disabled={!stateValue.modifyAble}
+                  >
+                    <MenuItem value="N">No</MenuItem>
+                    <MenuItem value="Y">Yes</MenuItem>
+                </TextField>
+              </div>
+
+              <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
+              <DatePicker  label="퇴사일자" callBackDateChange={callBackResignDate}
+                            value={employee.resignDate}
+                            disabled={!stateValue.modifyAble && !stateValue.resignFlag}
+                            />            
+              </div>
+
+              <div className="col-md-4 col-6"  style={{float:"left", display:"inline"}}>
+                <TextField
+                        id="resignReason"
+                        label="퇴사사유"
+                        onChange={props.handleChange('resignReason')}
+                        value={employee.resignReason}
+                        margin="normal"
+                        fullWidth
+                        disabled={!stateValue.modifyAble && !stateValue.resignFlag}
+                    />
               </div>
 
             <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>

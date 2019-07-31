@@ -1,18 +1,19 @@
 import React from "react";
 import Avatar from '@material-ui/core/Avatar';
 
-const ProfileHeader = () => {
+const ProfileHeader = (props) => {
   return (
     <div className="jr-profile-banner">
       <div className="jr-profile-container">
         <div className="jr-profile-banner-top">
           <div className="jr-profile-banner-top-left">
             <div className="jr-profile-banner-avatar">
-              <Avatar className="size-90" alt="..." src={'https://via.placeholder.com/150x150'}/>
+              <Avatar className="size-90" alt="..." src={props.HRCardDetailData.profileImage ? `/img/${props.HRCardDetailData.profileImage}`
+              :require("assets/images/placeholder.jpg")}/>
             </div>
             <div className="jr-profile-banner-avatar-info">
-              <h2 className="mb-2 jr-mb-sm-3 jr-fs-xxl jr-font-weight-light">Kiley Brown</h2>
-              <p className="mb-0 jr-fs-lg">Florida, USA</p>
+              <h2 className="mb-2 jr-mb-sm-3 jr-fs-xxl jr-font-weight-light">{props.HRCardDetailData.employeeName}</h2>
+              <p className="mb-0 jr-fs-lg">{props.HRCardDetailData.departCodeName}, {props.HRCardDetailData.rankCodeName}</p>
             </div>
           </div>
           <div className="jr-profile-banner-top-right">

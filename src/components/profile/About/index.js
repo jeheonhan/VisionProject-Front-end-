@@ -2,14 +2,13 @@ import React from "react";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Widget from "components/Widget/index";
-import {aboutList} from '../../../app/routes/socialApps/routes/Profile/data'
+// import {aboutList} from 'components/common/data';
 import AboutItem from "./AboutItem";
 
 
 class About extends React.Component {
 
   state = {
-    aboutList,
     value: 0,
   };
 
@@ -18,7 +17,49 @@ class About extends React.Component {
   };
 
   render() {
-    const {value, aboutList} = this.state;
+    const {value} = this.state;
+    const {HRCardDetailData} = this.props;
+
+    const birthDay = "19"+(HRCardDetailData.ssn).substring(0,2)+". "+(HRCardDetailData.ssn).substring(2,4)+". "
+                    +(HRCardDetailData.ssn).substring(4,6)+"."
+
+    const aboutList = [
+        {
+          id: 1,
+          title: '회사',
+          icon: 'city-alt',
+          userList: '',
+          desc: ['비전 콤파니']
+        },
+        {
+          id: 2,
+          title: '생일',
+          icon: 'cake',
+          userList: '',
+          desc: [birthDay]
+        },
+        {
+          id: 3,
+          title: '주소',
+          icon: 'home',
+          userList: '',
+          desc: [HRCardDetailData.address]
+        },
+        {
+          id: 4,
+          title: '급여통장',
+          icon: 'balance-wallet',
+          userList: '',
+          desc: [HRCardDetailData.account.bankCodeName+"("+HRCardDetailData.account.accountNo+")"]
+        },
+        {
+          id: 5,
+          title: '시급',
+          icon: 'money',
+          userList: '',
+          desc: [HRCardDetailData.wage+"원"]
+        }
+      ];
     return (
       <Widget styleName="jr-card-full jr-card-tabs-right jr-card-profile">
         <div className="card-header">
@@ -26,9 +67,9 @@ class About extends React.Component {
         </div>
         <div className="jr-tabs-classic">
           <Tabs className="jr-tabs-up" value={value} onChange={this.handleChange}>
-            <Tab className="jr-tabs-label" label="Overview"/>
-            <Tab className="jr-tabs-label" label="Work"/>
-            <Tab className="jr-tabs-label" label="Education"/>
+            {/* <Tab className="jr-tabs-label" label="Overview"/> */}
+            {/* <Tab className="jr-tabs-label" label="Work"/>
+            <Tab className="jr-tabs-label" label="Education"/> */}
           </Tabs>
           <div className="jr-tabs-content jr-task-list">
             <div className="row">

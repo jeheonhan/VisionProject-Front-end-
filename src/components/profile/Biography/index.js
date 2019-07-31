@@ -1,27 +1,49 @@
 import React from "react";
 import Widget from "components/Widget";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
-const Biography = () => {
+
+const Biography = (props) => {
+
+
+const data = props.data;
+
   return (
     <Widget styleName="jr-card-profile">
       <div className="mb-3">
-        <h3 className="card-title mb-2 mb-md-3">Biography</h3>
-        <p className="text-grey jr-fs-sm mb-0">A little flash back of Kiley Brown</p>
+        <h3 className="card-title mb-2 mb-md-3">근태정보</h3>
+        <p className="text-grey jr-fs-sm mb-0">현재 나의 근태정보를 조회합니다.</p>
       </div>
-      <h3 className="jr-font-weight-light">Donec dignissim gravida sem, ut cursus dolor hendrerit et. Morbi
-        volutpat.</h3>
-      <p>Augue mauris dignissim arcu, ut venenatis metus ante eu orci. Donec non maximus neque,
-        ut finibus ex. Quisque semper ornare magna, sed ullamcorper risus luctus quis. Etiam tristique
-        dui vitae diam rutrum sodales. Mauris feugiat lectus felis, nec ullamcorper risus elementum at.
-        Aliquam erat volutpat. Nullam et est eget metus gravida tincidunt.
-        Phasellus sed odio eu lacus venenatis.
-      </p>
-      <p>Suspendisse vel bibendum ex. Interdum et malesuada fames ac ante ipsum primis in faucibus.
-        Sed a felis nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In molestie ultricies urna non
-        volutpat.
-        Nam fermentum cursus elit, et tempus metus scelerisque imperdiet. Sed tincidunt molestie justo,
-        a vulputate velit sagittis at. Pellentesque consequat leo tortor.
-      </p>
+      <div className="table-responsive-material">
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>근태번호</TableCell>
+            <TableCell align="left">근태코드</TableCell>
+            <TableCell align="left">근태명</TableCell>
+            <TableCell align="left">시간(분)</TableCell>
+            <TableCell align="left">기준일</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data && data.map(n => {
+            return (
+              <TableRow key={n.workAttitudeNo}>
+                <TableCell>{n.workAttitudeNo}</TableCell>
+                <TableCell align="left">{n.workAttitudeCodeNo}</TableCell>
+                <TableCell align="left">{n.workAttitudeCodeName}</TableCell>
+                <TableCell align="left">{n.workAttitudeTime}</TableCell>
+                <TableCell align="left">{n.workAttitudeDate}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
 
     </Widget>
   )
