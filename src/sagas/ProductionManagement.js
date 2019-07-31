@@ -209,8 +209,6 @@ function* modifyOrderBranchFn(action){
 
 function* getProductListForOrderFn(){
    const productListForOrder = yield call(getProductListForOrderRequest);
-   console.log("productListForOrder :: 값은???")
-   console.log(productListForOrder);
     yield put(carryProductListForOrder(productListForOrder))
 }
 
