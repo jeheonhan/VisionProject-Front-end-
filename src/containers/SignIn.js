@@ -11,13 +11,17 @@ import {
   showAuthLoader,
   userSignIn,
 } from 'actions/Auth';
+import ForgotId from 'components/login/ForgotId';
+import ForgotPassword from 'components/login/ForgotPassword';
 
 class SignIn extends React.Component {
   constructor() {
     super();
     this.state = {
       userId: 'trueId',
-      password: 'truePwd'
+      password: 'truePwd',
+      forgotIdOpen:false,
+      forgotPwdOpen:false
     }
   }
 
@@ -30,6 +34,20 @@ class SignIn extends React.Component {
     if (this.props.authUser !== null) {
       this.props.history.push('/');
     }
+  }
+
+  //아이디 찾기 화면 열기
+  handleForgotIdOpen = () => {
+    this.setState({
+      forgotIdOpen:true
+    })
+  }
+
+   //비밀번호 찾기 화면 열기
+   handleForgotPwdOpen = () => {
+    this.setState({
+      forgotPwdOpen:true
+    })
   }
 
   render() {
@@ -53,14 +71,14 @@ class SignIn extends React.Component {
               {/* <IntlMessages 는 다국적 웹페이지 구현 시의 번역을 위해 나타난 컴포넌트(?) 
               안드로이드에서 string 메타데이터로 뺐던 거 생각하면 될듯. 아이디로 접근해서 해당 언어의 값을 가져옴*/}
               {/* <h1><IntlMessages id="appModule.id"/></h1> */}
-              <h1>Vision ERP System</h1>
+              <h1>최첨단 비-죤 類似 이알피 씨-스템</h1>
             </div>
 
             <div className="app-login-form">
               <form>
                 <fieldset>
                   <TextField
-                    label="ID"
+                    label="아이-디"
                     fullWidth
                     onChange={(event) => this.setState({userId: event.target.value}) }
                     //defaultValue={this.state.id}
@@ -69,10 +87,9 @@ class SignIn extends React.Component {
                   />
                   <TextField
                     type="password"
-                    label={<IntlMessages id="appModule.password"/>}
+                    label="패스-워어드"
                     fullWidth
                     onChange={(event) => this.setState({password: event.target.value})}
-                    //defaultValue={password}
                     margin="normal"
                     className="mt-1 my-sm-3"
                   />
@@ -87,13 +104,12 @@ class SignIn extends React.Component {
                       this.props.userSignIn(this.state);
                     }} variant="contained" className="jr-btn bg-red text-white" size="large">
                       {/* 영어로 쓰면 버튼에서 대문자로 바뀜 */}
-                      <IntlMessages id="appModule.signIn"/>
+                      로그인
                     </Button>
 
-                    {/* 저희는 회원가입이 없어서 아래는 주석처리합니당
-                    <Link to="/signup">
-                      <IntlMessages id="signIn.signUp"/>
-                    </Link> */}
+                    <Button className="jr-btn" color="primary">
+                      아이디찾기
+                    </Button>
                   </div>                  
 
                 </fieldset>
@@ -112,6 +128,10 @@ class SignIn extends React.Component {
         }
         {showMessage && NotificationManager.error(alertMessage)}
         <NotificationContainer/>
+
+        {this.state.forgotIdOpen && (<ForgotId/>)}
+        {this.state.forgotPwdOpen && (<ForgotPassword/>)}
+        
       </div>
     );
   }

@@ -33,7 +33,7 @@ const columnData = [
   {id: 'appointDepartCodeName', align: true, disablePadding: false, label: '발령부서'},
   {id: 'preRankCodeName', align: true, disablePadding: false, label: '이전직급'},
   {id: 'appointRankCodeName', align: true, disablePadding: false, label: '발령직급'},
-  {id: 'reference', align: true, disablePadding: false, label: '참고'},
+  // {id: 'reference', align: true, disablePadding: false, label: '참고'},
   {id: 'appointmentStatusCodeName', align: true, disablePadding: false, label: '확정여부'},
 ];
 
@@ -310,8 +310,9 @@ class EnhancedTable extends React.Component {
                       <TableCell align="left">{row.appointDepartCodeName}</TableCell>
                       <TableCell align="left">{row.preRankCodeName}</TableCell>
                       <TableCell align="left">{row.appointRankCodeName}</TableCell>
-                      <TableCell align="left">{row.reference}</TableCell>
-                      <TableCell align="left" style={{cursor:'pointer'}} onClick={event => {this.handleClickAppointStatus(event,row)}}>
+                      {/* <TableCell align="left">{row.reference}</TableCell> */}
+                      <TableCell align="left" style={{cursor:'pointer', color:row.appointmentStatusCodeNo == '01' ? "blue":"red"}} 
+                            onClick={event => {this.handleClickAppointStatus(event,row)}}>
                         {row.appointmentStatusCodeName}
                       </TableCell>
                     </TableRow>
