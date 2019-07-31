@@ -23,6 +23,7 @@ const getDailySalesDetailRequest = async (branchDailySales) => {
 }
 
 const addDailySalesRequest = async ( salesProductList ) => {
+    console.log("addDailySales :::::::: ");
     return await axios({
         method : "POST",
         url:"/branch/addDailySales",
@@ -33,7 +34,6 @@ const addDailySalesRequest = async ( salesProductList ) => {
 }
 
 const getSalesMenuListRequest = async () => {
-    console.log("getSalesMenu :::::");
     return await axios({
         method : "GET",
         url: "/branch/getSalesMenuList"

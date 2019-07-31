@@ -36,7 +36,7 @@ export const carryDailySalesDetail = ( data ) => {
     }
 }
 
-export const addDailySales = ( salesProductList ) => {
+export const addDailySales = ( salesProductList) => {
     return {
         type: ADD_DAILY_SALES,
         payload: salesProductList
