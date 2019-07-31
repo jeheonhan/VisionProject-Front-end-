@@ -17,6 +17,8 @@ import {CheckCircle, Clear} from '@material-ui/icons';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import {modifyApprovalStatus} from 'actions/index'
 import Fab from '@material-ui/core/Fab';
+import Paper from '@material-ui/core/Paper';
+
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -40,18 +42,6 @@ class FullScreenDialog extends React.Component {
         }
     }
 
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      this.setState({
-        ...this.state,
-        redirect:false
-      })
-
-      return <Redirect to={{
-        pathname: "/app/approval/approvalRequest",
-      }}/>
-    }
-  }
 
   handleOK = () => {
     this.setState({
@@ -98,27 +88,84 @@ class FullScreenDialog extends React.Component {
       }
         return (
             <div>
-              {this.renderRedirect()}
               <Dialog
-                fullScreen
+                maxWidth="xl"
                 open={this.props.open}
                 onClose={this.handleRequestClose}
                 TransitionComponent={Transition}
               >
-                <AppBar className="position-relative">
-                  <Toolbar>
-                    <IconButton onClick={this.props.handleClose} aria-label="Close">
+                <div style={{position:"fixed", 
+                              
+                              right:"14%", /* 창에서 오른쪽 길이 */ 
+                              top:"88%", /* 창에서 위에서 부터의 높이 */ 
+                              backgroundColor: "transparent", 
+                              margin:0, 
+                              zIndex:10000}}>
+                  
+                           <Button onClick={this.handleOK} style={{width:"150px"}} variant="contained" color="secondary" className="jr-btn">
+                            <CheckCircle/>
+                            <span>결재</span>
+                          </Button>
+                          <Button onClick={this.handleReject} style={{width:"150px"}} variant="contained" color="primary" className="jr-btn">
+                            <Clear/>
+                            <span>반려</span>
+                          </Button>
+                  
+                </div>
+                <AppBar className="position-relative" style={{backgroundColor:"#CC4F3A", height:"40px", padding:"5px"}}>
+                <div><IconButton onClick={this.props.handleClose} aria-label="Close" size="small">
                       <CloseIcon/>
                     </IconButton>
-                    <Typography variant="title" color="inherit" style={{
-                      flex: 1,
-                    }}>
                       결재서 상세조회
-                    </Typography>
-                  </Toolbar>
+                      </div>
                 </AppBar>
                 <div>
-                <span style={{paddingLeft:"15px"}}>
+                <span style={{float:"left", paddingLeft:"10px", marginTop:"25px"}}>
+                <TextField
+                      error
+                      id="outlined-required"
+                      label="결재서제목"
+                      value={this.state.approvalDetail.approvalTitle}
+                      margin="normal"
+                  />
+                  <TextField 
+                        readOnly
+                          margin="normal"
+                          style={{width:"75px"}}
+                          id="registrantEmployeeName"
+                          label="등록자"
+                          value={this.state.approvalDetail.firstApprover.employeeName}
+                      />
+                <TextField 
+                    style={{width:"100px"}}
+                    id="registrantEmployeeName"
+                    label="작성일자"
+                    value={this.state.approvalDetail.submitDate}
+                    margin="normal"
+
+                />
+                      </span>
+                      
+                      <span style={{float:"right", marginLeft:"5px", marginRight:"10px", marginTop:"5px"}}>
+                     
+                      <Approver arr={[this.state.approvalDetail.firstApprover, this.state.approvalDetail.secondApprover, this.state.approvalDetail.thirdApprover, this.state.approvalDetail.fourthApprover, this.state.approvalDetail.fifthApprover]}/>
+                      </span>
+                {/* <span style={{paddingLeft:"5%"}}>
+                       <Button onClick={this.handleOK} style={{marginTop:"25px", width:"150px"}} variant="contained" color="secondary" className="jr-btn">
+                        <CheckCircle/>
+                        <span>결재</span>
+                      </Button>
+                      <Button onClick={this.handleReject} style={{marginTop:"25px", width:"150px"}} variant="contained" color="primary" className="jr-btn">
+                        <Clear/>
+                        <span>반려</span>
+                      </Button> *
+                      </span>
+                
+                      <span style={{float:"right"}}>
+                     
+                      <Approver arr={[this.state.approvalDetail.firstApprover, this.state.approvalDetail.secondApprover, this.state.approvalDetail.thirdApprover, this.state.approvalDetail.fourthApprover, this.state.approvalDetail.fifthApprover]}/>
+                      </span>
+                <span style={{paddingLeft:"15px", float:"left"}}>
                       <TextField 
                         readOnly
                           margin="normal"
@@ -126,21 +173,7 @@ class FullScreenDialog extends React.Component {
                           label="등록자"
                           value={this.state.approvalDetail.firstApprover.employeeName}
                       />
-                     <span style={{marginLeft:"35%"}}>
-                      <Button onClick={this.handleOK} style={{marginTop:"25px", width:"150px"}} variant="contained" color="secondary" className="jr-btn">
-                        <CheckCircle/>
-                        <span>결재</span>
-                      </Button>
-                      <Button onClick={this.handleReject} style={{marginTop:"25px", width:"150px"}} variant="contained" color="primary" className="jr-btn">
-                        <Clear/>
-                        <span>반려</span>
-                      </Button>
-                      </span>
-                </span>
-                      <span style={{float:"right"}}>
-                     
-                      <Approver arr={[this.state.approvalDetail.firstApprover, this.state.approvalDetail.secondApprover, this.state.approvalDetail.thirdApprover, this.state.approvalDetail.fourthApprover, this.state.approvalDetail.fifthApprover]}/>
-                      </span>
+                     </span>
                       <TextField
                       
                           error
@@ -150,10 +183,9 @@ class FullScreenDialog extends React.Component {
                           value={this.state.approvalDetail.approvalTitle}
                           margin="normal"
                           variant="outlined"
-                      />
+                      /> */}
                   </div>
-                  <Divider/>
-                  <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside ><div style={{padding:"50px"}} dangerouslySetInnerHTML={{__html:this.state.approvalDetail.approvalContent}}/></CardBox>
+                  <div style={{padding:"50px"}} dangerouslySetInnerHTML={{__html:this.state.approvalDetail.approvalContent}}/>
                   <SweetAlert show={this.state.open}
                                   custom
                                   showCancel
