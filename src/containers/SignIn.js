@@ -20,6 +20,7 @@ class SignIn extends React.Component {
     this.state = {
       userId: 'trueId',
       password: 'truePwd',
+      loginOpen:true,
       forgotIdOpen:false,
       forgotPwdOpen:false
     }
@@ -39,6 +40,7 @@ class SignIn extends React.Component {
   //아이디 찾기 화면 열기
   handleForgotIdOpen = () => {
     this.setState({
+      loginOpen:false,
       forgotIdOpen:true
     })
   }
@@ -46,6 +48,7 @@ class SignIn extends React.Component {
    //비밀번호 찾기 화면 열기
    handleForgotPwdOpen = () => {
     this.setState({
+      loginOpen:false,
       forgotPwdOpen:true
     })
   }
@@ -55,9 +58,11 @@ class SignIn extends React.Component {
     const {showMessage, loader, alertMessage} = this.props;
     console.log(this.state)
     return (
+      
       <div
         className="app-login-container d-flex justify-content-center align-items-center animated slideInUpTiny animation-duration-3">
-        <div className="app-login-main-content">
+        {this.state.loginOpen && (
+          <div className="app-login-main-content">
 
           <div className="app-logo-content d-flex align-items-center justify-content-center">
             <Link className="logo-lg" to="/app/home" title="vision">
@@ -87,15 +92,29 @@ class SignIn extends React.Component {
                   />
                   <TextField
                     type="password"
-                    label="패스-워어드"
+                    label="패쓰-워어드"
                     fullWidth
                     onChange={(event) => this.setState({password: event.target.value})}
                     margin="normal"
                     className="mt-1 my-sm-3"
                   />
 
+                  <p className="mb-3">
+                    아이디가 기억나지 않으신가요? &nbsp;
+                    <span className="small jr-link text-orange" onClick={this.handleForgotIdOpen}>
+                      아이디찾기
+                    </span>
+                    <span className="small jr-link text-orange">
+                      &nbsp;/&nbsp;
+                    </span>
+                    <span className="small jr-link text-orange" onClick={this.handleForgotPwdOpen}>
+                      비밀번호찾기
+                    </span>
+                  </p>
+
                   <div className="d-flex align-items-center justify-content-between">
-                    <Button onClick={() => {
+                    <Button onClick={(event) => {
+                      event.preventDefault();
                       // showAuthLoader()는 actions/Auth.js의 action : {type: ON_SHOW_LOADER,}을 return하는 함수
                       // 이 action이 발생해서 circle progress bar가 화면에 나타남
                       this.props.showAuthLoader();
@@ -106,10 +125,7 @@ class SignIn extends React.Component {
                       {/* 영어로 쓰면 버튼에서 대문자로 바뀜 */}
                       로그인
                     </Button>
-
-                    <Button className="jr-btn" color="primary">
-                      아이디찾기
-                    </Button>
+                    
                   </div>                  
 
                 </fieldset>
@@ -118,6 +134,8 @@ class SignIn extends React.Component {
           </div>
 
         </div>
+        )}
+        
         {/* 조건부 렌더링 [참고 : https://reactjs-kr.firebaseapp.com/docs/conditional-rendering.html] 
             논리 && 연산자 ==> 논리가 true라면 && 다음요소가 노출, false라면 무시*/}
         {
