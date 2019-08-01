@@ -147,7 +147,7 @@ class AddDailySales extends React.Component {
           success:false
         })
 
-        getDailySalesList(localStorage.getItem('user').branchNo)
+        localStorage.getItem('user').branchNo && this.props.getDailySalesList(localStorage.getItem('user').branchNo);
 
       }
 

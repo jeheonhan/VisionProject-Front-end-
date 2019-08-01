@@ -231,12 +231,13 @@ const columnData = [
   
     render() {
       const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-      const {branchList} = this.props;
-      if(branchList!==this.state.data){
+
+      if(this.props.branchList!==this.state.data){
         this.setState({
-          data:branchList
+          data: this.props.branchList
         })
       }
+  
       return (
         <div>
 
@@ -299,7 +300,7 @@ const columnData = [
                         <TableCell align="left">{row.address}</TableCell>
                         <TableCell align="left">{row.branchTel}</TableCell>
                         <TableCell align="left">{row.branchRegDate}</TableCell>
-                        <TableCell align="left">{row.branchStatus}</TableCell>
+                        <TableCell align="left">{row.branchStatusCodeNo == '01' ? <i class="zmdi zmdi-check zmdi-hc-2x"></i> : <i class="zmdi zmdi-minus-circle zmdi-hc-2x"></i>}</TableCell>
                       </TableRow>
                     );
                   })}

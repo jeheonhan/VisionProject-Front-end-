@@ -4,7 +4,9 @@ import { GET_BRANCH_LIST,
         CARRY_BRANCH_DETAIL, 
         ADD_BRANCH,
         GET_LOCAL_LIST,
-        CARRY_LOCAL_LIST} from 'actionTypes/ActionTypes';
+        CARRY_LOCAL_LIST,
+        DELETE_BRANCH,
+        UPDATE_BRANCH} from 'actionTypes/ActionTypes';
 
 const INIT_STATE = 
     {
@@ -67,6 +69,18 @@ export default (state = INIT_STATE, action) => {
             return {
                 ...state,
                 localList : action.payload
+            }
+        }
+
+        case DELETE_BRANCH : {
+            return {
+                ...state
+            }
+        }
+
+        case UPDATE_BRANCH : {
+            return {
+                ...state
             }
         }
 

@@ -116,8 +116,8 @@ class ManageCommute extends React.Component{
 
         const  handleAddCommute = (slotInfo) => {
             var d = moment();
-            
-            if(slotInfo.start.toLocaleString() == d.format('YYYY. M. DD. 오전 12:00:00')){
+        
+            if(new moment(Date.parse(slotInfo.start)).format("YYYY-MM-DD") == d.format('YYYY-MM-DD')){
                 var count = 0;
 
                 commuteList.map( v => {

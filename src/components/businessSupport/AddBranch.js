@@ -9,6 +9,7 @@ import GetPostCode from 'components/accounting/GetPostCode';
 import { connect } from 'react-redux';
 import { getLocalList, addBranch } from 'actions/index';
 import MaskedInput from 'react-text-mask';
+import {Redirect} from 'react-router-dom';
 
 class SsnMaskCustom extends React.Component {
   render() {
@@ -63,6 +64,22 @@ class AddBranch extends React.Component{
 
       submitFn = () => {
         this.props.addBranch(this.state.branch);
+        this.setState({
+          redirect : true,
+        })
+      }
+
+      renderRedirect = () => {
+        if(this.state.redirect){
+          this.setState({
+            ...this.state,
+            redirect : false,
+          })
+
+          return <Redirect to={{
+            pathname: "/app/businessSupport/branch",
+          }}/>
+        }
       }
 
     render() {
@@ -79,7 +96,7 @@ class AddBranch extends React.Component{
         return (
 
           <div>
-
+            {this.renderRedirect()}
             <AppBar className="position-relative">
             <Toolbar className="bg-secondary">
               <Typography variant="h6" color="inherit" style={{
@@ -210,6 +227,7 @@ class AddBranch extends React.Component{
                       ))}
 
                     </TextField>
+
                 </div>
 
               </div>

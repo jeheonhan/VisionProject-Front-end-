@@ -7,7 +7,11 @@ import {
     SIGNIN_USER_SUCCESS,
     SIGNOUT_USER_SUCCESS,
     SIGNUP_USER_SUCCESS,
-    CONVERT_LOADER
+    CONVERT_LOADER,
+    CARRY_FORGOT_USER_ID,
+    CLEAN_STORE_STATE,
+    CARRY_PASSWORD_BOOLEAN,
+    CARRY_IDENTIFY_CODE
 } from "actionTypes/ActionTypes";
 
 const INIT_STATE = {
@@ -93,6 +97,34 @@ export default (state = INIT_STATE, action) => {
             }
         }
 
+        case CARRY_FORGOT_USER_ID : {
+            return{
+                ...state,
+                forgotId: action.payload
+            }
+        }
+
+        //원하는 store의 state값 날리기
+        case CLEAN_STORE_STATE : {
+            return{
+                ...state,
+                [action.payload]:null
+            }
+        }
+
+        case CARRY_PASSWORD_BOOLEAN : {
+            return{
+                ...state,
+                resultBoolean: action.payload
+            }
+        }
+
+        case CARRY_IDENTIFY_CODE : {
+            return{
+                ...state,
+                identyCode: action.payload
+            }
+        }
 
         default:
             return state;

@@ -6,7 +6,7 @@ import AddDailySalesManage from "containers/branch/AddDailySalesManage";
 const DailySales = ({match}) => {
     return (
   
-      <div>
+      <div className="app-wrapper">
         <ContainerHeader title={"일 매출조회"} match={match}/>
         <DailySalesManage></DailySalesManage>
         <div align="right">

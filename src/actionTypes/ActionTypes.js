@@ -143,6 +143,14 @@ export const INSERT_USER = 'insert_user';
 
 //로그인
 export const CONVERT_LOADER = 'convert_loader';
+export const FORGOT_USER_ID = 'forgot_user_id';
+export const CARRY_FORGOT_USER_ID = 'carry_forgot_user_id';
+export const FORGOT_PASSWORD = 'forgot_password';
+export const CARRY_PASSWORD_BOOLEAN = 'carry_password_boolean';
+export const REQUEST_IDENTIFY_CODE = 'request_identify_code';
+export const SEND_IDENTIFY_CODE = 'send_identify_code';
+export const CARRY_IDENTIFY_CODE = 'carry_identify_code';
+export const MODIFY_PASSWORD = 'modify_password';
 
 //공통
 export const SEND_EMAIL = 'send_email';
@@ -299,6 +307,8 @@ export const ADD_BRANCH = 'add_branch';
 export const ADD_BRANCH_RESULT = 'add_branch_result';
 export const GET_LOCAL_LIST = 'get_local_list';
 export const CARRY_LOCAL_LIST = 'carry_local_list';
+export const DELETE_BRANCH = 'delete_branch';
+export const UPDATE_BRANCH = 'update_branch';
 
 //공지사항
 export const GET_NOTICE_LIST = 'get_notice_list';
@@ -309,6 +319,7 @@ export const ADD_NOTICE = 'add_notice';
 export const ADD_NOTICE_RESULT = 'add_notice_result';
 export const GET_NOTICE_HEADER_LIST = 'get_notice_header_list';
 export const CARRY_NOTICE_HEADER_LIST = 'carry_notice_header_list';
+export const DELETE_NOTICE = 'delete_notice';
 
 //지점관리
 export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';
