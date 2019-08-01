@@ -137,7 +137,7 @@ class AddDailySales extends React.Component {
     }
 
       submitFn = () => {
-        addDailySales(this.state.salesProductList);
+        this.props.addDailySales(this.state.salesProductList);
 
         this.setState({
           open : false,

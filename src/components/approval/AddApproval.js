@@ -247,7 +247,7 @@ class AddApproval extends React.Component{
                 </div>
 
                 
-                <div className="col-md-5" style={{marginRight:'0px', padding:"0px"}}>
+                <div className="col-md-4" style={{marginRight:'0px', padding:"0px"}}>
                 <TextField
                     error
                     fullWidth
@@ -260,8 +260,9 @@ class AddApproval extends React.Component{
                 />
                 </div>
 
-                <div className="col-md-5 manage-margin" style={{marginRight:'0px'}}>
+                <div className="col-md-4 manage-margin" style={{marginRight:'0px'}}>
                 <TextField 
+                    style={{width:"30%"}}
                     margin="normal"
                     id="registrantEmployeeName"
                     label="등록자"

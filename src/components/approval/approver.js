@@ -25,7 +25,7 @@ class Approver extends React.Component{
                         return(
                             <span style={{float:"left", paddingLeft:"1px"}} key={index}>
                             <Box bgcolor="text.hint" color="white" width="90px" height="30px" align="center" padding="5px">{emp.rankCodeName}</Box>
-                            <Box border={1} bgcolor="white" width="90px" height="90px" align="center"><img style={{paddingTop:"5px"}} width="82px" height="82px" src={emp.signatureImage}/></Box>
+                            <Box border={1} bgcolor="white" width="90px" height="90px" align="center"><img style={{paddingTop:"5px"}} width="82px" height="82px" src={`/img/${emp.signatureImage}`}/></Box>
                             
                             </span>
                         )

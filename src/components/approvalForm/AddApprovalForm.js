@@ -66,14 +66,14 @@ class FullScreenDialog extends React.Component {
   render() {
     return (
       <div>
-        <Button variant="contained" className="bg-deep-orange text-white" onClick={this.handleClickOpen}>등록</Button>
+        <Button style={{backgroundColor:"#CC4F3A"}} variant="contained" className="text-white" onClick={this.handleClickOpen}>등록</Button>
         <Dialog
           fullScreen
           open={this.state.open}
           onClose={this.handleRequestClose}
           TransitionComponent={Transition}
         >
-          <AppBar className="position-relative">
+          <AppBar className="position-relative" style={{backgroundColor:"#CC4F3A"}}>
             <Toolbar>
               <IconButton onClick={this.handleRequestClose} aria-label="Close">
                 <CloseIcon/>
