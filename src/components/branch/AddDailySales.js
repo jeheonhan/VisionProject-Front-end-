@@ -137,7 +137,7 @@ class AddDailySales extends React.Component {
     }
 
       submitFn = () => {
-        addDailySales(this.state.salesProductList);
+        this.props.addDailySales(this.state.salesProductList);
 
         this.setState({
           open : false,
@@ -147,7 +147,7 @@ class AddDailySales extends React.Component {
           success:false
         })
 
-        getDailySalesList(localStorage.getItem('user').branchNo)
+        localStorage.getItem('user').branchNo && this.props.getDailySalesList(localStorage.getItem('user').branchNo);
 
       }
 

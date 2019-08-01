@@ -1,6 +1,6 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { GET_BRANCH_LIST, GET_BRANCH_DETAIL , ADD_BRANCH, GET_LOCAL_LIST} from 'actionTypes/ActionTypes';
+import { GET_BRANCH_LIST, GET_BRANCH_DETAIL , ADD_BRANCH, GET_LOCAL_LIST, DELETE_BRANCH, UPDATE_BRANCH} from 'actionTypes/ActionTypes';
 import { carryBranchList, carryBranchDetail, addBranch, getBranchList, carryLocalList } from 'actions/index';
 
 const getBranchListRequest = async (search) => {
@@ -42,8 +42,25 @@ const addBranchRequest = async (data) => {
     .catch(error => console.log(error))
 }
 
+const convertBranchStatusCodeRequest = async ( branch ) => {
+    return await axios({
+        method:"POST",
+        url : "/bs/convertBranchUsageStatus",
+        data : branch
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
 
-
+const updateBranchRequest = async ( branch ) => {
+    return await axios({
+        method : "POST",
+        url : "/bs/modifyBranch",
+        data : branch
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
 
 
 function* getBranchListFn({payload}){
@@ -66,6 +83,16 @@ function* addBranchFn({payload}){
     yield put(getBranchList());
 }
 
+function* convertBranchStatusCodeFn({payload}){
+    yield call(convertBranchStatusCodeRequest, payload);
+    yield put(getBranchList({searchCondition:'', searchKeyword:''}));
+}
+
+function* updateBranchFn({payload}) {
+    yield call(updateBranchRequest, payload);
+    yield put(getBranchList({searchCondition:'', searchKeyword:''}));
+}
+
 
 
 
@@ -85,9 +112,19 @@ export function* addBranchSaga(){
     yield takeEvery(ADD_BRANCH, addBranchFn);
 }
 
+export function* convertBranchStatusCodeSaga() {
+    yield takeEvery(DELETE_BRANCH, convertBranchStatusCodeFn);
+}
+
+export function* updateBranchSaga() {
+    yield takeEvery(UPDATE_BRANCH, updateBranchFn);
+}
+
 export default function* rootSaga(){
     yield all([fork(getBranchListSaga),
                 fork(getBranchDetailSaga),
                 fork(addBranchSaga),
-                fork(getLocalListSaga)]);
+                fork(getLocalListSaga),
+                fork(convertBranchStatusCodeSaga),
+                fork(updateBranchSaga)]);
 }

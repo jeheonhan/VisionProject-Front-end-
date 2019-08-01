@@ -1,12 +1,61 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import {
     SIGNIN_USER,
-    SIGNOUT_USER
+    SIGNOUT_USER,
+    FORGOT_USER_ID,
+    FORGOT_PASSWORD,
+    REQUEST_IDENTIFY_CODE,
+    MODIFY_PASSWORD
 } from "actionTypes/ActionTypes";
-import { showAuthMessage, userSignInSuccess, userSignOutSuccess, convertLoader } from "actions/Auth";
+import { showAuthMessage
+    , userSignInSuccess
+    , userSignOutSuccess
+    , convertLoader
+    , carryForgotUserId
+    , carryPasswordBoolean
+    , carryIdentifyCode } from "actions/index";
 
 import axios from 'axios';
 
+const modifyPasswordRequest = async (_data) => {
+    await axios({
+        method:"POST",
+        url:"/user/modifyPassword",
+        data:_data
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
+const requestIdentifyCodeRequest = async (_data) => {
+    return await axios({
+        method:"POST",
+        url:"/user/getIdentifyCode",
+        data:_data
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
+const forgotPasswordRequest = async (_data) => {
+    return await axios({
+        method:"POST",
+        url:"/user/forgotPassword",
+        data:_data
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
+const forgotUserIdRequest = async (_data) => {
+    return await axios({
+        method:"POST",
+        url:"/user/forgotId",
+        data:_data
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
 
 const signInUserWithIdPasswordRequest = async (_data) => {
  
@@ -18,14 +67,29 @@ const signInUserWithIdPasswordRequest = async (_data) => {
     }).then(authUser => authUser.data)
       .catch(error => error);
     }
-    
-    
 
 const signOutRequest = async () =>{
     console.log("sagas\Auth.js : signOutRequest() ")
 };
 
+function* modifyPasswordFn({payload}){
+    yield call(modifyPasswordRequest, payload);
+}
 
+function* requestIdentifyCodeFn({payload}){
+    const identyCode = yield call(requestIdentifyCodeRequest, payload);
+    yield put(carryIdentifyCode(identyCode));
+}
+
+function* forgotPasswordFn({payload}){
+    const resultBoolean = yield call(forgotPasswordRequest, payload);
+    yield put(carryPasswordBoolean(resultBoolean));
+}
+
+function* forgotUserIdFn({payload}){
+    const userVO = yield call(forgotUserIdRequest, payload);
+    yield put(carryForgotUserId(userVO));
+}
 
 function* signInUserWithIdPassword({payload}) {
     
@@ -33,7 +97,6 @@ function* signInUserWithIdPassword({payload}) {
 
     try {
         const signInUser = yield call(signInUserWithIdPasswordRequest, payload);
-        console.log(signInUser);
         if(signInUser.loginFlag == false){
             alert("로그인 실패");
             yield put(convertLoader());
@@ -56,6 +119,21 @@ function* signOut() {
     
 }
 
+export function* modifyPasswordSaga(){
+    yield takeEvery(MODIFY_PASSWORD, modifyPasswordFn);
+}
+
+export function* requestIdentifyCodeSaga(){
+    yield takeEvery(REQUEST_IDENTIFY_CODE, requestIdentifyCodeFn);
+}
+
+export function* forgotPasswordSaga(){
+    yield takeEvery(FORGOT_PASSWORD, forgotPasswordFn);
+}
+
+export function* forgotUserIdSaga(){
+   yield takeEvery(FORGOT_USER_ID, forgotUserIdFn)
+}
 
 export function* signInUser() {
     yield takeEvery(SIGNIN_USER, signInUserWithIdPassword);
@@ -67,5 +145,9 @@ export function* signOutUser() {
 
 export default function* rootSaga() {
     yield all([fork(signInUser),
-        fork(signOutUser)]);
+        fork(signOutUser),
+        fork(forgotUserIdSaga),
+        fork(forgotPasswordSaga),
+        fork(requestIdentifyCodeSaga),
+        fork(modifyPasswordSaga)]);
 }

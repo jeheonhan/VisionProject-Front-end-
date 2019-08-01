@@ -95,9 +95,13 @@ class CodeManage extends React.Component{
           
 <Slider className="mb-4 slick-app-frame" ref={c => (this.slider = c)} {...this.options2} style={{clear:"both"}}>
         {groupCodeList.map((code, index) => {
+          let eng = code.groupCode
+          if(eng.length>24){
+            eng=eng.substr(0, 20)+"..."
+          }
         return (<div className="slick-slide-item" key={index}>
                 <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside >
-                    <GetGroupCodeList engCode={code.groupCode} action={this.handleClick} title={code.groupCodeName} code={code.groupCode} list={code.codeList}></GetGroupCodeList>
+                    <GetGroupCodeList engCode={eng} action={this.handleClick} title={code.groupCodeName} code={code.groupCode} list={code.codeList}></GetGroupCodeList>
                 </CardBox>
                 </div>
               )

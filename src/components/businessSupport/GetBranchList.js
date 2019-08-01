@@ -19,6 +19,8 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
 import { getBranchList, getBranchDetail } from 'actions/index';
 import GetBranchDetail from './GetBranchDetail';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 
 const columnData = [
@@ -54,7 +56,7 @@ const columnData = [
             <TableCell padding="checkbox">
               <Checkbox color="secondary"
                         indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={numSelected === rowCount}
+                        checked={rowCount!==0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
               />
             </TableCell>
@@ -115,7 +117,7 @@ const columnData = [
             </Tooltip>
           ) : (
             <Tooltip title="Filter list">
-              <IconButton aria-label="Filter list">
+              <IconButton aria-label="Filter list" onClick={props.handleClick}>
                 <FilterListIcon/>
               </IconButton>
             </Tooltip>
@@ -209,15 +211,58 @@ const columnData = [
         data: this.props.branchList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
         page: 0,
         rowsPerPage: 10,
+        anchorEl: undefined,
+        open: false,
       };
     }
+
+    handleClickFilter = event => {
+      this.setState({filteropen: true, anchorEl: event.currentTarget});
+    };
+  
+    handleRequestCloseFilter = (event, option) => {
+      event.preventDefault();
+      if(option!=="backdropClick")  {option!=="전체" ? this.props.getBranchList({searchCondition:"2", searchKeyword:option.localCodeNo}) 
+                                            : this.props.getBranchList({searchCondition:null})}
+      this.setState({filteropen: false});
+    };
+
+    options = this.props.localList;
   
     render() {
       const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
+
+      if(this.props.branchList!==this.state.data){
+        this.setState({
+          data: this.props.branchList
+        })
+      }
   
       return (
         <div>
-          <EnhancedTableToolbar numSelected={selected.length}/>
+
+          <Menu
+          id="long-menu"
+          anchorEl={this.state.anchorEl}
+          open={this.state.filteropen}
+          onClose={this.handleRequestCloseFilter}
+          MenuListProps={{
+            style: {
+              width: 200,
+            },
+          }}
+        >
+          <MenuItem onClick={(event) => this.handleRequestCloseFilter(event, "전체")}>
+              전체
+            </MenuItem>,
+          {this.options.map(option =>
+            <MenuItem key={option.localCodeNo} onClick={(event) => this.handleRequestCloseFilter(event, option)}>
+              {option.localCodeName}
+            </MenuItem>,
+          )}
+        </Menu>
+
+          <EnhancedTableToolbar numSelected={selected.length} handleClick={this.handleClickFilter}/>
           <div className="flex-auto">
             <div className="table-responsive-material">
               <Table>
@@ -255,7 +300,7 @@ const columnData = [
                         <TableCell align="left">{row.address}</TableCell>
                         <TableCell align="left">{row.branchTel}</TableCell>
                         <TableCell align="left">{row.branchRegDate}</TableCell>
-                        <TableCell align="left">{row.branchStatus}</TableCell>
+                        <TableCell align="left">{row.branchStatusCodeNo == '01' ? <i class="zmdi zmdi-check zmdi-hc-2x"></i> : <i class="zmdi zmdi-minus-circle zmdi-hc-2x"></i>}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -287,8 +332,8 @@ const columnData = [
   }
   
   const mapStateToProps = ({ businessSupport }) => {
-    const { branchList, branch } = businessSupport;
-    return { branchList, branch };
+    const { branchList, branch, localList } = businessSupport;
+    return { branchList, branch, localList };
 }
 
 export default connect(mapStateToProps, { getBranchList, getBranchDetail })(EnhancedTable);
