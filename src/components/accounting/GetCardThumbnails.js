@@ -1,21 +1,36 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import StarRatingComponent from 'react-star-rating-component';
-import IntlMessages from 'util/IntlMessages';
+import UpdateCard from 'components/accounting/UpdateCard';
 
-const GetCardThumbnails = ({ cardList }) => {
+const GetCardThumbnails = ({ cardList, getCard }) => {
 
-  console.log(cardList)
+  const [value, setValue] = React.useState({updateOpen: false});
 
-  const GetThumbnailDetail = (event) => {
+
+  //카드 수정 다이얼로그 띄우기
+  const updateCardDialogOpen = () => {
+    setValue({updateOpen : true});
+  }
+
+  //카드 수정 다이얼로그 닫기
+  const updateCardDialogClose = () => {
+    setValue({updateOpen : false});
+    
+  }
+
+  //카드 수정 요청
+  const updateCard = (event, cardRegNo) => {
     event.preventDefault();
-    alert("hi")
+    getCard(cardRegNo);
+    updateCardDialogOpen();
   }
 
   return(
-    cardList.map( (row) => {
+    <div>
 
-      const { cardImage, cardRegNo, cardNo, cardManager, cardManagerName, cardCategoryCodeNo, cardCategoryCodeName, cardName} = row;
+    {cardList.map( (row) => {
+
+      const { cardImage, cardRegNo, cardNo, cardManager, cardManagerName, cardCategoryCodeNo, cardCategoryCodeName, cardName, cardCompanyCodeName} = row;
+      
       return (
         <div className="col-xl-3 col-md-4 col-sm-6 col-12" style={{float:"left", display:"inline"}}>
           <div className="card product-item">
@@ -23,38 +38,32 @@ const GetCardThumbnails = ({ cardList }) => {
               <div className="card-image">
                 <div className="grid-thumb-equal">
                   <span className="grid-thumb-cover jr-link">
-                    <img onClick={ event => GetThumbnailDetail(event) } sizes="sm" alt="Remy Sharp" src={'/img/'+ cardImage}/>
+                    <img onClick={ event => updateCard(event, cardRegNo) } sizes="sm" alt="Remy Sharp" src={'/img/'+ cardImage}/>
                   </span>
                 </div>
               </div>
             </div>
             <div className="card-body">
               <div className="product-details">
-                <h3 className="card-title fw-regular">{cardRegNo}
-                  <small className="text-grey text-darken-2">{", " + cardNo}</small>
+                <h3 className="card-title fw-regular">{cardName}</h3>
+                <h3 className="card-title fw-regular">
+                  <small className="text-grey text-darken-2">{cardNo}</small>
                 </h3>
-                <div className="d-flex ">
-                  <h3 className="card-title">{cardManager} </h3>
-                  <h5 className="text-muted px-2">
-                    <del>{cardManager}</del>
-                  </h5>
-                  <h5 className="text-success">{cardManagerName} off</h5>
-                </div>
                 <div className="d-flex flex-row">
-                  <StarRatingComponent
-                    name=""
-                    value={cardCategoryCodeNo}
-                    starCount={5}
-                    editing={false}/>
-                  <strong className="d-inline-block ml-2">{cardCategoryCodeName}</strong>
+                  <strong className="d-inline-block">{cardCompanyCodeName+"("+cardCategoryCodeName+")"}</strong>
                 </div>
-                <p>{cardName}</p>
               </div>
             </div>
           </div>
+          
         </div>
       )
-    })
+    })}
+        <UpdateCard
+          open={value.updateOpen}
+          close={updateCardDialogClose}
+           />
+    </div>
   )
 };
 

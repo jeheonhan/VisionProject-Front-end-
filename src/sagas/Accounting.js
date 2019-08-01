@@ -53,6 +53,7 @@ import {
     GET_ANALYZE_SALARY_BOOK_LIST,
     DELETE_VENDOR,
     DELETE_CARD,
+    DELETE_ACCOUNT,
 } from "actionTypes/ActionTypes";
 
 const getVendorListRequest = async (search) => {
@@ -290,11 +291,21 @@ const deleteVendorRequest = async (vendorNoList) => {
     .catch(response => console.log(response));
 }
 
-const deleteCardRequest = async (cardNoList) => {
+const deleteCardRequest = async (cardRegNoList) => {
     return await axios({
         method:"POST",
         url:"/accounting/convertCardUsageStatus",
-        data: cardNoList
+        data: cardRegNoList
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
+const deleteAccountRequest = async (accountRegNoList) => {
+    return await axios({
+        method:"POST",
+        url:"/accounting/convertAccountUsageStatus",
+        data: accountRegNoList
     })
     .then(response => response.data)
     .catch(response => console.log(response));
@@ -444,6 +455,11 @@ function* deleteCardFn({payload}){
     yield put(getCardList({ searchKeyword : "" }));
 }
 
+function* deleteAccountFn({payload}){
+    yield call(deleteAccountRequest, payload);
+    yield put(getAccountList({ searchKeyword : "" }));
+}
+
 export function* getVendorListSaga(){
     yield takeEvery(GET_VENDOR_LIST, getVendorListFn);
 }
@@ -556,6 +572,10 @@ export function* deleteCardSaga(){
     yield takeEvery(DELETE_CARD, deleteCardFn);
 }
 
+export function* deleteAccountSaga(){
+    yield takeEvery(DELETE_ACCOUNT, deleteAccountFn);
+}
+
 export default function* rootSaga(){
     yield all([
         fork(getVendorListSaga),
@@ -586,5 +606,6 @@ export default function* rootSaga(){
         fork(getAnalyzeSalaryBookSaga),
         fork(deleteVendorSaga),
         fork(deleteCardSaga),
+        fork(deleteAccountSaga),
     ]);
 }

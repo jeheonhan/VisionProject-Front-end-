@@ -3,17 +3,13 @@ import { connect } from 'react-redux';
 import { getCodeList, addAccount } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import CardBox from 'components/CardBox';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 class AddAccount extends React.Component {
   state = {
@@ -27,6 +23,7 @@ class AddAccount extends React.Component {
     reference : "",
     accountCategoryCodeNo : "",
     accountCategoryCodeName : "",
+    success : false,
   };
 
   //계좌등록 다이얼로그 열기
@@ -45,6 +42,24 @@ class AddAccount extends React.Component {
     console.log(this.state);
   };
 
+  //등록성공알람 켜기
+  openSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      success : true
+    })
+  }
+
+  //등록성공알람 끄기
+  closeSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      success : false
+    })
+    this.handleRequestClose()
+  }
+  
+
   //계좌등록
   submitAccount = (event) => {
     event.preventDefault();
@@ -56,8 +71,19 @@ class AddAccount extends React.Component {
         reference : this.state.reference,
         accountCategoryCodeNo : this.state.accountCategoryCodeNo,
     })
+    this.setState({
+      accountRegNo : "",
+      accountNo : "",
+      accountUsageStatusCodeNo : "",
+      accountHolder : "",
+      bankCodeNo : "",
+      bankCodeName : "",
+      reference : "",
+      accountCategoryCodeNo : "",
+      accountCategoryCodeName : "",
+    });
 
-    this.handleRequestClose()
+    this.openSuccessAlarm();
   }
 
   render() {
@@ -74,127 +100,122 @@ class AddAccount extends React.Component {
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
             등록
         </Button>
-        <Dialog
-          fullScreen
-          open={this.state.open}
-          TransitionComponent={Transition}
-        >
-          <AppBar className="position-relative">
-            <Toolbar>
-              <Typography variant="title" color="inherit" style={{
-                flex: 1,
-              }}>
-                계좌 등록
-              </Typography>
-              <Button onClick={this.handleRequestClose} color="inherit">
+        <Dialog open={this.state.open} onClose={this.handleRequestClose} maxWidth="lg">
+          <DialogTitle>계좌등록</DialogTitle>
+            <DialogContent style={{minWidth: '700px', maxWidth: '700px'}}>
+              <DialogContentText>
+                내용을 빠진항목없이 입력 바랍니다.
+              </DialogContentText>
+                <form className="row" noValidate autoComplete="off">
+
+                  <div className="col-md-3 col-6" style={{float:"left"}}>
+                    <TextField
+                        id="bankCodeNo"
+                        select
+                        label="은행 선택"
+                        value={this.state.bankCodeNo}
+                        onChange={this.handleChange('bankCodeNo')}
+                        SelectProps={{}}
+                        margin="normal"
+                        fullWidth={true}
+                    >
+                    {bankList && bankList.map(option => (
+                      <MenuItem key={option.codeNo} value={option.codeNo}>
+                          {option.codeName}
+                      </MenuItem>
+                    ))}
+                    </TextField>
+                  </div>
+
+                  <div className="col-md-4 col-6" style={{float:"left"}}>
+                    <TextField
+                        id="accontHolder"
+                        label="예금주명"
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        placeholder="예금주명 입력"
+                        value={this.state.accountHolder}
+                        margin="normal"
+                        onChange={this.handleChange('accountHolder')}
+                        fullWidth={true}
+                    />
+                  </div>
+
+                  <div className="col-md-5 col-6" style={{float:"left"}}>
+                    <TextField
+                        id="accontNo"
+                        label="계좌번호"
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        placeholder="계좌번호 입력"
+                        value={this.state.accountNo}
+                        margin="normal"
+                        onChange={this.handleChange('accountNo')}
+                        fullWidth={true}
+                        helperText="- 를 제외하고 입력해주세요"
+                    />
+                  </div>
+
+ 
+
+                  <div className="col-md-3 col-6" style={{float:"left"}}>
+                    <TextField
+                        id="accountCategoryCodeNo"
+                        select
+                        label="사용처 선택"
+                        value={this.state.accountCategoryCodeNo}
+                        onChange={this.handleChange('accountCategoryCodeNo')}
+                        SelectProps={{}}
+                        margin="normal"
+                        fullWidth={true}
+                    >
+                    {accountCategoryList && accountCategoryList.map(option => (
+                      <MenuItem key={option.codeNo} value={option.codeNo}>
+                          {option.codeName}
+                      </MenuItem>
+                    ))}
+                    </TextField>
+                  </div>
+
+                  <div className="col-md-9 col-6" style={{float:"left"}}>
+                    <TextField
+                        id="reference"
+                        label="참고"
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        placeholder="참고를 입력하세요"
+                        helperText="계좌 검색시 사용할 키워드를 입력해주세요"
+                        value={this.state.reference}
+                        margin="normal"
+                        onChange={this.handleChange('reference')}
+                        fullWidth={true}
+                    />
+                  </div>
+
+                  <SweetAlert 
+                    show={this.state.success} 
+                    success 
+                    title="등록완료"
+                    onConfirm={this.closeSuccessAlarm}
+                    confirmBtnText="확인"
+                    confirmBtnBsStyle="danger"
+                    >
+                    등록에 성공했습니다
+                  </SweetAlert>
+
+                </form>
+            </DialogContent>
+            <DialogActions>
+              <Button color="secondary" onClick={(event) => {this.submitAccount(event)}}>
+                등록
+              </Button>
+              <Button onClick={this.handleRequestClose} color="primary">
                 닫기
               </Button>
-            </Toolbar>
-          </AppBar>
-
-          <p/>
-
-          <div align="center">  
-            <CardBox styleName="col-lg-6" heading="계좌 등록">
-                <form className="row" noValidate autoComplete="off">
-                    <div className="col-md-8 col-12">
-                        <TextField
-                            id="bankCodeNo"
-                            select
-                            label="은행 선택"
-                            value={this.state.bankCodeNo}
-                            onChange={this.handleChange('bankCodeNo')}
-                            SelectProps={{}}
-                            helperText="은행을 선택해 주세요"
-                            margin="normal"
-                            fullWidth
-                        >
-                        {bankList && bankList.map(option => (
-                        <MenuItem key={option.codeNo} value={option.codeNo}>
-                            {option.codeName}
-                        </MenuItem>
-                        ))}
-                        </TextField>
-                    </div>
-                    <div className="col-lg-8 col-sm-6 col-12">
-                        <TextField
-                            id="accontNo"
-                            label="계좌번호"
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                            placeholder="계좌번호"
-                            helperText="계좌번호를 입력해주세요"
-                            value={this.state.accountNo}
-                            fullWidth
-                            margin="normal"
-                            onChange={this.handleChange('accountNo')}
-                        />
-                    </div>
-                    <div className="col-lg-8 col-sm-6 col-12">
-                        <TextField
-                            id="accontHolder"
-                            label="예금주명"
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                            placeholder="예금주명"
-                            helperText="예금주명을 입력해주세요"
-                            value={this.state.accountHolder}
-                            fullWidth
-                            margin="normal"
-                            onChange={this.handleChange('accountHolder')}
-                        />
-                    </div>
-                    <div className="col-lg-8 col-sm-6 col-12">
-                        <TextField
-                            id="reference"
-                            label="참고"
-                            InputLabelProps={{
-                            shrink: true,
-                            }}
-                            placeholder="참고"
-                            helperText="계좌 검색시 사용할 키워드를 입력해주세요"
-                            value={this.state.reference}
-                            fullWidth
-                            margin="normal"
-                            onChange={this.handleChange('reference')}
-                        />
-                    </div>
-                    <div className="col-md-8 col-12" align="center">
-                        <TextField
-                            id="accountCategoryCodeNo"
-                            select
-                            label="사용처 선택"
-                            value={this.state.accountCategoryCodeNo}
-                            onChange={this.handleChange('accountCategoryCodeNo')}
-                            SelectProps={{}}
-                            helperText="사용처를 선택해 주세요"
-                            margin="normal"
-                            fullWidth
-                        >
-                        {accountCategoryList && accountCategoryList.map(option => (
-                        <MenuItem key={option.codeNo} value={option.codeNo}>
-                            {option.codeName}
-                        </MenuItem>
-                        ))}
-                        </TextField>
-                    </div>
-
-                    <div className="col-md-12 col-12">
-                        <Button 
-                          className="jr-btn text-uppercase btn-block"
-                          size="large" 
-                          color="default" 
-                          onClick={(event) => {this.submitAccount(event)}}>
-                          등록하기
-                        </Button>
-                    </div>
-              </form>
-
-            </CardBox>
-          </div>
-          
+            </DialogActions>
         </Dialog>
       </div>
     );

@@ -21,6 +21,7 @@ import { getCard, deleteCard, getCardList } from 'actions/index';
 import UpdateCard from 'components/accounting/UpdateCard';
 import SearchBox from 'components/SearchBox';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { ArtTrack } from '@material-ui/icons'
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -96,6 +97,7 @@ let EnhancedTableToolbar = props => {
   const {numSelected} = props;
   const [value, setValue] = React.useState({searchKeyword : ''});
 
+  //검색 키워드 수정
   const updateSearchKeyword = (event) => {
     setValue({
       searchKeyword: event.target.value,
@@ -103,6 +105,12 @@ let EnhancedTableToolbar = props => {
     console.log(value.searchKeyword)
   }
 
+  //섬네일-리스트로 보기 변환
+  const handleChange = () => {
+    props.changeMenu();
+  };
+
+  //검색 기능
   const searchActivity = (event) => {
     event.preventDefault();
     props.getCardList(value)
@@ -121,6 +129,12 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
+      
+      <ArtTrack
+        onClick={handleChange}
+        style={{cursor:'pointer'}}
+        titleAccess="섬네일로 보기"
+      />
 
       <SearchBox 
         styleName="d-none d-sm-block" 
@@ -255,7 +269,7 @@ class CardTable extends React.Component {
     this.setState({ warning : true })
   }
 
-  //거래처 삭제 확인 버튼
+  //카드 삭제 확인 버튼
   deleteFile = () => {
     this.props.deleteCard(this.state.selected);
     this.setState({
@@ -264,7 +278,7 @@ class CardTable extends React.Component {
     })
   };
 
-  //거래처 삭제 취소 버튼
+  //카드 삭제 취소 버튼
   onCancelDelete = () => {
     this.setState({
       warning: false
@@ -287,6 +301,7 @@ class CardTable extends React.Component {
           numSelected={selected.length}
           updateUsageStatus={this.updateUsageStatus}  
           getCardList={this.props.getCardList}
+          changeMenu={this.props.changeMenu}
         />
         <div className="flex-auto">
           <div className="table-responsive-material">

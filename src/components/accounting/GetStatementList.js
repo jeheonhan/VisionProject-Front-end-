@@ -272,7 +272,7 @@ class StatementTable extends React.Component {
                       <TableCell align="left">{row.statementCategoryCodeName}</TableCell>
                       <TableCell align="left">{row.statementDetail}</TableCell>
                       <TableCell align="left">{row.tradeDate}</TableCell>
-                      <TableCell align="left">{row.tradeAmount}</TableCell>
+                      <TableCell align="left">{row.tradeAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
                     </TableRow>
 
                   );

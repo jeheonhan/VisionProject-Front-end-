@@ -43,6 +43,7 @@ import {
     CARRY_ANALYZE_SALARY_BOOK_LIST,
     DELETE_VENDOR,
     DELETE_CARD,
+    DELETE_ACCOUNT,
 } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
@@ -345,9 +346,16 @@ export const deleteVendor = (vendorNoList) => {
     }
 }
 
-export const deleteCard = (cardNoList) => {
+export const deleteCard = (cardRegNoList) => {
     return{
         type: DELETE_CARD,
-        payload: cardNoList
+        payload: cardRegNoList
+    }
+}
+
+export const deleteAccount = (accountRegNoList) => {
+    return{
+        type: DELETE_ACCOUNT,
+        payload: accountRegNoList
     }
 }

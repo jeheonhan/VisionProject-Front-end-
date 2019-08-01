@@ -66,7 +66,6 @@ class AddCard extends React.Component {
       findAccountOpen : false,
       success : false,
     }
-
   }
 
   //카드등록 다이얼로그창 띄우기
