@@ -6,6 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import DialogActions from '@material-ui/core/DialogActions';
 import Slide from '@material-ui/core/Slide';
+import CardBox from "components/CardBox";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -20,37 +21,6 @@ function Transition(props) {
   return <Slide direction="down" {...props} />;
 }
 
-// const StyledTableCell = withStyles(theme => ({
-//     head: {
-//       backgroundColor: theme.palette.common.black,
-//       color: theme.palette.common.white,
-//     },
-//     body: {
-//       fontSize: 14,
-//     },
-//   }))(TableCell);
-
-//   const StyledTableRow = withStyles(theme => ({
-//     root: {
-//       '&:nth-of-type(odd)': {
-//         backgroundColor: theme.palette.background.default,
-//       },
-//     },
-//   }))(TableRow);
-
-//   const useStyles = makeStyles(theme => ({
-//     root: {
-//       width: '100%',
-//       marginTop: theme.spacing(3),
-//       overflowX: 'auto',
-//     },
-//     table: {
-//       minWidth: 700,
-//     },
-//   }));
-
-//   const classes = useStyles();
-
 class GetDailySalesDetail extends React.Component {
   
   constructor(props){
@@ -62,10 +32,6 @@ class GetDailySalesDetail extends React.Component {
     }
   }
      
-    /*handleClickOpen = () => {
-      this.setState({open: true});
-    }; */
-  
     closeBranchDetail = (event) => {
       event.preventDefault();
       this.setState({open: false});
@@ -85,7 +51,7 @@ class GetDailySalesDetail extends React.Component {
             open={this.props.open}
             TransitionComponent={Transition}
             maxWidth=""
-            //onClose={this.props.handleRequestClose}
+            onClose={this.props.handleRequestClose}
           >
           
           <AppBar className="position-relative" >
@@ -100,44 +66,45 @@ class GetDailySalesDetail extends React.Component {
               </Typography>
             </Toolbar>
           </AppBar>
-                  <div>
-                        {/* <Paper className={classes.root}>
-                        <Table className={classes.table}>
-                          <TableHead>
-                            <TableRow>
-                              <StyledTableCell align="right">No</StyledTableCell>
-                              <StyledTableCell align="right">메뉴번호</StyledTableCell>
-                              <StyledTableCell align="right">메뉴이름</StyledTableCell>
-                              <StyledTableCell align="right">판매단가</StyledTableCell>
-                              <StyledTableCell align="right">판매수량</StyledTableCell>
-                              <StyledTableCell align="right">판매금액</StyledTableCell>
-                              <StyledTableCell align="right">판매일자</StyledTableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            
-                  {this.state.salesProduct.map((row) => {
-                              <StyledTableRow key={row.salesNumbering}>
-                                <StyledTableCell component="th" scope="row">
-                                  {row.salesNumbering}
-                                </StyledTableCell>
-                                <StyledTableCell align="right">{row.menuNo}</StyledTableCell>
-                                <StyledTableCell align="right">{row.menuName}</StyledTableCell>
-                                <StyledTableCell align="right">{row.salesPrice}</StyledTableCell>
-                                <StyledTableCell align="right">{row.salesQuantity}</StyledTableCell>
-                                <StyledTableCell align="right">{row.salesAmount}</StyledTableCell>
-                                <StyledTableCell align="right">{row.salesDate}</StyledTableCell>
-                              </StyledTableRow>
-                        })}
-                          </TableBody>
-                        </Table>
-                      </Paper> */}
-                  </div>
-                      <DialogActions align="centery">
-                          <Button onClick={this.props.handleRequestClose} color="secondary">
-                              닫기
-                          </Button>
-                      </DialogActions>
+                  
+            <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
+
+            <div className="table-responsive-material" >
+            <Table>
+                <TableHead>
+                    <TableRow>
+                    <TableCell align="center">No</TableCell>
+                    <TableCell align="center">메뉴번호</TableCell>
+                    <TableCell align="center">판매단가</TableCell>
+                    <TableCell align="center">판매수량</TableCell>
+                    <TableCell align="center">판매금액</TableCell>
+                    <TableCell align="center">매출일자</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+            {this.state.salesProduct && this.state.salesProduct.map(row => {
+                return (
+                  <TableRow key={row.menuNo}>
+                    <TableCell width="50px">{row.menuNo}</TableCell>
+                    <TableCell align="center">{row.menuName}</TableCell>
+                    <TableCell align="center">{row.salesPrice}</TableCell>
+                    <TableCell align="center">{row.salesQuantity}</TableCell>
+                    <TableCell align="center">{row.salesAmount}</TableCell>
+                    <TableCell align="center">{row.salesDate}</TableCell>
+                  </TableRow>
+                    );
+            })}
+              <TableRow>
+              </TableRow>
+                </TableBody>
+            </Table>
+            </div>
+            </CardBox>
+                  <DialogActions align="centery">
+                    <Button onClick={this.props.handleRequestClose} color="secondary">
+                        닫기
+                    </Button>
+                  </DialogActions>
           </Dialog>
       );
     }

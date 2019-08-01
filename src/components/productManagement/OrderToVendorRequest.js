@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {  addProduct } from 'actions/index';
+import {  addProduct, addOrderToVendor, getProductList , getOrderToVendorProductStatusComplete } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -26,24 +26,24 @@ class FullScreenDialog extends React.Component {
 
   state = {
     open: false,
-    product:{
-      productName : '',
+    InteProduction:{
+      orderToVendorNo : '',
+      statementNo : '',
+      totalAmount : '',
+      orderToVendorDate : '',
+      purchasePrice  : '',
       purchasePrice : '',
-      salesPrice : '',
-      quantity : '',
-      vendorNo : '',
-      vendorName : '',
+      orderToVendorProduct : [ ]
     }
-    
   };
 
   
-  //물품 등록창 열기
+  
   handleClickOpen = () => {
     this.setState({open: true});
   };
 
-  //물품 등록창 닫기
+  
   handleClickClose = () => {
     this.setState({
       open:false
@@ -51,21 +51,22 @@ class FullScreenDialog extends React.Component {
   }
 
   handleRequestClose = () => {
+
     this.setState({open: false});
+
+    
   };
 
-  //Submit
-  handleSubmit = () => {
+  close(event){
+    this.setState({open: false});
 
-   this.props.addProduct({
-   ...this.state.product
-   });
-
-    this.handleClickClose()
-  }
+  };
+  
 
   render() {
     const {infoAccount} = this.props;
+
+    
     
     return (
         
@@ -90,18 +91,11 @@ class FullScreenDialog extends React.Component {
               >
                 발주 
               </Typography>
-
-              
-
               <Button onClick={this.handleRequestClose} color="inherit">
                 닫기
-              </Button>
-              
-              
+              </Button>            
             </Toolbar>
-          </AppBar>
-
-          
+          </AppBar>    
   <div  align="center">
   <br/>
           <Typography variant="h4" color="textPrimary" style={{
@@ -110,15 +104,9 @@ class FullScreenDialog extends React.Component {
                 발주 
           <br/><br/>
               </Typography>
-
-              <OrderToVendorRequstList></OrderToVendorRequstList>
-  
-   
+              <OrderToVendorRequstList click={this.handleClickClose}></OrderToVendorRequstList>
   </div>
-
- 
-
-          <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleSubmit}>전송</Button>
+          
         </Dialog>
       </div>
     );
@@ -130,7 +118,7 @@ const mapStateToProps = ({productionManagement}) => {
    return { infoAccount  };//키값
 }
 
-export default connect(mapStateToProps,{addProduct })(FullScreenDialog);
+export default connect(mapStateToProps,{addProduct , addOrderToVendor ,getProductList , getOrderToVendorProductStatusComplete})(FullScreenDialog);
 
 
 

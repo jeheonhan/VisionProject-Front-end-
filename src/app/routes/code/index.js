@@ -5,7 +5,7 @@ import CodeManage from 'containers/code/CodeManage'
 const Code = ({match}) => {
     return (
   
-      <div style={{padding:"2%"}}>
+      <div className="app-wrapper">
         <ContainerHeader title={"그룹코드목록"} match={match} description={"코드로 사용되는 정보를 관리할 수 있습니다"}/>
         <CodeManage></CodeManage>
         <div align="right">

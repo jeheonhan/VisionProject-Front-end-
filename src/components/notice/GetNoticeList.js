@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import {getNoticeList, getNoticeDetail} from 'actions/index';
+import {getNoticeList, getNoticeDetail, convertNoticeStatusCode } from 'actions/index';
 import GetNoticeDetail from 'components/notice/GetNoticeDetail';
 import { connect } from 'react-redux';
 
@@ -215,8 +215,9 @@ const columnData = [
     }
 
     handleRequestClose = () => {
-      //this.props.getNoticeDetail({...this.state.noticeNo});
-      this.props.getNoticeList({searchCondition:null});
+      let search = {searchCondition:'2',
+                    searchKeyword:'01'}
+      this.props.getNoticeList(search);
       this.setState({open : false});
     }
   
@@ -304,4 +305,4 @@ const columnData = [
     return{noticeList, noticeDetail};
   }
   
-  export default connect(mapStateToProps, {getNoticeList, getNoticeDetail})(EnhancedTable);
+  export default connect(mapStateToProps, {getNoticeList, getNoticeDetail, convertNoticeStatusCode })(EnhancedTable);

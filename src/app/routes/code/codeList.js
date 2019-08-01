@@ -46,7 +46,7 @@ class CodeList extends React.Component{
 
   render(){
     return(
-      <div style={{padding:"2%"}}>
+      <div className="app-wrapper">
         {this.renderRedirect()}
         <ContainerHeader title={"그룹코드목록"} match={this.props.match} description={"코드로 사용되는 정보를 관리할 수 있습니다"}/>
                 {this.props.location.state && <CodeDetailManage search = {this.props.location.state.search}></CodeDetailManage>}  

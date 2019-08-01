@@ -5,14 +5,14 @@ import { carryProductList, carryOrderToVendorList,
     getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, 
     getOrderToVendorList, getOrderToVendorDetailList, caarryOrderBranch,
      carryOrderBranch, carryOrderBranchList, getOrderBranchList ,
-     getProductListForOrder , carryProductListForOrder
+     getProductListForOrder , carryProductListForOrder , carryOrderToVendorProductStatusComplete
     } from 'actions/index';
 import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
      ADD_PRODUCT, GET_INFO_ACCOUNT, GET_ORDER_TO_VENDOR_DETAIL_LIST
     , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH ,
      GET_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS,
     UPDATE_ORDER_TO_VEN_ITEM_CODE ,
-    GET_PRODUCT_LIST_FOR_ORDER
+    GET_PRODUCT_LIST_FOR_ORDER , GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE
 } from "actionTypes/ActionTypes";
 
 import {SEND_SHIPPING} from 'actionTypes/ActionTypes';
@@ -87,7 +87,7 @@ const updateOrderToVendorCodeRequest = async (data) => {
 
 const addOrderToVendorRequest = async (data) => {
     console.log("addOrderToVendorRequest 데이터왓냐");
-
+    console.log(data)
     return await axios({
         method : "POST" , 
         url : "/pm/addOrderToVendor",
@@ -140,6 +140,17 @@ const getProductListForOrderRequest = async () => {
     .then(response => response.data)
     .catch(error => console.log(error))
 }
+
+const getProductListCompleteRequest = async () => {
+    return await axios({
+        method : "GET",
+        url : "/pm/selectOrderToVendorList"
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
+
 
 
 
@@ -199,7 +210,10 @@ function* updateOrderToVenItemCodeFn({payload}){
     const orderToVendorListDetail = yield call(getOrderToVendorDetailListRequest);
     console.log("orderToVendorListDetail 값은??");
     console.log(orderToVendorListDetail);
+
     yield put(getOrderToVendorDetailList(payload));
+    const OrderToVendorList = yield call(getOrderToVendorListRequest);
+    yield put(carryOrderToVendorList(OrderToVendorList));
 }
 
 function* modifyOrderBranchFn(action){
@@ -210,6 +224,11 @@ function* modifyOrderBranchFn(action){
 function* getProductListForOrderFn(){
    const productListForOrder = yield call(getProductListForOrderRequest);
     yield put(carryProductListForOrder(productListForOrder))
+}
+
+function* getOrderToVendorProductStatusCompleteFn(){
+    const getProductListComplete = yield call(getProductListCompleteRequest);
+    yield put(carryOrderToVendorProductStatusComplete(getProductListComplete))
 }
 
 
@@ -266,6 +285,10 @@ export function* productListForOrderSaga(){
     yield takeEvery(GET_PRODUCT_LIST_FOR_ORDER, getProductListForOrderFn)
 }
 
+export function* orderToVendorProductStatusSaga(){
+    yield takeEvery(GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE, getOrderToVendorProductStatusCompleteFn)
+}
+
 export default function* rootSaga(){
     yield all([
         fork(sendShippingSaga),
@@ -280,7 +303,8 @@ export default function* rootSaga(){
         fork(updateOrderToVenItemCodeSaga),
         fork(getOrderBranchSaga),
         fork(modifyOrderBranchStatusSaga),
-        fork(productListForOrderSaga)
+        fork(productListForOrderSaga),
+        fork(orderToVendorProductStatusSaga),
     ]);
 }
 

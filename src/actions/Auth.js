@@ -9,7 +9,15 @@ import {
     SIGNOUT_USER,
     SIGNOUT_USER_SUCCESS,
     SIGNUP_USER_SUCCESS,
-    CONVERT_LOADER
+    CONVERT_LOADER,
+    FORGOT_USER_ID,
+    CARRY_FORGOT_USER_ID,
+    FORGOT_PASSWORD,
+    CARRY_PASSWORD_BOOLEAN,
+    REQUEST_IDENTIFY_CODE,
+    SEND_IDENTIFY_CODE,
+    CARRY_IDENTIFY_CODE,
+    MODIFY_PASSWORD
 } from 'actionTypes/ActionTypes';
 
 export const userSignIn = (user) => {
@@ -77,4 +85,60 @@ export const convertLoader = () => {
     return{
         type: CONVERT_LOADER
     };
+}
+
+export const forgotUserId = (data) => {
+    return{
+        type: FORGOT_USER_ID,
+        payload: data
+    }
+}
+
+export const carryForgotUserId = (data) => {
+    return{
+        type: CARRY_FORGOT_USER_ID,
+        payload: data
+    }
+}
+
+export const forgotPassword = (data) => {
+    return{
+        type: FORGOT_PASSWORD,
+        payload: data
+    }
+}
+
+export const carryPasswordBoolean = (data) => {
+    return{
+        type: CARRY_PASSWORD_BOOLEAN,
+        payload: data
+    }
+}
+
+export const requestIdentifyCode = (data) => {
+    return{
+        type: REQUEST_IDENTIFY_CODE,
+        payload: data
+    }
+}
+
+export const sendIdentifyCode = (data) => {
+    return{
+        type: SEND_IDENTIFY_CODE,
+        payload: data
+    }
+}
+
+export const carryIdentifyCode = (data) => {
+    return{
+        type: CARRY_IDENTIFY_CODE,
+        payload: data
+    }
+}
+
+export const modifyPassword = (data) => {
+    return{
+        type: MODIFY_PASSWORD,
+        payload: data
+    }
 }

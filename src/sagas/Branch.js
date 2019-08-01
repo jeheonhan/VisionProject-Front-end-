@@ -23,7 +23,7 @@ const getDailySalesDetailRequest = async (branchDailySales) => {
 }
 
 const addDailySalesRequest = async ( salesProductList ) => {
-    console.log("addDailySales :::::::: ");
+    //console.log("addDailySales :::::::: ");
     return await axios({
         method : "POST",
         url:"/branch/addDailySales",
@@ -57,7 +57,7 @@ function* getDailySalesDetailFn ({ payload }) {
 
 function* addDailySalesFn ({payload}) {
     yield call(addDailySalesRequest, payload);
-    yield put(getDailySalesList());
+    yield put(getDailySalesList(localStorage.getItem('user').branchNo));
 }
 
 function* getSalesMenuListFn () {

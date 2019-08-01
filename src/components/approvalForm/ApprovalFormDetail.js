@@ -70,12 +70,11 @@ class FullScreenDialog extends React.Component {
       <div>
         {this.renderRedirect()}
         <Dialog
-          fullScreen
           open={this.props.open}
           onClose={this.handleRequestClose}
           TransitionComponent={Transition}
         >
-          <AppBar className="position-relative">
+          <AppBar className="position-relative" style={{backgroundColor:"#CC4F3A"}}>
             <Toolbar>
               <IconButton onClick={this.props.handleClose} aria-label="Close">
                 <CloseIcon/>
@@ -85,9 +84,12 @@ class FullScreenDialog extends React.Component {
               }}>
                 결재양식 상세조회
               </Typography>
+              <span style={{float:"right"}}>
+              <Button size="large" variant="contained" onClick={(event) => this.handleAddApproval(event, this.props.targetForm.approvalFormNo)}>결재서작성</Button>
+              </span>
             </Toolbar>
           </AppBar>
-          <div>
+          <div style={{paddingTop:"20px", paddingBottom:"20px"}}>
           <span style={{float:"left", paddingLeft:"50px"}}>
            <TextField
                 error
@@ -107,12 +109,8 @@ class FullScreenDialog extends React.Component {
               value={this.props.targetForm.registrantEmployeeName}
             />
             </span>
-            <span style={{float:"right", paddingTop:"25px", paddingRight:"20px"}}>
-            <Button variant="contained" className="jr-btn bg-danger text-white" onClick={(event) => this.handleAddApproval(event, this.props.targetForm.approvalFormNo)}>결재서작성</Button>
-            </span>
             </div>
-            <Divider/>
-            <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside ><div style={{padding:"50px"}} dangerouslySetInnerHTML={{__html:this.props.targetForm.approvalForm}}/></CardBox>
+            <div style={{paddingLeft:"50px", paddingRight:"50px", paddingBottom:"50px"}} dangerouslySetInnerHTML={{__html:this.props.targetForm.approvalForm}}/>
         </Dialog>
       </div>
     );

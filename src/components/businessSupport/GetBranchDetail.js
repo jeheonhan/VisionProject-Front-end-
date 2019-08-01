@@ -4,11 +4,13 @@ import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import DialogActions from '@material-ui/core/DialogActions';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Slide from '@material-ui/core/Slide';
 import { DialogContent } from '@material-ui/core';
+import { convertBranchStatusCode, getBranchList } from 'actions/index';
+import { connect } from 'react-redux';
+
 
 
 function Transition(props) {
@@ -34,6 +36,11 @@ function Transition(props) {
       event.preventDefault();
       this.setState({open: false});
     };
+
+    convertBranchStatusCode = ( branch ) => {
+      this.props.convertBranchStatusCode(branch);
+      this.props.handleRequestClose();
+    }
    
     render() {
 
@@ -119,15 +126,22 @@ function Transition(props) {
               </List>
 
           </DialogContent>
+            <div align="right">
+              <Button onClick={() => this.convertBranchStatusCode(this.state.branch)} 
+                      variant="outlined" 
+                      >
+                  <i class="zmdi zmdi-refresh-sync-alert zmdi-hc-spin"></i>{this.state.branch.branchStatusCodeNo == '01' ? '폐업전환' : '영업전환'} 
+              </Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+              <br/><br/>
 
-                 <DialogActions align="centery">
-                    <Button onClick={this.props.handleRequestClose} color="secondary">
-                        닫기
-                    </Button>
-                  </DialogActions>
+          <Button onClick={this.props.handleRequestClose} variant="outlined" aria-label="Close" ><i class="zmdi zmdi-close-circle zmdi-hc-1g"></i>닫기</Button>
+              <br/>
+
           </Dialog>
       );
     }
   }
 
-export default GetBranchDetail;
+  export default connect(null, { convertBranchStatusCode , getBranchList })(GetBranchDetail);
