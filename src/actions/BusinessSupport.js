@@ -5,7 +5,9 @@ import {GET_BRANCH_LIST,
         ADD_BRANCH, 
         ADD_BRANCH_RESULT,
         GET_LOCAL_LIST,
-        CARRY_LOCAL_LIST} from '../actionTypes/ActionTypes';
+        CARRY_LOCAL_LIST,
+        DELETE_BRANCH,
+        UPDATE_BRANCH} from '../actionTypes/ActionTypes';
 
 export const getBranchList = (search) => {
     return {
@@ -61,5 +63,19 @@ export const carryLocalList = (data) => {
     return {
         type: CARRY_LOCAL_LIST,
         payload: data
+    }
+}
+
+export const convertBranchStatusCode = ( branch ) => {
+    return {
+        type: DELETE_BRANCH,
+        payload: branch
+    }
+}
+
+export const updateBranch = ( branch ) => {
+    return {
+        type: UPDATE_BRANCH,
+        payload: branch
     }
 }

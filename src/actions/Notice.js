@@ -5,7 +5,8 @@ import {GET_NOTICE_LIST,
         ADD_NOTICE, 
         ADD_NOTICE_RESULT,
         GET_NOTICE_HEADER_LIST,
-        CARRY_NOTICE_HEADER_LIST} from '../actionTypes/ActionTypes';
+        CARRY_NOTICE_HEADER_LIST,
+        DELETE_NOTICE} from '../actionTypes/ActionTypes';
 
 export const getNoticeList = (search) => {
     return {
@@ -60,5 +61,12 @@ export const carryNoticeHeaderList = (data) => {
     return {
         type: CARRY_NOTICE_HEADER_LIST,
         payload: data
+    }
+}
+
+export const convertNoticeStatusCode = (notice) => {
+    return{
+        type: DELETE_NOTICE,
+        payload : notice
     }
 }

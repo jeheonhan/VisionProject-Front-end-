@@ -24,7 +24,7 @@ class BranchManage extends React.Component{
             <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside>
             {/* 전해줄 props값이 있으면 전해주고 아니면 Component 자체를 부르지 않음
                 내부에 있는 map이 값이 undefined면 에러가 나는 상황을 방지 */}
-            {branchList !== undefined ? ( <GetBranchList branchList={branchList}></GetBranchList>):""}
+            {branchList !== undefined ? ( <GetBranchList></GetBranchList>):""}
           </CardBox>
            
             </div>  

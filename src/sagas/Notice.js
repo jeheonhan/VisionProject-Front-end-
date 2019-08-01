@@ -1,6 +1,6 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { GET_NOTICE_LIST, GET_NOTICE_DETAIL, ADD_NOTICE, GET_NOTICE_HEADER_LIST } from 'actionTypes/ActionTypes';
+import { GET_NOTICE_LIST, GET_NOTICE_DETAIL, ADD_NOTICE, GET_NOTICE_HEADER_LIST, DELETE_NOTICE } from 'actionTypes/ActionTypes';
 import { carryNoticeList, carryNoticeDetail, getNoticeList, carryNoticeHeaderList } from 'actions/index';
 
 const getNoticeListRequest = async (search) => {
@@ -43,6 +43,16 @@ const getNoticeHeaderListRequest = async () => {
     .catch(error => console.log(error))
 }
 
+const converNoticeStatusCodeRequest = async (notice) => {
+    return await axios({
+        method: "POST",
+        url: "/notice/convertNoticeUsageStatus",
+        data: notice
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
 function* getNoticeListFn({payload}){
     const noticeList = yield call(getNoticeListRequest, payload);
     console.log(noticeList)
@@ -56,7 +66,7 @@ function* getNoticeDetailFn({payload}){
 
 function* addNoticeFn({payload}){
     yield call(addNoticeRequest, payload);
-    yield put(getNoticeList());
+    yield put(getNoticeList({searchCondition:'2', searchKeyword:'01'}));
 }
 
 function* getNoticeHeaderListFn(){
@@ -64,7 +74,10 @@ function* getNoticeHeaderListFn(){
     yield put(carryNoticeHeaderList(noticeHeaderList));
 }
 
-
+function* convertNoticeStatusCodeFn({payload}){
+    yield call(converNoticeStatusCodeRequest, payload);
+    yield put(getNoticeList({searchCondition:'2', searchKeyword:'01'}));
+}
 
 
 
@@ -85,9 +98,14 @@ export function* getNoticeHeaderListSaga(){
     yield takeEvery(GET_NOTICE_HEADER_LIST, getNoticeHeaderListFn);
 }
 
+export function* convertNoticeStatusCodeSaga(){
+    yield takeEvery(DELETE_NOTICE, convertNoticeStatusCodeFn)
+}
+
 export default function* rootSaga(){
     yield all([fork(getNoticeListSaga),
                 fork(getNoticeDetailSaga),
                 fork(addNoticeSaga),
-                fork(getNoticeHeaderListSaga) ]);
+                fork(getNoticeHeaderListSaga),
+                fork(convertNoticeStatusCodeSaga)]);
 }
