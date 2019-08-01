@@ -143,6 +143,14 @@ export const INSERT_USER = 'insert_user';
 
 //로그인
 export const CONVERT_LOADER = 'convert_loader';
+export const FORGOT_USER_ID = 'forgot_user_id';
+export const CARRY_FORGOT_USER_ID = 'carry_forgot_user_id';
+export const FORGOT_PASSWORD = 'forgot_password';
+export const CARRY_PASSWORD_BOOLEAN = 'carry_password_boolean';
+export const REQUEST_IDENTIFY_CODE = 'request_identify_code';
+export const SEND_IDENTIFY_CODE = 'send_identify_code';
+export const CARRY_IDENTIFY_CODE = 'carry_identify_code';
+export const MODIFY_PASSWORD = 'modify_password';
 
 //공통
 export const SEND_EMAIL = 'send_email';
