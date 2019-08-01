@@ -5,12 +5,11 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { getProductListForOrder } from "actions/ProductionManagement";
+import { getProductListForOrder,addOrderToVendor,getOrderToVendorProductStatusComplete } from "actions/ProductionManagement";
 import Paper from '@material-ui/core/Paper';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
-
-
+import Button from '@material-ui/core/Button';
 
 class OrderToVendorRequestList extends React.Component {
 
@@ -18,18 +17,35 @@ class OrderToVendorRequestList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          orderToVendorRequestList: [
+          totalAmount: '',
+          orderToVendorProduct: [
             
           ]
         };
+        this.click = this.click.bind(this);
       }
-      
 
-      
+      // argument = (total) => {
+      //   console.log(total)
+      //   this.setState(
+      //     {totalAmount : total}
+      //     )
+      //     this.handleSubmit()
+      // } 
+
+      handleSubmit = (total) => {
+    
+        this.props.addOrderToVendor({ "totalAmount":total ,  "orderToVendorProduct":this.state.orderToVendorProduct});
+        this.click(false);
+       }
+
+       click(e) {
+         
+         this.props.click(e);
+       }
+    
       handleNumberInputChange = (key, n, index) => event => {
        
-        console.log(n);
-        console.log(key);
         let _quantity = parseInt(event.target.value, 10);
         if(isNaN(_quantity)){
           _quantity = 0
@@ -45,39 +61,40 @@ class OrderToVendorRequestList extends React.Component {
             return;
           }
           
-          let list = this.state.orderToVendorRequestList;
+          let list = this.state.orderToVendorProduct;
           list.splice(key,1)
           this.setState({
-            orderToVendorRequestList : list
+            orderToVendorProduct : list
           })
           return;
         }
-    
+        
         if(key==-1){
-          console.log(n)
           this.setState({
-            orderToVendorRequestList: this.state.orderToVendorRequestList.concat(
+            orderToVendorProduct: this.state.orderToVendorProduct.concat(
               {productNo:n.productNo
                ,productName:n.productName
-               ,price:n.purchasePrice
-               ,orderToVendorProductQuantity:_quantity
-               ,orderToVendorProductAmount:n.purchasePrice*_quantity
+               ,purchasePrice:n.purchasePrice
+               ,vendorName : n.vendorName
+               ,quantity:_quantity
+               ,amount:n.purchasePrice*_quantity
                })
          
           })
         }else{
-          let list = this.state.orderToVendorRequestList;
+          let list = this.state.orderToVendorProduct;
           let updatedProd = 
             {productNo:n.productNo
             ,productName:n.productName
-            ,price:n.purchasePrice
-            ,orderToVendorProductQuantity:_quantity
-            ,orderToVendorProductAmount:n.purchasePrice*_quantity
+            ,purchasePrice:n.purchasePrice
+            
+            ,quantity:_quantity
+            ,amount:n.purchasePrice*_quantity
             };
           list.splice(key,1,updatedProd)
     
           this.setState({
-            orderToVendorRequestList:list
+            orderToVendorProduct:list
           })
     
         }
@@ -91,21 +108,16 @@ class OrderToVendorRequestList extends React.Component {
         })
       }
 
+
+
 render() {
-
-
-  
-            
+     
              const { ProductListForOrder } = this.props;
              const { data } = this.state;
 
 
             if(ProductListForOrder === undefined){
-                console.log("if문 ProductListForOrder 들어왓냐");
-                console.log(ProductListForOrder);
                 this.props.getProductListForOrder();
-                console.log(ProductListForOrder);
-
             }
             else if(ProductListForOrder && ProductListForOrder != this.state.data){
               this.setState({data:ProductListForOrder})
@@ -113,13 +125,14 @@ render() {
             
             let total = 0;
 
-            if(this.state.orderToVendorRequestList.length!=0){
-            this.state.orderToVendorRequestList.map((prod) => {
-              console.log(total);
-              return total += prod.orderToVendorProductAmount
+            if(this.state.orderToVendorProduct.length!=0){
+            this.state.orderToVendorProduct.map((prod) => {
+              
+               total += prod.amount
+              return total
             })}
         
- 
+            
             
 
   return (
@@ -146,17 +159,14 @@ render() {
                                                     id={n.productNo}
                                                     type="number"
                                                     value=
-                                                    { this.state.orderToVendorRequestList.
+                                                    { this.state.orderToVendorProduct.
                                                     findIndex(prod => prod.productNo===n.productNo)  != -1 ?
-                                                     this.state.orderToVendorRequestList[this.state.orderToVendorRequestList.findIndex(prod => prod.productNo===n.productNo)].quantity : 0}
+                                                     this.state.orderToVendorProduct[this.state.orderToVendorProduct.findIndex(prod => prod.productNo===n.productNo)].quantity : 0}
                                                     
                                                      onChange=
-                                                      {this.handleNumberInputChange(this.state.orderToVendorRequestList.findIndex(prod => prod.productNo===n.productNo), n)}
+                                                      {this.handleNumberInputChange(this.state.orderToVendorProduct.findIndex(prod => prod.productNo===n.productNo), n)}
                                                 />
                                                 </FormControl>
-                
-                
-                
                 </TableCell>
                 <TableCell align="right">{n.purchasePrice}</TableCell>
                 <TableCell align="right">{n.vendorName}</TableCell>
@@ -167,7 +177,9 @@ render() {
       </Table>
       
       <div style={{position:"fixed", width:"300px", height:"50px", display:"inline-block", right:"20%", /* 창에서 오른쪽 길이 */ top:"80%", /* 창에서 위에서 부터의 높이 */ backgroundColor: "transparent", margin:0}}><Paper className="text-white" style={{backgroundColor:"#f15b41", padding:"20px", float:"right"}}elevation={16}>총 주문금액:{total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원</Paper></div>
+      <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={() => this.handleSubmit(total)} >전송</Button>
     </div>
+
     )
 }
 }
@@ -177,4 +189,4 @@ const mapStateToProps = ( {productionManagement}) => {
     return { ProductListForOrder};
   }
 
-export default connect(mapStateToProps , {getProductListForOrder})(OrderToVendorRequestList);
+export default connect(mapStateToProps , {getProductListForOrder,addOrderToVendor,getOrderToVendorProductStatusComplete})(OrderToVendorRequestList);

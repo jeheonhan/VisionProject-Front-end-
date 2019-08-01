@@ -342,3 +342,5 @@ export const ADD_ORDER_TO_VENDOR = 'add_order_to_vendor';
 export const UPDATE_ORDER_TO_VEN_ITEM_CODE = 'update_order_to_ven_item_code';
 export const CARRY_PRODUCT_LIST_FOR_ORDER = 'carry_product_list_for_order';
 export const GET_PRODUCT_LIST_FOR_ORDER = 'get_ProductList_for_order';
+export const GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE='get_order_to_vendor_product_status_complete';
+export const CARRY_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE='carry_order_to_vendor_product_status_complete';

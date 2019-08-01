@@ -244,18 +244,24 @@ class EnhancedTable extends React.Component {
   
 
   render() {
+
+
+
+
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
     const { OrderToVendorList  } = this.props;
     
 
-    if(OrderToVendorList !== this.state.data){
+    if(this.props.OrderToVendorList !== this.state.data){
       this.setState({data:OrderToVendorList});
     }
 
-    
 
     return (
+
+
+
       <div>
         <EnhancedTableToolbar numSelected={selected.length}/>
 
