@@ -11,8 +11,6 @@ import { DialogContent } from '@material-ui/core';
 import { convertBranchStatusCode, getBranchList } from 'actions/index';
 import { connect } from 'react-redux';
 
-
-
 function Transition(props) {
   return <Slide direction="down" {...props} />;
 }
@@ -41,14 +39,14 @@ function Transition(props) {
       this.props.convertBranchStatusCode(branch);
       this.props.handleRequestClose();
     }
-   
+
     render() {
 
       if(this.props.branch !== this.state.branch){
         this.setState({ branch : this.props.branch});
       }
 
-      console.log(this.state)
+      //console.log(this.state)
       
       return (
         
@@ -69,6 +67,7 @@ function Transition(props) {
                 >
                 지점 상세조회
               </Typography>
+                
             </Toolbar>
           </AppBar>
           
@@ -134,11 +133,17 @@ function Transition(props) {
               </Button>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </div>
+            <div align="right">
+                <Button variant="contained" variant="outlined" onClick={() => this.props.updateBranchOpen(this.state.branch.branchNo)}>
+                        수정
+                </Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
               <br/><br/>
 
           <Button onClick={this.props.handleRequestClose} variant="outlined" aria-label="Close" ><i class="zmdi zmdi-close-circle zmdi-hc-1g"></i>닫기</Button>
               <br/>
-
+              <br/>
           </Dialog>
       );
     }

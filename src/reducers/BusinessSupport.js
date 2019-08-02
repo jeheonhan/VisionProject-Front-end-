@@ -6,7 +6,8 @@ import { GET_BRANCH_LIST,
         GET_LOCAL_LIST,
         CARRY_LOCAL_LIST,
         DELETE_BRANCH,
-        UPDATE_BRANCH} from 'actionTypes/ActionTypes';
+        UPDATE_BRANCH,
+        CLEAN_STORE_STATE} from 'actionTypes/ActionTypes';
 
 const INIT_STATE = 
     {
@@ -81,6 +82,13 @@ export default (state = INIT_STATE, action) => {
         case UPDATE_BRANCH : {
             return {
                 ...state
+            }
+        }
+
+        case CLEAN_STORE_STATE : {
+            return{
+                ...state,
+                [action.payload]:null
             }
         }
 
