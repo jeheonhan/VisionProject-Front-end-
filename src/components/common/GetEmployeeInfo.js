@@ -7,14 +7,10 @@ import { getHRCardDetail,
 import About from "components/profile/About/index";
 import GetWorkAttitudeInfo from 'components/common/GetWorkAttitudeInfo';
 import GetSalaryInfo from 'components/common/GetSalaryInfo';
-import Biography from "components/profile/Biography/index";
-import Events from "components/profile/Events/index";
 import Contact from "components/profile/Contact/index";
-import Friends from "components/profile/Friends/index";
-import Photos from "components/profile/Photos/index";
+import Signature from "components/profile/Friends/index";
 import ProfileHeader from "components/profile/ProfileHeader/index";
 import Auxiliary from "util/Auxiliary";
-import {friendList} from './data'
 
 
 class GetEmployeeInfo extends Component {
@@ -59,11 +55,11 @@ class GetEmployeeInfo extends Component {
                     <Contact HRCardDetailData={HRCardDetailData}/>
                     <div className="row">
                       <div className="col-12">
-                        <Friends friendList={friendList}/>
+                        <Signature signatureImage={HRCardDetailData.signatureImage}/>
                       </div>
-                      <div className="col-12">
-                        {/* <Photos photoList={photoList}/> */}
-                      </div>
+                      {/* <div className="col-12">
+                        <Photos photoList={photoList}/>
+                      </div> */}
                     </div>
                   </div>
                 </div>

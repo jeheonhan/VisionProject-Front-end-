@@ -78,7 +78,9 @@ class GetDepartList extends React.Component{
         return(
             <div className="price-tables row pt-default d-flex justify-content-around">
                 {data && data.map( row => {
+                    if(row.departCodeName != null){
                     return(
+                        
                         <div className="col-md-4 px-lg-4">
                             <ItemDepartment
                             styleName="card package bg-white shadow"
@@ -91,7 +93,7 @@ class GetDepartList extends React.Component{
                             handleDeleteDepartmentOpen={this.handleDeleteDepartmentOpen}
                             />
                         </div>
-                )})}
+                )}})}
                 <div className="col-md-4 px-lg-4">
                             <AddItemDepartment
                             styleName="card package bg-white shadow"

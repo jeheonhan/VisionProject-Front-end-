@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { forgotUserId, cleanStoreState } from 'actions/index';
+import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {Link} from 'react-router-dom';
@@ -34,7 +35,8 @@ class ForgotId extends React.Component{
       flag:false,
       warning:false,
       snackbar:false,
-      snackbarContents:""
+      snackbarContents:"",
+      redirect:false
     }
   }
 
@@ -62,8 +64,7 @@ class ForgotId extends React.Component{
   //성공 Alert 닫기
   handleSuccessClose = () => {
     this.setState({
-      success:false,
-      flag:false
+      redirect:true
     })
     this.props.cleanStoreState("forgotId");
   }
@@ -105,6 +106,10 @@ class ForgotId extends React.Component{
   render(){
 
     const { forgotId } = this.props;
+
+    if(this.state.redirect){
+      return <Redirect to='/'/>;
+   }
 
     if(!this.state.flag && forgotId && forgotId.userId != null){
       this.handleSuccessOpen();
@@ -173,6 +178,7 @@ class ForgotId extends React.Component{
         <Snackbar
           anchorOrigin={{vertical:'top', horizontal:'center'}}
           open={this.state.snackbar}
+          autoHideDuration="1500"
           onClose={this.handleRequestClose}
           ContentProps={{
             'aria-describedby': 'message-id',
