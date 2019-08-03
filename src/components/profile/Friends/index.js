@@ -12,28 +12,24 @@ function Status(props) {
   }
 }
 
-const Friends = ({friendList}) => {
+const Signature = ({ signatureImage}) => {
   return (
     <Widget styleName="jr-card-profile-sm"
-            title={<span>Friends - 530 <span className="text-grey">(27 Mutual)</span></span>}>
+            title={<span>서명/도장<span className="text-grey">(Signature)</span></span>}>
       <div className="pt-2">
         <ul className="jr-fnd-list mb-0">
-          {friendList.map((user, index) =>
-            <li className="mb-2" key={index}>
+          <li className="mb-2" >
               <div className="jr-user-fnd">
-                <img alt="..." src={user.image}/>
+                <img alt="..." src={`/img/${signatureImage}`}/>
                 <div className="jr-user-fnd-content">
-                  {console.log("user.status", user.status)}
-                  <span className="jr-badge"><Status isType={user.status}/></span>
-                  <h6>{user.name}</h6>
+                  <span className="jr-badge"><Status isType="online"/></span>
+                  <h6></h6>
                 </div>
               </div>
             </li>
-          )
-          }
         </ul>
       </div>
     </Widget>
   )
 };
-export default Friends;
+export default Signature;

@@ -13,11 +13,10 @@ import DatePicker from '../date/DatePickers';
 import FindAccount from 'components/accounting/FindAccount';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-
 import PropTypes from 'prop-types';
-import MaskedInput from 'react-text-mask';
 import NumberFormat from 'react-number-format';
 import Input from '@material-ui/core/Input';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 class TradeAmountMask extends React.Component {
   render() {
@@ -31,7 +30,6 @@ class TradeAmountMask extends React.Component {
   }
 }
 
-
 TradeAmountMask.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
@@ -43,6 +41,8 @@ class AddStatement extends React.Component {
     statement : {
 
     },
+    success : false,
+    
   };
 
   //전표등록 다이얼로그 열기
@@ -52,7 +52,7 @@ class AddStatement extends React.Component {
 
   //전표등록 다이얼로그 닫기
   handleRequestClose = () => {
-    this.setState({open: false});
+    this.setState({open: false, statement:''});
   };
 
   //계좌찾기 다이얼로그창 열기
@@ -87,11 +87,29 @@ class AddStatement extends React.Component {
       console.log(this.state.statement)
   }
 
+  //등록성공알람 켜기
+  openSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      success : true
+    })
+  }
+
+  //등록성공알람 끄기
+  closeSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      success : false
+    })
+    this.handleRequestClose()
+  }
+
   //전표 등록
   submitStatement = (event) => {
     event.preventDefault();
     this.props.addStatement(this.state.statement)
-    this.handleRequestClose()
+    this.setState({ statement : '' })
+    this.openSuccessAlarm();
   }
 
   render() {
@@ -205,13 +223,24 @@ class AddStatement extends React.Component {
                   getAccountNo = {this.getAccountNo}
                 />
 
+                <SweetAlert 
+                  show={this.state.success} 
+                  success 
+                  title="등록완료"
+                  onConfirm={this.closeSuccessAlarm}
+                  confirmBtnText="확인"
+                  confirmBtnBsStyle="danger"
+                >
+                  등록에 성공했습니다
+                </SweetAlert>
+
           </DialogContent>
           <DialogActions>
             <Button onClick={ event => this.submitStatement(event)} color="secondary">
               등록
             </Button>
             <Button onClick={this.handleRequestClose} color="primary">
-              취소
+              닫기
             </Button>
           </DialogActions>
         </Dialog>

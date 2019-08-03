@@ -53,7 +53,6 @@ class AddBranch extends React.Component{
           [name] : e.target.value,
           }
         });
-        console.log(this.state.branch)
       };
 
       handlePostcode = (zipCode, address) => {
@@ -86,6 +85,7 @@ class AddBranch extends React.Component{
 
       // 페이지 처음 들어오거나 리로드할 때 모든 render()를 읽음,
       // reder()가 실행되는 경우는 2가지 -> 1.setState할 때, 2. reducer가 store 값을 setting할 때 
+      console.log(this.state.branch)
 
         const { localList } = this.props;
 

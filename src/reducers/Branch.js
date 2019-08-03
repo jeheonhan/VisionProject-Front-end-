@@ -5,7 +5,7 @@ import { GET_DAILY_SALES_LIST,
         ADD_DAILY_SALES,
         GET_SALES_MENU_LIST,
         CARRY_SALES_MENU_LIST,
-        DELETE_BRANCH}      from "actionTypes/ActionTypes";
+        }      from "actionTypes/ActionTypes";
 
 
 

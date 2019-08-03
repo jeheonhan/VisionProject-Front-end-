@@ -76,7 +76,7 @@ class SignIn extends React.Component {
               {/* <IntlMessages 는 다국적 웹페이지 구현 시의 번역을 위해 나타난 컴포넌트(?) 
               안드로이드에서 string 메타데이터로 뺐던 거 생각하면 될듯. 아이디로 접근해서 해당 언어의 값을 가져옴*/}
               {/* <h1><IntlMessages id="appModule.id"/></h1> */}
-              <h1>최첨단 비-죤 類似 이알피 씨-스템</h1>
+              <h1>Vision GroupWare</h1>
             </div>
 
             <div className="app-login-form">

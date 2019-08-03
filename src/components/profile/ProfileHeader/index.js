@@ -19,8 +19,8 @@ const ProfileHeader = (props) => {
           <div className="jr-profile-banner-top-right">
             <ul className="jr-follower-list">
               <li>
-                <span className="jr-follower-title jr-fs-lg jr-font-weight-medium">2k+</span>
-                <span className="jr-fs-sm">Followers</span></li>
+                <span className="jr-follower-title jr-fs-lg jr-font-weight-medium">{props.HRCardDetailData.joinDate}</span>
+                <span className="jr-fs-sm">입사일</span></li>
               <li>
                 <span className="jr-follower-title jr-fs-lg jr-font-weight-medium">847</span>
                 <span className="jr-fs-sm">Following</span></li>
@@ -31,7 +31,7 @@ const ProfileHeader = (props) => {
             </ul>
           </div>
         </div>
-        <div className="jr-profile-banner-bottom">
+        {/* <div className="jr-profile-banner-bottom">
           <div className="jr-tab-list">
             <ul className="jr-navbar-nav">
               <li>
@@ -55,7 +55,7 @@ const ProfileHeader = (props) => {
             <i className="zmdi zmdi-settings mr-2"/>
             <span className="d-inline-flex align-middle ml-1 jr-ml-sm-0">Setting</span>
           </span>
-        </div>
+        </div> */}
       </div>
     </div>
   )

@@ -100,13 +100,19 @@ let EnhancedTableToolbar = props => {
     setValue({
       searchKeyword: event.target.value,
     });
-    console.log(value.searchKeyword)
   }
 
   //검색 기능
   const searchActivity = (event) => {
     event.preventDefault();
     props.getAccountList(value)
+  }
+
+  //검색 엔터 기능
+  const searchEnterActivity = (event) => {
+    if(event.key === 'Enter'){
+      props.getAccountList(value)
+    }
   }
 
   return (
@@ -129,6 +135,7 @@ let EnhancedTableToolbar = props => {
         onChange={updateSearchKeyword}
         value={value.searchKeyword}
         onClick={ event => searchActivity(event) }
+        onKeyDown={ event => searchEnterActivity(event) }
       />
 
       <div className="actions">

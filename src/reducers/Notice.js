@@ -5,7 +5,11 @@ import { GET_NOTICE_LIST,
         ADD_NOTICE,
         GET_NOTICE_HEADER_LIST,
         CARRY_NOTICE_HEADER_LIST,
-        DELETE_NOTICE} from 'actionTypes/ActionTypes';
+        DELETE_NOTICE,
+        UPDATE_NOTICE,
+        CLEAN_STORE_STATE,
+        GET_UPDATE_NOTICE_HEADER_LIST,
+        CARRY_UPDATE_NOTICE_HEADER_LIST} from 'actionTypes/ActionTypes';
 
 const INIT_STATE = 
     {
@@ -29,7 +33,6 @@ export default (state = INIT_STATE, action) => {
         }
 
         case CARRY_NOTICE_LIST : {
-            console.log(action.payload)
             return{
                 ...state,
                 noticeList: action.payload
@@ -72,6 +75,32 @@ export default (state = INIT_STATE, action) => {
         case DELETE_NOTICE : {
             return {
                 ...state
+            }
+        }
+
+        case UPDATE_NOTICE : {
+            return{
+                ...state
+            }
+        }
+
+        case CLEAN_STORE_STATE : {
+            return{
+                ...state,
+                [action.payload]:null
+            }
+        }
+
+        case GET_UPDATE_NOTICE_HEADER_LIST : {
+            return{
+                ...state
+            }
+        }
+
+        case CARRY_UPDATE_NOTICE_HEADER_LIST : {
+            return{
+                ...state,
+                forUpdateNoticeHeaderList : action.payload
             }
         }
 

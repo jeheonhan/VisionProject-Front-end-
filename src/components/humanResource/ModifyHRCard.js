@@ -224,6 +224,7 @@ class FullScreenDialog extends React.Component {
 
   render() {
 
+
     const { bankList, checkedDepartData, checkedRankData, HRCardDetailData } = this.props;
 
     console.log(HRCardDetailData)
@@ -418,7 +419,7 @@ function AddTextField(props){
                 </div>
                 <div style={{position:"relative", top:"-25px"}}>
                   <Button variant="contained" color="default" className={classes.button} 
-                        onClick={handleOnClickFileUpload}>
+                        onClick={handleOnClickFileUpload} disabled={!stateValue.modifyAble}>
                     프로필사진
                     <CloudUploadIcon className={classes.rightIcon} />
                   </Button>
@@ -656,7 +657,8 @@ function AddTextField(props){
                   />
             </div>
 
-            <Button variant="contained" size="small" className={classes.button} onClick={handleOnClickSignOpen}>
+            <Button variant="contained" size="small" className={classes.button} 
+                    onClick={handleOnClickSignOpen} disabled={!stateValue.modifyAble}>
               <SaveIcon className={clsx(classes.leftIcon, classes.iconSmall)} />
               서명/도장
             </Button>

@@ -17,7 +17,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
-import { getDailySalesList, getDailySalesDetail } from 'actions';
+import { getDailySalesList, getDailySalesDetail, modifyDailySales } from 'actions';
 import GetDailySalesDetail from './GetDailySalesDetail';
 
 
@@ -192,9 +192,22 @@ const columnData = [
     }
 
     handleRequestClose = () => {
-      this.setState({open : false});
+      this.setState({open : false, updateDetail:false});
     }
-  
+
+    handleUpdate = () => {
+      this.setState({
+        updateDetail:true
+      })
+    }
+
+    handleUpdateRequest = (data) => {
+      this.props.modifyDailySales(data);
+      this.setState({
+        updateDetail:false
+      })
+    }
+
     constructor(props, context) {
       super(props, context);
   
@@ -206,6 +219,7 @@ const columnData = [
         data: this.props.dailySalesList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
         page: 0,
         rowsPerPage: 10,
+        updateDetail:false
       };
     }
   
@@ -215,8 +229,14 @@ const columnData = [
       //   getDailySalesList(this.props.branchNo);
       // }
 
+      if(this.props.dailySalesList !== this.state.data){
+        this.setState({
+          data: this.props.dailySalesList
+        })
+      }
+
       const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-  
+      
       return (
         <div>
           <EnhancedTableToolbar numSelected={selected.length}/>
@@ -253,7 +273,7 @@ const columnData = [
                         </TableCell>
                         <TableCell align="left" >{row.branchNo}</TableCell>
                         <TableCell align="left"><span onClick={ event => this.getDailySalesDetail(event, row)} style={{cursor:'pointer'}}>{row.salesDate}</span></TableCell>
-                        <TableCell align="left">{row.dailyTotalAmount}</TableCell>
+                        <TableCell align="left">{row.dailyTotalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
                       </TableRow>
                     );
                   })}
@@ -275,6 +295,9 @@ const columnData = [
               open={ this.state.open }
               handleRequestClose={ this.handleRequestClose }
               salesProduct={ this.props.salesProduct }
+              handleUpdate={this.handleUpdate}
+              updateDetail={this.state.updateDetail}
+              updateDetailRequest={this.handleUpdateRequest}
               />)}
 
             </div>
@@ -289,4 +312,4 @@ const columnData = [
     return { dailySalesList , salesProduct};
 }
 
-export default connect(mapStateToProps, { getDailySalesList, getDailySalesDetail })(EnhancedTable);
+export default connect(mapStateToProps, { getDailySalesList, getDailySalesDetail, modifyDailySales })(EnhancedTable);

@@ -116,7 +116,7 @@ class UpdateSalary extends Component {
                     id="long-menu"
                     anchorEl={this.state.anchorEl}
                     open={this.state.open}
-                    onClose={this.handleRequestClose}
+                    onClose={this.handelClose}
                     MenuListProps={{
                       style: {
                         width: 100,

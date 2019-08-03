@@ -22,10 +22,8 @@ class CardManage extends React.Component{
                 searchKeyword : "",
                 usageCondition : "01"
             },
-            menuFlag:true,
+            menuFlag:false,
         }
-        
-        this.addVendorRef = React.createRef(); 
     }
 
     //섬네일 - 리스트로 보기 토글
@@ -42,8 +40,7 @@ class CardManage extends React.Component{
     }
 
     componentDidMount(){
-        console.log(this.addVendorRef)
-        console.log(this.addVendorRef.current)
+        const addVendorRef = React.createRef(); 
     }
 
     render() {
@@ -65,7 +62,7 @@ class CardManage extends React.Component{
                         </CardBox>
 
                         <div align="right">
-                            <AddCard ref= {this.addVendorRef }></AddCard>
+                            <AddCard></AddCard>
                         </div>
 
                     </div>

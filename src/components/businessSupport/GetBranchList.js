@@ -17,10 +17,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
-import { getBranchList, getBranchDetail } from 'actions/index';
+import { getBranchList, getBranchDetail, cleanStoreState } from 'actions/index';
 import GetBranchDetail from './GetBranchDetail';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import UpdateBranch from 'components/businessSupport/UpdateBranch';
 
 
 const columnData = [
@@ -199,6 +200,22 @@ const columnData = [
     handleRequestClose = () => {
       this.setState({open : false});
     }
+
+    updateBranchOpen = ( branchNo ) => {
+      console.log("지점번호 ???? ::::: "+branchNo);
+      this.setState({updateOpen : true});
+      this.handleRequestClose();
+    }
+
+    updateBranchClose = () => {
+      this.props.cleanStoreState('branch');
+      this.setState({updateOpen : false});
+    }
+
+    updateBranch = ( branch ) => {
+      this.props.updateBranch(branch);
+      this.setState({updateOpen : false});
+    }
   
     constructor(props, context) {
       super(props, context);
@@ -213,6 +230,7 @@ const columnData = [
         rowsPerPage: 10,
         anchorEl: undefined,
         open: false,
+        updateOpen: false,
       };
     }
 
@@ -321,8 +339,16 @@ const columnData = [
               { this.props.branch && (<GetBranchDetail
               open={ this.state.open }
               handleRequestClose={ this.handleRequestClose }
+              updateBranchOpen={this.updateBranchOpen}
               branch={ this.props.branch }
             />)}
+
+              <UpdateBranch
+                open={this.state.updateOpen}
+                updateBranchClose={this.updateBranchClose}
+                _branch={this.props.branch}
+                localList={this.props.localList}
+                />
 
             </div>
           </div>
@@ -336,4 +362,4 @@ const columnData = [
     return { branchList, branch, localList };
 }
 
-export default connect(mapStateToProps, { getBranchList, getBranchDetail })(EnhancedTable);
+export default connect(mapStateToProps, { getBranchList, getBranchDetail, cleanStoreState })(EnhancedTable);

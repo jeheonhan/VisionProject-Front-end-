@@ -44,6 +44,8 @@ import {
     DELETE_VENDOR,
     DELETE_CARD,
     DELETE_ACCOUNT,
+    DELETE_STATEMENT,
+    UPDATE_SALARY_STATUS,
 } from'../actionTypes/ActionTypes';
 
 export const getVendorList = (search) => {
@@ -357,5 +359,19 @@ export const deleteAccount = (accountRegNoList) => {
     return{
         type: DELETE_ACCOUNT,
         payload: accountRegNoList
+    }
+}
+
+export const deleteStatement = (statementNoList) => {
+    return{
+        type: DELETE_STATEMENT,
+        payload: statementNoList
+    }
+}
+
+export const updateSalaryStatus = (salaryStatus) => {
+    return{
+        type: UPDATE_SALARY_STATUS,
+        payload: salaryStatus
     }
 }
