@@ -249,6 +249,7 @@ class ForgotPassword extends React.Component{
           <Snackbar
             anchorOrigin={{vertical:'top', horizontal:'center'}}
             open={this.state.snackbar}
+            autoHideDuration="1500"
             onClose={this.handleRequestClose}
             ContentProps={{
               'aria-describedby': 'message-id',

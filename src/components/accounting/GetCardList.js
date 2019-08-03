@@ -116,6 +116,13 @@ let EnhancedTableToolbar = props => {
     props.getCardList(value)
   }
 
+  //검색 엔터 기능
+  const searchEnterActivity = (event) => {
+    if(event.key === 'Enter'){
+      props.getCardList(value)
+    }
+  }
+
   return (
     <Toolbar
       className="table-header">
@@ -142,6 +149,7 @@ let EnhancedTableToolbar = props => {
         onChange={updateSearchKeyword}
         value={value.searchKeyword}
         onClick={ event => searchActivity(event) }
+        onKeyDown={ event => searchEnterActivity(event) }
       />
 
       <div className="actions">

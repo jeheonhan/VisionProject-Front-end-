@@ -90,7 +90,7 @@ class AddAccount extends React.Component {
 
     const { bankList, accountCategoryList } = this.props;
 
-    if(bankList === undefined && accountCategoryList === undefined) {
+    if(accountCategoryList === undefined) {
         this.props.getCodeList({ searchKeyword : "bank" });
         this.props.getCodeList({ searchKeyword : "accountCategory" });
     }

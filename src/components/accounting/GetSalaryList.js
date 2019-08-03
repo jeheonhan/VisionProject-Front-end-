@@ -18,7 +18,9 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import UpdateSalary from 'components/accounting/UpdateSalary';
 import { connect } from 'react-redux';
-import { getSalary } from 'actions/index';
+import { getSalary, updateSalaryStatus } from 'actions/index';
+import Button from '@material-ui/core/Button';
+import Iamport from 'react-iamport';
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -52,13 +54,15 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
+
+          {/* <TableCell padding="checkbox">
             <Checkbox color="secondary"
                       indeterminate={numSelected > 0 && numSelected < rowCount}
                       checked={numSelected === rowCount}
                       onChange={onSelectAllClick}
             />
-          </TableCell>
+          </TableCell> */}
+
           {columnData.map(column => {
             return (
               <TableCell
@@ -106,7 +110,7 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
-      <div className="actions">
+      {/* <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
           <Tooltip title="수정">
@@ -121,7 +125,7 @@ let EnhancedTableToolbar = props => {
             </IconButton>
           </Tooltip>
         )}
-      </div>
+      </div> */}
     </Toolbar>
   );
 };
@@ -222,8 +226,23 @@ class SalaryTable extends React.Component {
     event.preventDefault();
     this.props.getSalary(salaryNumbering);
     this.openUpdateSalaryDialog();
+  }
+
+  //급여상태 변경
+  changeSalaryStatus = (event, _salaryNumbering, _salaryStatusCodeNo) => {
+    event.preventDefault();
+    this.props.updateSalaryStatus({ salaryNumbering : _salaryNumbering, 
+                                    salaryStatusCodeNo : _salaryStatusCodeNo })
+  }
+
+  onSuccessIamport = ( _salaryNumbering, _salaryStatusCodeNo ) => {
     
   }
+
+  onFailIamport = () => {
+
+  }
+
   
   render() {
 
@@ -266,17 +285,50 @@ class SalaryTable extends React.Component {
                       key={page*rowsPerPage+index}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">
+                      {/* <TableCell padding="checkbox">
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell align="left"><span onClick={event => this.updateSalaryDialog(event, row.salaryNumbering)} style={{cursor:'pointer'}}>{row.salaryDate}</span></TableCell>
                       <TableCell align="left">{row.employeeName}</TableCell>
-                      <TableCell align="left">{row.totalRegularWorkTime}</TableCell>
-                      <TableCell align="left">{row.totalExtendWorkTime}</TableCell>
-                      <TableCell align="left">{row.wage}</TableCell>
-                      <TableCell align="left">{row.salaryStatusCodeName}</TableCell>
-                      <TableCell align="left">{row.individualTotalSalary}</TableCell>
+                      <TableCell align="left">{row.totalRegularWorkTime}분</TableCell>
+                      <TableCell align="left">{row.totalExtendWorkTime}분</TableCell>
+                      <TableCell align="left">{row.wage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
+                      <TableCell align="left">
+                        {row.salaryStatusCodeNo === '01' ? 
+                          <span onClick={event => this.changeSalaryStatus(event, row.salaryNumbering, row.salaryStatusCodeNo)} style={{cursor:'pointer'}}>
+                           {row.salaryStatusCodeName}
+                          </span>
+                          : row.salaryStatusCodeNo === '02' ?
+                          <Iamport
+                            identificationCode="imp36066914"
+                            params={{
+                              pg: 'inicis',
+                              pay_method: 'trans',
+                              merchant_uid: 'merchant_' + new Date().getTime(),
+                              name:  'name',
+                              amount: 100, //total,
+                              buyer_email: '',
+                              buyer_tel: '',
+                              buyer_addr: '',
+                              buyer_postcode: '',
+                              buyer_name: 'buyer_name',
+                              m_redirect_url: 'http://localhost:3000/app/accounting/salary',
+                            }}
+                            jqueryLoaded={false}
+                            onFailed={this.onFailIamport}
+                            onSuccess={this.onSuccessIamport}
+                            render={(renderProps) => (
+                              <div onClick={renderProps.onClick}>
+                                급여이체
+                              </div>
+                            )}
+                          />
+                          : 
+                          row.salaryStatusCodeNo
+                        }
+                      </TableCell>
+                      <TableCell align="left">{row.individualTotalSalary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
                     </TableRow>
 
                   );
@@ -299,6 +351,8 @@ class SalaryTable extends React.Component {
               open={this.state.updateSalaryDialogOpen}
               close={this.closeUpdateSalaryDialog}
             />
+
+
           </div>
         </div>
       </div>
@@ -307,4 +361,4 @@ class SalaryTable extends React.Component {
 }
 
 
-export default connect(null, { getSalary })(SalaryTable);
+export default connect(null, { getSalary, updateSalaryStatus })(SalaryTable);

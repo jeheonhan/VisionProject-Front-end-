@@ -2,6 +2,16 @@ import axios from 'axios';
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import { carryDailySalesList, carryDailySalesDetail, getDailySalesList, carrySalesMenuList} from 'actions/Branch';
 import { GET_DAILY_SALES_LIST, GET_DAILY_SALES_DETAIL, ADD_DAILY_SALES, GET_SALES_MENU_LIST } from 'actionTypes/ActionTypes';
+import {MODIFY_DAILY_SALES} from 'actionTypes/ActionTypes'
+
+const modifyDailySalesRequest = async (action) => {
+    return await axios({
+        method : "POST",
+        url:"/branch/modifySalesProduct",
+        data:action.payload
+    })
+    .catch(error => console.log(error))
+}
 
 const getDailySalesListRequest = async (branchNo) => {
     return await axios({
@@ -43,7 +53,10 @@ const getSalesMenuListRequest = async () => {
 }
 
 
-
+function* modifyDailySalesFn(action){
+    yield call(modifyDailySalesRequest, action);
+    yield put(getDailySalesList(JSON.parse(localStorage.getItem('user')).branchNo));
+}
 
 function* getDailySalesListFn ({ payload }) {
     const dailySalesList = yield call(getDailySalesListRequest, payload);
@@ -57,7 +70,7 @@ function* getDailySalesDetailFn ({ payload }) {
 
 function* addDailySalesFn ({payload}) {
     yield call(addDailySalesRequest, payload);
-    yield put(getDailySalesList(localStorage.getItem('user').branchNo));
+    yield put(getDailySalesList(JSON.parse(localStorage.getItem('user')).branchNo));
 }
 
 function* getSalesMenuListFn () {
@@ -68,7 +81,9 @@ function* getSalesMenuListFn () {
 
 
 
-
+export function* modifyDailySalesSaga(){
+    yield takeEvery(MODIFY_DAILY_SALES, modifyDailySalesFn)
+}
 
 export function* getDailySalesListSaga(){
     yield takeEvery(GET_DAILY_SALES_LIST, getDailySalesListFn);
@@ -87,7 +102,8 @@ export function* getSalesMenuListSaga() {
 }
 
 export default function* rootSaga(){
-    yield all([fork(getDailySalesListSaga),
+    yield all([ fork(modifyDailySalesSaga),
+                fork(getDailySalesListSaga),
                 fork(getDailySalesDetailSaga),
                 fork(addDailySalesSaga),
                 fork(getSalesMenuListSaga)]);

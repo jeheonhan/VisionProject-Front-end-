@@ -44,7 +44,8 @@ class FindDepart extends React.Component{
      
 
       const OKbuttonFunction = () => {
-        this.props.checkedDepartment(this.state.checkedParam)
+        console.log(this.state.checkedParam);
+        this.props.checkedDepartment(this.state.checkedParam);
         this.props.handleSubDepartComponentClose();
       }
 

@@ -289,8 +289,8 @@ export const CARRY_ANALYZE_SALARY_BOOK_LIST ='carry_analyze_salary_book_list';
 export const DELETE_VENDOR = 'delete_vendor';
 export const DELETE_CARD = 'delete_card';
 export const DELETE_ACCOUNT = 'delete_account';
-
-
+export const DELETE_STATEMENT = 'delete_statement';
+export const UPDATE_SALARY_STATUS = 'update_salary_status';
 
 
 
@@ -326,6 +326,7 @@ export const GET_UPDATE_NOTICE_HEADER_LIST = 'get_update_notice_header_list';
 export const CARRY_UPDATE_NOTICE_HEADER_LIST = 'carry_update_notice_header_list';
 
 //지점관리
+export const MODIFY_DAILY_SALES = 'modify_daily_sales';
 export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';
 export const CARRY_DAILY_SALES_LIST = 'carry_daily_sales_list';
 export const GET_DAILY_SALES_DETAIL = 'get_daily_sales_detail';

@@ -5,8 +5,14 @@ import { GET_DAILY_SALES_LIST,
         ADD_DAILY_SALES,
         GET_SALES_MENU_LIST,
         CARRY_SALES_MENU_LIST,} from "actionTypes/ActionTypes";
+import {MODIFY_DAILY_SALES} from "actionTypes/ActionTypes";
 
-
+export const modifyDailySales = (data) => {
+    return{
+        type: MODIFY_DAILY_SALES,
+        payload:data
+    }
+}
 
 export const getDailySalesList = ( branchNo ) => {
     return {
