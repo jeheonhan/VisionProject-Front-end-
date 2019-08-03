@@ -11,7 +11,6 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
@@ -20,7 +19,6 @@ import { connect } from 'react-redux';
 import { getOrderToVendorList , getOrderToVendorDetailList, updateOrderToVendorCode  } from 'actions/index.js';
 import GetOrderToVendorDetailList from 'components/productManagement/GetOrderToVendorDetailList';
 import {Delete} from '@material-ui/icons'
-let counter = 0;
 
 
 //칼럼명 지어주는 곳
@@ -53,13 +51,7 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox color="primary"
-                      indeterminate={numSelected > 0 && numSelected < rowCount}
-                      checked={numSelected === rowCount}
-                      onChange={onSelectAllClick}
-            />
-          </TableCell>
+         
           {columnData.map(column => {
             return (
               <TableCell
@@ -224,49 +216,30 @@ class EnhancedTable extends React.Component {
 
   updateOrderToVendorList = (event, orderToVendor) => {
     event.preventDefault();
-    console.log("값왓냐")
-    console.log(orderToVendor);
+ 
     if(orderToVendor !== undefined){
-      console.log("if문 들어왓냐")
-      
+     
       this.props.updateOrderToVendorCode(orderToVendor);
-      console.log("OrderToVendorList값")
+    
       console.log(this.props.OrderToVendorList)
       this.setState({
         ...this.state , 
         data:this.props.OrderToVendorList   });
-        
     }
-
-
-
   }
   
-
   render() {
 
-
-
-
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-
     const { OrderToVendorList  } = this.props;
     
-
     if(this.props.OrderToVendorList !== this.state.data){
       this.setState({data:OrderToVendorList});
     }
 
-
     return (
-
-
-
       <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
-
-
-        
+        <EnhancedTableToolbar numSelected={selected.length}/>  
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -289,35 +262,22 @@ class EnhancedTable extends React.Component {
                     <TableRow
                       hover
                       onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
-                      role="checkbox"
+                     
                       aria-checked={isSelected}
                       tabIndex={-1}
                       key={page*rowsPerPage+index}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">                            
-                        <Checkbox color="primary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
-                      </TableCell>
                       <TableCell align="left" ><span onClick={event => this.orderToVendorDetailList(event, row)} style={{cursor:'pointer'}}>{row.orderToVendorNo}</span></TableCell>
                       <TableCell align="left">{row.statementNo}</TableCell>
                       <TableCell align="left">{row.totalAmount}</TableCell> 
                       <TableCell align="left">{row.orderToVendorDate}</TableCell>
-                      
-                      
-                      
                       <TableCell align="left">{row.orderToVenStatusCodeName }
-               
-                        
-
-
-
                         {row.orderToVenStatusCodeNo == '01' ? <span onClick=
                         {event => this.updateOrderToVendorList(event, row)} style={{cursor:'pointer', color:'red'}}>                     
                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <Delete/> 발주취소
                         </span> : null}
-
                       </TableCell>
                     </TableRow>
                   );
@@ -351,7 +311,6 @@ const mapStateToProps = ({productionManagement}) => {
   const { OrderToVendorList , OrderToVendorDetatilList } = productionManagement;
   return { OrderToVendorList , OrderToVendorDetatilList };
 }
-
 
 
 export default connect(mapStateToProps, { getOrderToVendorList , getOrderToVendorDetailList, updateOrderToVendorCode})(EnhancedTable);

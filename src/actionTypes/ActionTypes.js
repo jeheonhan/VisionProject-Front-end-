@@ -356,3 +356,6 @@ export const CARRY_PRODUCT_LIST_FOR_ORDER = 'carry_product_list_for_order';
 export const GET_PRODUCT_LIST_FOR_ORDER = 'get_ProductList_for_order';
 export const GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE='get_order_to_vendor_product_status_complete';
 export const CARRY_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE='carry_order_to_vendor_product_status_complete';
+export const GET_PRODUCT ='get_product';
+export const CARRY_PRODUCT ='carry_product';
+export const UPDATE_PRODUCT = 'update_product';

@@ -16,12 +16,10 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-
 class FullScreenDialog extends React.Component {
 
   constructor(props){
     super(props);
-
   }
 
   state = {
@@ -36,14 +34,11 @@ class FullScreenDialog extends React.Component {
       orderToVendorProduct : [ ]
     }
   };
-
-  
   
   handleClickOpen = () => {
     this.setState({open: true});
   };
 
-  
   handleClickClose = () => {
     this.setState({
       open:false
@@ -53,23 +48,16 @@ class FullScreenDialog extends React.Component {
   handleRequestClose = () => {
 
     this.setState({open: false});
-
-    
   };
 
   close(event){
     this.setState({open: false});
-
   };
   
 
   render() {
-    const {infoAccount} = this.props;
 
-    
-    
-    return (
-        
+    return ( 
       <div>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
             발주
@@ -106,7 +94,6 @@ class FullScreenDialog extends React.Component {
               </Typography>
               <OrderToVendorRequstList click={this.handleClickClose}></OrderToVendorRequstList>
   </div>
-          
         </Dialog>
       </div>
     );

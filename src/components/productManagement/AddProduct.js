@@ -35,9 +35,7 @@ class FullScreenDialog extends React.Component {
 
   constructor(props){
     super(props);
-
   }
-
 
   state = {
     open: false,
@@ -49,16 +47,12 @@ class FullScreenDialog extends React.Component {
       vendorNo : '',
       vendorName : '',
     }
-    
   };
-
-
 
   handleChange = (e) => {
     
     e.preventDefault();
     var _vendorName;
-
 
     if(e.target.name == 'vendorNo'){
       if(this.props.infoAccount !== null){
@@ -84,13 +78,7 @@ class FullScreenDialog extends React.Component {
         }
       });
     }
-
-    console.log(this.state.product);
   };
-
-
-
-
 
 
   //물품 등록창 열기
@@ -109,8 +97,6 @@ class FullScreenDialog extends React.Component {
     this.setState({open: false});
   };
 
- 
-
   //Submit
   handleSubmit = () => {
 
@@ -123,13 +109,10 @@ class FullScreenDialog extends React.Component {
   //랜더링은 setState할때와 reducer가 store값을 세팅할때임.
 
   render() {
+
     const {infoAccount} = this.props;
-    
-   
     return (
-      
       <div>
-      
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
             등록
         </Button>
@@ -156,7 +139,6 @@ class FullScreenDialog extends React.Component {
             </Toolbar>
           </AppBar>
 
-          
   <div  align="center">
   <br/>
           <Typography variant="h4" color="textPrimary" style={{
@@ -210,10 +192,6 @@ class FullScreenDialog extends React.Component {
     />
     <br />
     </div>
-
-
-
-        
       
     <div className="col-md-3 col-3" >
     <TextField
@@ -238,16 +216,13 @@ class FullScreenDialog extends React.Component {
   //셀릭트바에서 거래처명을 클릭했을때 거래처명과 거래처번호를 둘 다 넘기는 방법을 몰라서 물어봤었음
   //1. handlechange에서 이벤트의 vendorname을 가져와서 for문으로 vendorNo을 가져온다고하고(index함수사용)
   //2. 새로운 함수를 만들어서 set해준다고함.
-  //3. 하나의 함수에서만 쓸거라면 map으로 객체정보를 다 가져오니 이 객체를 넘겨서 set해줘도됨
-
+  //3. 하나의 함수에서만 쓸거라면 map으로 객체정보를 다 가져오니 이 객체를 넘겨서 set해줘도
 
 ))}
  </TextField>
     <br />
     </div>
-   
   </div>
-
           <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleSubmit}>전송</Button>
         </Dialog>
       </div>
@@ -255,16 +230,11 @@ class FullScreenDialog extends React.Component {
   }
 }
 
-
-
-
 const mapStateToProps = ({productionManagement}) => {
  
  const {infoAccount}  = productionManagement ; 
    return { infoAccount  };//키값
-
 }
-
 
 export default connect(mapStateToProps,{addProduct })(FullScreenDialog);
 

@@ -17,13 +17,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
-import {  getInfoAccount } from 'actions/index';
-
-
-
-
-
-let counter = 0;
+import {  getInfoAccount , getProduct } from 'actions/index';
+import UpdateProduct from './UpdateProduct';
 
 
 //칼럼명 지어주는 곳
@@ -51,7 +46,7 @@ class EnhancedTableHead extends React.Component {
   };
 
   sortProduct = () => {
-    console.log("왓냐 ;;;.........")
+
   };
 
   render() {
@@ -61,13 +56,7 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox color="primary"
-                      indeterminate={numSelected > 0 && numSelected < rowCount}
-                      checked={numSelected === rowCount}
-                      onChange={onSelectAllClick}
-            />
-          </TableCell>
+      
           {columnData.map(column => {
             return (
               <TableCell
@@ -134,7 +123,6 @@ let EnhancedTableToolbar = props => {
     </Toolbar>
   );
 };
-
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
@@ -153,6 +141,13 @@ class EnhancedTable extends React.Component {
       order === 'desc'
         ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
         : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+
+    if(property==='숫자로 비교해야하는 칼럼이름'){
+        order === 'desc'
+        ? this.state.data.sort((a, b) => (b[orderBy] - a[orderBy] ))
+        : this.state.data.sort((a, b) => (a[orderBy] - b[orderBy] ));
+    }
+
 
     this.setState({data, order, orderBy});
   };
@@ -208,7 +203,8 @@ class EnhancedTable extends React.Component {
       page: 0,
       rowsPerPage: 10,
       search:{searchKeyword:null},
-      flag: false
+      flag: false,
+      updateDialogOpen: false
     };
 
     const {getInfoAccount} = this.props;
@@ -218,21 +214,35 @@ class EnhancedTable extends React.Component {
     };
   }
 
+  //물품수정창 띄우기
+  updateProductDialog = (event, productNo) => {
+    event.preventDefault();
+    this.props.getProduct(productNo);
+    this.ProductUpdateDialogOpen();
+  }
+
+  ProductUpdateDialogOpen = () => {
+    this.setState({updateDialogOpen : true});
+  }
+
+  ProductUpdateDialogClose = () => {
+    this.setState({updateDialogOpen : false});
+  }
+
 
   render() {
    
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-
     const { ProductList } = this.props;
 
-    if(ProductList !== this.state.data){
+    if(this.props.ProductList !== this.state.data){
       this.setState({data:ProductList});
     }
 
+    
+
     return (
-       
       <div>
-        
         <EnhancedTableToolbar numSelected={selected.length}/>
         <div className="flex-auto">
           <div className="table-responsive-material">
@@ -247,7 +257,6 @@ class EnhancedTable extends React.Component {
               />
               
               <TableBody>
-                
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
@@ -256,17 +265,13 @@ class EnhancedTable extends React.Component {
                     <TableRow
                       hover
                       onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
-                      role="checkbox"
+                     
                       aria-checked={isSelected}
                       tabIndex={-1}
                       key={page*rowsPerPage+index}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox color="primary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
-                      </TableCell>
-                      <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.productNo}</span></TableCell>
+                      <TableCell align="left" ><span style={{cursor:'pointer'}} onClick={event => this.updateProductDialog(event,row.productNo)}>{row.productNo}</span></TableCell>
                       <TableCell align="left">{row.productName}</TableCell>
                       <TableCell align="left">{row.purchasePrice}</TableCell>
                       <TableCell align="left">{row.salesPrice}</TableCell>
@@ -287,9 +292,12 @@ class EnhancedTable extends React.Component {
                   />
                 </TableRow>
               </TableFooter>
-              
             </Table>
-           
+
+            <UpdateProduct
+              open={this.state.updateDialogOpen}
+              close={this.ProductUpdateDialogClose}
+            />
           </div>
          
         </div>
@@ -307,4 +315,4 @@ const mapStateToProps = ({productionManagement}) => {
 
 
                    
-export default connect(mapStateToProps,  {getInfoAccount} )(EnhancedTable);
+export default connect(mapStateToProps,  {getInfoAccount , getProduct} )(EnhancedTable);

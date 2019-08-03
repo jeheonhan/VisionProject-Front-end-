@@ -5,7 +5,7 @@ import {
     UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH, UPDATE_ORDER_TO_VEN_ITEM_CODE,
      CARRY_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, CARRY_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS , 
      CARRY_PRODUCT_LIST_FOR_ORDER , GET_PRODUCT_LIST_FOR_ORDER , GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE
-     , CARRY_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE
+     , CARRY_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE , GET_PRODUCT , CARRY_PRODUCT , UPDATE_PRODUCT
      
 } from '../actionTypes/ActionTypes';
 import {SEND_SHIPPING} from '../actionTypes/ActionTypes';
@@ -151,5 +151,27 @@ export const carryOrderToVendorProductStatusComplete = (data) => {
     return {
         type:CARRY_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE,
         payload:data
+    }
+}
+
+//물품수정하기위해 물품정보를 가져옴
+export const getProduct = (productNo) => {
+    return {
+        type : GET_PRODUCT,
+        payload : productNo
+    }
+}
+
+export const carryProduct = (product) => {
+    return {
+        type:CARRY_PRODUCT,
+        payload:product
+    }
+}
+
+export const updateProduct = (product) => {
+    return {
+        type: UPDATE_PRODUCT,
+        payload: product
     }
 }

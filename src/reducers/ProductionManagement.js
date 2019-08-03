@@ -4,7 +4,9 @@ import { GET_PRODUCT_LIST, CARRY_PRODUCT_LIST ,
     GET_INFO_ACCOUNT,  CARRY_INFO_ACCOUNT,
     GET_ORDER_TO_VENDOR_DETAIL_LIST, CARRY_ORDER_TO_VENDOR_DETAIL_LIST, UPDATE_ORDER_TO_VENDOR_CODE ,
     ADD_ORDER_TO_VENDOR , UPDATE_ORDER_TO_VEN_ITEM_CODE,  CARRY_ORDER_BRANCH_LIST , GET_PRODUCT_LIST_FOR_ORDER
-    , CARRY_PRODUCT_LIST_FOR_ORDER
+    , CARRY_PRODUCT_LIST_FOR_ORDER,
+    GET_PRODUCT,
+    CARRY_PRODUCT , UPDATE_PRODUCT
 } from "actionTypes/ActionTypes";
 
 
@@ -111,7 +113,26 @@ switch(action.type){
            ProductListForOrder : action.payload
        }
    }
-   
+
+   case GET_PRODUCT : {
+       return {
+           ...state
+       }
+   }
+
+   case CARRY_PRODUCT : {
+       return {
+           ...state,
+           Product: action.payload
+       }
+   }
+
+   case UPDATE_PRODUCT : {
+       return {
+           ...state
+
+       }
+   }
 
    default : {
        return{

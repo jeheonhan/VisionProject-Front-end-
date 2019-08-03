@@ -5,14 +5,15 @@ import { carryProductList, carryOrderToVendorList,
     getInfoAccount,carryInfoAccount, carryOrderToVendorDetailList, 
     getOrderToVendorList, getOrderToVendorDetailList, caarryOrderBranch,
      carryOrderBranch, carryOrderBranchList, getOrderBranchList ,
-     getProductListForOrder , carryProductListForOrder , carryOrderToVendorProductStatusComplete
+     getProductListForOrder , carryProductListForOrder , carryOrderToVendorProductStatusComplete, carryProduct ,carryStatementList ,
+     getStatementList
     } from 'actions/index';
 import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
      ADD_PRODUCT, GET_INFO_ACCOUNT, GET_ORDER_TO_VENDOR_DETAIL_LIST
     , UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH ,
      GET_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS,
-    UPDATE_ORDER_TO_VEN_ITEM_CODE ,
-    GET_PRODUCT_LIST_FOR_ORDER , GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE
+    UPDATE_ORDER_TO_VEN_ITEM_CODE , GET_PRODUCT ,
+    GET_PRODUCT_LIST_FOR_ORDER , GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE, UPDATE_PRODUCT , 
 } from "actionTypes/ActionTypes";
 
 import {SEND_SHIPPING} from 'actionTypes/ActionTypes';
@@ -56,7 +57,6 @@ const addProductRequest = async (data) => {
 }  
 
 const getProductAccountRequest = async () => {
-    console.log("물픔등록할때 쓰는거 왓냐")
     return await axios({
        method : "GET",
        url : "/pm/addProductPreparing" 
@@ -86,8 +86,6 @@ const updateOrderToVendorCodeRequest = async (data) => {
 }
 
 const addOrderToVendorRequest = async (data) => {
-    console.log("addOrderToVendorRequest 데이터왓냐");
-    console.log(data)
     return await axios({
         method : "POST" , 
         url : "/pm/addOrderToVendor",
@@ -150,8 +148,24 @@ const getProductListCompleteRequest = async () => {
     .catch(error => console.log(error))
 }
 
+const getProductRequest = async (data) => {
+    return await axios({
+        method:"GET",
+        url:"/pm/getProduct/"+data
+    })
+    .then(respones => respones.data)
+    .catch(error => console.log(error))
+}
 
-
+const updateProductRequest = async (data) => {
+    return await axios({
+        method:"POST",
+        url:"/pm/updateProduct",
+        data:data
+    })
+    .then(respones => respones.data)
+    .catch(error => console.log(error))
+}
 
 
 function * sendShippingFn(action){
@@ -187,6 +201,15 @@ function* getOrderTOVendorDetailListFn({payload}){
 function* updateOrderToVendorCodeFn({payload}) {
     yield call(updateOrderToVendorCodeRequest, payload);
     yield put(getOrderToVendorList(payload));
+    yield put(getStatementList({ searchKeyword : "", usageCondition : "01"}));
+
+
+
+
+
+
+
+
 }
 
 function* addOrderToVendorFn({payload}) {
@@ -208,12 +231,13 @@ function* updateOrderToVenItemCodeFn({payload}){
 
     yield call (updateOrderToVenItemCodeRequest, payload);
     const orderToVendorListDetail = yield call(getOrderToVendorDetailListRequest);
-    console.log("orderToVendorListDetail 값은??");
     console.log(orderToVendorListDetail);
 
     yield put(getOrderToVendorDetailList(payload));
     const OrderToVendorList = yield call(getOrderToVendorListRequest);
     yield put(carryOrderToVendorList(OrderToVendorList));
+    const ProductList = yield call(getProductListRequest);
+    yield put(carryProductList(ProductList));
 }
 
 function* modifyOrderBranchFn(action){
@@ -229,6 +253,17 @@ function* getProductListForOrderFn(){
 function* getOrderToVendorProductStatusCompleteFn(){
     const getProductListComplete = yield call(getProductListCompleteRequest);
     yield put(carryOrderToVendorProductStatusComplete(getProductListComplete))
+}
+
+function* getProductFn({payload}){
+    const getProduct = yield call(getProductRequest,payload);
+    yield put(carryProduct(getProduct))
+}
+
+function* updateProductFn({payload}){
+    yield call(updateProductRequest,payload);
+    const ProductList = yield call(getProductListRequest);
+    yield put(carryProductList(ProductList));
 }
 
 
@@ -289,6 +324,14 @@ export function* orderToVendorProductStatusSaga(){
     yield takeEvery(GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE, getOrderToVendorProductStatusCompleteFn)
 }
 
+export function* getProductSaga(){
+    yield takeEvery(GET_PRODUCT, getProductFn)
+}
+
+export function* updateProductSaga(){
+    yield takeEvery(UPDATE_PRODUCT, updateProductFn)
+}
+
 export default function* rootSaga(){
     yield all([
         fork(sendShippingSaga),
@@ -305,6 +348,8 @@ export default function* rootSaga(){
         fork(modifyOrderBranchStatusSaga),
         fork(productListForOrderSaga),
         fork(orderToVendorProductStatusSaga),
+        fork(getProductSaga),
+        fork(updateProductSaga),
     ]);
 }
 

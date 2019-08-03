@@ -13,25 +13,15 @@ import Button from '@material-ui/core/Button';
 
 class OrderToVendorRequestList extends React.Component {
 
-
     constructor(props) {
         super(props);
         this.state = {
           totalAmount: '',
           orderToVendorProduct: [
-            
           ]
         };
         this.click = this.click.bind(this);
       }
-
-      // argument = (total) => {
-      //   console.log(total)
-      //   this.setState(
-      //     {totalAmount : total}
-      //     )
-      //     this.handleSubmit()
-      // } 
 
       handleSubmit = (total) => {
     
@@ -40,7 +30,6 @@ class OrderToVendorRequestList extends React.Component {
        }
 
        click(e) {
-         
          this.props.click(e);
        }
     
@@ -87,7 +76,7 @@ class OrderToVendorRequestList extends React.Component {
             {productNo:n.productNo
             ,productName:n.productName
             ,purchasePrice:n.purchasePrice
-            
+            ,vendorName : n.vendorName
             ,quantity:_quantity
             ,amount:n.purchasePrice*_quantity
             };
@@ -100,7 +89,6 @@ class OrderToVendorRequestList extends React.Component {
         }
       };
 
-
       onLackQuantity = () => {
         this.setState({
           warning:true,
@@ -108,13 +96,10 @@ class OrderToVendorRequestList extends React.Component {
         })
       }
 
-
-
 render() {
      
              const { ProductListForOrder } = this.props;
              const { data } = this.state;
-
 
             if(ProductListForOrder === undefined){
                 this.props.getProductListForOrder();
@@ -131,9 +116,6 @@ render() {
                total += prod.amount
               return total
             })}
-        
-            
-            
 
   return (
     
