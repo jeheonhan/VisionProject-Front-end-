@@ -21,6 +21,8 @@ class UpdateNotice extends React.Component {
 
     render() {
 
+        const { noticeHeaderList } = this.props;
+
         return(
 
             <div>
