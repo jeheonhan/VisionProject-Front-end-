@@ -62,6 +62,44 @@ class phoneMaskCustom extends React.Component {
   }
 }
 
+//거래처 서울 전화번호 정규식
+class vendorTelSeoulMask extends React.Component {
+  render() {
+    return (
+      <MaskedInput
+        {...this.props}
+        mask={[ /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+        placeholderChar={'\u2000'}
+        // showMask
+      />
+    );
+  }
+}
+
+//거래처 지방 전화번호 정규식
+class vendorTelLocalMask extends React.Component {
+  render() {
+    return (
+      <MaskedInput
+        {...this.props}
+        mask={[ /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+        placeholderChar={'\u2000'}
+        // showMask
+      />
+    );
+  }
+}
+
+//지역전화번호코드
+const localPhoneCode = [
+  { value: '02', label: '02', }, { value: '051', label: '051', }, { value: '053', label: '053', },
+  { value: '032', label: '032', }, { value: '062', label: '062', }, { value: '042', label: '042', },
+  { value: '052', label: '052', }, { value: '044', label: '044', }, { value: '031', label: '031', }, 
+  { value: '033', label: '033', }, { value: '043', label: '043', }, { value: '041', label: '041', },
+  { value: '063', label: '063', }, { value: '061', label: '061', }, { value: '054', label: '054', },
+  { value: '055', label: '055', }, { value: '064', label: '064', },
+];
+
 const useStyles = makeStyles(theme => ({
   button: {
     margin: theme.spacing(1),
@@ -172,7 +210,13 @@ class FullScreenDialog extends React.Component {
 
   //Submit
   handleSubmit = () => {
-    this.props.addHRCard(this.state.employee);
+    if(this.state.employee.localPhoneCode != null){
+      this.props.addHRCard(
+        console.log(Object.assign({},this.state.employee,{employeeTel:this.state.employee.localPhoneCode+"-"+this.state.employee.employeeTel}))
+        )
+    }else{
+      this.props.addHRCard(this.state.employee);
+    }
     this.handleClickClose()
   }
 
@@ -248,7 +292,7 @@ class FullScreenDialog extends React.Component {
             전송
           </Button>
           <Button variant="contained" className="jr-btn bg-deep-orange text-white"  
-                    onClick={this.handleChangeClose}>
+                    onClick={this.handleRequestClose}>
             취소
           </Button>
           </div>
@@ -405,14 +449,41 @@ function AddTextField(props){
                       />
                   </FormControl>
                 </div>
-              <div className="col-md-4 col-6"  style={{float:"left", display:"inline"}}>
-              <TextField
+                <div className="col-md-2 col-3" style={{float:"left", display:"inline"}}>
+                  <TextField
+                    id="localPhoneCode"
+                    select
+                    label="지역번호"
+                    value={props.stateValue.employee.localPhoneCode}
+                    onChange={props.handleChange('localPhoneCode')}
+                    SelectProps={{}}
+                    margin="normal"
+                    fullWidth
+                  >
+                    {localPhoneCode.map(option => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </div>
+              <div className="col-md-2 col-3"  style={{float:"left", display:"inline"}}>
+              <FormControl className="mb-3" fullWidth margin='normal'>
+              <InputLabel htmlFor="vendorTel">전화번호</InputLabel>
+              <Input
                       id="employeeTel"
-                      label="전화번호"
+                      //label="전화번호"
+                      value={props.stateValue.employee.employeeTel ? `${props.stateValue.employee.employeeTel}`:""}
                       onChange={props.handleChange('employeeTel')}
                       margin="normal"
+                      inputComponent={props.stateValue.employee.localPhoneCode == '02' ? vendorTelSeoulMask : vendorTelLocalMask}
+                      className="w-100 mb-3"
+                      inputProps={{
+                      'aria-label': 'Description',
+                      }}
                       fullWidth
                   />
+                  </FormControl>
               </div>
             <div className="col-md-4 col-6"  style={{float:"left", display:"inline"}}>
               <TextField

@@ -24,6 +24,7 @@ import FindDepart from 'components/humanResource/FindDepart';
 import FindRank from 'components/humanResource/FindRank';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import SearchBox from 'components/SearchBox';
 
 let counter = 0;
 
@@ -60,13 +61,13 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
+          {/* <TableCell padding="checkbox">
             <Checkbox color="primary"
                       indeterminate={numSelected > 0 && numSelected < rowCount}
                       checked={numSelected === rowCount}
                       onChange={onSelectAllClick}
             />
-          </TableCell>
+          </TableCell> */}
           {columnData.map(column => {
             return (
               <TableCell
@@ -100,6 +101,28 @@ class EnhancedTableHead extends React.Component {
 
 let EnhancedTableToolbar = props => {
   const {numSelected} = props;
+  const [value, setValue] = React.useState({searchKeyword : ''});
+
+  //검색 키워드 수정
+  const updateSearchKeyword = (event) => {
+    setValue({
+      searchKeyword: event.target.value,
+    });
+    console.log(value.searchKeyword)
+  }
+
+  //검색 기능
+  const searchActivity = (event) => {
+    event.preventDefault();
+      props.getHRCardList(value)
+  }
+
+  //엔터 검색 기능
+  const searchEnterActivity = (event) => {
+    if(event.key === 'Enter'){
+      props.getHRCardList(value)
+    }
+  }
 
   return (
     <Toolbar
@@ -114,7 +137,14 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
-      퇴사자조회
+      <SearchBox 
+        styleName="d-none d-sm-block" 
+        placeholder="사원번호/사원명"
+        onChange={updateSearchKeyword}
+        value={value.searchKeyword}
+        onClick={ event => searchActivity(event)}
+        onKeyDown={ event => searchEnterActivity(event)}
+      />
       <Switch
               color="primary"
                 classes={{
@@ -290,7 +320,8 @@ class EnhancedTable extends React.Component {
       <div>
         <EnhancedTableToolbar numSelected={selected.length}
                                handleSearchResign={this.handleSearchResign}
-                               checkedSearch={this.state.search.searchCondition}/>
+                               checkedSearch={this.state.search.searchCondition}
+                               getHRCardList={this.props.getHRCardList}/>
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -318,10 +349,10 @@ class EnhancedTable extends React.Component {
                       key={page*rowsPerPage+index}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">
+                      {/* <TableCell padding="checkbox">
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell align="left" >
                         <span style={{cursor:'pointer'}} onClick={event => {this.handleModifyHRCard(event, row.employeeNo)}}>
                           {row.employeeNo}

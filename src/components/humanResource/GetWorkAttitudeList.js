@@ -22,7 +22,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SimpleHRCard from 'components/humanResource/SimpleHRCard';
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from 'react-bootstrap-sweetalert';
+import SearchBox from 'components/SearchBox';
 
 
 
@@ -98,6 +99,28 @@ class EnhancedTableHead extends React.Component {
 
 let EnhancedTableToolbar = props => {
   const {numSelected} = props;
+  const [value, setValue] = React.useState({searchKeyword : ''});
+
+  //검색 키워드 수정
+  const updateSearchKeyword = (event) => {
+    setValue({
+      searchKeyword: event.target.value,
+    });
+    console.log(value.searchKeyword)
+  }
+
+  //검색 기능
+  const searchActivity = (event) => {
+    event.preventDefault();
+      props.getWorkAttitudeList(value)
+  }
+
+  //엔터 검색 기능
+  const searchEnterActivity = (event) => {
+    if(event.key === 'Enter'){
+      props.getWorkAttitudeList(value)
+    }
+  }
 
   return (
     <Toolbar
@@ -112,6 +135,14 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
+      <SearchBox 
+        styleName="d-none d-sm-block" 
+        placeholder="사원번호/사원명"
+        onChange={updateSearchKeyword}
+        value={value.searchKeyword}
+        onClick={ event => searchActivity(event)}
+        onKeyDown={ event => searchEnterActivity(event)}
+      />
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
@@ -289,6 +320,7 @@ class EnhancedTable extends React.Component {
         <EnhancedTableToolbar
          numSelected={selected.length}
          handleDeleteWorkAttitude={this.handleDeleteWorkAttitude}
+         getWorkAttitudeList={this.props.getWorkAttitudeList}
         />
         <div className="flex-auto">
           <div className="table-responsive-material">

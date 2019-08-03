@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getWorkAttitudeList, convertWorkAttitudeCodeUseStatus } from 'actions/index';
+import { getWorkAttitudeCodeList, convertWorkAttitudeCodeUseStatus } from 'actions/index';
 import PropTypes from 'prop-types';
 import keycode from 'keycode';
 import Table from '@material-ui/core/Table';
@@ -19,7 +19,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SweetAlert from 'react-bootstrap-sweetalert'
-
+import Snackbar from '@material-ui/core/Snackbar';
+import SearchBox from 'components/SearchBox';
 
 
 //칼럼명 지어주는 곳
@@ -94,6 +95,28 @@ class EnhancedTableHead extends React.Component {
 
 let EnhancedTableToolbar = props => {
   const {numSelected} = props;
+  const [value, setValue] = React.useState({searchKeyword : ''});
+
+  //검색 키워드 수정
+  const updateSearchKeyword = (event) => {
+    setValue({
+      searchKeyword: event.target.value,
+    });
+    console.log(value.searchKeyword)
+  }
+
+  //검색 기능
+  const searchActivity = (event) => {
+    event.preventDefault();
+      props.getWorkAttitudeCodeList(value)
+  }
+
+  //엔터 검색 기능
+  const searchEnterActivity = (event) => {
+    if(event.key === 'Enter'){
+      props.getWorkAttitudeCodeList(value)
+    }
+  }
 
   return (
     <Toolbar
@@ -108,6 +131,14 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
+      <SearchBox 
+        styleName="d-none d-sm-block" 
+        placeholder="근태코드/근태명칭"
+        onChange={updateSearchKeyword}
+        value={value.searchKeyword}
+        onClick={ event => searchActivity(event)}
+        onKeyDown={ event => searchEnterActivity(event)}
+      />
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
@@ -134,8 +165,27 @@ EnhancedTableToolbar.propTypes = {
 
 
 class EnhancedTable extends React.Component {
-
-
+  
+  constructor(props, context) {
+    super(props, context);
+  
+    this.state = {
+      order: 'asc',
+      orderBy: '',
+      selected: [],
+      // data에 props로 들어오는 list값 넣어주기.
+      data: this.props.workAttitudeCodeList,
+      page: 0,
+      rowsPerPage: 10,
+      search:{searchKeyword:null},
+      flag: false,
+      composeMail:false,
+      deleteConfirmShow:false,
+      snackbar:false,
+      snackbarContents:"",
+    };
+  }
+  
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -208,11 +258,28 @@ class EnhancedTable extends React.Component {
 
   //근태 삭제 Confirm 확인
   onConfirmDelete = () => {
-    this.props.convertWorkAttitudeCodeUseStatus(this.state.selected)
-    this.setState({
-      deleteConfirmShow:false,
-      selected:[]
+    console.log(this.state.selected);
+    var flag = false;
+    this.state.selected.map( v => {
+      if(v == '100'){
+        flag = true;
+      }else if(v == '101'){
+        flag = true;
+      }
     })
+
+    if(flag){
+      this.setState({
+        snackbar:true,
+        snackbarContents:"소정근로시간과 연장근로시간은 삭제하실 수 없습니다."
+      })
+    }else{
+      this.props.convertWorkAttitudeCodeUseStatus(this.state.selected)
+      this.setState({
+        deleteConfirmShow:false,
+        selected:[]
+      })
+    }
   }
 
   //근태 삭제 Confirm 취소
@@ -222,24 +289,14 @@ class EnhancedTable extends React.Component {
     })
   }
 
-
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      order: 'asc',
-      orderBy: '',
-      selected: [],
-      // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.workAttitudeCodeList,
-      page: 0,
-      rowsPerPage: 10,
-      search:{searchKeyword:null},
-      flag: false,
-      composeMail:false,
-      deleteConfirmShow:false
-    };
+  //스낵바 닫기
+  handleRequestClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:""
+    })
   }
+
 
   render() {
    
@@ -256,7 +313,8 @@ class EnhancedTable extends React.Component {
       <div>
         <EnhancedTableToolbar 
             numSelected={selected.length}
-            handleOpenDeleteWorkAttitude={this.handleOpenDeleteWorkAttitude}/>
+            handleOpenDeleteWorkAttitude={this.handleOpenDeleteWorkAttitude}
+            getWorkAttitudeCodeList={this.props.getWorkAttitudeCodeList}/>
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -327,7 +385,17 @@ class EnhancedTable extends React.Component {
                     title={"해당 근태코드를 삭제하시겠습니까?"}
                     onConfirm={this.onConfirmDelete}
                     onCancel={this.onCancelDelete}
-        ></SweetAlert>
+        />
+         <Snackbar
+          anchorOrigin={{vertical:'top', horizontal:'center'}}
+          open={this.state.snackbar}
+          autoHideDuration="1500"
+          onClose={this.handleRequestClose}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{this.state.snackbarContents}</span>}
+        />
       </div>
     );
   }
@@ -337,4 +405,4 @@ const mapStateToProps = ({ humanResource }) => {
   return { workAttitudeCodeList };
 }
 
-export default connect(mapStateToProps, { getWorkAttitudeList, convertWorkAttitudeCodeUseStatus })(EnhancedTable);
+export default connect(mapStateToProps, { getWorkAttitudeCodeList, convertWorkAttitudeCodeUseStatus })(EnhancedTable);
