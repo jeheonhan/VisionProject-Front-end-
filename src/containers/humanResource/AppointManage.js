@@ -58,8 +58,8 @@ class AppointManage extends React.Component{
           </CardBox>
             <SimpleHRCard open={this.state.simpleCardOpen} handleSimpleHRCardClose={handleSimpleHRCardClose}/>
 
-            <ModifyAppoint open={this.state.modifyAppointOpen}
-                            handleModifyAppointClose={handleModifyAppointClose}/>
+            {this.state.modifyAppointOpen &&  <ModifyAppoint open={this.state.modifyAppointOpen}
+                            handleModifyAppointClose={handleModifyAppointClose}/>}
             </div>
             
         );

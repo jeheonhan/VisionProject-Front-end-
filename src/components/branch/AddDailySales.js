@@ -42,7 +42,8 @@ class AddDailySales extends React.Component {
           salesDate : '',
           salesProductList :[],
           warning:false,
-          success:false
+          success:false,
+          propList : this.props.salesMenuList
         }
 
       }
@@ -160,6 +161,25 @@ class AddDailySales extends React.Component {
     render(){
 
         const { salesMenuList } = this.props;
+        if(salesMenuList && salesMenuList !== this.state.propList){
+          this.setState({
+            propList : salesMenuList,
+          })
+        }else if(salesMenuList && this.state.salesDate && this.state.salesProductList[0]===undefined){
+          let list = [];
+          this.state.propList.map((row)=>{
+            list = list.concat({
+              branchNo: JSON.parse(localStorage.getItem("user")).branchNo,
+              menuNo: row.menuNo,
+              salesDate: this.state.salesDate,
+              salesQuantity: 0,
+              salesAmount: 0,
+             })
+          })
+          this.setState({
+            salesProductList : list
+          })
+        }
 
         console.log(this.state);
 

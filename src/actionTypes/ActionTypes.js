@@ -323,6 +323,7 @@ export const CARRY_NOTICE_HEADER_LIST = 'carry_notice_header_list';
 export const DELETE_NOTICE = 'delete_notice';
 
 //지점관리
+export const MODIFY_DAILY_SALES = 'modify_daily_sales';
 export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';
 export const CARRY_DAILY_SALES_LIST = 'carry_daily_sales_list';
 export const GET_DAILY_SALES_DETAIL = 'get_daily_sales_detail';
