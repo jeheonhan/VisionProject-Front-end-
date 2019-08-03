@@ -321,6 +321,9 @@ export const ADD_NOTICE_RESULT = 'add_notice_result';
 export const GET_NOTICE_HEADER_LIST = 'get_notice_header_list';
 export const CARRY_NOTICE_HEADER_LIST = 'carry_notice_header_list';
 export const DELETE_NOTICE = 'delete_notice';
+export const UPDATE_NOTICE = 'update_notice';
+export const GET_UPDATE_NOTICE_HEADER_LIST = 'get_update_notice_header_list';
+export const CARRY_UPDATE_NOTICE_HEADER_LIST = 'carry_update_notice_header_list';
 
 //지점관리
 export const GET_DAILY_SALES_LIST = 'get_daily_sales_list';

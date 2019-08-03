@@ -19,6 +19,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import {getNoticeList, getNoticeDetail, convertNoticeStatusCode } from 'actions/index';
 import GetNoticeDetail from 'components/notice/GetNoticeDetail';
 import { connect } from 'react-redux';
+import UpdateNotice from './UpdateNotice';
 
 
 const columnData = [
@@ -292,6 +293,11 @@ const columnData = [
               handleRequestClose={ this.handleRequestClose }
               noticeDetail={ this.props.noticeDetail }
             />)}
+
+            <UpdateNotice
+
+                //noticeHeaderList = {this.props.}
+            />
 
             </div>
           </div>

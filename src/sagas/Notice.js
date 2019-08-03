@@ -1,7 +1,7 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { GET_NOTICE_LIST, GET_NOTICE_DETAIL, ADD_NOTICE, GET_NOTICE_HEADER_LIST, DELETE_NOTICE } from 'actionTypes/ActionTypes';
-import { carryNoticeList, carryNoticeDetail, getNoticeList, carryNoticeHeaderList } from 'actions/index';
+import { GET_NOTICE_LIST, GET_NOTICE_DETAIL, ADD_NOTICE, GET_NOTICE_HEADER_LIST, DELETE_NOTICE, UPDATE_NOTICE } from 'actionTypes/ActionTypes';
+import { carryNoticeList, carryNoticeDetail, getNoticeList, carryNoticeHeaderList, caaryUpdateNoticeHeaderList } from 'actions/index';
 
 const getNoticeListRequest = async (search) => {
     return await axios({
@@ -34,7 +34,6 @@ const addNoticeRequest = async (notice) => {
 }
 
 const getNoticeHeaderListRequest = async () => {
-    //console.log("getNoticeHeaderList saga :::::: ")
     return await axios({
         method:"GET",
         url:"/notice/getNoticeHeaderList"
@@ -48,6 +47,25 @@ const converNoticeStatusCodeRequest = async (notice) => {
         method: "POST",
         url: "/notice/convertNoticeUsageStatus",
         data: notice
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
+const updateNoticeRequest = async (notice) => {
+    return await axios({
+        method : "POST",
+        url : "/notice/modifyNotice",
+        data : notice
+    })
+    .then(response => response.data)
+    .catch(error => console.log(error))
+}
+
+const getUpdateNoticeHeaderListRequest = async () => {
+    return await axios({
+        method:"GET",
+        url:"/notice/getNoticeHeaderList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -79,6 +97,16 @@ function* convertNoticeStatusCodeFn({payload}){
     yield put(getNoticeList({searchCondition:'2', searchKeyword:'01'}));
 }
 
+function* updateNoticeFn({payload}){
+    yield call(updateNoticeRequest, payload);
+    yield put(getNoticeList({searchCondition:'2', searchKeyword:'01'}));
+}
+
+function* getUpdateNoticeHeaderListFn(){
+    const forUpdateNoticeHeaderList = yield call(getUpdateNoticeHeaderListRequest);
+    yield put(caaryUpdateNoticeHeaderList(forUpdateNoticeHeaderList))
+}
+
 
 
 
@@ -99,7 +127,15 @@ export function* getNoticeHeaderListSaga(){
 }
 
 export function* convertNoticeStatusCodeSaga(){
-    yield takeEvery(DELETE_NOTICE, convertNoticeStatusCodeFn)
+    yield takeEvery(DELETE_NOTICE, convertNoticeStatusCodeFn);
+}
+
+export function* updateNoticeSaga(){
+    yield takeEvery(UPDATE_NOTICE, updateNoticeFn);
+}
+
+export function* getUpdateNoticeHeaderListSaga() {
+    yield takeEvery(UPDATE_NOTICE, getUpdateNoticeHeaderListFn)
 }
 
 export default function* rootSaga(){
@@ -107,5 +143,7 @@ export default function* rootSaga(){
                 fork(getNoticeDetailSaga),
                 fork(addNoticeSaga),
                 fork(getNoticeHeaderListSaga),
-                fork(convertNoticeStatusCodeSaga)]);
+                fork(convertNoticeStatusCodeSaga),
+                fork(updateNoticeSaga),
+                fork(getUpdateNoticeHeaderListSaga)]);
 }
