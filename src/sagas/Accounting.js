@@ -54,6 +54,8 @@ import {
     DELETE_VENDOR,
     DELETE_CARD,
     DELETE_ACCOUNT,
+    DELETE_STATEMENT,
+    UPDATE_SALARY_STATUS,
 } from "actionTypes/ActionTypes";
 
 const getVendorListRequest = async (search) => {
@@ -311,6 +313,26 @@ const deleteAccountRequest = async (accountRegNoList) => {
     .catch(response => console.log(response));
 }
 
+const deleteStatementRequest = async (statementNoList) => {
+    return await axios({
+        method:"POST",
+        url:"/accounting/convertStatementUsageStatus",
+        data: statementNoList
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
+const updateSalaryStatusRequest = async (salaryStatus) => {
+    return await axios({
+        method:"POST",
+        url:"/accounting/modifySalaryStatus",
+        data: salaryStatus
+    })
+    .then(response => response.data)
+    .catch(response => console.log(response));
+}
+
 //여기서 payload는 search 도메인을 의미한다.
 function* getVendorListFn({payload}){
     const VendorList = yield call(getVendorListRequest, payload);
@@ -460,6 +482,16 @@ function* deleteAccountFn({payload}){
     yield put(getAccountList({ searchKeyword : "" }));
 }
 
+function* deleteStatementFn({payload}){
+    yield call(deleteStatementRequest, payload);
+    yield put(getStatementList({ searchKeyword : "" }));
+}
+
+function* updateSalaryStatusFn({payload}){
+    yield call(updateSalaryStatusRequest, payload);
+    yield put(getSalaryList({ searchKeyword : "" }));
+}
+
 export function* getVendorListSaga(){
     yield takeEvery(GET_VENDOR_LIST, getVendorListFn);
 }
@@ -576,6 +608,14 @@ export function* deleteAccountSaga(){
     yield takeEvery(DELETE_ACCOUNT, deleteAccountFn);
 }
 
+export function* deleteStatementSaga(){
+    yield takeEvery(DELETE_STATEMENT, deleteStatementFn);
+}
+
+export function* updateSalaryStatusSaga(){
+    yield takeEvery(UPDATE_SALARY_STATUS, updateSalaryStatusFn);
+}
+
 export default function* rootSaga(){
     yield all([
         fork(getVendorListSaga),
@@ -607,5 +647,7 @@ export default function* rootSaga(){
         fork(deleteVendorSaga),
         fork(deleteCardSaga),
         fork(deleteAccountSaga),
+        fork(deleteStatementSaga),
+        fork(updateSalaryStatusSaga),
     ]);
 }

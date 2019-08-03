@@ -14,11 +14,18 @@ import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Note';
+import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import GetStatementDetail from 'components/accounting/GetStatementDetail';
 import { connect } from 'react-redux';
-import { getStatement } from 'actions/index';
+import { getStatement, getStatementList, deleteStatement } from 'actions/index';
+import SearchBox from 'components/SearchBox';
+import SweetAlert from 'react-bootstrap-sweetalert';
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -51,7 +58,7 @@ class EnhancedTableHead extends React.Component {
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
-            <Checkbox color="secondary"
+            <Checkbox color="primary"
                       indeterminate={numSelected > 0 && numSelected < rowCount}
                       checked={numSelected === rowCount}
                       onChange={onSelectAllClick}
@@ -90,6 +97,58 @@ class EnhancedTableHead extends React.Component {
 
 let EnhancedTableToolbar = props => {
   const {numSelected} = props;
+  const [value, setValue] = React.useState({searchKeyword : '', searchCondition : '', anchorEl: undefined, open: false});
+
+  //...클릭시 발생하는 이벤트
+  //메뉴바를 내가 클릭한 위치에서 열게해준다.
+  const handleClick = event => {
+    setValue({open: true, anchorEl: event.currentTarget});
+  };
+
+  //메뉴바 닫기
+  const handelClose = () => {
+    setValue({
+      open : false
+    })
+  }
+
+  //메뉴바에서 메뉴 선택시 발생 이벤트
+  const handleRequestChoose = (event, index) => {
+    event.preventDefault();
+    
+    //닫기면 index === 0
+    if(index === 0){
+      props.getStatementList({searchCondition : ''})
+      handelClose();
+    //수정이면 index === 1
+    } else if(index === 1){
+      props.getStatementList({searchCondition : '01'})
+      handelClose();
+    } else if(index === 2){
+      props.getStatementList({searchCondition : '02'})
+      handelClose();
+    }
+  };
+
+  //검색 키워드 수정
+  const updateSearchKeyword = (event) => {
+    setValue({
+      searchKeyword: event.target.value,
+    });
+  }
+
+  //검색 기능
+  const searchActivity = (event) => {
+    event.preventDefault();
+    props.getStatementList(value.searchKeyword)
+  }
+
+  //검색 엔터 기능
+  const searchEnterActivity = (event) => {
+    if(event.key === 'Enter'){
+      props.getStatementList(value.searchKeyword)
+    }
+  }
 
   return (
     <Toolbar
@@ -100,15 +159,56 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">계좌 목록조회</Typography>
+          <Typography variant="title">전표 목록조회</Typography>
         )}
       </div>
       <div className="spacer"/>
+
+      <SearchBox 
+        styleName="d-none d-sm-block" 
+        placeholder="전표번호/내용"
+        onChange={updateSearchKeyword}
+        value={value.searchKeyword}
+        onClick={ event => searchActivity(event) }
+        onKeyDown={ event => searchEnterActivity(event) }
+      />
+
+      <IconButton
+        className="icon-btn p-1 text-white ml-auto"
+        aria-label="More"
+        aria-owns={value.open ? 'long-SidenavContent.js' : null}
+        aria-haspopup
+        onClick={handleClick}
+      >
+        <MoreVertIcon color='action'/>
+      </IconButton>
+      <Menu
+        id="long-menu"
+        anchorEl={value.anchorEl}
+        open={value.open}
+        onClose={handelClose}
+        MenuListProps={{
+          style: {
+            width: 100,
+          },
+        }}
+      >
+        <MenuItem onClick={event => handleRequestChoose(event, 0)}>
+            전체보기
+        </MenuItem>
+        <MenuItem onClick={event => handleRequestChoose(event, 1)}>
+            매출전표
+        </MenuItem>
+        <MenuItem onClick={event => handleRequestChoose(event, 2)}>
+            매입전표
+        </MenuItem>
+      </Menu>
+
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
+          <Tooltip title="삭제">
+            <IconButton aria-label="삭제" onClick={ props.updateUsageStatus }>
               <DeleteIcon/>
             </IconButton>
           </Tooltip>
@@ -143,6 +243,8 @@ class StatementTable extends React.Component {
       page: 0,
       rowsPerPage: 10,
       detailDialogOpen: false,
+      warning: false,
+      updateSuccess : false,
     };
   }
 
@@ -163,7 +265,7 @@ class StatementTable extends React.Component {
   };
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState({selected: this.state.data.map((row, index) => index)});
+      this.setState({selected: this.state.data.map((row, index) => row.statementNo)});
       return;
     }
     this.setState({selected: []});
@@ -222,6 +324,43 @@ class StatementTable extends React.Component {
     this.statementDetailDialogOpen();
   }
   
+  //전표 삭제시 발생 이벤트 삭제확인 다이얼로그 띄움
+  updateUsageStatus = () => {
+    this.setState({ warning : true })
+  }
+
+  //전표 삭제 확인 버튼
+  deleteFile = () => {
+    this.props.deleteStatement(this.state.selected);
+    this.setState({
+      warning: false,
+      selected: []
+    })
+  };
+
+  //전표 삭제 취소 버튼
+  onCancelDelete = () => {
+    this.setState({
+      warning: false
+    })
+  };
+
+  //수정성공알람 켜기
+  openUpdateSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      updateSuccess : true
+    })
+  }
+
+  //수정성공알람 끄기
+  closeUpdateSuccessAlarm = () => {
+    this.setState({
+      ...this.state,
+      updateSuccess : false
+    })
+  }
+  
   
   render() {
 
@@ -235,7 +374,11 @@ class StatementTable extends React.Component {
   
     return (
       <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+        <EnhancedTableToolbar 
+          numSelected={selected.length}
+          getStatementList={this.props.getStatementList}
+          updateUsageStatus={this.updateUsageStatus}
+        />
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -252,8 +395,7 @@ class StatementTable extends React.Component {
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
-                  const isSelected = this.isSelected(page*rowsPerPage+index);
-                  const currVenorNo = row.vendorNo;
+                  const isSelected = this.isSelected(row.statementNo);
                   return (
                     <TableRow
                       hover
@@ -265,8 +407,8 @@ class StatementTable extends React.Component {
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
-                        <Checkbox color="secondary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
+                        <Checkbox color="primary" checked={isSelected} 
+                                  onClick={event => this.handleClick(event, row.statementNo)}/>
                       </TableCell>
                       <TableCell align="left"><span onClick={event => this.GetStatementDetail(event, row.statementNo)} style={{cursor:'pointer'}}>{row.statementNo}</span></TableCell>
                       <TableCell align="left">{row.statementCategoryCodeName}</TableCell>
@@ -294,7 +436,35 @@ class StatementTable extends React.Component {
             <GetStatementDetail
               open={this.state.detailDialogOpen}
               close={this.statementDetailDialogClose}
+              openUpdateSuccessAlarm={this.openUpdateSuccessAlarm}
+              closeUpdateSuccessAlarm={this.closeUpdateSuccessAlarm}
             />
+
+            <SweetAlert 
+              show={this.state.warning}
+              warning
+              showCancel
+              confirmBtnText="삭제"
+              confirmBtnBsStyle="danger"
+              cancelBtnBsStyle="default"
+              cancelBtnText="닫기"
+              title="삭제하시겠습니까?"
+              onConfirm={this.deleteFile}
+              onCancel={this.onCancelDelete}
+            >
+              삭제시 복구가 불가능합니다
+            </SweetAlert>
+
+            <SweetAlert 
+              show={this.state.updateSuccess} 
+              success 
+              title="수정완료"
+              onConfirm={this.closeUpdateSuccessAlarm}
+              confirmBtnText="확인"
+              confirmBtnBsStyle="danger"
+            >
+              수정에 성공했습니다
+            </SweetAlert>
           </div>
         </div>
       </div>
@@ -303,4 +473,4 @@ class StatementTable extends React.Component {
 }
 
 
-export default connect(null, { getStatement })(StatementTable);
+export default connect(null, { getStatement, getStatementList, deleteStatement })(StatementTable);

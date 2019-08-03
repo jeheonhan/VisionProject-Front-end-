@@ -125,7 +125,7 @@ class AddVendor extends React.Component {
             
           <div align="center">  
             <div>
-              <img className="size-60" src={require("assets/images/VisionLogo.png")}/>
+              {/* <img className="size-60" src={require("assets/images/VisionLogo.png")}/> */}
             </div>
             <CardBox styleName="col-lg-7">
               <AddTextFields 

@@ -33,10 +33,6 @@ class TextMaskCustom extends React.Component {
   }
 }
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
-
 class AddCard extends React.Component {
 
   //super(props) 선언전까지 constructor에서 this 키워드를 사용할 수 없다.
@@ -412,6 +408,10 @@ class AddCard extends React.Component {
       </div>
     );
   }
+}
+
+function Transition(props) {
+  return <Slide direction="up" {...props} />;
 }
 
   const mapStateToProps = ({ humanResource, code }) => {

@@ -289,8 +289,8 @@ export const CARRY_ANALYZE_SALARY_BOOK_LIST ='carry_analyze_salary_book_list';
 export const DELETE_VENDOR = 'delete_vendor';
 export const DELETE_CARD = 'delete_card';
 export const DELETE_ACCOUNT = 'delete_account';
-
-
+export const DELETE_STATEMENT = 'delete_statement';
+export const UPDATE_SALARY_STATUS = 'update_salary_status';
 
 
 

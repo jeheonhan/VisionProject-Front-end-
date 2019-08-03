@@ -117,7 +117,11 @@ let EnhancedTableToolbar = props => {
     props.getVendorList(value)
   }
 
-
+  const searchEnterActivity = (event) => {
+    if(event.key === 'Enter'){
+      props.getVendorList(value)
+    }
+  }
 
   return (
     <Toolbar
@@ -139,6 +143,7 @@ let EnhancedTableToolbar = props => {
         onChange={updateSearchKeyword}
         value={value.searchKeyword}
         onClick={ event => searchActivity(event) }
+        onKeyDown={ event => searchEnterActivity(event) }
       />
       
       <div className="actions">

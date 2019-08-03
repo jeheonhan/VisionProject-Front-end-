@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import { getStatement } from 'actions/index';
-import { Card, CardBody, CardFooter, CardHeader, CardSubtitle, CardText } from 'reactstrap';
+import { Card, CardBody, CardSubtitle, CardText } from 'reactstrap';
 import { connect } from 'react-redux';
-
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
@@ -14,12 +13,31 @@ import AppBar from '@material-ui/core/AppBar';
 import { compose } from 'redux';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { getCodeList, updateStatement } from 'actions/index';
 import DatePicker from '../date/DatePickers';
 import FindAccount from 'components/accounting/FindAccount';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import NumberFormat from 'react-number-format';
+import Input from '@material-ui/core/Input';
+
+class TradeAmountMask extends React.Component {
+  render() {
+    return (
+      <NumberFormat
+        {...this.props}
+        thousandSeparator
+        prefix="￦"
+      />
+    );
+  }
+}
+
+TradeAmountMask.propTypes = {
+  onChange: PropTypes.func.isRequired,
+};
 
 function TabContainer({children, dir}) {
   return (
@@ -121,13 +139,11 @@ class GetStatementDetail extends Component {
   //전표수정 요청
   submitStatement = event => {
     event.preventDefault();
-    console.log("update 전")
     this.props.updateStatement(this.state.statement); 
-    console.log("update 후")
     this.setState({
       updateFlag : false
     })
-    console.log("updateFlag false 수정")
+    this.props.openUpdateSuccessAlarm();
   }
 
   render() {
@@ -209,7 +225,7 @@ class GetStatementDetail extends Component {
           </TabContainer>
           <TabContainer dir={theme.direction}>
 
-                <div className="col-md-6 col-6" style={{float:"left"}}>
+                <div className="col-md-6 col-6" style={{float:"left", paddingTop:"20px"}}>
                   <TextField
                       id="statementCategoryCodeNo"
                       select
@@ -228,26 +244,29 @@ class GetStatementDetail extends Component {
                   </TextField>
                 </div>
 
-                <div className="col-md-6 col-6" style={{float:"left"}}>
-                  <DatePicker callBackDateChange={this.callBackDateChange}></DatePicker>
+                <div className="col-md-6 col-6" style={{float:"left", paddingTop:"20px"}}>
+                  <DatePicker value={this.state.statement && this.state.statement.tradeDate} callBackDateChange={this.callBackDateChange}></DatePicker>
                 </div>
 
                 <div className="col-md-6 col-6" style={{ float:"left" }}>
-                      <TextField 
-                          id="tradeAmount"
-                          label="공급가액"
-                          InputLabelProps={{
-                          shrink: true,
-                          }}
-                          placeholder="공급가액"
-                          value={this.state.statement && this.state.statement.tradeAmount}
-                          fullWidth={true}
-                          margin="normal"
-                          onChange={this.handleStatementChange('tradeAmount')}
+                  <FormControl className="mb-3" fullWidth margin='normal'>
+                    <InputLabel shrink={true} htmlFor="tradeAmount">공급가액</InputLabel>
+                      <Input 
+                        inputComponent={TradeAmountMask}
+                        id="tradeAmount"
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        placeholder="숫자만 입력 가능합니다"
+                        value={this.state.statement && this.state.statement.tradeAmount}
+                        fullWidth={true}
+                        margin="none"
+                        onChange={this.handleStatementChange('tradeAmount')}
                       />
+                  </FormControl>
                 </div>
 
-                <div className="col-md-6 col-6" style={{ marginTop:"5px", float:"left"}}>
+                <div className="col-md-6 col-6" style={{float:"left"}}>
                     {/* 카드관리자와 관리자 번호는 직접 건들지 않아서 onChange를 안줘도 됨*/}
                     <TextField
                       margin="normal"
@@ -260,14 +279,14 @@ class GetStatementDetail extends Component {
                     />
                 </div>
 
-                <div className="col-md-12 col-6" style={{float:"left"}}>
+                <div className="col-md-12 col-6" style={{float:"left", }}>
                   <TextField
                       id="tradeTargetName"
                       label="거래대상명"
                       InputLabelProps={{
                           shrink: true,
                       }}
-                      placeholder="거래대상명"
+                      placeholder="거래대상명 입력"
                       value={this.state.statement && this.state.statement.tradeTargetName}
                       margin="normal"
                       onChange={this.handleStatementChange('tradeTargetName')}
@@ -275,15 +294,15 @@ class GetStatementDetail extends Component {
                   />
                 </div>
 
-                <div className="col-md-12 col-6" style={{ marginTop:"15px", float:"left"}}>
+                <div className="col-md-12 col-6" style={{float:"left",paddingBottom:"10px"}}>
                       <TextField
                           id="statementDetail"
                           label="전표내용"
                           InputLabelProps={{
                               shrink: true,
                           }}
-                          placeholder="전표내용"
-                          helperText="전표내용을 입력해주세요"
+                          placeholder="전표내용 입력"
+                          helperText="전표 관련 내용을 간략히 입력해주세요"
                           value={this.state.statement && this.state.statement.statementDetail}
                           margin="normal"
                           onChange={this.handleStatementChange('statementDetail')}
@@ -291,12 +310,11 @@ class GetStatementDetail extends Component {
                       />
                 </div>
 
-
-                {/* <div align="center" style={{display:"block" }}>
-                  <div className="col-md-10 col-7">
+                <div className="col-md-12 col-6" style={{float:"left"}}>
+                <div align="center" style={{display:"block"}}>
                     <Button className="jr-btn text-uppercase btn-block" color="default" onClick={(event) => {this.submitStatement(event)}}>수정하기</Button>
-                  </div>
-                </div> */}
+                </div>
+                </div>
 
                 <FindAccount
                   open={this.state.findAccountOpen}
