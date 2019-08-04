@@ -147,6 +147,7 @@ let EnhancedTableToolbar = props => {
       />
       <Switch
               color="primary"
+              title="퇴사자 조회"
                 classes={{
                   checked: 'text-secondary',
                   //bar: 'bg-primary',
@@ -354,12 +355,14 @@ class EnhancedTable extends React.Component {
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell> */}
                       <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => {this.handleModifyHRCard(event, row.employeeNo)}}>
+                        <span style={{cursor:'pointer'}} onClick={event => {this.handleModifyHRCard(event, row.employeeNo)}}
+                          title="상세조회/수정">
                           {row.employeeNo}
                         </span>
                       </TableCell>
                       <TableCell align="left">
-                        <span style={{cursor:'pointer'}} onClick={event => {this.handleModifyHRCard(event, row.employeeNo)}}>
+                        <span style={{cursor:'pointer'}} onClick={event => {this.handleModifyHRCard(event, row.employeeNo)}}
+                          title="상세조회/수정">
                           {row.employeeName}
                         </span>
                       </TableCell>

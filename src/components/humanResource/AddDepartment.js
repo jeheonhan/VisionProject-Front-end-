@@ -17,7 +17,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 class FormDialog extends React.Component {
@@ -25,9 +25,37 @@ class FormDialog extends React.Component {
  constructor(props){
      super(props);
      this.state ={
-        newCodeBoolean:false
+        newCodeBoolean:false,
+        snackbar:false,
+        snackbarContents:""
      }
  }
+
+  //화면 닫기
+  handleClickClose = () => {
+    this.setState({
+      departCodeName:null,
+      accessMenuCodeNo:null,
+      departInfo:null,
+      newCodeBoolean:false
+    })
+    this.props.handleAddDepartClose();
+  }
+   //스낵바 열기
+   handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
+  }
+
+  //스낵바 닫기
+  handleRequestSnackBarClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:""
+    })
+  }
 
  handleChange = name => event => {
      if(name == 'codeName'){
@@ -37,24 +65,30 @@ class FormDialog extends React.Component {
          [name]:event.target.value
      })
  }
+ 
 
  handleSubmit = () => {
 
     if(this.state.departCodeName == null){
-      alert("부서명을 반드시 입력하세요")
+      this.handleRequestSnackBarOpen("부서명을 반드시 입력하세요");
     }else if(this.state.accessMenuCodeNo == null){
-      alert("접근가능메뉴를 입력하세요.")
+      this.handleRequestSnackBarOpen("접근가능메뉴를 입력하세요.");
     }else if(this.state.departInfo == null){
-      alert("업무소개를 입력하세요.")
+      this.handleRequestSnackBarOpen("업무소개를 입력하세요.");
     }else{
       this.props.addDepartment(this.state);
-      this.props.handleAddDepartClose();
+      this.handleClickClose();
+      //this.props.handleAddDepartClose();
+      this.props.getNewCodeNo('depart');
     }
  }
+
+ 
 
   render() {
 
     const { CodeNameBool, newCodeNo, accessMenuList} = this.props;
+    const { departCodeNo } = this.state;
 
     if(newCodeNo === undefined){
         this.props.getNewCodeNo('depart');
@@ -64,6 +98,7 @@ class FormDialog extends React.Component {
             newCodeBoolean:true
         })
     }
+    
 
     if(accessMenuList === undefined){
         this.props.getCodeList({searchKeyword:'accessMenu'});
@@ -74,7 +109,7 @@ class FormDialog extends React.Component {
     return (
       <div>
         
-        <Dialog open={this.props.open} onClose={this.props.handleAddDepartClose}>
+        <Dialog open={this.props.open} onClose={this.handleClickClose}>
           <DialogTitle>부서등록</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -132,11 +167,22 @@ class FormDialog extends React.Component {
             <Button onClick={this.handleSubmit} color="secondary">
               등록
             </Button>
-            <Button onClick={this.props.handleAddDepartClose} color="primary">
+            <Button onClick={this.handleClickClose} color="primary">
               취소
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestSnackBarClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
       </div>
     );
   }

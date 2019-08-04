@@ -41,7 +41,8 @@ class SimpleHRCard extends React.Component{
             <Dialog open={this.props.open} onClose={this.props.handleSimpleHRCardClose}
                     maxWidth={false}>
                   {simpleHRCardDetail && (<UserProfileCard simpleHRCardDetail={simpleHRCardDetail} 
-                                          handleOpenMailComponent={this.handleOpenMailComponent}/>)}
+                                          handleOpenMailComponent={this.handleOpenMailComponent}
+                                          handleSimpleHRCardClose={this.props.handleSimpleHRCardClose}/>)}
             </Dialog>
 
             <ComposeMail open={this.state.mailOpen} onClose={this.handleCloseMailComponent} 

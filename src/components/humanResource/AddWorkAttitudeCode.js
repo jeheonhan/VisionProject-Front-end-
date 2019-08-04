@@ -18,6 +18,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import TimePicker from 'components/time/TimePickers';
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 class FormDialog extends React.Component {
@@ -32,6 +33,8 @@ class FormDialog extends React.Component {
     checkedSaturday:false,
     checkedSunday:false,
     duplicate:false,
+    snackbar:false,
+    snackbarContents:""
   };
 
   handleClickOpen = () => {
@@ -143,6 +146,21 @@ class FormDialog extends React.Component {
         :this.setState({duplicate:false, workAttitudeCode:{...this.state.workAttitudeCode, workAttitudeCodeNo:target}}))
   }
 
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
+  }
+
+  //스낵바 닫기
+  handleRequestSnackBarClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:""
+    })
+  }
  
   render() {
 
@@ -150,13 +168,13 @@ class FormDialog extends React.Component {
 
     const handleSubmit = () => {
       if(this.state.workAttitudeCode.workAttitudeCodeNo === undefined){
-        alert("근태코드를 반드시 입력하세요.")
+        this.handleRequestSnackBarOpen("근태코드를 반드시 입력하세요.");
       }
       else if(this.state.duplicate){
-        alert("중복된 근태코드는 등록할 수 없습니다.")
+        this.handleRequestSnackBarOpen("중복된 근태코드는 등록할 수 없습니다.");
       }
       else if(this.state.workAttitudeCode.workAttitudeCodeName === undefined){
-        alert("근태명칭을 반드시 입력하세요.")
+        this.handleRequestSnackBarOpen("근태명칭을 반드시 입력하세요.");
       }
       else{
 
@@ -324,7 +342,17 @@ class FormDialog extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
-
+        
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestSnackBarClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
 
       </div>
     );

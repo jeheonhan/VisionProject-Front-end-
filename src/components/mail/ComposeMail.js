@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import Snackbar from '@material-ui/core/Snackbar';
 
 class ComposeMail extends React.Component {
   constructor() {
@@ -15,7 +16,34 @@ class ComposeMail extends React.Component {
       recipient: '',
       subject: '',
       contents: '',
+      snackbar:false,
+      snackbarContents:''
     }
+  }
+
+  handleSendEmail = () => {
+    if(this.state.subject == ''){
+      this.setState({
+        snackbar:true,
+        snackbarContents:"반드시 제목은 입력하셔야합니다."
+      })
+    }else if(this.state.contents == ''){
+      this.setState({
+        snackbar:true,
+        snackbarContents:"반드시 내용을 입력하셔야합니다."
+      })
+    }else{
+      this.props.sendEmail(this.state)
+      this.props.onClose();
+    }
+  }
+
+  //스낵바 닫기
+  handleRequestClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:""
+    })
   }
 
   render() {
@@ -64,13 +92,19 @@ class ComposeMail extends React.Component {
 
         <div className="modal-box-footer">
 
-          <Button disabled={recipient === ''} variant="contained" color="primary" onClick={() => {
-            onClose();
-            this.props.sendEmail(this.state)
-
-          }}>
+          <Button disabled={recipient === ''} variant="contained" color="primary" onClick={this.handleSendEmail}>
             <i className="zmdi zmdi-mail-send mr-2"/> 전송</Button>
         </div>
+          <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
       </Modal>
     ); 
   }

@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { getCodeList, 
          addHRCard,
          checkedDepartment,
-         checkedRank } from 'actions/index';
+         checkedRank,
+         cleanStoreState } from 'actions/index';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -33,6 +34,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import NumberFormat from 'react-number-format';
+import Snackbar from '@material-ui/core/Snackbar';
+import { InputAdornment } from '@material-ui/core';
 
 //주민등록번호 Mask
 class SsnMaskCustom extends React.Component {
@@ -86,10 +90,22 @@ class vendorTelLocalMask extends React.Component {
         placeholderChar={'\u2000'}
         // showMask
       />
-    );
+      );
+    }
   }
-}
 
+  //천단위 마스크
+  class TradeAmountMask extends React.Component {
+    render() {
+      return (
+        <NumberFormat
+          {...this.props}
+          thousandSeparator
+        />
+      );
+    }
+  }
+  
 //지역전화번호코드
 const localPhoneCode = [
   { value: '02', label: '02', }, { value: '051', label: '051', }, { value: '053', label: '053', },
@@ -119,6 +135,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
+
 class FullScreenDialog extends React.Component {
 
 
@@ -147,15 +164,43 @@ class FullScreenDialog extends React.Component {
       },
       open:false
     })
+    this.props.cleanStoreState("checkedDepartData");
+    this.props.cleanStoreState("checkedRankData");
   }
+
+    //스낵바 열기
+    handleRequestSnackBarOpen = (contents) => {
+      this.setState({
+        snackbar:true,
+        snackbarContents:contents
+      })
+    }
+  
+  
+    //스낵바 닫기
+    handleRequestSnackBarClose = () => {
+      this.setState({
+        snackbar:false,
+        snackbarContents:""
+      })
+    }
+  
 
   handleRequestClose = () => {
     this.setState({open: false});
   };
 
   handleChange = name => event => {
-   
-    if(name == 'bankCodeNo' || name == 'accountNo'){
+
+    if( name == 'localPhoneCode'){
+      this.setState({
+        employee:{
+          ...this.state.employee,
+          [name]:event.target.value,
+          employeeTel:null
+        }
+      })
+    }else if(name == 'bankCodeNo' || name == 'accountNo'){
 
         if(this.state.employee.account == null){
           this.setState({employee:{  ...this.state.employee, 
@@ -210,14 +255,44 @@ class FullScreenDialog extends React.Component {
 
   //Submit
   handleSubmit = () => {
+    const { employeeName, ssn, departCodeNo, rankCodeNo, joinDate, employeePhone, employeeEmail,
+            account, zipCode, address, wage } = this.state.employee;
+    const { accountNo, bankCodeNo } = account;
+
     if(this.state.employee.localPhoneCode != null){
       this.props.addHRCard(
-        console.log(Object.assign({},this.state.employee,{employeeTel:this.state.employee.localPhoneCode+"-"+this.state.employee.employeeTel}))
+        Object.assign({},this.state.employee,{employeeTel:this.state.employee.localPhoneCode+"-"+this.state.employee.employeeTel})
         )
-    }else{
-      this.props.addHRCard(this.state.employee);
+      this.handleClickClose();
+    }else if(employeeName == null){
+      this.handleRequestSnackBarOpen("사원명을 반드시 입력하셔야합니다.");
+    }else if(ssn == null){
+      this.handleRequestSnackBarOpen("주민등록번호를 반드시 입력하셔야합니다.");
+    }else if(departCodeNo == null){
+      this.handleRequestSnackBarOpen("부서를 반드시 입력하셔야합니다.");
+    }else if(rankCodeNo == null){
+      this.handleRequestSnackBarOpen("직급을 반드시 입력하셔야합니다.");
+    }else if(joinDate == null){
+      this.handleRequestSnackBarOpen("입사일자를 반드시 입력하셔야합니다.");
+    }else if(employeePhone == null){
+      this.handleRequestSnackBarOpen("휴대폰번호를 반드시 입력하셔야합니다.");
+    }else if(employeeEmail == null){
+      this.handleRequestSnackBarOpen("이메일을 반드시 입력하셔야합니다.");
+    }else if(accountNo == null){
+      this.handleRequestSnackBarOpen("급여 계좌번호를 반드시 입력하셔야합니다.");
+    }else if(bankCodeNo == null){
+      this.handleRequestSnackBarOpen("급여 받으실 은행을 반드시 입력하셔야합니다.");
+    }else if(zipCode == null){
+      this.handleRequestSnackBarOpen("우편번호를 반드시 입력하셔야합니다.");
+    }else if(address == null){
+      this.handleRequestSnackBarOpen("주소를 반드시 입력하셔야합니다.");
+    }else if(wage == null){
+      this.handleRequestSnackBarOpen("시급을 반드시 입력하셔야합니다.");
     }
-    this.handleClickClose()
+      else{
+      this.props.addHRCard(this.state.employee);
+      this.handleClickClose();
+    }
   }
 
   render() {
@@ -256,7 +331,7 @@ class FullScreenDialog extends React.Component {
         <Dialog
           fullScreen
           open={this.state.open}
-          onClose={this.handleRequestClose}
+          onClose={this.handleClickClose}
           TransitionComponent={Transition}
         >
           <AppBar className="position-relative">
@@ -268,7 +343,7 @@ class FullScreenDialog extends React.Component {
               }}>
                 인사카드 등록
               </Typography>
-              <Button onClick={this.handleRequestClose} color="inherit">
+              <Button onClick={this.handleClickClose} color="inherit">
                 닫기
               </Button>
             </Toolbar>
@@ -292,12 +367,21 @@ class FullScreenDialog extends React.Component {
             전송
           </Button>
           <Button variant="contained" className="jr-btn bg-deep-orange text-white"  
-                    onClick={this.handleRequestClose}>
+                    onClick={this.handleClickClose}>
             취소
           </Button>
           </div>
-
         </Dialog>
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestSnackBarClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
       </div>
     );
   }
@@ -309,7 +393,7 @@ const mapStateToProps = ({ code, humanResource }) => {
   return { bankList, checkedDepartData, checkedRankData };
 }
 
-export default connect(mapStateToProps, { getCodeList, addHRCard, checkedDepartment, checkedRank })(FullScreenDialog);
+export default connect(mapStateToProps, { getCodeList, addHRCard, checkedDepartment, checkedRank, cleanStoreState })(FullScreenDialog);
 
 
 //입력창
@@ -469,20 +553,20 @@ function AddTextField(props){
                 </div>
               <div className="col-md-2 col-3"  style={{float:"left", display:"inline"}}>
               <FormControl className="mb-3" fullWidth margin='normal'>
-              <InputLabel htmlFor="vendorTel">전화번호</InputLabel>
-              <Input
-                      id="employeeTel"
-                      //label="전화번호"
-                      value={props.stateValue.employee.employeeTel ? `${props.stateValue.employee.employeeTel}`:""}
-                      onChange={props.handleChange('employeeTel')}
-                      margin="normal"
-                      inputComponent={props.stateValue.employee.localPhoneCode == '02' ? vendorTelSeoulMask : vendorTelLocalMask}
-                      className="w-100 mb-3"
-                      inputProps={{
-                      'aria-label': 'Description',
-                      }}
-                      fullWidth
-                  />
+                <InputLabel htmlFor="vendorTel">전화번호</InputLabel>
+                <Input
+                        id="employeeTel"
+                        //label="전화번호"
+                        value={props.stateValue.employee.employeeTel ? `${props.stateValue.employee.employeeTel}`:""}
+                        onChange={props.handleChange('employeeTel')}
+                        margin="normal"
+                        inputComponent={props.stateValue.employee.localPhoneCode == '02' ? vendorTelSeoulMask : vendorTelLocalMask}
+                        className="w-100 mb-3"
+                        inputProps={{
+                        'aria-label': 'Description',
+                        }}
+                        fullWidth
+                    />
                   </FormControl>
               </div>
             <div className="col-md-4 col-6"  style={{float:"left", display:"inline"}}>
@@ -493,6 +577,7 @@ function AddTextField(props){
                       onClick={handleFindDepartOpen}
                       value={departCodeName}
                       margin="normal"
+                      helperText="해당영역을 클릭하여 부서를 선택하세요."
                       fullWidth
                   />
               </div>
@@ -504,6 +589,7 @@ function AddTextField(props){
                       onClick={handleFindRankOpen}
                       value={rankCodeName}
                       margin="normal"
+                      helperText="해당영역을 클릭하여 직급을 선택하세요."
                       fullWidth
                   />
               </div>
@@ -536,20 +622,39 @@ function AddTextField(props){
             </div>
 
             <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
-              <TextField
+              {/* <TextField
                       id="wage"
                       label="시급"
                       margin="normal"
                       onChange={props.handleChange('wage')}
+                      value={props.state.employee.wage && props.state.employee.wage}
+                      inputComponent = {TradeAmountMask}
+                      type="TextFieldProps"
                       fullWidth
-                  />
+                  /> */}
+              <FormControl className="mb-3" fullWidth margin='normal'>
+                <InputLabel htmlFor="vendorTel">시급</InputLabel>
+                <Input
+                        id="wage"
+                        value={props.state.employee.wage ? `${props.state.employee.wage}`:""}
+                        onChange={props.handleChange('wage')}
+                        margin="normal"
+                        endAdornment={props.state.employee.wage ? (<InputAdornment position="end">원</InputAdornment>):null}
+                        inputComponent = {TradeAmountMask}
+                        className="w-100 mb-3"
+                        inputProps={{
+                        'aria-label': 'Description',
+                        }}
+                        fullWidth
+                    />
+              </FormControl>
             </div>
 
             <div style={{display:"none"}}>
             <GetPostCode getPostcode={props.handleAddress} ref={post}></GetPostCode>
             </div>
 
-            <div className="col-md-4 col-6" style={{float:"left", display:"inline", position:'relative', left:"%"}}>
+            <div className="col-md-2 col-3" style={{float:"left", display:"inline", position:'relative', left:"%"}}>
               <TextField
                       id="zipCode"
                       label="우편번호"
@@ -560,9 +665,7 @@ function AddTextField(props){
                   />
             </div>
 
-           
-
-            <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
+            <div className="col-md-6 col-8" style={{float:"left", display:"inline"}}>
               <TextField
                       id="address"
                       label="주소"
@@ -596,7 +699,17 @@ function AddTextField(props){
                   />
             </div>
 
-            <Button variant="contained" size="small" className={classes.button} onClick={handleOnClickSignOpen}>
+            {/* <div className="jr-card" style={{float:"left", display:"inline"}} >
+                  <Tooltip id="tooltip-icon" title="프로필" placement="bottom">
+                    <Avatar className="size-50" alt="Remy Sharp" src={signatureFile? `${signatureFile.base64}`:require("assets/images/stamp.png")}/>
+                  </Tooltip>   
+            </div> */}
+          
+                  <Tooltip id="tooltip-icon" title="프로필" placement="bottom">
+                    <Avatar className="size-50" alt="Remy Sharp" src={signatureFile? `${signatureFile.base64}`:require("assets/images/stamp.png")}/>
+                  </Tooltip>   
+
+            <Button variant="contained" size="small" className={classes.button} onClick={handleOnClickSignUpload} >
               <SaveIcon className={clsx(classes.leftIcon, classes.iconSmall)} />
               서명/도장
             </Button>
@@ -631,76 +744,76 @@ function AddTextField(props){
               handleSubRankComponentClose={handleFindRankClose}
               checkedRank={props.checkedRank}
               />
-            <SignatureDialog ref={signature} 
+            {/* <SignatureDialog ref={signature} 
                              handleOnClickSignUpload={handleOnClickSignUpload}
-                             signatureFile={signatureFile}/>
+                             signatureFile={signatureFile}/> */}
          
 
         </div>
     );
 }
 
-class SignatureDialog extends React.Component {
-  state = {
-    open: false,
-  };
+// class SignatureDialog extends React.Component {
+//   state = {
+//     open: false,
+//   };
 
-  handleRequestOpen = () => {
-    this.setState({open:true});
-  }
+//   handleRequestOpen = () => {
+//     this.setState({open:true});
+//   }
 
-  handleRequestClose = () => {
-    this.setState({open: false});
-  };
+//   handleRequestClose = () => {
+//     this.setState({open: false});
+//   };
 
-  render() {
-    const classes = makeStyles(theme => ({
-      button: {
-        margin: theme.spacing(1),
-      },
-      leftIcon: {
-        marginRight: theme.spacing(1),
-      },
-      rightIcon: {
-        marginLeft: theme.spacing(1),
-      },
-      iconSmall: {
-        fontSize: 20,
-      },
-    }));
+//   render() {
+//     const classes = makeStyles(theme => ({
+//       button: {
+//         margin: theme.spacing(1),
+//       },
+//       leftIcon: {
+//         marginRight: theme.spacing(1),
+//       },
+//       rightIcon: {
+//         marginLeft: theme.spacing(1),
+//       },
+//       iconSmall: {
+//         fontSize: 20,
+//       },
+//     }));
 
-    const { signatureFile } = this.props;
+//     const { signatureFile } = this.props;
     
-    return (
-      <div>
-        <Dialog open={this.state.open} onClose={this.handleRequestClose}>
-          <DialogTitle align="center">
-            {"서명/사인 등록"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText align="center">
-                <div className="jr-card" style={{width:"160px",height:"150px"}} align="center">
-                  <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
-                    <Avatar className="size-100" alt="Remy Sharp" src={signatureFile? `${signatureFile.base64}`:require("assets/images/stamp.png")}/>
-                  </Tooltip>   
-                </div>
-                  <Button variant="contained" color="default" className={classes.button} 
-                      onClick={this.props.handleOnClickSignUpload} >
-                    서명/도장
-                    <CloudUploadIcon className={classes.rightIcon} />
-                  </Button>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleRequestClose} color="primary">
-              확인
-            </Button>
-            <Button onClick={this.handleRequestClose} color="secondary">
-              취소
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-    );
-  }
-}
+//     return (
+//       <div>
+//         <Dialog open={this.state.open} onClose={this.handleRequestClose}>
+//           <DialogTitle align="center">
+//             {"서명/사인 등록"}
+//           </DialogTitle>
+//           <DialogContent>
+//             <DialogContentText align="center">
+//                 <div className="jr-card" style={{width:"160px",height:"150px"}} align="center">
+//                   <Tooltip id="tooltip-icon" title="프로필" placement="bottom">
+//                     <Avatar className="size-100" alt="Remy Sharp" src={signatureFile? `${signatureFile.base64}`:require("assets/images/stamp.png")}/>
+//                   </Tooltip>   
+//                 </div>
+//                   <Button variant="contained" color="default" className={classes.button} 
+//                       onClick={this.props.handleOnClickSignUpload} >
+//                     서명/도장
+//                     <CloudUploadIcon className={classes.rightIcon} />
+//                   </Button>
+//             </DialogContentText>
+//           </DialogContent>
+//           <DialogActions>
+//             <Button onClick={this.handleRequestClose} color="primary">
+//               확인
+//             </Button>
+//             <Button onClick={this.handleRequestClose} color="secondary">
+//               취소
+//             </Button>
+//           </DialogActions>
+//         </Dialog>
+//       </div>
+//     );
+//   }
+// }

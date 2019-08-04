@@ -136,14 +136,7 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
-      <SearchBox 
-        styleName="d-none d-sm-block" 
-        placeholder="사원번호/사원명"
-        onChange={updateSearchKeyword}
-        value={value.searchKeyword}
-        onClick={ event => searchActivity(event)}
-        onKeyDown={ event => searchEnterActivity(event)}
-      />
+      
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
@@ -153,11 +146,14 @@ let EnhancedTableToolbar = props => {
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
+          <SearchBox 
+          styleName="d-none d-sm-block" 
+          placeholder="사원번호/사원명"
+          onChange={updateSearchKeyword}
+          value={value.searchKeyword}
+          onClick={ event => searchActivity(event)}
+          onKeyDown={ event => searchEnterActivity(event)}
+        />
         )}
       </div>
     </Toolbar>
@@ -355,7 +351,7 @@ class EnhancedTable extends React.Component {
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index, row)}/>
                       </TableCell> */}
                       <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleModifyAppointWithData(event, row)} >
+                        <span style={{cursor:'pointer'}} onClick={event => this.handleModifyAppointWithData(event, row)} title="수정">
                           {row.appointDate}
                         </span>
                       </TableCell>

@@ -83,7 +83,7 @@ class SignIn extends React.Component {
               <form>
                 <fieldset>
                   <TextField
-                    label="아이-디"
+                    label="아이디"
                     fullWidth
                     onChange={(event) => this.setState({userId: event.target.value}) }
                     //defaultValue={this.state.id}
@@ -92,7 +92,7 @@ class SignIn extends React.Component {
                   />
                   <TextField
                     type="password"
-                    label="패쓰-워어드"
+                    label="패스워드"
                     fullWidth
                     onChange={(event) => this.setState({password: event.target.value})}
                     margin="normal"

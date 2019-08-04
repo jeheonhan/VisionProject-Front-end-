@@ -4,7 +4,7 @@ import {DatePicker} from 'material-ui-pickers';
 
 export default class DatePickers extends Component {
   state = {
-    selectedDate: moment().format('YYYY/MM/DD'),
+    //selectedDate: moment().format('YYYY/MM/DD'),
   };
 
   handleDateChange = (date) => {
@@ -32,7 +32,7 @@ export default class DatePickers extends Component {
           label={this.props.label}
           margin="normal"
           format={'YYYY/MM/DD'}
-          value={selectedDate}
+          value={selectedDate ? selectedDate:null}
           onChange={this.handleDateChange}
           animateYearScrolling={false}
           leftArrowIcon={<i className="zmdi zmdi-arrow-back"/>}

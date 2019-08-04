@@ -166,13 +166,6 @@ class ForgotId extends React.Component{
                         />
             </FormControl>
   
-              <p className="mb-3">
-                <IntlMessages id="appModule.dntRememberEmail"/> &nbsp;
-                <span className="small jr-link">
-                  <IntlMessages id="appModule.contactSupport"/>
-                </span>
-              </p>
-  
               <Button variant="contained" color="primary" className="text-white" onClick={this.handleSubmit}>
                 확인
               </Button>

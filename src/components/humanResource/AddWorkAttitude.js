@@ -18,13 +18,16 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import FindWorkAttitudeCode from 'components/humanResource/FindWorkAttitudeCode';
 import FindEmployee from 'components/humanResource/FindEmployee';
 import DatePicker from '../date/DatePickers';
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 class FormDialog extends React.Component {
   state = {
     open: false,
     subOpen: false,
-    workAttitudeCodeOpen: false
+    workAttitudeCodeOpen: false,
+    snackbar:false,
+    snackbarContents:""
   };
 
   handleClickOpen = () => {
@@ -65,6 +68,24 @@ class FormDialog extends React.Component {
     this.setState({workAttitudeDate:date})
   }
 
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
+  }
+
+
+  //스낵바 닫기
+  handleRequestSnackBarClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:""
+    })
+  }
+
+
  
   render() {
 
@@ -73,13 +94,15 @@ class FormDialog extends React.Component {
     console.log("checkedWorkAttitudeCode :: "+ checkedWorkAttitudeCodeData)
     const handleSubmit = () => {
       if(this.state.workAttitudeDate === undefined){
-        alert("당일 날짜로는 근태를 등록할 수 없습니다.")
+        this.handleRequestSnackBarOpen("근태 기준일을 반드시 입력하세요.")
       }
-      else if(checkedEmployeeData.employeeNo === undefined){
-        alert("사원번호를 입력하세요.")
+      else if(checkedEmployeeData === undefined){
+        this.handleRequestSnackBarOpen("사원번호/사원명을 반드시 입력하세요.")
       }
-      else if(checkedWorkAttitudeCodeData.workAttitudeCodeNo === undefined){
-        alert("근태코드를 입력하세요.")
+      else if(checkedWorkAttitudeCodeData === undefined){
+        this.handleRequestSnackBarOpen("근태코드를 반드시 입력하세요.")
+      }else if(this.state.workAttitudeTime == null){
+        this.handleRequestSnackBarOpen("근태시간을 반드시 입력하세요.")
       }
       else{
         console.log("result :: " + this.state.workAttitudeDate+ " "+checkedEmployeeData.employeeNo+
@@ -109,14 +132,14 @@ class FormDialog extends React.Component {
             </DialogContentText>
             
             <div style={{float:"left"}}>
-            <DatePicker callBackDateChange={this.callBackDateChange}></DatePicker>
+            <DatePicker callBackDateChange={this.callBackDateChange} label="기준일"></DatePicker>
             </div>
 
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
               required
-              margin="none"
+              margin="normal"
               id="employeeNo"
               label="사원번호"
             //사원번호 클릭시 자식컴포넌트 Open값을 true로 변경
@@ -128,7 +151,7 @@ class FormDialog extends React.Component {
             &nbsp;
             <TextField
               required
-              margin="none"
+              margin="normal"
               id="employeeName"
               label="사원명"
               onClick={this.handleSubComponentOpen}
@@ -138,7 +161,7 @@ class FormDialog extends React.Component {
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              margin="none"
+              margin="normal"
               id="appointDepartCodeName"
               label="근태코드"
               onClick={this.handleSubWorkAttitudeCodeOpen}
@@ -148,7 +171,7 @@ class FormDialog extends React.Component {
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              margin="none"
+              margin="normal"
               id="preRankCodeName"
               label="근태명칭"
               value={checkedWorkAttitudeCodeData && checkedWorkAttitudeCodeData.workAttitudeCodeName}
@@ -158,11 +181,12 @@ class FormDialog extends React.Component {
             <div style={{float:"left"}}>
             &nbsp;
             <TextField
-              margin="none"
+              margin="normal"
               id="workAttitudeTime"
               label="시간(분)"
               onChange={this.handleChange('workAttitudeTime')}
               value={this.state.workAttitudeTime && this.state.workAttitudeTime}
+              type="number"
             />
             </div>
             {/* <div style={{float:"left"}}>
@@ -198,6 +222,16 @@ class FormDialog extends React.Component {
                               handleSubWorkAttitudeCodeClose={this.handleSubWorkAttitudeCodeClose}
                               checkedWorkAttitudeCode={this.props.checkedWorkAttitudeCode}/>
 
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestSnackBarClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
       </div>
     );
   }

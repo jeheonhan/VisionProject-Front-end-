@@ -147,7 +147,10 @@ class ForgotPassword extends React.Component{
           changePwd:true
         })
       }else{
-        alert("다름")
+        this.setState({
+          snackbar:true,
+          snackbarContents:"인증번호가 틀렸습니다. 다시 확인하세요."
+        })
       }
     }
 

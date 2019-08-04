@@ -14,8 +14,9 @@ export default function UserProfileCard(props){
                                 , overflowX:"hidden"}}>
       <div className={`jr-card-header-color bg-secondary`}>
         <div className="jr-card-header-top">
-          <IconButton className="jr-fs-lg text-white" aria-label="Menu"><i className="zmdi zmdi-menu"/></IconButton>
-          <IconButton className="icon-btn p-1 text-white ml-auto"><i className="zmdi zmdi-more-vert"/></IconButton>
+          <IconButton className="icon-btn p-1 text-white ml-auto">
+            <i className="zmdi zmdi-close" onClick={props.handleSimpleHRCardClose}/>
+          </IconButton>
         </div>
 
         <img className="rounded-circle size-90 avatar-shadow mb-3"

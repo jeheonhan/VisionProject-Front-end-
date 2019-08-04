@@ -232,9 +232,10 @@ class FullScreenDialog extends React.Component {
     if(!this.state.flag && HRCardDetailData && HRCardDetailData !== this.state.employee){
         this.setState({
             employee:HRCardDetailData,
-            flag:true
+            flag:true,
         })
     }
+
     if(bankList === undefined){
       this.props.getCodeList({searchKeyword:"bank"});
     }
@@ -534,15 +535,15 @@ function AddTextField(props){
                     fullWidth
                     disabled={!stateValue.modifyAble}
                   >
-                    <MenuItem value="N">No</MenuItem>
-                    <MenuItem value="Y">Yes</MenuItem>
+                    <MenuItem value="N">재직</MenuItem>
+                    <MenuItem value="Y">퇴사</MenuItem>
                 </TextField>
               </div>
 
               <div className="col-md-4 col-6" style={{float:"left", display:"inline"}}>
               <DatePicker  label="퇴사일자" callBackDateChange={callBackResignDate}
                             value={employee.resignDate}
-                            disabled={!stateValue.modifyAble && !stateValue.resignFlag}
+                            disabled={!stateValue.modifyAble}
                             />            
               </div>
 
@@ -554,7 +555,7 @@ function AddTextField(props){
                         value={employee.resignReason}
                         margin="normal"
                         fullWidth
-                        disabled={!stateValue.modifyAble && !stateValue.resignFlag}
+                        disabled={!stateValue.modifyAble}
                     />
               </div>
 
