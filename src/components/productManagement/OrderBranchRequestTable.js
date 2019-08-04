@@ -210,7 +210,8 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   handleNumberInputChange = (key, row, index) => event => {
-    let _quantity = parseInt(event.target.value, 10);
+    let _quantity = event.target.value.replace(/(^0+)/, "");
+    _quantity = parseInt(_quantity, 10);
     if(isNaN(_quantity)){
       _quantity = 0
     }
@@ -464,13 +465,13 @@ renderRedirect = () => {
                       </TableCell> */}
                       <TableCell align="left" ><span style={{cursor:'pointer'}}>{row.productNo}</span></TableCell>
                       <TableCell align="left">{row.productName}</TableCell>
-                      <TableCell align="left">{row.salesPrice}</TableCell>
-                      <TableCell align="left">{row.quantity}</TableCell>
+                      <TableCell align="left">{row.salesPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
+                      <TableCell align="left">{row.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TableCell>
                       <TableCell align="left"><FormControl style={{width:"70px"}}>
                                                 <Input
                                                     id={row.productNo}
                                                     type="number"
-                                                    value={ this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo)!=-1 ? this.state.orderBranch.orderFromBranchProductList[this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo)].orderFromBranchProductQuantity : 0}
+                                                    value={ (this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo)!=-1 ? this.state.orderBranch.orderFromBranchProductList[this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo)].orderFromBranchProductQuantity : 0).toString().replace(/(^0+)/, "")}
                                                     onChange={this.handleNumberInputChange(this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo), row, index)}
                                                 />
                                                 </FormControl>

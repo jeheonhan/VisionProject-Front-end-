@@ -213,6 +213,7 @@ export const ADD_CODE = 'add_code';
 export const ADD_CODE_RESULT = 'add_code_result';
 export const CONVERT_CODE_USAGE_STATUS = 'convert_code_usage_status';
 export const UPDATE_CODE = 'update_code';
+export const CONVERT_CODE_USAGE_STATUS_LIST = 'convert_code_usage_status_list';
 
 
 

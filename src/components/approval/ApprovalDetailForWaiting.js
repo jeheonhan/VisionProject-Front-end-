@@ -150,40 +150,7 @@ class FullScreenDialog extends React.Component {
                      
                       <Approver arr={[this.state.approvalDetail.firstApprover, this.state.approvalDetail.secondApprover, this.state.approvalDetail.thirdApprover, this.state.approvalDetail.fourthApprover, this.state.approvalDetail.fifthApprover]}/>
                       </span>
-                {/* <span style={{paddingLeft:"5%"}}>
-                       <Button onClick={this.handleOK} style={{marginTop:"25px", width:"150px"}} variant="contained" color="secondary" className="jr-btn">
-                        <CheckCircle/>
-                        <span>결재</span>
-                      </Button>
-                      <Button onClick={this.handleReject} style={{marginTop:"25px", width:"150px"}} variant="contained" color="primary" className="jr-btn">
-                        <Clear/>
-                        <span>반려</span>
-                      </Button> *
-                      </span>
                 
-                      <span style={{float:"right"}}>
-                     
-                      <Approver arr={[this.state.approvalDetail.firstApprover, this.state.approvalDetail.secondApprover, this.state.approvalDetail.thirdApprover, this.state.approvalDetail.fourthApprover, this.state.approvalDetail.fifthApprover]}/>
-                      </span>
-                <span style={{paddingLeft:"15px", float:"left"}}>
-                      <TextField 
-                        readOnly
-                          margin="normal"
-                          id="registrantEmployeeName"
-                          label="등록자"
-                          value={this.state.approvalDetail.firstApprover.employeeName}
-                      />
-                     </span>
-                      <TextField
-                      
-                          error
-                          fullWidth
-                          id="outlined-required"
-                          label="결재서제목"
-                          value={this.state.approvalDetail.approvalTitle}
-                          margin="normal"
-                          variant="outlined"
-                      /> */}
                   </div>
                   <div style={{padding:"50px"}} dangerouslySetInnerHTML={{__html:this.state.approvalDetail.approvalContent}}/>
                   <SweetAlert show={this.state.open}
@@ -193,7 +160,7 @@ class FullScreenDialog extends React.Component {
                                   cancelBtnText="취소"
                                   confirmBtnBsStyle="primary"
                                   cancelBtnBsStyle="default"
-                                  customIcon={this.state.text==='승인' ? 'https://cdn4.iconfinder.com/data/icons/business-elements-14/48/bl_279_confirmation_check_mark_agree_confirm_paper_hand-512.png' : 'https://tchol.org/images/access-denied-png-1.png'}
+                                  customIcon={this.state.text==='승인' ? require("assets/images/approve.png"): require("assets/images/reject.png")}
                                   title={"이 결재서류를 "+this.state.text+"하시겠습니까?"}
                                   onConfirm={this.onConfirm}
                                   onCancel={this.onCancel}

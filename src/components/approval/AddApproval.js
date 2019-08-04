@@ -20,6 +20,7 @@ class AddApproval extends React.Component{
             ,firstApprover:{
                         approverNumbering:null
                     ,approvalNo:null
+                    ,employeeName:JSON.parse(localStorage.getItem("user")).employeeName
                     ,employeeNo:JSON.parse(localStorage.getItem("user")).employeeNo
                     ,signatureImage:JSON.parse(localStorage.getItem("user")).signatureImage
                     ,rankCodeName:"담당"
@@ -174,6 +175,7 @@ class AddApproval extends React.Component{
         //결재자 등록하기
         let defaultValue = {approverNumbering:null
                 ,approvalNo:null
+                ,employeeName:null
                 ,employeeNo:null
                 ,signatureImage:null
                 ,rankCodeName:null
@@ -199,24 +201,28 @@ class AddApproval extends React.Component{
         this.setState({
             secondApprover:{
                     ...this.state.secondApprover
+                    ,employeeName:second.employeeName
                     ,employeeNo:second.employeeNo
                     ,signatureImage:second.signatureImage
                     ,rankCodeName:second.rankCodeName
                     },
             thirdApprover:{
                 ...this.state.thirdApprover
+                ,employeeName:third.employeeName
                 ,employeeNo:third.employeeNo
                 ,signatureImage:third.signatureImage
                 ,rankCodeName:third.rankCodeName
                 },
             fourthApprover:{
                 ...this.state.fourthApprover
+                ,employeeName:fourth.employeeName
                 ,employeeNo:fourth.employeeNo
                 ,signatureImage:fourth.signatureImage
                 ,rankCodeName:fourth.rankCodeName
                 },
             fifthApprover:{
                 ...this.state.fifthApprover
+                ,employeeName:fifth.employeeName
                 ,employeeNo:fifth.employeeNo
                 ,signatureImage:fifth.signatureImage
                 ,rankCodeName:fifth.rankCodeName

@@ -219,6 +219,7 @@ function* addOrderToVendorFn({payload}) {
 
 function* addOrderBranchFn(action){
     yield call(addOrderBranchAxios, action);
+    yield put(getOrderToVendorList());
 }
 
 function* getOrderBranchFn(action){

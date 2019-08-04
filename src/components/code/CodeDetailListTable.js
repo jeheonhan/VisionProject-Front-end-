@@ -14,11 +14,13 @@ import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Note';
+import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
-import { convertCodeUsageStatus, checkDuplicateCodeName} from 'actions';
+import { convertCodeUsageStatus, checkDuplicateCodeName, convertCodeUsageStatusList } from 'actions';
 import UpdateCode from './UpdateCode';
+import SweetAlert from 'react-bootstrap-sweetalert'
+
 
 let counter = 0;
 
@@ -54,6 +56,13 @@ class EnhancedTableHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
+        <TableCell padding="checkbox">
+            <Checkbox color="primary"
+                      indeterminate={numSelected > 0 && numSelected < rowCount}
+                      checked={numSelected === rowCount}
+                      onChange={onSelectAllClick}
+            />
+          </TableCell>
           {columnData.map(column => {
             return (
               <TableCell
@@ -91,8 +100,7 @@ let EnhancedTableToolbar = props => {
   return (
     <Toolbar
       className="table-header">
-        {/* 상단 툴바
-            체크가 되면 selected로 변경됨 */}
+
       <div className="title">
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
@@ -102,6 +110,14 @@ let EnhancedTableToolbar = props => {
       </div>
       <div className="spacer"/>
       <div className="actions">
+      {numSelected > 0 ? (
+          // 툴팁 내용
+          <Tooltip title="영구삭제" onClick={props.handleDeleteCodeEver}>
+            <IconButton aria-label="삭제">
+              <DeleteIcon/>
+            </IconButton>
+          </Tooltip>
+        ) : ""}
       </div>
     </Toolbar>
   );
@@ -130,7 +146,7 @@ class EnhancedTable extends React.Component {
   };
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      //this.setState({selected: this.state.data.map((row, index) => index)});
+      this.setState({selected: this.state.data.map((row, index) => index)});
       return;
     }
     this.setState({selected: []});
@@ -168,18 +184,39 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  handleClickUsage = (event, row) =>{
+  handleClickUsage = (event, _row) =>{
     event.preventDefault();
-    const message = row.codeUsageStatus==='Y'? '삭제' : '복구'
-    if(window.confirm("코드를 "+message+"하시겠습니까?")){
-      const _usage = row.codeUsageStatus==='Y'? 'N' : 'Y'
-      this.props.convertCodeUsageStatus({ groupCode: row.groupCode,
-          groupCodeName : row.groupCodeName,
-          codeNo : row.codeNo,
-          codeName : row.codeName,
+    const message = _row.codeUsageStatus==='Y'? '삭제' : '복구'
+    this.setState({
+      row:_row,
+      warning:true,
+      warningText:"코드를 "+message+"하시겠습니까?"
+    })
+  }
+
+  //warning에서 확인했을 때 
+  deleteCode = () => {
+    const _usage = this.state.row.codeUsageStatus==='Y'? 'N' : 'Y'
+      this.props.convertCodeUsageStatus({ groupCode: this.state.row.groupCode,
+          groupCodeName : this.state.row.groupCodeName,
+          codeNo : this.state.row.codeNo,
+          codeName : this.state.row.codeName,
           codeUsageStatus : _usage
         })
-    }
+
+    this.setState({
+      warning:false,
+      warningText:""
+    })
+  }
+
+  //warning에서 취소했을 때
+  onCancelDelete = () => {
+    this.setState({
+      warning:false,
+      warningText:"",
+      deleteConfirmShow:false
+    })
   }
 
   handleTargetCode = (event) => {
@@ -207,19 +244,17 @@ class EnhancedTable extends React.Component {
       open: true,
       targetCode: row
     })
-    //this.props.getSimpleHRCardByEmployeeNo(employeeNo);
-    //this.props.handleSimpleHRCardOpen();
   }
 
   constructor(props, context) {
     super(props, context);
-
+    
     this.state = {
       order: 'desc',
       orderBy: 'codeNo',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.codeList,
+      data: this.props.codeList.sort((a, b) => (b["codeNo"] < a["codeNo"] ? -1 : 1)),
       page: 0,
       rowsPerPage: 10,
       targetCode: {
@@ -227,9 +262,41 @@ class EnhancedTable extends React.Component {
         groupCodeName:"",
         codeNo:"",
         codeName:""
-      }
+      },
+      warning:false,
+      deleteConfirmShow:false
     };
   }
+
+  //영구삭제 확인창 띄우기
+  handleDeleteCodeEver = () => {
+    this.setState({
+      deleteConfirmShow:true
+    })
+  }
+
+    //영구삭제 Confirm 확인
+    onConfirmDelete = () => {
+      let list = [];
+      this.state.selected.map((s) => {
+        list.push({
+          groupCode:this.state.data[0].groupCode,
+          codeNo:s,
+          codeUsageStatus:'D'
+        })
+        console.log("fffffffffffffff + ", {
+          groupCode:this.state.data[0].groupCode,
+          codeNo:s,
+          codeUsageStatus:'D'
+        })
+      })
+      console.log("eeeeeeeeeeeeee + ", list)
+      this.props.convertCodeUsageStatusList(list)
+      this.setState({
+        deleteConfirmShow:false,
+        selected:[]
+      })
+    }
 
   render() {
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
@@ -242,7 +309,8 @@ class EnhancedTable extends React.Component {
 
     return (
       <div>
-        <EnhancedTableToolbar numSelected={selected.length}/>
+        {console.log("aaaaaaaa + ", this.state.selected)}
+        <EnhancedTableToolbar numSelected={selected.length} handleDeleteCodeEver={this.handleDeleteCodeEver}/>
         <div className="flex-auto">
           <div className="table-responsive-material">
             <Table>
@@ -259,34 +327,64 @@ class EnhancedTable extends React.Component {
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
-                  const isSelected = this.isSelected(page*rowsPerPage+index);
+                  const isSelected = this.isSelected(row.codeNo);
                   return (
+                    // <TableRow
+                    //   hover
+                    //   onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
+                    //   role="checkbox"
+                    //   aria-checked={isSelected}
+                    //   tabIndex={-1}
+                    //   key={page*rowsPerPage+index}
+                    //   selected={isSelected}
+                    // >
                     <TableRow
                       hover
-                      onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
+                      onKeyDown={event => this.handleKeyDown(row.codeNo)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
-                      key={page*rowsPerPage+index}
+                      key={row.codeNo}
                       selected={isSelected}
                     >
-                      
+                      <TableCell padding="checkbox">
+                        <Checkbox color="primary" checked={isSelected} 
+                                  onClick={event => this.handleClick(event, row.codeNo)}/>
+                      </TableCell>
                       <TableCell align="left" >
+                      <Tooltip
+                        title={"수정"}
+                        placement={'bottom-start'}
+                        enterDelay={300}
+                      >
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickCodeNo(event, row)}>
                           {row.codeNo}
                         </span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="left">
+                      <Tooltip
+                        title={"수정"}
+                        placement={'bottom-start'}
+                        enterDelay={300}
+                      >
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickCodeNo(event, row)}>
                           {row.codeName}
                         </span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="left" >{row.groupCode}</TableCell>
                       <TableCell align="left" >{row.groupCodeName}</TableCell>
                       <TableCell align="left">
+                      <Tooltip
+                        title={row.codeUsageStatus==='Y' ? "삭제" : "복구"}
+                        placement={'bottom-start'}
+                        enterDelay={300}
+                      >
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickUsage(event, row)}>
                           {row.codeUsageStatus==='Y' ? "사용중" : "삭제됨"}
                         </span>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   );
@@ -313,6 +411,28 @@ class EnhancedTable extends React.Component {
           handleName={this.handleTargetCode}
           codeNameBool = {this.props.CodeNameBool}
         />
+        <SweetAlert show={this.state.warning}
+                    warning
+                    showCancel
+                    confirmBtnText={"네"}
+                    cancelBtnText={"아니오"}
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title={this.state.warningText}
+                    onConfirm={this.deleteCode}
+                    onCancel={this.onCancelDelete}
+        ></SweetAlert>
+        <SweetAlert show={this.state.deleteConfirmShow}
+                    warning
+                    showCancel
+                    confirmBtnText={"네"}
+                    cancelBtnText={"아니오"}
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title={"해당 코드를 삭제하시겠습니까?"}
+                    onConfirm={this.onConfirmDelete}
+                    onCancel={this.onCancelDelete}
+        >영구삭제된 코드는 복구할 수 없습니다.</SweetAlert>
       </div>
     );
   }
@@ -323,4 +443,4 @@ const mapStateToProps = ({ code }) => {
   return {codeList, CodeNameBool};
 }
 
-export default connect(mapStateToProps, {convertCodeUsageStatus, checkDuplicateCodeName})(EnhancedTable);
+export default connect(mapStateToProps, {convertCodeUsageStatus, checkDuplicateCodeName, convertCodeUsageStatusList})(EnhancedTable);

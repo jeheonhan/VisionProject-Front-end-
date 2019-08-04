@@ -318,6 +318,14 @@ onCancel = () => {
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
+                  let textColor = "";
+                  switch(row.orderFromBranchStatusCodeNo){
+                    case "01" : textColor = "orange"; break;
+                    case "02" : textColor = "blue"; break;
+                    case "03" : textColor = "green"; break;
+                    case "04" : textColor = "red"; break;
+                    case "05" : textColor = "black"; break;
+                  }
                   return (
                     <TableRow
                       hover
@@ -340,7 +348,7 @@ onCancel = () => {
                         </span>
                       </TableCell>
                       <TableCell align="left">{row.orderDate}</TableCell>
-                      <TableCell align="left"  size="small" >{row.orderFromBranchStatusCodeName}{ 
+                      <TableCell align="left"  size="small" style={{color:textColor}}>{row.orderFromBranchStatusCodeName}{ 
                             row.orderFromBranchStatusCodeNo==="04" && 
                             <span style={{cursor:'pointer', paddingLeft:"25px"}}  onClick={(event) => this.onCancelOrderAlert(event, row)}>
                                 <Done/>
@@ -378,8 +386,8 @@ onCancel = () => {
         <SweetAlert show={this.state.warning}
                     warning
                     showCancel
-                    confirmBtnText="네, 취소합니다"
-                    cancelBtnText="나가기"
+                    confirmBtnText="네"
+                    cancelBtnText="아니오"
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
                     title="주문이 취소됩니다."

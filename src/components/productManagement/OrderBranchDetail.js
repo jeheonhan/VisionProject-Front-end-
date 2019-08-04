@@ -45,7 +45,7 @@ class AlertDialog extends Component {
       if (active) {
         return (
           <Paper elevation={8} style={{padding:"7px", backgroundColor:"#fbd2cb"}}>
-            <p className="label">{`${payload[0].name} : ₩${String(payload[0].value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원`}</p>
+            <p className="label">{`${payload[0].name} : ${String(payload[0].value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원`}</p>
             {getIntroOfPage(payload[0].name)}
           </Paper>
         );
@@ -59,7 +59,7 @@ class AlertDialog extends Component {
       const arr = this.props.targetOB.orderFromBranchProductList;
       return(
         <div>
-        <div>단가 : ₩{arr[arr.findIndex(prod => prod.productName===name)].price.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</div>
+        <div>단가 : {arr[arr.findIndex(prod => prod.productName===name)].price.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</div>
         <div>수량 : {arr[arr.findIndex(prod => prod.productName===name)].orderFromBranchProductQuantity}개</div>
         <div>주문총액의 {Math.floor(100*(arr[arr.findIndex(prod => prod.productName===name)].orderFromBranchProductAmount)/(this.props.targetOB.orderFromBranchTotalAmount))}%를 차지합니다.</div>
         </div>
@@ -84,7 +84,7 @@ class AlertDialog extends Component {
           </AppBar>
           <DialogTitle>
           {"주문번호 : "+this.props.targetOB.orderFromBranchNo + " ("+this.props.targetOB.orderDate+")"}
-              <div className="jr-card" style={{margin:"0px", backgroundColor:"#fbd2cb", float:"right", padding:"0px", paddingLeft:"5px", paddingRight:"5px", paddingTop:"11px"}}><h4>주문총액 &nbsp;&nbsp;&nbsp;₩ {(this.props.targetOB.orderFromBranchTotalAmount).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</h4></div>
+              <div className="jr-card" style={{margin:"0px", backgroundColor:"#fbd2cb", float:"right", padding:"0px", paddingLeft:"5px", paddingRight:"5px", paddingTop:"11px"}}><h4>주문총액 &nbsp;&nbsp;&nbsp; {(this.props.targetOB.orderFromBranchTotalAmount).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</h4></div>
           </DialogTitle>
           <DialogContent >
 
@@ -93,9 +93,9 @@ class AlertDialog extends Component {
         <TableHead>
           <TableRow>
             <TableCell size="small">물품명</TableCell>
-            <TableCell size="small" align="left">단가(원)</TableCell>
+            <TableCell size="small" align="left">단가</TableCell>
             <TableCell size="small" align="left">수량(개)</TableCell>
-            <TableCell size="small" align="left">금액(원)</TableCell>
+            <TableCell size="small" align="left">금액</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -103,7 +103,7 @@ class AlertDialog extends Component {
             return (
               <TableRow key={n.numbering}>
                 <TableCell>{n.productName}</TableCell>
-                <TableCell align="left">{n.price.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TableCell>
+                <TableCell align="left">{n.price.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
                 <TableCell align="left">{n.orderFromBranchProductQuantity}</TableCell>
                 <TableCell align="left">{n.orderFromBranchProductAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TableCell>
               </TableRow>

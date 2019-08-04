@@ -18,8 +18,8 @@ class GetGroupCodeList extends React.Component {
       <Card className="shadow border-0" align="center">
       <CardBody>
         <br/>
-        <h3 className="font-weight-light">{this.props.title}</h3>
-        <h4><i class="zmdi zmdi-quote zmdi-hc-1x zmdi-hc-flip-horizontal"></i>&nbsp;{this.props.engCode}&nbsp;<i class="zmdi zmdi-quote zmdi-hc-1x"></i></h4>
+        <h3 className="font-weight-semibold">{this.props.title}</h3>
+        <h3 className="font-weight-light"><small>[&nbsp;{this.props.engCode}&nbsp;]</small></h3>
         <br/>
         <Button style={{backgroundColor:"#ae402d"}} fullWidth variant="contained" className="jr-btn text-white" onClick={this.handleClick}>
           <i className="zmdi zmdi-search zmdi-hc-fw  zmdi-hc-2x"/>
