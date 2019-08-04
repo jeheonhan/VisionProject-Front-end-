@@ -20,6 +20,7 @@ import FindEmployee from 'components/humanResource/FindEmployee';
 import FindAccount from 'components/accounting/FindAccount';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Snackbar from '@material-ui/core/Snackbar';
 
 class TextMaskCustom extends React.Component {
   render() {
@@ -61,6 +62,8 @@ class AddCard extends React.Component {
       findEmployeeOpen : false,
       findAccountOpen : false,
       success : false,
+      snackBar: false,
+      snackBarContents : '',
     }
   }
 
@@ -71,7 +74,24 @@ class AddCard extends React.Component {
 
   //카드등록 다이얼로그창 닫기
   handleRequestClose = () => {
-    this.setState({open: false});
+    this.setState({
+      ...this.state,
+      success : false,
+      open: false,
+      cardRegNo : "",
+      cardManager : "",
+      cardManagerName : "",
+      cardCategoryCodeNo : "",
+      cardCategoryCodeName : "",
+      cardName : "",
+      cardCompanyCodeNo : "",
+      cardCompanyCodeName : "",
+      cardImage : "",
+      cardUsageStatusCodeNo : "",
+      accountNo : "",
+      cardNo : '',
+      cardImageFile : ''
+    });
   };
 
   //사원찾기 다이얼로그창 열기
@@ -116,7 +136,6 @@ class AddCard extends React.Component {
   //카드 등록값 입력
   handleChange = name => event => {
     this.setState({ ...this.state, [name]: event.target.value });
-    console.log(this.state);
   };
   
 
@@ -137,6 +156,15 @@ class AddCard extends React.Component {
     this.handleRequestClose()
   }
 
+  //snackBar 열기
+  openSnackBar  = (valueName) => {
+    this.setState({ ...this.state, snackBar: true, snackBarContents : valueName });
+  };
+
+  //snackBar 닫기
+  closeSnackBar = () => {
+    this.setState({ ...this.state, snackBar: false });
+  };
   
   render() {
     
@@ -173,32 +201,34 @@ class AddCard extends React.Component {
     //카드등록
     const submitCard = () => {
       
-      this.props.addCard({
-        cardManager : checkedEmployeeData.employeeNo,
-        cardCategoryCodeNo : this.state.cardCategoryCodeNo,
-        cardName : this.state.cardName,
-        cardCompanyCodeNo : this.state.cardCompanyCodeNo,
-        cardImageFile : this.state.cardImageFile,
-        accountNo : this.state.accountNo,
-        cardNo : this.state.cardNo,
-      })
-      this.setState({
-        cardRegNo : "",
-        cardManager : "",
-        cardManagerName : "",
-        cardCategoryCodeNo : "",
-        cardCategoryCodeName : "",
-        cardName : "",
-        cardCompanyCodeNo : "",
-        cardCompanyCodeName : "",
-        cardImage : "",
-        cardUsageStatusCodeNo : "",
-        accountNo : "",
-        cardNo : '',
-        cardImageFile : ''
-      });
-      this.props.cleanStoreState("checkedEmployeeData");
-      this.openSuccessAlarm()
+      if(checkedEmployeeData === undefined){
+        this.openSnackBar('카드관리자')
+      } else if(this.state.cardCategoryCodeNo === ''){
+        this.openSnackBar('카드종류 구분')
+      } else if(this.state.cardName === ''){
+        this.openSnackBar('카드명')
+      } else if(this.state.cardCompanyCodeNo === ''){
+        this.openSnackBar('카드사 구분')
+      } else if(this.state.accountNo === ''){
+        this.openSnackBar('계좌번호')
+      } else if(this.state.cardNo === ''){
+        this.openSnackBar('카드번호')
+      } else {
+   
+        this.props.addCard({
+          cardManager : checkedEmployeeData.employeeNo,
+          cardCategoryCodeNo : this.state.cardCategoryCodeNo,
+          cardName : this.state.cardName,
+          cardCompanyCodeNo : this.state.cardCompanyCodeNo,
+          cardImageFile : this.state.cardImageFile,
+          accountNo : this.state.accountNo,
+          cardNo : this.state.cardNo,
+        })
+
+        this.props.cleanStoreState("checkedEmployeeData");
+        this.openSuccessAlarm()
+      }
+
     }
     
     return (
@@ -279,9 +309,6 @@ class AddCard extends React.Component {
                   <TextField
                     id="cardName"
                     label="카드명"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                     placeholder="카드명 입력"
                     value={this.state.cardName}
                     fullWidth
@@ -297,8 +324,7 @@ class AddCard extends React.Component {
                     label="카드사 구분"
                     value={this.state.cardCompanyCodeNo}
                     SelectProps={{}}
-                    helperText="카드사를 선택해 주세요"
-                    margin="normal"
+                    margin="none"
                     fullWidth
                     onChange={this.handleChange('cardCompanyCodeNo')}
                   >
@@ -317,8 +343,7 @@ class AddCard extends React.Component {
                         label="카드종류 구분"
                         value={this.state.cardCategoryCodeNo}
                         SelectProps={{}}
-                        helperText="카드종류를 선택해주세요"
-                        margin="normal"
+                        margin="none"
                         fullWidth
                         onChange={this.handleChange('cardCategoryCodeNo')}
                     >
@@ -330,7 +355,7 @@ class AddCard extends React.Component {
                     </TextField>
                 </div>
 
-                <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
+                <div className="col-md-6 col-6" style={{float:"left", display:"inline", marginTop:'15px'}}>
                   {/* 카드관리자와 관리자 번호는 직접 건들지 않아서 onChange를 안줘도 됨*/}
                   <TextField
                     margin="normal"
@@ -343,7 +368,7 @@ class AddCard extends React.Component {
                     fullWidth
                   />
                 </div>
-                <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
+                <div className="col-md-6 col-6" style={{float:"left", display:"inline", marginTop:'15px'}}>
                   <TextField
                     margin="normal"
                     id="cardManagerName"
@@ -400,6 +425,17 @@ class AddCard extends React.Component {
                   >
                   등록에 성공했습니다
                 </SweetAlert>
+
+                <Snackbar
+                  anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                  open={this.state.snackBar}
+                  onClose={this.closeSnackBar}
+                  ContentProps={{
+                    'aria-describedby': 'message-id',
+                  }}
+                  message={<span id="message-id">{this.state.snackBarContents} 항목을 입력하지 않으셨습니다</span>}
+                  autoHideDuration={1500}
+                />
 
               </form>
             </CardBox>

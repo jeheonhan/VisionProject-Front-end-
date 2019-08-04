@@ -135,37 +135,43 @@ let EnhancedTableToolbar = props => {
           <Typography variant="title">카드 목록조회</Typography>
         )}
       </div>
-      <div className="spacer"/>
-      
-      <ArtTrack
-        onClick={handleChange}
-        style={{cursor:'pointer'}}
-        titleAccess="섬네일로 보기"
-      />
 
-      <SearchBox 
-        styleName="d-none d-sm-block" 
-        placeholder="카드번호/카드명"
-        onChange={updateSearchKeyword}
-        value={value.searchKeyword}
-        onClick={ event => searchActivity(event) }
-        onKeyDown={ event => searchEnterActivity(event) }
-      />
+      <div className="spacer"/>
+
+      {numSelected > 0 ? ( 
+        <div>
+        </div>
+      ) : (
+        <div style={{paddingRight:'20px'}}>
+          <SearchBox 
+          styleName="d-none d-sm-block" 
+          placeholder="카드번호/카드명"
+          onChange={updateSearchKeyword}
+          value={value.searchKeyword}
+          onClick={ event => searchActivity(event) }
+          onKeyDown={ event => searchEnterActivity(event) }
+          />
+        </div>
+      )}
 
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
-          <Tooltip title="삭제">
-            <IconButton aria-label="삭제" onClick={ props.updateUsageStatus }>
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
+          <div style={{paddingRight:'10px'}}> 	
+            <Tooltip title="삭제">
+              <IconButton aria-label="삭제" onClick={ props.updateUsageStatus }>
+                <DeleteIcon/>
+              </IconButton>
+            </Tooltip>
+          </div>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
+          <div style={{paddingRight:'20px'}}>
+            <ArtTrack
+              onClick={handleChange}
+              style={{cursor:'pointer'}}
+              titleAccess="섬네일로 보기"
+            />
+          </div>
         )}
       </div>
     </Toolbar>
@@ -343,7 +349,7 @@ class CardTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, row.cardRegNo)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={ event => this.updateCard(event, row.cardRegNo) } style={{cursor:'pointer'}}>{row.cardRegNo}</span></TableCell>
+                      <TableCell align="left"><span onClick={ event => this.updateCard(event, row.cardRegNo) } style={{cursor:'pointer'}} title="수정하기">{row.cardRegNo}</span></TableCell>
                       <TableCell align="left">{row.cardNo}</TableCell>
                       <TableCell align="left">{row.cardName}</TableCell>
                       <TableCell align="left">{row.cardCompanyCodeName}</TableCell>
