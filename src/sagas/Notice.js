@@ -1,6 +1,6 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { GET_NOTICE_LIST, GET_NOTICE_DETAIL, ADD_NOTICE, GET_NOTICE_HEADER_LIST, DELETE_NOTICE, UPDATE_NOTICE } from 'actionTypes/ActionTypes';
+import { GET_NOTICE_LIST, GET_NOTICE_DETAIL, ADD_NOTICE, GET_NOTICE_HEADER_LIST, DELETE_NOTICE, UPDATE_NOTICE, GET_UPDATE_NOTICE_HEADER_LIST } from 'actionTypes/ActionTypes';
 import { carryNoticeList, carryNoticeDetail, getNoticeList, carryNoticeHeaderList, caaryUpdateNoticeHeaderList } from 'actions/index';
 
 const getNoticeListRequest = async (search) => {
@@ -135,7 +135,7 @@ export function* updateNoticeSaga(){
 }
 
 export function* getUpdateNoticeHeaderListSaga() {
-    yield takeEvery(UPDATE_NOTICE, getUpdateNoticeHeaderListFn)
+    yield takeEvery(GET_UPDATE_NOTICE_HEADER_LIST, getUpdateNoticeHeaderListFn)
 }
 
 export default function* rootSaga(){

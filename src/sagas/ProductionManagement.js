@@ -14,6 +14,7 @@ import {GET_PRODUCT_LIST, GET_ORDER_TO_VENDOR_LIST,
      GET_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS,
     UPDATE_ORDER_TO_VEN_ITEM_CODE , GET_PRODUCT ,
     GET_PRODUCT_LIST_FOR_ORDER , GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE, UPDATE_PRODUCT , 
+    UPDATE_PRODUCT_USAGE_STATUS 
 } from "actionTypes/ActionTypes";
 
 import {SEND_SHIPPING} from 'actionTypes/ActionTypes';
@@ -167,6 +168,14 @@ const updateProductRequest = async (data) => {
     .catch(error => console.log(error))
 }
 
+const updateProductUsageStatusRequest = async (data) => {
+    return await axios({
+        method:"POST",
+        url:"/pm/updateUsageStatus",
+        data:data
+    })
+}
+
 
 function * sendShippingFn(action){
     yield call(sendShippingAxios, action)
@@ -202,23 +211,18 @@ function* updateOrderToVendorCodeFn({payload}) {
     yield call(updateOrderToVendorCodeRequest, payload);
     yield put(getOrderToVendorList(payload));
     yield put(getStatementList({ searchKeyword : "", usageCondition : "01"}));
-
-
-
-
-
-
-
-
 }
 
 function* addOrderToVendorFn({payload}) {
     yield call(addOrderToVendorRequest, payload);
     yield put(getOrderToVendorList());
+    yield put(getOrderToVendorList(payload));
+    yield put(getStatementList({ searchKeyword : "", usageCondition : "01"}));
 }
 
 function* addOrderBranchFn(action){
     yield call(addOrderBranchAxios, action);
+    yield put(getOrderToVendorList());
 }
 
 function* getOrderBranchFn(action){
@@ -262,6 +266,12 @@ function* getProductFn({payload}){
 
 function* updateProductFn({payload}){
     yield call(updateProductRequest,payload);
+    const ProductList = yield call(getProductListRequest);
+    yield put(carryProductList(ProductList));
+}
+
+function* updateProductUsageStatusFn({payload}){
+    yield call(updateProductUsageStatusRequest, payload);
     const ProductList = yield call(getProductListRequest);
     yield put(carryProductList(ProductList));
 }
@@ -332,6 +342,10 @@ export function* updateProductSaga(){
     yield takeEvery(UPDATE_PRODUCT, updateProductFn)
 }
 
+export function* updateProductUsageStatusSaga(){
+    yield takeEvery(UPDATE_PRODUCT_USAGE_STATUS, updateProductUsageStatusFn )
+}
+
 export default function* rootSaga(){
     yield all([
         fork(sendShippingSaga),
@@ -350,6 +364,7 @@ export default function* rootSaga(){
         fork(orderToVendorProductStatusSaga),
         fork(getProductSaga),
         fork(updateProductSaga),
+        fork(updateProductUsageStatusSaga),
     ]);
 }
 

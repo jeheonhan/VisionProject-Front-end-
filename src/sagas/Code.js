@@ -1,6 +1,6 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
-import { GET_GROUP_CODE_LIST, GET_CODE_LIST, GET_FOR_CODE_DETAIL, GET_NEW_CODE_NO, CHECK_DUPLICATE_CODE_NAME, ADD_CODE, CONVERT_CODE_USAGE_STATUS, UPDATE_CODE } from "actionTypes/ActionTypes";
+import { GET_GROUP_CODE_LIST, GET_CODE_LIST, GET_FOR_CODE_DETAIL, GET_NEW_CODE_NO, CHECK_DUPLICATE_CODE_NAME, ADD_CODE, CONVERT_CODE_USAGE_STATUS, UPDATE_CODE, CONVERT_CODE_USAGE_STATUS_LIST } from "actionTypes/ActionTypes";
 import { carryNewCodeNo, carryGroupCodeList, carryCodeList, carryForCodeDetail, checkDuplicateResult, addCodeResult } from "actions/Code";
 
 const getGroupCodeListAxios = async () =>{
@@ -62,6 +62,16 @@ const convertCodeUsageAxios = async(data) => {
     .catch(error => console.log(error))
 }
 
+const convertCodeUsageListAxios = async(data) => {
+    return await axios({
+        method:"POST",
+        url:"/code/convertCodeUsageStatusList",
+        data: data
+    })
+    .then(resoponse => resoponse.data)
+    .catch(error => console.log(error))
+}
+
 const updateCodeAxios = async(data) => {
     return await axios({
         method:"POST",
@@ -113,6 +123,11 @@ function* convertCodeUsage(action){
     yield put(carryForCodeDetail());
 }
 
+function* convertCodeUsageList(action){
+    yield call(convertCodeUsageListAxios, action.payload);
+    yield put(carryForCodeDetail());
+}
+
 export function* getCodeListSaga(){
     yield takeEvery(GET_CODE_LIST, getCodeList);
 }
@@ -141,6 +156,10 @@ export function* convertCodeUsageSaga(){
     yield takeEvery(CONVERT_CODE_USAGE_STATUS, convertCodeUsage)
 }
 
+export function* convertCodeUsageListSaga(){
+    yield takeEvery(CONVERT_CODE_USAGE_STATUS_LIST, convertCodeUsageList)
+}
+
 export function* updateCodeSaga(){
     yield takeEvery(UPDATE_CODE, updateCode)
 }
@@ -154,6 +173,7 @@ export default function* rootSaga(){
                fork(checkDuplicateCodeNameSaga),
                fork(addCodeSaga),
                fork(convertCodeUsageSaga),
+               fork(convertCodeUsageListSaga),
                fork(updateCodeSaga)
         ]);
 }

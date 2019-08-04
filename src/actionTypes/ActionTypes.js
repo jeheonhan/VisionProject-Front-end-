@@ -213,6 +213,7 @@ export const ADD_CODE = 'add_code';
 export const ADD_CODE_RESULT = 'add_code_result';
 export const CONVERT_CODE_USAGE_STATUS = 'convert_code_usage_status';
 export const UPDATE_CODE = 'update_code';
+export const CONVERT_CODE_USAGE_STATUS_LIST = 'convert_code_usage_status_list';
 
 
 
@@ -363,3 +364,5 @@ export const CARRY_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE='carry_order_to_vendo
 export const GET_PRODUCT ='get_product';
 export const CARRY_PRODUCT ='carry_product';
 export const UPDATE_PRODUCT = 'update_product';
+export const UPDATE_PRODUCT_USAGE_STATUS='update_product_usage_status';
+

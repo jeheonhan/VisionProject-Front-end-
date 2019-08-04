@@ -280,34 +280,13 @@ onCancel = () => {
                 {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
-                  if(row.orderFromBranchStatusCodeName==='주문대기'){
-                    return (
-                    <TableRow
-                      hover
-                      onKeyDown={event => this.handleKeyDown(event, page*rowsPerPage+index)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={page*rowsPerPage+index}
-                      selected={isSelected}
-                    >
-                      
-                      <TableCell align="left" >
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickNo(event, row)}>
-                          {row.orderFromBranchNo}
-                        </span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickNo(event, row)}>
-                          {row.orderDate}
-                        </span>
-                      </TableCell>
-                      <TableCell align="left" >{row.orderFromBranchTotalAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
-                      <TableCell align="left"  size="small" >{row.orderFromBranchStatusCodeName}<span style={{paddingLeft:"25px", cursor:'pointer'}}  onClick={(event) => this.onCancelOrderAlert(event, row)}>
-                      <RemoveShoppingCart/>
-                        </span></TableCell>
-                    </TableRow>
-                  );
+                  let textColor = "";
+                  switch(row.orderFromBranchStatusCodeNo){
+                    case "01" : textColor = "orange"; break;
+                    case "02" : textColor = "blue"; break;
+                    case "03" : textColor = "green"; break;
+                    case "04" : textColor = "red"; break;
+                    case "05" : textColor = "black"; break;
                   }
                   return (
                     <TableRow
@@ -327,7 +306,9 @@ onCancel = () => {
                       </TableCell>
                       <TableCell align="left">{row.orderDate}</TableCell>
                       <TableCell align="left" >{row.orderFromBranchTotalAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
-                      <TableCell align="left"  size="small" >{row.orderFromBranchStatusCodeName}</TableCell>
+                      <TableCell align="left"  size="small" style={{color:textColor}}>{row.orderFromBranchStatusCodeName}{row.orderFromBranchStatusCodeName==='주문대기'&&<span style={{paddingLeft:"25px", cursor:'pointer'}}  onClick={(event) => this.onCancelOrderAlert(event, row)}>
+                      <RemoveShoppingCart/>
+                        </span>}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -352,8 +333,8 @@ onCancel = () => {
         <SweetAlert show={this.state.warning}
                     warning
                     showCancel
-                    confirmBtnText="네, 취소합니다"
-                    cancelBtnText="나가기"
+                    confirmBtnText="네"
+                    cancelBtnText="아니오"
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
                     title="주문취소 요청이 본사로 전달됩니다."

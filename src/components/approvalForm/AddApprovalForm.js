@@ -83,7 +83,7 @@ class FullScreenDialog extends React.Component {
               }}>
                 결재양식등록
               </Typography>
-              <Button onClick={this.handleAdd}>
+              <Button style={{backgroundColor:"#f2f2f2"}} onClick={this.handleAdd}>
                 등록
               </Button>
             </Toolbar>

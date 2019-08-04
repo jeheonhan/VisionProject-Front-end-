@@ -16,6 +16,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { connect } from 'react-redux';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import ApprovalFormDetail from 'components/approvalForm/ApprovalFormDetail'
+import Snackbar from '@material-ui/core/Snackbar';
+import SweetAlert from 'react-bootstrap-sweetalert'
+
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -164,10 +167,41 @@ class EnhancedTable extends React.Component {
   //휴지통 클릭 시 삭제
   handleDelete = (event, row) => {
     event.preventDefault();
-    const data = {approvalFormNo:row.approvalFormNo, approvalFormUsageStatusCodeNo:"02"}
-    if(window.confirm("선택한 결재양식을 삭제하시겠습니까?")){
-      this.props.deleteApprovalForm(data);
+    //기본기안서 삭제 못하게
+    if(row.approvalFormNo==="10001"){
+      this.setState({
+        snackbar:true,
+        snackbarContents:"기본기안서는 삭제하실 수 없습니다."
+      })
+      return;
     }
+
+    this.setState({
+      warning:true,
+      forDelete: {approvalFormNo:row.approvalFormNo, approvalFormUsageStatusCodeNo:"02"}
+    })
+  }
+
+  //양식삭제확인
+  deleteFile = () => {
+    this.props.deleteApprovalForm(this.state.forDelete);
+    this.setState({
+      warning:false
+    })
+  }
+
+  //양식삭제취소
+  onCancelDelete = () => {
+    this.setState({
+      warning:false
+    })
+  }
+
+  handleRequestCloseSnackBar = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:""
+    })
   }
 
 
@@ -206,7 +240,9 @@ class EnhancedTable extends React.Component {
         approvalForm : "",
         registrantEmployeeName:"",
         registrantEmployeeNo:"",
-      }
+      },
+      snackbar:false,
+      warning:false
     };
   }
 
@@ -251,18 +287,31 @@ class EnhancedTable extends React.Component {
                     >
                       
                       <TableCell align="left" >
+                      <Tooltip
+                        title="상세조회"
+                        placement={'bottom-start'}
+                        enterDelay={300}
+                      >
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
                           {row.approvalFormNo}
                         </span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="left">
+                      <Tooltip
+                        title="상세조회"
+                        placement={'bottom-start'}
+                        enterDelay={300}
+                      >
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickApprovalFormNo(event, row)}>
                           {row.approvalFormTitle}
                         </span>
+                        </Tooltip>
+
                       </TableCell>
                       <TableCell align="left" >{row.registrantEmployeeName}</TableCell>
                       <TableCell align="left" >{row.useCount}</TableCell>
-                      <TableCell><DeleteOutlinedIcon onClick={event => this.handleDelete(event, row)}/></TableCell>
+                      <TableCell><DeleteOutlinedIcon style={{cursor:'pointer'}} onClick={event => this.handleDelete(event, row)}/></TableCell>
                     </TableRow>
                   );
                 })}
@@ -281,6 +330,27 @@ class EnhancedTable extends React.Component {
             </Table>
           </div>
         </div>
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestCloseSnackBar}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
+        <SweetAlert show={this.state.warning}
+                    warning
+                    showCancel
+                    confirmBtnText={"네"}
+                    cancelBtnText={"아니오"}
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title={"선택한 결재양식을 삭제하시겠습니까?"}
+                    onConfirm={this.deleteFile}
+                    onCancel={this.onCancelDelete}
+        ></SweetAlert>
         <ApprovalFormDetail 
           targetForm = {this.state.targetForm} 
           open={this.state.open} 

@@ -17,6 +17,8 @@ import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
 import Input from '@material-ui/core/Input';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Snackbar from '@material-ui/core/Snackbar';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 class TradeAmountMask extends React.Component {
   render() {
@@ -24,7 +26,6 @@ class TradeAmountMask extends React.Component {
       <NumberFormat
         {...this.props}
         thousandSeparator
-        prefix="￦"
       />
     );
   }
@@ -42,7 +43,8 @@ class AddStatement extends React.Component {
 
     },
     success : false,
-    
+    snackBar: false,
+    snackBarContents : '',
   };
 
   //전표등록 다이얼로그 열기
@@ -104,12 +106,37 @@ class AddStatement extends React.Component {
     this.handleRequestClose()
   }
 
+  
+  //snackBar 열기
+  openSnackBar  = (valueName) => {
+    this.setState({ ...this.state, snackBar: true, snackBarContents : valueName });
+  };
+
+  //snackBar 닫기
+  closeSnackBar = () => {
+    this.setState({ ...this.state, snackBar: false });
+  };
+
   //전표 등록
   submitStatement = (event) => {
     event.preventDefault();
-    this.props.addStatement(this.state.statement)
-    this.setState({ statement : '' })
-    this.openSuccessAlarm();
+
+    if(this.state.statement.statementDetail === undefined){
+      this.openSnackBar('전표내용')
+    } else if(this.state.statement.accountNo === undefined){
+      this.openSnackBar('계좌번호')
+    } else if(this.state.statement.tradeAmount === undefined){
+      this.openSnackBar('공급가액')
+    } else if(this.state.statement.tradeTargetName === undefined){
+      this.openSnackBar('거래대상명')
+    } else if(this.state.statement.statementCategoryCodeNo === undefined){
+      this.openSnackBar('전표구분 선택')
+    } else if(this.state.statement.tradeDate === undefined){
+      this.openSnackBar('거래일자')
+    } else {
+      this.props.addStatement(this.state.statement)
+      this.openSuccessAlarm();
+    }
   }
 
   render() {
@@ -129,7 +156,7 @@ class AddStatement extends React.Component {
           <DialogTitle>전표등록</DialogTitle>
           <DialogContent style={{minWidth: '700px', maxWidth: '700px'}}>
             <DialogContentText>
-              내용을 빠진항목없이 입력 바랍니다.
+              빠진 항목없이 입력 바랍니다.
             </DialogContentText>
 
               <div className="col-md-3 col-6" style={{float:"left"}}>
@@ -159,9 +186,6 @@ class AddStatement extends React.Component {
                 <TextField
                   id="tradeTargetName"
                   label="거래대상명"
-                  InputLabelProps={{
-                      shrink: true,
-                  }}
                   placeholder="거래대상명 입력"
                   value={this.state.statement && this.state.statement.tradeTargetName}
                   fullWidth={true}
@@ -172,18 +196,16 @@ class AddStatement extends React.Component {
 
               <div className="col-md-6 col-6" style={{ float:"left" }}>
                 <FormControl className="mb-3" fullWidth margin='normal'>
-                  <InputLabel shrink={true} htmlFor="tradeAmount">공급가액</InputLabel>
+                  <InputLabel htmlFor="tradeAmount">공급가액</InputLabel>
                   <Input
                     inputComponent={TradeAmountMask}
                     id="tradeAmount"
-                    InputLabelProps={{
-                    shrink: true,
-                    }}
-                    placeholder="숫자만 입력 가능합니다"
+                    placeholder="공급가액 입력"
                     value={this.state.statement && this.state.statement.tradeAmount}
                     fullWidth={true}
                     margin="none"
                     onChange={this.handleChange('tradeAmount')}
+                    endAdornment={this.state.statement.tradeAmount ? (<InputAdornment position="end">원</InputAdornment>) : null}
                   />
                 </FormControl>
               </div>
@@ -205,9 +227,6 @@ class AddStatement extends React.Component {
                 <TextField
                   id="statementDetail"
                   label="전표내용"
-                  InputLabelProps={{
-                      shrink: true,
-                  }}
                   placeholder="전표내용 입력"
                   helperText="전표 관련 내용을 간략히 입력해주세요"
                   value={this.state.statement && this.state.statement.statementDetail}
@@ -234,6 +253,16 @@ class AddStatement extends React.Component {
                   등록에 성공했습니다
                 </SweetAlert>
 
+                <Snackbar
+                  anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                  open={this.state.snackBar}
+                  onClose={this.closeSnackBar}
+                  ContentProps={{
+                    'aria-describedby': 'message-id',
+                  }}
+                  message={<span id="message-id">{this.state.snackBarContents} 항목을 입력하지 않으셨습니다</span>}
+                  autoHideDuration={1500}
+                />
           </DialogContent>
           <DialogActions>
             <Button onClick={ event => this.submitStatement(event)} color="secondary">

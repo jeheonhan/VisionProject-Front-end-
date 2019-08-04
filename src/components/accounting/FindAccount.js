@@ -53,7 +53,6 @@ class FindAccount extends React.Component {
 
   handleChange = event => {
     this.setState({selectedValue: event.target.value});
-    console.log(this.state);
   };
 
   handleSearch = (event) => {
@@ -67,7 +66,6 @@ class FindAccount extends React.Component {
     this.setState({
       accountFlag : false
     })
-    console.log("findAccount submit 들어왔습니다")
     this.props.handleFindAccountClose();
   }
 
@@ -76,7 +74,6 @@ class FindAccount extends React.Component {
     this.setState({
       accountFlag : false
     })
-    console.log("findAccount close 들어왔습니다")
     this.props.handleFindAccountClose();
   }
 
@@ -85,7 +82,6 @@ class FindAccount extends React.Component {
     const { checkAccountList } = this.props;
     
     if(!this.state.accountFlag && this.props.searchCondition !== undefined){
-      console.log("searchCondition이 있을때")
       this.setState({
         accountFlag : true
       })
@@ -95,7 +91,6 @@ class FindAccount extends React.Component {
           usageCondition : "01", 
       });
     }else if(!this.state.accountFlag && this.props.searchCondition === undefined){
-      console.log("searchCondition이 없을때")
       this.setState({
         accountFlag : true
       })
@@ -126,19 +121,24 @@ class FindAccount extends React.Component {
 
                   {checkAccountList && checkAccountList.map(row =>
                     <ListItem button key={row.accountRegNo}>
-                      <ListItemText className="br-break" primary={row.accountNo}/>
-                      &nbsp;&nbsp;&nbsp;
-                      <ListItemText className="br-break" primary={row.bankCodeName}/>
-                      &nbsp;&nbsp;&nbsp;
-                      <ListItemText className="br-break" primary={row.reference}/>
-                      &nbsp;&nbsp;&nbsp;
-                      <ListItemSecondaryAction>
-                        <Radio color="primary"
-                          checked={this.state.selectedValue == row.accountNo}
-                          onChange={this.handleChange}
-                          value={row.accountNo}
-                        />
-                      </ListItemSecondaryAction>
+                      <span className="col-sm-5">
+                        <ListItemText className="br-break" primary={row.accountNo}/>
+                      </span>
+                      <span className="col-sm-2">
+                        <ListItemText className="br-break" primary={row.bankCodeName.substring(0,2)}/>
+                      </span>
+                      <span className="col-sm-4">
+                        <ListItemText className="br-break" primary={row.reference}/>
+                      </span>
+                      <span className="col-sm-1">
+                        <ListItemSecondaryAction>
+                          <Radio color="primary"
+                            checked={this.state.selectedValue == row.accountNo}
+                            onChange={this.handleChange}
+                            value={row.accountNo}
+                          />
+                        </ListItemSecondaryAction>
+                      </span>
                     </ListItem>,
                   )}
                 </List>

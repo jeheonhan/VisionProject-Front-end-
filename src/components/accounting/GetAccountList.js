@@ -127,31 +127,30 @@ let EnhancedTableToolbar = props => {
           <Typography variant="title">계좌 목록조회</Typography>
         )}
       </div>
-      <div className="spacer"/>
 
-      <SearchBox 
-        styleName="d-none d-sm-block" 
-        placeholder="계좌번호/참고"
-        onChange={updateSearchKeyword}
-        value={value.searchKeyword}
-        onClick={ event => searchActivity(event) }
-        onKeyDown={ event => searchEnterActivity(event) }
-      />
+      <div className="spacer"/>
 
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
-          <Tooltip title="삭제">
-            <IconButton aria-label="삭제" onClick={ props.updateUsageStatus }>
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
+          <div style={{paddingRight:'10px'}}>
+            <Tooltip title="삭제">
+              <IconButton aria-label="삭제" onClick={ props.updateUsageStatus }>
+                <DeleteIcon/>
+              </IconButton>
+            </Tooltip>
+          </div>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
+          <div style={{paddingRight:'20px'}}>
+            <SearchBox 
+              styleName="d-none d-sm-block" 
+              placeholder="계좌번호/참고"
+              onChange={updateSearchKeyword}
+              value={value.searchKeyword}
+              onClick={ event => searchActivity(event) }
+              onKeyDown={ event => searchEnterActivity(event) }
+            />
+          </div>
         )}
       </div>
     </Toolbar>
@@ -322,7 +321,7 @@ class AccountTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, row.accountRegNo)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={ event => this.updateAcountDialog(event, row.accountRegNo)} style={{cursor:'pointer'}}>{row.accountRegNo}</span></TableCell>
+                      <TableCell align="left"><span onClick={ event => this.updateAcountDialog(event, row.accountRegNo)} style={{cursor:'pointer'}} title="수정하기">{row.accountRegNo}</span></TableCell>
                       <TableCell align="left">{row.accountNo}</TableCell>
                       <TableCell align="left">{row.reference}</TableCell>
                       <TableCell align="left">{row.bankCodeName}</TableCell>

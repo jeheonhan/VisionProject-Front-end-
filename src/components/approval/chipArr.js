@@ -33,7 +33,8 @@ class chipArr extends Component {
           return (
               
             <Chip
-              avatar={<Avatar src={`/img/${data.profileImage}`}/>}
+              avatar={<Avatar src={data.profileImage ? `/img/${data.profileImage}`
+              :require("assets/images/placeholder.jpg")}/>}
               label={data.employeeName}
               key={data.employeeNo}
               onDelete={this.props.handleDelete(data)}

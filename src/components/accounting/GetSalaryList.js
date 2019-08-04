@@ -289,7 +289,7 @@ class SalaryTable extends React.Component {
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell> */}
-                      <TableCell align="left"><span onClick={event => this.updateSalaryDialog(event, row.salaryNumbering)} style={{cursor:'pointer'}}>{row.salaryDate}</span></TableCell>
+                      <TableCell align="left"><span onClick={event => this.updateSalaryDialog(event, row.salaryNumbering)} style={{cursor:'pointer'}} title="수정하기">{row.salaryDate}</span></TableCell>
                       <TableCell align="left">{row.employeeName}</TableCell>
                       <TableCell align="left">{row.totalRegularWorkTime}분</TableCell>
                       <TableCell align="left">{row.totalExtendWorkTime}분</TableCell>

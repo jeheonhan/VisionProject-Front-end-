@@ -110,7 +110,7 @@ class FullScreenDialog extends React.Component {
             />
             </span>
             </div>
-            <div style={{paddingLeft:"50px", paddingRight:"50px", paddingBottom:"50px"}} dangerouslySetInnerHTML={{__html:this.props.targetForm.approvalForm}}/>
+            <div style={{paddingLeft:"50px", paddingRight:"50px", paddingBottom:"50px", maxWidth:"600px"}} dangerouslySetInnerHTML={{__html:this.props.targetForm.approvalForm}}/>
         </Dialog>
       </div>
     );

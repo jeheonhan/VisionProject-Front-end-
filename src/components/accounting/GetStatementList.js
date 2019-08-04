@@ -162,47 +162,28 @@ let EnhancedTableToolbar = props => {
           <Typography variant="title">전표 목록조회</Typography>
         )}
       </div>
+
       <div className="spacer"/>
 
-      <SearchBox 
-        styleName="d-none d-sm-block" 
-        placeholder="전표번호/내용"
-        onChange={updateSearchKeyword}
-        value={value.searchKeyword}
-        onClick={ event => searchActivity(event) }
-        onKeyDown={ event => searchEnterActivity(event) }
-      />
+      {numSelected > 0 ? ( 
+        <div>
+        </div>
+      ) : (
+        <div style={{paddingRight:'20px'}}>
+          <SearchBox 
+            styleName="d-none d-sm-block" 
+            placeholder="전표번호/내용"
+            onChange={updateSearchKeyword}
+            value={value.searchKeyword}
+            onClick={ event => searchActivity(event) }
+            onKeyDown={ event => searchEnterActivity(event) }
+          />
+        </div>
+      )}
 
-      <IconButton
-        className="icon-btn p-1 text-white ml-auto"
-        aria-label="More"
-        aria-owns={value.open ? 'long-SidenavContent.js' : null}
-        aria-haspopup
-        onClick={handleClick}
-      >
-        <MoreVertIcon color='action'/>
-      </IconButton>
-      <Menu
-        id="long-menu"
-        anchorEl={value.anchorEl}
-        open={value.open}
-        onClose={handelClose}
-        MenuListProps={{
-          style: {
-            width: 100,
-          },
-        }}
-      >
-        <MenuItem onClick={event => handleRequestChoose(event, 0)}>
-            전체보기
-        </MenuItem>
-        <MenuItem onClick={event => handleRequestChoose(event, 1)}>
-            매출전표
-        </MenuItem>
-        <MenuItem onClick={event => handleRequestChoose(event, 2)}>
-            매입전표
-        </MenuItem>
-      </Menu>
+
+
+
 
       <div className="actions">
         {numSelected > 0 ? (
@@ -213,13 +194,40 @@ let EnhancedTableToolbar = props => {
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
+          <div style={{paddingRight:'20px'}}>
+              <IconButton
+              className="icon-btn p-1 text-white ml-auto"
+              aria-label="More"
+              aria-owns={value.open ? 'long-SidenavContent.js' : null}
+              aria-haspopup
+              onClick={handleClick}
+            >
+              <MoreVertIcon color='action' titleAccess="전표필터"/>
             </IconButton>
-          </Tooltip>
-        )}
-      </div>
+            <Menu
+              id="long-menu"
+              anchorEl={value.anchorEl}
+              open={value.open}
+              onClose={handelClose}
+              MenuListProps={{
+                style: {
+                  width: 100,
+                },
+              }}
+            >
+              <MenuItem onClick={event => handleRequestChoose(event, 0)}>
+                  전체보기
+              </MenuItem>
+              <MenuItem onClick={event => handleRequestChoose(event, 1)}>
+                  매출전표
+              </MenuItem>
+              <MenuItem onClick={event => handleRequestChoose(event, 2)}>
+                  매입전표
+              </MenuItem>
+            </Menu>
+            </div>
+            )}
+          </div>
     </Toolbar>
   );
 };
@@ -410,7 +418,7 @@ class StatementTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, row.statementNo)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={event => this.GetStatementDetail(event, row.statementNo)} style={{cursor:'pointer'}}>{row.statementNo}</span></TableCell>
+                      <TableCell align="left"><span onClick={event => this.GetStatementDetail(event, row.statementNo)} style={{cursor:'pointer'}} title="수정하기">{row.statementNo}</span></TableCell>
                       <TableCell align="left">{row.statementCategoryCodeName}</TableCell>
                       <TableCell align="left">{row.statementDetail}</TableCell>
                       <TableCell align="left">{row.tradeDate}</TableCell>

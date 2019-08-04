@@ -19,13 +19,13 @@ import { connect } from 'react-redux';
 import { getOrderToVendorList , getOrderToVendorDetailList, updateOrderToVendorCode  } from 'actions/index.js';
 import GetOrderToVendorDetailList from 'components/productManagement/GetOrderToVendorDetailList';
 import {Delete} from '@material-ui/icons'
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
   {id: 'orderToVendorNo', align: false, disablePadding: false, label: '발주서번호'},
-  {id: 'statementNo', align: true, disablePadding: false, label: '전표번호'},
   {id: 'totalAmount', align: true, disablePadding: false, label: '총금액'},
   {id: 'orderToVendorDate: ', align: true, disablePadding: false, label: '발주일자'},
   {id: 'orderToVenStatusCodeName', align: true, disablePadding: false, label: '발주상태'},
@@ -99,22 +99,7 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
-      <div className="actions">
-        {numSelected > 0 ? (
-          // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
+     
     </Toolbar>
   );
 };
@@ -129,7 +114,7 @@ class EnhancedTable extends React.Component {
     super(props, context);
 
     this.state = {
-      order: 'asc',
+      order: 'desc',
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
@@ -137,7 +122,8 @@ class EnhancedTable extends React.Component {
       page: 0,
       rowsPerPage: 10,
       search:{searchKeyword:null},
-      flag: false
+      flag: false,
+      deleteConfirmShow:false
     };
   }
   
@@ -221,12 +207,34 @@ class EnhancedTable extends React.Component {
      
       this.props.updateOrderToVendorCode(orderToVendor);
     
-      console.log(this.props.OrderToVendorList)
       this.setState({
         ...this.state , 
         data:this.props.OrderToVendorList   });
     }
   }
+
+  handleOrderToVendorOpen =(event, row) => {
+    this.setState({
+      deleteConfirmShow:true
+      
+      })
+  }
+
+  onConfirmDelete = () => {
+    this.updateOrderToVendorList()
+    
+    this.setState({
+      ...this.state,
+    deleteConfirmShow:false
+    })
+}
+
+//부서 삭제 Confirm 취소
+onCancelDelete = () => {
+    this.setState({
+    deleteConfirmShow:false
+    })
+}
   
   render() {
 
@@ -269,16 +277,22 @@ class EnhancedTable extends React.Component {
                       selected={isSelected}
                     >
                       <TableCell align="left" ><span onClick={event => this.orderToVendorDetailList(event, row)} style={{cursor:'pointer'}}>{row.orderToVendorNo}</span></TableCell>
-                      <TableCell align="left">{row.statementNo}</TableCell>
-                      <TableCell align="left">{row.totalAmount}</TableCell> 
+                      <TableCell align="left">{row.totalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell> 
                       <TableCell align="left">{row.orderToVendorDate}</TableCell>
+                    
                       <TableCell align="left">{row.orderToVenStatusCodeName }
-                        {row.orderToVenStatusCodeNo == '01' ? <span onClick=
-                        {event => this.updateOrderToVendorList(event, row)} style={{cursor:'pointer', color:'red'}}>                     
-                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <Delete/> 발주취소
-                        </span> : null}
+                      <b>
+                        {row.orderToVenStatusCodeNo == '01' ?
+                         <span onClick=
+                         {event => {event.preventDefault(); 
+                          this.handleOrderToVendorOpen(event, row)}} style={{cursor:'pointer', color:'red'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Delete/>발주취소</span>
+                        // {event => this.updateOrderToVendorList(event, row)} style={{cursor:'pointer', color:'red'}}>                     
+                        //  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        // <Delete/>발주취소 </span> 
+                        : null}
+                        </b>
                       </TableCell>
+                     
                     </TableRow>
                   );
                 })}
@@ -303,6 +317,16 @@ class EnhancedTable extends React.Component {
             />)}
           </div>
         </div>
+        <SweetAlert show={this.state.deleteConfirmShow}
+                    warning
+                    showCancel
+                    confirmBtnText={"네"}
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title={"발주취소를 하시겠습니까?"}
+                    onConfirm={this.onConfirmDelete}
+                    onCancel={this.onCancelDelete}
+                ></SweetAlert>
       </div>
     );
   }
