@@ -9,7 +9,7 @@ class AddBranchManage extends React.Component {
 
         return(
             
-            <div className="jr-card">
+            <div className="jr-card" style={{padding:'0px'}}>
                 <AddBranch></AddBranch>
             </div>
 

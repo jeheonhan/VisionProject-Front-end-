@@ -16,6 +16,9 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';  
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Snackbar from '@material-ui/core/Snackbar';
+import NumberFormat from 'react-number-format';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 //지역전화번호코드
 const localPhoneCode = [
@@ -33,7 +36,7 @@ function Transition(props) {
 }
 
 //거래처 휴대폰번호 정규식
-class vendorPhoneMask extends React.Component {
+class VendorPhoneMask extends React.Component {
   render() {
     return (
       <MaskedInput
@@ -47,7 +50,7 @@ class vendorPhoneMask extends React.Component {
 }
 
 //거래처 서울 전화번호 정규식
-class vendorTelSeoulMask extends React.Component {
+class VendorTelSeoulMask extends React.Component {
   render() {
     return (
       <MaskedInput
@@ -61,7 +64,7 @@ class vendorTelSeoulMask extends React.Component {
 }
 
 //거래처 지방 전화번호 정규식
-class vendorTelLocalMask extends React.Component {
+class VendorTelLocalMask extends React.Component {
   render() {
     return (
       <MaskedInput
@@ -69,6 +72,17 @@ class vendorTelLocalMask extends React.Component {
         mask={[ /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
         placeholderChar={'\u2000'}
         // showMask
+      />
+    );
+  }
+}
+
+//거래처 계좌번호 정규식
+class VendorAccountMask extends React.Component {
+  render() {
+    return (
+      <NumberFormat
+        {...this.props}
       />
     );
   }
@@ -92,7 +106,7 @@ class AddVendor extends React.Component {
   render() {
 
     const { bankList, vendorList } = this.props;
-    if(bankList === undefined){
+    if(vendorList === undefined){
       this.props.getCodeList({ searchKeyword : "bank" });
       this.props.getCodeList({ searchKeyword : "vendor" });
     }
@@ -186,6 +200,8 @@ function AddTextFields(props) {
     address : "",
     detailAddress : "",
     success : false,
+    snackBar: false,
+    snackBarContents : '',
   });
 
   //inner json을 입력하려면 우선 임시방편으로 else if로 사용해서 직접 nested json에 넣는 수 밖에 없을듯
@@ -200,9 +216,7 @@ function AddTextFields(props) {
       setValues({ ...values, vendorTel:'', [name]: event.target.value})
     }else{
       setValues({ ...values, [name]: event.target.value });
-
     }
-    console.log(values);
   };
 
   //우편번호 창 열기 [ref로 자식 컴포넌트 직접 접근하여 자식컴포넌트의 function을 사용]
@@ -221,8 +235,33 @@ function AddTextFields(props) {
 
   //거래처 등록하기
   const submitFn = () => {
+
+    if(values.vendorName === ''){
+      openSnackBar('거래처명')
+    } else if(values.representativeName === ''){
+      openSnackBar('대표자명')
+    } else if(values.vendorTel === ''){
+      openSnackBar('거래처 전화번호')
+    } else if(values.vendorPhone === ''){
+      openSnackBar('거래처 휴대폰번호')
+    } else if(values.vendorCategoryCodeNo === ''){
+      openSnackBar('거래처 분류')
+    } else if(values.vendorAccount.bankCodeNo === ''){
+      openSnackBar('은행')
+    } else if(values.vendorAccount.accountNo === ''){
+      openSnackBar('계좌번호')
+    } else if(values.vendorAccount.accountHolder === ''){
+      openSnackBar('예금주명')
+    } else if(values.zipCode === ''){
+      openSnackBar('우편번호')
+    } else if(values.address === ''){
+      openSnackBar('주소')
+    } else if(values.detailAddress === ''){
+      openSnackBar('상세주소')
+    } else {
       props.addVendor(values);
       openSuccessAlarm();
+    }
   }
 
   //등록성공알람 켜기
@@ -235,12 +274,20 @@ function AddTextFields(props) {
 
   //등록성공알람 끄기
   const closeSuccessAlarm = () => {
-    setValues({
-      ...values,
-      success : false
-    })
+    setValues({ ...values, success : false })
     props.handleRequestClose();
   }
+
+  //snackBar 열기
+  const openSnackBar  = (valueName) => {
+    setValues({ ...values, snackBar: true, snackBarContents : valueName });
+  };
+
+  //snackBar 닫기
+  const closeSnackBar = () => {
+    setValues({ ...values, snackBar: false });
+  };
+
 
     return (
       <form className="row" noValidate autoComplete="off">
@@ -265,9 +312,6 @@ function AddTextFields(props) {
             value={values.vendorName}
             onChange={handleChange('vendorName')}
             margin="normal"
-            InputLabelProps={{
-              shrink: true,
-            }}
             fullWidth
           />
         </div>
@@ -279,9 +323,6 @@ function AddTextFields(props) {
             value={values.representativeName}
             onChange={handleChange('representativeName')}
             margin="normal"
-            InputLabelProps={{
-              shrink: true,
-            }}
             fullWidth
           />
         </div>
@@ -309,14 +350,13 @@ function AddTextFields(props) {
               <Input
                 id="vendorTel"
                 value={values.vendorTel}
-                inputComponent={values.localPhoneCode === '02' ? vendorTelSeoulMask : vendorTelLocalMask}
+                inputComponent={values.localPhoneCode === '02' ? VendorTelSeoulMask : VendorTelLocalMask}
                 className="w-100 mb-3"
                 inputProps={{
                 'aria-label': 'Description',
                 }}
                 onChange={handleChange('vendorTel')}
-                placeholder="숫자만 입력 가능합니다"
-                
+                placeholder="전화번호 입력"
               />
           </FormControl>
         </div>
@@ -326,13 +366,13 @@ function AddTextFields(props) {
               <Input
                 id="vendorPhone"
                 value={values.vendorPhone}
-                inputComponent={vendorPhoneMask}
+                inputComponent={VendorPhoneMask}
                 className="w-100 mb-3"
                 inputProps={{
                 'aria-label': 'Description',
                 }}
                 onChange={handleChange('vendorPhone')}
-                placeholder="숫자만 입력 가능합니다"
+                placeholder="휴대폰 번호 입력"
                 
               />
           </FormControl>
@@ -346,15 +386,12 @@ function AddTextFields(props) {
           <TextField
             id="zipCode"
             label="우편번호"
-            placeholder="클릭해주세요"
+            placeholder="우편번호 입력"
             value={values.zipCode}
             onClick={handlePostOpen}
-            // onChange={handleChange('zipCode')}
-            InputLabelProps={{
-              shrink: true,
-            }}
             margin="normal"
             fullWidth
+            margin='0px'
           />
 
         </div>
@@ -362,15 +399,13 @@ function AddTextFields(props) {
           <TextField
             id="address"
             label="주소"
-            placeholder="클릭해주세요"
+            placeholder="주소 입력"
             value={values.address}
             onClick={handlePostOpen}
-            // onChange={handleChange('address')}
-            InputLabelProps={{
-              shrink: true,
-            }}
             margin="normal"
             fullWidth
+            helperText="항목을 클릭하여 우편번호와 주소를 입력해주세요"
+            margin='0px'
           />
         </div>
         
@@ -381,9 +416,6 @@ function AddTextFields(props) {
             placeholder="상세주소를 입력해주세요"
             value={values.detailAddress}
             onChange={handleChange('detailAddress')}
-            InputLabelProps={{
-              shrink: true,
-            }}
             margin="normal"
             fullWidth
           />
@@ -397,7 +429,6 @@ function AddTextFields(props) {
             value={values.vendorCategoryCodeNo}
             onChange={handleChange('vendorCategoryCodeNo')}
             SelectProps={{}}
-            helperText="거래처를 분류해 주세요"
             margin="normal"
             fullWidth
           >
@@ -416,7 +447,6 @@ function AddTextFields(props) {
             value={values.vendorAccount.bankCodeNo}
             onChange={handleChange('bankCodeNo')}
             SelectProps={{}}
-            helperText="은행을 선택해 주세요"
             margin="normal"
             fullWidth
           >
@@ -428,19 +458,23 @@ function AddTextFields(props) {
           </TextField>
         </div>
         <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
-          <TextField
-            id="accountNo"
-            label="계좌번호"
-            placeholder="숫자만 입력 가능합니다"
-            value={values.vendorAccount.accountNo}
-            onChange={handleChange('accountNo')}
-            margin="normal"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            fullWidth
-            helperText="- 는 제외하고 입력해주세요"
-          />
+          <FormControl className="mb-3" fullWidth margin='normal'>
+            <InputLabel htmlFor="accountNo">계좌번호</InputLabel>
+              <Input
+                id="accountNo"
+                placeholder="계좌번호를 입력해주세요"
+                value={values.vendorAccount.accountNo}
+                onChange={handleChange('accountNo')}
+                margin="normal"
+                fullWidth
+                className="w-100 mb-3"
+                inputProps={{
+                'aria-label': 'Description',
+                }}
+                inputComponent={VendorAccountMask}
+              />
+              <FormHelperText style={{margin:'0px'}}>- 를 제외하고 입력해주세요</FormHelperText>
+          </FormControl>  
         </div>
         <div className="col-md-6 col-6" style={{float:"left", display:"inline"}}>
           <TextField
@@ -449,9 +483,6 @@ function AddTextFields(props) {
             placeholder="예금주명 입력"
             value={values.vendorAccount.accountHolder}
             onChange={handleChange('accountHolder')}
-            InputLabelProps={{
-              shrink: true,
-            }}
             margin="normal"
             fullWidth
           />
@@ -479,6 +510,17 @@ function AddTextFields(props) {
           등록에 성공했습니다
         </SweetAlert>
         
+        <Snackbar
+          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+          open={values.snackBar}
+          onClose={closeSnackBar}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{values.snackBarContents} 항목을 입력하지 않으셨습니다</span>}
+          autoHideDuration={1500}
+        />
+
       </form>
     );
   

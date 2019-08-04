@@ -123,21 +123,22 @@ render() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>물품명</TableCell>
-            <TableCell align="right">수량</TableCell>
+            <TableCell align="right">물품명</TableCell>
+            <TableCell align="center">수량</TableCell>
             <TableCell align="right">구입가</TableCell>
-            <TableCell align="right">거래처</TableCell>
+            <TableCell align="center">거래처</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data && data.map(n => {
             return (
               <TableRow key={n.id}>
-                <TableCell>{n.productName}</TableCell>
+                <TableCell align="right">{n.productName}</TableCell>
                 <TableCell align="right">
                 
-                <FormControl style={{width:"100px"}}>
+                <FormControl align="right" style={{width:"100px" }}>
                                                 <Input
+                                                    
                                                     id={n.productNo}
                                                     type="number"
                                                     value=

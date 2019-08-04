@@ -201,8 +201,7 @@ const columnData = [
       this.setState({open : false});
     }
 
-    updateBranchOpen = ( branchNo ) => {
-      console.log("지점번호 ???? ::::: "+branchNo);
+    updateBranchOpen = () => {
       this.setState({updateOpen : true});
       this.handleRequestClose();
     }

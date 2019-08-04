@@ -10,6 +10,23 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Snackbar from '@material-ui/core/Snackbar';
+import NumberFormat from 'react-number-format';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';  
+
+//계좌 모률 계좌번호 정규식
+class AccountMask extends React.Component {
+  render() {
+    return (
+      <NumberFormat
+        {...this.props}
+      />
+    );
+  }
+}
 
 class AddAccount extends React.Component {
   state = {
@@ -24,6 +41,8 @@ class AddAccount extends React.Component {
     accountCategoryCodeNo : "",
     accountCategoryCodeName : "",
     success : false,
+    snackBar: false,
+    snackBarContents : '',
   };
 
   //계좌등록 다이얼로그 열기
@@ -33,13 +52,23 @@ class AddAccount extends React.Component {
 
   //게좌등록 다이얼로그 닫기
   handleRequestClose = () => {
-    this.setState({open: false});
+    this.setState({
+      open: false,
+      accountRegNo : "",
+      accountNo : "",
+      accountUsageStatusCodeNo : "",
+      accountHolder : "",
+      bankCodeNo : "",
+      bankCodeName : "",
+      reference : "",
+      accountCategoryCodeNo : "",
+      accountCategoryCodeName : "",
+    });
   };
 
   //계좌등록 위해 필요한 값 셋팅
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
-    console.log(this.state);
   };
 
   //등록성공알람 켜기
@@ -58,11 +87,33 @@ class AddAccount extends React.Component {
     })
     this.handleRequestClose()
   }
+
+  //snackBar 열기
+  openSnackBar  = (valueName) => {
+    this.setState({ ...this.state, snackBar: true, snackBarContents : valueName });
+  };
+
+  //snackBar 닫기
+  closeSnackBar = () => {
+    this.setState({ ...this.state, snackBar: false });
+  };
   
 
   //계좌등록
   submitAccount = (event) => {
     event.preventDefault();
+
+    if(this.state.accountNo === 'undefined'){
+      this.openSnackBar('계좌번호')
+    } else if(this.state.accountHolder === ''){
+      this.openSnackBar('예금주')
+    } else if(this.state.bankCodeNo === ''){
+      this.openSnackBar('은행')
+    } else if(this.state.reference === ''){
+      this.openSnackBar('참고')
+    } else if(this.state.accountCategoryCodeNo === ''){
+      this.openSnackBar('사용처 선택')
+    } else {
     
     this.props.addAccount({
         accountNo : this.state.accountNo,
@@ -71,19 +122,8 @@ class AddAccount extends React.Component {
         reference : this.state.reference,
         accountCategoryCodeNo : this.state.accountCategoryCodeNo,
     })
-    this.setState({
-      accountRegNo : "",
-      accountNo : "",
-      accountUsageStatusCodeNo : "",
-      accountHolder : "",
-      bankCodeNo : "",
-      bankCodeName : "",
-      reference : "",
-      accountCategoryCodeNo : "",
-      accountCategoryCodeName : "",
-    });
-
     this.openSuccessAlarm();
+    }
   }
 
   render() {
@@ -104,7 +144,7 @@ class AddAccount extends React.Component {
           <DialogTitle>계좌등록</DialogTitle>
             <DialogContent style={{minWidth: '700px', maxWidth: '700px'}}>
               <DialogContentText>
-                내용을 빠진항목없이 입력 바랍니다.
+                빠진 항목없이 입력 바랍니다.
               </DialogContentText>
                 <form className="row" noValidate autoComplete="off">
 
@@ -131,9 +171,6 @@ class AddAccount extends React.Component {
                     <TextField
                         id="accontHolder"
                         label="예금주명"
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
                         placeholder="예금주명 입력"
                         value={this.state.accountHolder}
                         margin="normal"
@@ -143,19 +180,23 @@ class AddAccount extends React.Component {
                   </div>
 
                   <div className="col-md-5 col-6" style={{float:"left"}}>
-                    <TextField
-                        id="accontNo"
-                        label="계좌번호"
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                        placeholder="계좌번호 입력"
-                        value={this.state.accountNo}
-                        margin="normal"
-                        onChange={this.handleChange('accountNo')}
-                        fullWidth={true}
-                        helperText="- 를 제외하고 입력해주세요"
-                    />
+                    <FormControl className="mb-3" fullWidth margin='normal'>
+                      <InputLabel htmlFor="accountNo">계좌번호</InputLabel>
+                        <Input
+                          id="accontNo"
+                          placeholder="계좌번호 입력"
+                          value={this.state.accountNo}
+                          margin="normal"
+                          onChange={this.handleChange('accountNo')}
+                          fullWidth={true}
+                          className="w-100 mb-3"
+                          inputProps={{
+                          'aria-label': 'Description',
+                          }}
+                          inputComponent={AccountMask}
+                        />
+                        <FormHelperText style={{margin:'0px'}}>- 를 제외하고 입력해주세요</FormHelperText>
+                    </FormControl>  
                   </div>
 
  
@@ -183,9 +224,6 @@ class AddAccount extends React.Component {
                     <TextField
                         id="reference"
                         label="참고"
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
                         placeholder="참고를 입력하세요"
                         helperText="계좌 검색시 사용할 키워드를 입력해주세요"
                         value={this.state.reference}
@@ -205,6 +243,17 @@ class AddAccount extends React.Component {
                     >
                     등록에 성공했습니다
                   </SweetAlert>
+
+                  <Snackbar
+                    anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                    open={this.state.snackBar}
+                    onClose={this.closeSnackBar}
+                    ContentProps={{
+                      'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.snackBarContents} 항목을 입력하지 않으셨습니다</span>}
+                    autoHideDuration={1500}
+                  />
 
                 </form>
             </DialogContent>
