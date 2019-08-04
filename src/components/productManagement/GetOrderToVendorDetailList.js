@@ -99,17 +99,23 @@ const columnData = [
                       <td>{row.quantity}</td>
                       <td>{row.amount}</td>
                     
-                      
-                      {row.orderToVendorProductStatusCodeName =='입고대기'?
-                      <td onClick={event => this.updateOrderToVenItem(event,row) } style={{cursor:'pointer', color:'red'}} >
-                      {row.orderToVendorProductStatusCodeName }
+                      <b>
+                      {
+                      row.orderToVendorProductStatusCodeName =='입고대기'?
+                      <td onClick={event => this.updateOrderToVenItem(event,row) } style={{cursor:'pointer', color:'green'}} >
+                      {row.orderToVendorProductStatusCodeName } 
                       </td>
-                    :
+                    :(
+                      row.orderToVendorProductStatusCodeName =='발주취소'?
+                      <td  style={{color:'red'}} >
+                      {row.orderToVendorProductStatusCodeName } 
+                      </td>:
                       <td style={{ color:'blue'}} >
                       {row.orderToVendorProductStatusCodeName }
                       </td>
-                      }
-                    
+                    )
+                    }
+                    </b>
                     </tr>
                     
                     

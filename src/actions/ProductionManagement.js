@@ -5,7 +5,8 @@ import {
     UPDATE_ORDER_TO_VENDOR_CODE , ADD_ORDER_TO_VENDOR, ADD_ORDER_BRANCH, UPDATE_ORDER_TO_VEN_ITEM_CODE,
      CARRY_ORDER_BRANCH, GET_ORDER_BRANCH_LIST, CARRY_ORDER_BRANCH_LIST, MODIFY_ORDER_BRANCH_STATUS , 
      CARRY_PRODUCT_LIST_FOR_ORDER , GET_PRODUCT_LIST_FOR_ORDER , GET_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE
-     , CARRY_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE , GET_PRODUCT , CARRY_PRODUCT , UPDATE_PRODUCT
+     , CARRY_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE , GET_PRODUCT , CARRY_PRODUCT , UPDATE_PRODUCT ,
+     UPDATE_PRODUCT_USAGE_STATUS
      
 } from '../actionTypes/ActionTypes';
 import {SEND_SHIPPING} from '../actionTypes/ActionTypes';
@@ -172,6 +173,13 @@ export const carryProduct = (product) => {
 export const updateProduct = (product) => {
     return {
         type: UPDATE_PRODUCT,
+        payload: product
+    }
+}
+
+export const updateProductUsageStatus = (product) => {
+    return {
+        type: UPDATE_PRODUCT_USAGE_STATUS,
         payload: product
     }
 }

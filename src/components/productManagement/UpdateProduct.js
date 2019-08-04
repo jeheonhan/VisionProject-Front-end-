@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getCodeList, cleanStoreState, updateAccount, updateProduct } from 'actions/index';
+import { getCodeList, cleanStoreState, updateAccount, updateProduct, updateProductUsageStatus } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -26,6 +26,16 @@ class UpdateProduct extends React.Component {
         this.props.cleanStoreState('Product');
         this.openSuccessAlarm();
     }
+    //삭제
+    submitProductUpdate = (event) => {
+        event.preventDefault();
+        this.props.updateProductUsageStatus(this.state.product);
+        this.setState({ updateFlag : false});
+        this.props.cleanStoreState('Product');
+        this.props.close();
+    }
+
+
 
     //물품수정
     handleChange = name => event => {
@@ -95,6 +105,7 @@ class UpdateProduct extends React.Component {
                                 value={this.state.product && this.state.product.productName}
                                 fullWidth={true}
                                 margin="normal"
+                                onChange={this.handleChange('productName')}
                             />
                         </div>
                         <div className="col-md-5 col-6" style={{float:"left"}}>
@@ -147,6 +158,9 @@ class UpdateProduct extends React.Component {
             <Button color="secondary" onClick={(event) => {this.submitProduct(event)}}>
                 수정
             </Button>
+            <Button onClick={(event) => {this.submitProductUpdate(event)}}>
+                삭제
+            </Button>
             <Button onClick={ event => this.closeUpdateProduct(event) } color="primary">
                 닫기
             </Button>
@@ -175,4 +189,4 @@ const mapStateToProps = ({ productionManagement }) => {
     return { Product };
 }
 
-export default connect(mapStateToProps, {cleanStoreState, updateProduct})(UpdateProduct);
+export default connect(mapStateToProps, {cleanStoreState, updateProduct , updateProductUsageStatus})(UpdateProduct);
