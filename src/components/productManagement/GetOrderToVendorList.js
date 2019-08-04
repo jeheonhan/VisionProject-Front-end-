@@ -221,7 +221,7 @@ class EnhancedTable extends React.Component {
   }
 
   onConfirmDelete = () => {
-    this.updateOrderToVendorList(event, row)
+    this.updateOrderToVendorList()
     
     this.setState({
       ...this.state,
