@@ -363,3 +363,5 @@ export const CARRY_ORDER_TO_VENDOR_PRODUCT_STATUS_COMPLETE='carry_order_to_vendo
 export const GET_PRODUCT ='get_product';
 export const CARRY_PRODUCT ='carry_product';
 export const UPDATE_PRODUCT = 'update_product';
+export const UPDATE_PRODUCT_USAGE_STATUS='update_product_usage_status';
+

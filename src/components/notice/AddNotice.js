@@ -105,7 +105,7 @@ class AddNotice extends React.Component {
 
       render(){
 
-        //console.log(this.state.notice);
+        console.log(this.state.notice);
         //console.log(this.state.notice.noticeHeaderCodeNo)
         const { noticeHeaderList } = this.props;
 
@@ -134,7 +134,7 @@ class AddNotice extends React.Component {
                     <Toolbar className="bg-secondary">
                     <Typography variant="title" color="inherit" style={{
                         flex: 1,
-                        minWidth: '800px',
+                        minWidth: '1000px',
                     }}>
                         공지사항 등록
                     </Typography>

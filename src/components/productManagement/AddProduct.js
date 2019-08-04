@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
+import { Input } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -161,6 +162,7 @@ class FullScreenDialog extends React.Component {
     </div>
     <div className="col-md-3 col-3" >
     <TextField
+      type="number"
       name="purchasePrice"
       label="매입단가"
       value={this.state.name}
@@ -172,6 +174,7 @@ class FullScreenDialog extends React.Component {
     </div>
     <div className="col-md-3 col-3" >
     <TextField
+      type="number"
       name="salesPrice"
       label="출하단가"
       value={this.state.name}
@@ -183,6 +186,7 @@ class FullScreenDialog extends React.Component {
     </div>
     <div className="col-md-3 col-3" >
     <TextField
+      type="number"
       name="quantity"
       label="재고"
       value={this.state.name}

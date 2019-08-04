@@ -45,10 +45,10 @@ class GetNoticeDetail extends React.Component {
           maxWidth=""
         >
           <AppBar className="position-relative" >
-            <Toolbar className="bg-deep-orange">
+            <Toolbar className="bg-secondary">
               <Typography variant="title" color="inherit" style={{
                 flex: 1,
-                minWidth: '800px',
+                minWidth: '1000px',
                 }} 
                 align="left"
                 >
@@ -62,7 +62,7 @@ class GetNoticeDetail extends React.Component {
 
               <br/>
               <div align="left">
-              <h2><strong>&nbsp;&nbsp;{this.state.notice.noticeTitle}</strong></h2>
+              <h2><strong>&nbsp;&nbsp;{this.state.notice.completeTitle}</strong></h2>
               </div>
               <br/>
               <div  align="left">
@@ -97,6 +97,13 @@ class GetNoticeDetail extends React.Component {
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               </div>
               <br/><br/>
+              <div align="right">
+              <Button variant="contained" variant="outlined" onClick={() => this.props.updateNoticeOpen()}>
+                        수정
+              </Button>
+              </div>
+              <br/><br/>
+
               <Button onClick={this.props.handleRequestClose} variant="outlined" aria-label="Close" ><i class="zmdi zmdi-close-circle zmdi-hc-1g"></i>닫기</Button>
               <br/>
         </Dialog>

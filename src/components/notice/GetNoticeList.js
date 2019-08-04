@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import {getNoticeList, getNoticeDetail, convertNoticeStatusCode } from 'actions/index';
+import {getNoticeList, getNoticeDetail, convertNoticeStatusCode, cleanStoreState, updateNotice } from 'actions/index';
 import GetNoticeDetail from 'components/notice/GetNoticeDetail';
 import { connect } from 'react-redux';
 import UpdateNotice from './UpdateNotice';
@@ -50,13 +50,13 @@ const columnData = [
       return (
         <TableHead>
           <TableRow>
-            <TableCell padding="checkbox">
+            {/* <TableCell padding="checkbox">
               <Checkbox color="secondary"
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={numSelected === rowCount}
                         onChange={onSelectAllClick}
               />
-            </TableCell>
+            </TableCell> */}
             {columnData.map(column => {
               return (
                 <TableCell
@@ -104,7 +104,7 @@ const columnData = [
           )}
         </div>
         <div className="spacer"/>
-        <div className="actions">
+        {/* <div className="actions">
           {numSelected > 0 ? (
             // 툴팁 내용
             <Tooltip title="수정">
@@ -119,7 +119,7 @@ const columnData = [
               </IconButton>
             </Tooltip>
           )}
-        </div>
+        </div> */}
       </Toolbar>
     );
   };
@@ -221,10 +221,26 @@ const columnData = [
       this.props.getNoticeList(search);
       this.setState({open : false});
     }
+
+    updateNoticeOpen = () => {
+      this.setState({ updateOpen:true});
+      this.handleRequestClose();
+    }
+
+    updateNoticeClose = () => {
+      this.props.cleanStoreState('noticeDetail');
+      this.setState({updateOpen : false});
+    }
+
+    updateNotice = ( notice ) => {
+      this.props.updateNotice( notice );
+      this.props.cleanStoreState('noticeDetail');
+      this.setState({updateOpen : false});
+    }
   
     render() {
 
-      const { noticeList } = this.props;
+      const { noticeList, noticeHeaderList } = this.props;
       const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
       if(noticeList && noticeList != this.state.data){
@@ -263,10 +279,10 @@ const columnData = [
                         key={page*rowsPerPage+index}
                         selected={isSelected}
                       >
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox color="secondary" checked={isSelected} 
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell align="left" >{row.noticeNo}</TableCell>
                         <TableCell align="left" ><span onClick={event => this.getNotice(event, row.noticeNo)} style={{cursor:'pointer'}}>{row.noticeTitle}</span></TableCell>
                         <TableCell align="left">{row.noticeRegDate}</TableCell>
@@ -291,13 +307,17 @@ const columnData = [
               { this.props.noticeDetail && (<GetNoticeDetail
               open={ this.state.open }
               handleRequestClose={ this.handleRequestClose }
+              updateNoticeOpen={this.updateNoticeOpen}
               noticeDetail={ this.props.noticeDetail }
             />)}
 
-            <UpdateNotice
-
-                //noticeHeaderList = {this.props.}
-            />
+            {this.props.noticeDetail && <UpdateNotice
+                updateOpen={this.state.updateOpen}
+                updateClose={this.updateNoticeClose}
+                noticeHeaderList = {noticeHeaderList}
+                updateNotice = {this.updateNotice}
+                noticeDetail = {this.props.noticeDetail}
+            />}
 
             </div>
           </div>
@@ -311,4 +331,4 @@ const columnData = [
     return{noticeList, noticeDetail};
   }
   
-  export default connect(mapStateToProps, {getNoticeList, getNoticeDetail, convertNoticeStatusCode })(EnhancedTable);
+  export default connect(mapStateToProps, {getNoticeList, getNoticeDetail, convertNoticeStatusCode, cleanStoreState, updateNotice })(EnhancedTable);
