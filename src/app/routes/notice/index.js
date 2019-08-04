@@ -11,8 +11,8 @@ const Notice = ({match}) => {
           <NoticeManage></NoticeManage>
           {/* 지점이 로그인시 보여주지 않을 것 */}
           <div align="right">
-            <AddNotice></AddNotice>
-          </div>  
+          <AddNotice></AddNotice>
+          </div>
       </div>
     );
   };
