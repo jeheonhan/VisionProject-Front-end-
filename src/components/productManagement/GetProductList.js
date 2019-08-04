@@ -28,7 +28,7 @@ const columnData = [
   {id: 'productName', align: true, disablePadding: false, label: '물품명'},
   {id: 'purchasePrice', align: true, disablePadding: false, label: '매입단가'},
   {id: 'salesPrice: ', align: true, disablePadding: false, label: '출하단가'},
-  {id: 'quantity', align: true, disablePadding: false, label: '재고'},
+  {id: 'quantity', align: true, disablePadding: false, label: '재고(개)'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -43,10 +43,6 @@ class EnhancedTableHead extends React.Component {
 
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
-  };
-
-  sortProduct = () => {
-
   };
 
   render() {
@@ -72,7 +68,7 @@ class EnhancedTableHead extends React.Component {
                   <TableSortLabel
                     active={orderBy === column.id}
                     direction={order}
-                    onClick={ column.id == 'quantity'? this.sortProduct()     :   this.createSortHandler(column.id)             }
+                    onClick={this.createSortHandler(column.id)}
                   >
                     {/* 칼럼명 나타나는 영역 */}
                     {column.label}
@@ -104,22 +100,7 @@ let EnhancedTableToolbar = props => {
         )}
       </div>
       <div className="spacer"/>
-      <div className="actions">
-        {numSelected > 0 ? (
-          // 툴팁 내용
-          <Tooltip title="수정">
-            <IconButton aria-label="수정">
-              <DeleteIcon/>
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon/>
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
+      
     </Toolbar>
   );
 };
@@ -129,6 +110,29 @@ EnhancedTableToolbar.propTypes = {
 
 
 class EnhancedTable extends React.Component {
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+      order: 'desc',
+      orderBy: '',
+      selected: [],
+      // data에 props로 들어오는 list값 넣어주기.
+      // data: this.props.ProductList,
+      page: 0,
+      rowsPerPage: 10,
+      search:{searchKeyword:null},
+      flag: false,
+      updateDialogOpen: false
+    };
+
+    const {getInfoAccount} = this.props;
+
+    if({getInfoAccount} !== undefined){
+      getInfoAccount();
+    };
+  }
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -141,13 +145,12 @@ class EnhancedTable extends React.Component {
       order === 'desc'
         ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
         : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
-
-    if(property==='숫자로 비교해야하는 칼럼이름'){
-        order === 'desc'
-        ? this.state.data.sort((a, b) => (b[orderBy] - a[orderBy] ))
-        : this.state.data.sort((a, b) => (a[orderBy] - b[orderBy] ));
-    }
-
+        //숫자비교하는 if문
+        if(property==='quantity'){
+          order === 'desc'
+          ? this.state.data.sort((a, b) => (b[orderBy] - a[orderBy] ))
+          : this.state.data.sort((a, b) => (a[orderBy] - b[orderBy] ));
+      }
 
     this.setState({data, order, orderBy});
   };
@@ -191,28 +194,7 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      order: 'asc',
-      orderBy: '',
-      selected: [],
-      // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.ProductList,
-      page: 0,
-      rowsPerPage: 10,
-      search:{searchKeyword:null},
-      flag: false,
-      updateDialogOpen: false
-    };
-
-    const {getInfoAccount} = this.props;
-
-    if({getInfoAccount} !== undefined){
-      getInfoAccount();
-    };
-  }
+  
 
   //물품수정창 띄우기
   updateProductDialog = (event, productNo) => {
@@ -239,6 +221,9 @@ class EnhancedTable extends React.Component {
       this.setState({data:ProductList});
     }
 
+    console.log(data);
+    console.log(ProductList);
+
     
 
     return (
@@ -253,12 +238,12 @@ class EnhancedTable extends React.Component {
                 orderBy={orderBy}
                 onSelectAllClick={this.handleSelectAllClick}
                 onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
+                rowCount={data && data.length}
               />
               
               <TableBody>
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
-                {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                {data && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
                   return (
@@ -273,9 +258,9 @@ class EnhancedTable extends React.Component {
                     >
                       <TableCell align="left" ><span style={{cursor:'pointer'}} onClick={event => this.updateProductDialog(event,row.productNo)}>{row.productNo}</span></TableCell>
                       <TableCell align="left">{row.productName}</TableCell>
-                      <TableCell align="left">{row.purchasePrice}</TableCell>
-                      <TableCell align="left">{row.salesPrice}</TableCell>
-                      <TableCell align="left">{row.quantity}</TableCell>
+                      <TableCell align="left">{row.purchasePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
+                      <TableCell align="left">{row.salesPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
+                      <TableCell align="left">{row.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -284,7 +269,7 @@ class EnhancedTable extends React.Component {
               <TableFooter>
                 <TableRow>
                   <TablePagination
-                    count={data.length}
+                    count={data && data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={this.handleChangePage}
