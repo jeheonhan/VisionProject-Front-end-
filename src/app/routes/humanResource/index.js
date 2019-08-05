@@ -17,10 +17,10 @@ const HumanResource = ({match}) => (
              <Route path={`${match.url}/workAttitudeCode`} component={asyncComponent(() => import('./routes/WorkAttitudeCode'))}/>
          </Switch>
         )
-        :(  <div>
+        :(  <Switch>
             {alert("접근권한이 없습니다.")}
             <Redirect to={`/app/home`}/>
-            </div>
+            </Switch>
         )}
        
     </div>
