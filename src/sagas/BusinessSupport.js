@@ -1,7 +1,7 @@
 import {all, call, fork, put, takeEvery} from "redux-saga/effects";
 import axios from 'axios';
 import { GET_BRANCH_LIST, GET_BRANCH_DETAIL , ADD_BRANCH, GET_LOCAL_LIST, DELETE_BRANCH, UPDATE_BRANCH} from 'actionTypes/ActionTypes';
-import { carryBranchList, carryBranchDetail, addBranch, getBranchList, carryLocalList } from 'actions/index';
+import { carryBranchList, carryBranchDetail, getBranchList, carryLocalList, getStatementList } from 'actions/index';
 
 const getBranchListRequest = async (search) => {
     return await axios({
@@ -81,6 +81,7 @@ function* getLocalListFn(){
 function* addBranchFn({payload}){
     yield call(addBranchRequest, payload);
     yield put(getBranchList());
+    yield put(getStatementList({searchCondition:'', searchKeyword:''}));
 }
 
 function* convertBranchStatusCodeFn({payload}){

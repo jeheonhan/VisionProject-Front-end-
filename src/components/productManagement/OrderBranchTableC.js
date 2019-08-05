@@ -11,17 +11,18 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { modifyOrderBranchStatus } from 'actions/index'
+import { modifyOrderBranchStatus, getBranchDetail } from 'actions/index'
 import Tooltip from '@material-ui/core/Tooltip';
 import { connect } from 'react-redux';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import ApprovalFormDetail from 'components/approvalForm/ApprovalFormDetail'
 import ProductionManagement from 'reducers/ProductionManagement';
 import { RemoveShoppingCart } from '@material-ui/icons'
-import OrderBranchDetailCompany from 'components/productManagement/OrderBranchDetailCompany'
+import OrderBranchDetailCompany from 'components/productManagement/OrderBranchDetail'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import {Done} from '@material-ui/icons';
 import ShippingDialog from 'components/productManagement/ShippingDialog'
+import GetBranchDetail from 'components/productManagement/GetBranchDetailForOrderBranch'
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
 const columnData = [
@@ -201,6 +202,19 @@ onCancel = () => {
     this.props.modifyOrderBranchStatus(data);
   }
 
+  //지점명 클릭 시 지점정보 가져오기
+  getBranch = (event, row) => {
+    event.preventDefault();
+    if(row.branchNo !== undefined) {
+      this.props.getBranchDetail(row.branchNo);
+    }
+    this.setState({openBranch : true});
+  }
+
+  //지점상세 닫기
+  handleRequestBranchClose = () => {
+    this.setState({openBranch : false});
+  }
 
   //주문번호 클릭 시 상세조회 띄우기
   handleClickNo = (event, row) => {
@@ -251,6 +265,7 @@ onCancel = () => {
       warning:false,
       shippingOpen:false,
       shipList:[],
+      openBranch:false,
       targetOB :{
         statementNo:null
         ,orderFromBranchNo:null
@@ -338,24 +353,43 @@ onCancel = () => {
                     >
                       
                       <TableCell align="left" >
+                      <Tooltip
+                        title="주문 상세조회"
+                        placement={'bottom-start'}
+                        enterDelay={300}
+                      >
                         <span style={{cursor:'pointer'}} onClick={event => this.handleClickNo(event, row)}>
                           {row.orderFromBranchNo}
                         </span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="left">
-                        <span style={{cursor:'pointer'}} onClick={event => this.handleClickNo(event, row)}>
+                      <Tooltip
+                        title="지점 상세조회"
+                        placement={'bottom-start'}
+                        enterDelay={300}
+                      >
+                        <span style={{cursor:'pointer'}} onClick={event => this.getBranch(event, row)}>
                           {row.branchName}
                         </span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="left">{row.orderDate}</TableCell>
                       <TableCell align="left"  size="small" style={{color:textColor}}>{row.orderFromBranchStatusCodeName}{ 
                             row.orderFromBranchStatusCodeNo==="04" && 
-                            <span style={{cursor:'pointer', paddingLeft:"25px"}}  onClick={(event) => this.onCancelOrderAlert(event, row)}>
-                                <Done/>
+                            <span style={{cursor:'pointer', paddingLeft:"15px"}}  onClick={(event) => this.onCancelOrderAlert(event, row)}>
+                                <i class="zmdi zmdi-alert-circle"></i>
                             </span>
                             }</TableCell>
                       <TableCell align="left" >
-                      {row.orderFromBranchStatusCodeNo==="01" || row.orderFromBranchStatusCodeNo==="03" ? <span style={{cursor:'pointer'}}  onClick={(event) => this.onShippingDialog(event, row)}>{row.leftProdToShip}</span> : <span style={{cursor:'pointer'}}  onClick={(event) => this.onShippingDialog(event, row)}><i class="zmdi zmdi-minus zmdi-hc-1x"></i></span>}
+                      <Tooltip
+                        title="상품 출하 관리"
+                        placement={'bottom-start'}
+                        enterDelay={300}
+                      >
+                      {row.orderFromBranchStatusCodeNo==="01" || row.orderFromBranchStatusCodeNo==="03" ? <span style={{cursor:'pointer', display:"inline-block", width:"100px", paddingLeft:"10px"}}  onClick={(event) => this.onShippingDialog(event, row)}>{row.leftProdToShip}</span> 
+                      : <span style={{cursor:'pointer', paddingLeft:"10px", display:"inline-block", width:"100px"}}  onClick={(event) => this.onShippingDialog(event, row)}>{row.orderFromBranchStatusCodeNo==="02"? <i class="zmdi zmdi-check"></i>:<i class="zmdi zmdi-minus zmdi-hc-1x"></i>}</span>}
+                      </Tooltip>
                       </TableCell>
                    
                    </TableRow>
@@ -379,6 +413,11 @@ onCancel = () => {
         <OrderBranchDetailCompany targetOB={this.state.targetOB} 
                             open={this.state.open} 
                             handleClose={this.handleClose}/>
+        <GetBranchDetail
+              open={ this.state.openBranch }
+              handleRequestClose={ this.handleRequestBranchClose }
+              branch={ this.props.branch }
+            />
         <ShippingDialog open={this.state.shippingOpen}
                         cancel={this.onShippingDialogClose}
                         productList={this.state.shipList}
@@ -401,9 +440,10 @@ onCancel = () => {
   }
 }
 
-const mapStateToProps = ({ productionManagement }) => {
+const mapStateToProps = ({ productionManagement, businessSupport }) => {
     const { orderBranchList } = productionManagement;
-    return { orderBranchList }
+    const { branch } = businessSupport;
+    return { orderBranchList, branch }
 }
 
-export default connect(mapStateToProps, {modifyOrderBranchStatus})(EnhancedTable);
+export default connect(mapStateToProps, {modifyOrderBranchStatus, getBranchDetail})(EnhancedTable);

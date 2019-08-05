@@ -12,6 +12,29 @@ import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Input } from '@material-ui/core';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import PropTypes from 'prop-types';
+import NumberFormat from 'react-number-format';
+import Snackbar from '@material-ui/core/Snackbar';
+
+class TradeAmountMask extends React.Component {
+  render() {
+    return (
+      <NumberFormat
+        {...this.props}
+        thousandSeparator
+      />
+    );
+  }
+}
+
+TradeAmountMask.propTypes = {
+  onChange: PropTypes.func.isRequired,
+};
+
+
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -47,11 +70,13 @@ class FullScreenDialog extends React.Component {
       quantity : '',
       vendorNo : '',
       vendorName : '',
-    }
+    },
+    snackBar: false,
+    snackBarContents : '',
   };
 
   handleChange = (e) => {
-    
+
     e.preventDefault();
     var _vendorName;
 
@@ -98,14 +123,39 @@ class FullScreenDialog extends React.Component {
     this.setState({open: false});
   };
 
+   //snackBar 열기
+   openSnackBar  = (valueName) => {
+    this.setState({ ...this.state, snackBar: true, snackBarContents : valueName });
+  };
+
+  //snackBar 닫기
+  closeSnackBar = () => {
+    this.setState({ ...this.state, snackBar: false });
+  };
+
   //Submit
   handleSubmit = () => {
+    
 
-   this.props.addProduct({
-   ...this.state.product
-   });
+    if(this.state.product.productName === ''){
+      this.openSnackBar('물품명')
+    } else if(this.state.product.purchasePrice === ''){
+      this.openSnackBar('매입단가')
+    } else if(this.state.product.salesPrice === ''){
+      this.openSnackBar('출하단가')
+    } else if(this.state.product.quantity === ''){
+      this.openSnackBar('재고')
+    } else if(this.state.product.vendorName === ''){
+      this.openSnackBar('거래처')
+    } else {
+    
+      this.props.addProduct({
+        ...this.state.product
+        })
+        this.handleClickClose();
+    }
 
-    this.handleClickClose()
+
   }
   //랜더링은 setState할때와 reducer가 store값을 세팅할때임.
 
@@ -160,42 +210,56 @@ class FullScreenDialog extends React.Component {
     />
     <br />
     </div>
+   
     <div className="col-md-3 col-3" >
-    <TextField
-      type="number"
-      name="purchasePrice"
-      label="매입단가"
-      value={this.state.name}
-      onChange={this.handleChange}
-      margin="normal"
-      fullWidth
-    />
-    <br />
-    </div>
+                <FormControl className="mb-3" fullWidth margin='normal'>
+                  <InputLabel htmlFor="purchasePrice">매입단가</InputLabel>
+                  <Input
+                    name="purchasePrice"
+                    placeholder="매입단가 입력"
+                    inputComponent={TradeAmountMask}
+                    value={this.state.product.purchasePrice}
+                    fullWidth={true}
+                    margin="none"
+                    onChange={this.handleChange}
+                    endAdornment={this.state.product.purchasePrice ? (<InputAdornment position="end">원</InputAdornment>) :  null}
+                  />
+                </FormControl>
+              </div>
+  
+
     <div className="col-md-3 col-3" >
-    <TextField
-      type="number"
-      name="salesPrice"
-      label="출하단가"
-      value={this.state.name}
-      onChange={this.handleChange}
-      margin="normal"
-      fullWidth
-    />
-    <br />
-    </div>
-    <div className="col-md-3 col-3" >
-    <TextField
-      type="number"
-      name="quantity"
-      label="재고"
-      value={this.state.name}
-      onChange={this.handleChange}
-      margin="normal"
-      fullWidth
-    />
-    <br />
-    </div>
+                <FormControl className="mb-3" fullWidth margin='normal'>
+                  <InputLabel htmlFor="salesPrice">출하단가</InputLabel>
+                  <Input
+                    name="salesPrice"
+                    inputComponent={TradeAmountMask}
+                    label="출하단가"
+                    value={this.state.product.salesPrice}
+                    fullWidth={true}
+                    margin="none"
+                    onChange={this.handleChange}
+                    endAdornment={this.state.product.salesPrice ? (<InputAdornment position="end">원</InputAdornment>) :  null}
+                  />
+                </FormControl>
+              </div>
+
+
+              <div className="col-md-3 col-3" >
+                <FormControl className="mb-3" fullWidth margin='normal'>
+                  <InputLabel htmlFor="quantity">재고</InputLabel>
+                  <Input
+                    name="quantity"
+                    inputComponent={TradeAmountMask}
+                    label="재고"
+                    value={this.state.product.quantity}
+                    fullWidth={true}
+                    margin="none"
+                    onChange={this.handleChange}
+                    endAdornment={this.state.product.quantity ? (<InputAdornment position="end">개</InputAdornment>) :  null}
+                  />
+                </FormControl>
+              </div>
       
     <div className="col-md-3 col-3" >
     <TextField
@@ -226,6 +290,17 @@ class FullScreenDialog extends React.Component {
  </TextField>
     <br />
     </div>
+
+    <Snackbar
+                    anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                    open={this.state.snackBar}
+                    onClose={this.closeSnackBar}
+                    ContentProps={{
+                      'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.snackBarContents} 항목을 입력하지 않으셨습니다</span>}
+                    autoHideDuration={1500}
+                  />
   </div>
           <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleSubmit}>전송</Button>
         </Dialog>
