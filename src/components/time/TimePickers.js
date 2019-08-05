@@ -4,7 +4,7 @@ import {TimePicker} from 'material-ui-pickers';
 
 export default class TimePickers extends Component {
   state = {
-    selectedDate: moment(),
+    //selectedDate: moment(),
     flag:false
   };
 
@@ -32,7 +32,7 @@ export default class TimePickers extends Component {
 
       <TimePicker
         fullWidth
-        value={selectedDate}
+        value={selectedDate? selectedDate:null}
         onChange={this.handleDateChange}
         //props로 전달되는 label
         label={this.props.label && this.props.label}

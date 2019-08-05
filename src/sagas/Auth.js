@@ -13,7 +13,8 @@ import { showAuthMessage
     , convertLoader
     , carryForgotUserId
     , carryPasswordBoolean
-    , carryIdentifyCode } from "actions/index";
+    , carryIdentifyCode 
+    , carryLoginFlag} from "actions/index";
 
 import axios from 'axios';
 
@@ -98,8 +99,8 @@ function* signInUserWithIdPassword({payload}) {
     try {
         const signInUser = yield call(signInUserWithIdPasswordRequest, payload);
         if(signInUser.loginFlag == false){
-            alert("로그인 실패");
             yield put(convertLoader());
+            yield put(carryLoginFlag(signInUser));
         }
         else{
             localStorage.setItem('user', JSON.stringify(signInUser));

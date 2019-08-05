@@ -1,9 +1,6 @@
 import React, {Component} from "react";
 import { connect } from 'react-redux';
-import { getHRCardDetail,
-         getWorkAttitudeList,
-         getSalaryList,
-         cleanStoreState } from 'actions/index';
+import { getBranchDetail, cleanStoreState } from 'actions/index';
 import About from "components/profile/About/index";
 import GetWorkAttitudeInfo from 'components/common/GetWorkAttitudeInfo';
 import GetSalaryInfo from 'components/common/GetSalaryInfo';
@@ -23,39 +20,36 @@ class GetEmployeeInfo extends Component {
     }
     
     componentDidMount(){
-        this.props.getHRCardDetail(this.state.user.employeeNo);
-        this.props.getWorkAttitudeList({searchKeyword:this.state.user.employeeNo});
-        this.props.getSalaryList({searchKeyword:this.state.user.employeeNo})
+        this.props.getBranchDetail(this.state.user.branchNo);
     }
 
     componentWillUnmount(){
-        this.props.cleanStoreState("workAttitudeList");
+        this.props.cleanStoreState("branch");
     }
 
   render() {
 
-    const { HRCardDetailData, workAttitudeList, salaryList } = this.props;
+    const { branch } = this.props;
     const { user } = this.state;
 
-    if(HRCardDetailData == undefined || workAttitudeList == undefined || salaryList == undefined){
+    if(branch == undefined){
         return(<div></div>);
     }else{
         return (
             <Auxiliary>
-              <ProfileHeader HRCardDetailData={HRCardDetailData}/>
+              <ProfileHeader branch={branch}/>
               <div className="jr-profile-content">
                 <div className="row">
                   <div className="col-xl-8 col-lg-8 col-md-7 col-12">
-                    <About HRCardDetailData={HRCardDetailData} title="개인정보"/>
-                    <GetWorkAttitudeInfo workAttitudeList={workAttitudeList}/>
-                    <GetSalaryInfo salaryList={salaryList}/>
+                    <About branch={branch} title="지점정보"/>
+                   
                     {/* <Events/> */}
                   </div>
                   <div className="col-xl-4 col-lg-4 col-md-5 col-12">
-                    <Contact HRCardDetailData={HRCardDetailData}/>
+                    <Contact branch={branch}/>
                     <div className="row">
                       <div className="col-12">
-                        <Signature signatureImage={HRCardDetailData.signatureImage}/>
+                        {/* <Signature signatureImage={branch.signatureImage}/> */}
                       </div>
                       {/* <div className="col-12">
                         <Photos photoList={photoList}/>
@@ -73,11 +67,10 @@ class GetEmployeeInfo extends Component {
 }
 
 
-const mapStateToProps = ({humanResource, accounting}) => {
-    const { HRCardDetailData, workAttitudeList } = humanResource;
-    const { salaryList } = accounting;
-    return { HRCardDetailData, workAttitudeList, salaryList }
+const mapStateToProps = ({ businessSupport }) => {
+    const { branch } = businessSupport;
+    return { branch }
 }
 
-export default connect(mapStateToProps, { getHRCardDetail, getWorkAttitudeList, cleanStoreState, getSalaryList })(GetEmployeeInfo);
+export default connect(mapStateToProps, { getBranchDetail, cleanStoreState })(GetEmployeeInfo);
 

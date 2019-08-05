@@ -6,6 +6,8 @@ import { getCommuteList,
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
 import SweetAlert from 'react-bootstrap-sweetalert'
+import Snackbar from '@material-ui/core/Snackbar';
+
 
 const localizer = BigCalendar.momentLocalizer(moment);
 
@@ -17,7 +19,9 @@ class ManageCommute extends React.Component{
         this.state = {
             user:JSON.parse(localStorage.getItem('user')),
             goToWorkConfirm:false,
-            leaveWorkConfirm:false
+            leaveWorkConfirm:false,
+            snackbar:false,
+            snackbarContents:""
         }
     }
     
@@ -88,6 +92,23 @@ class ManageCommute extends React.Component{
         })
     }
 
+    //스낵바 열기
+    handleRequestSnackBarOpen = (contents) => {
+        this.setState({
+        snackbar:true,
+        snackbarContents:contents
+        })
+    }
+
+
+    //스낵바 닫기
+    handleRequestSnackBarClose = () => {
+        this.setState({
+        snackbar:false,
+        snackbarContents:""
+        })
+    }
+
     render(){
 
         const { commuteList } = this.props;
@@ -123,7 +144,7 @@ class ManageCommute extends React.Component{
                 commuteList.map( v => {
                     if(v.commuteDate == d.format('YYYY/MM/DD')){
                             if(v.leaveWorkTime){
-                                alert('이미 퇴근처리가 완료되었습니다.')
+                                this.handleRequestSnackBarOpen("이미 퇴근처리가 완료되었습니다.");
                             }else{
                                 this.handleLeaveWorkConfirmOpen(v);
                             }
@@ -141,7 +162,6 @@ class ManageCommute extends React.Component{
         return(
             <div className="app-calendar app-cul-calendar animated slideInUpTiny animation-duration-3">
                 <h3 className="callout">
-                   출/퇴근
                 </h3>
                 <BigCalendar
                     selectable
@@ -152,6 +172,7 @@ class ManageCommute extends React.Component{
                     //eventStyleGetter={(this.eventStyleGetter)}
                     onSelectEvent={event => alert(event.title)}
                     onSelectSlot={(slotInfo) => {handleAddCommute(slotInfo)}}
+                    ViewProps={{month:false}}
                 />
                 <SweetAlert show={this.state.goToWorkConfirm}
                     warning
@@ -159,7 +180,7 @@ class ManageCommute extends React.Component{
                     confirmBtnText={"Yes"}
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
-                    title={"현재시간 "+moment().format("YYYY/MM/DD HH:mm:ss")+"으로 출근을 입력하시겠습니까?"}
+                    title={<div dangerouslySetInnerHTML={ {__html: "현재시간 "+moment().format("YYYY/MM/DD HH:mm:ss")+"으로<br/> 출근을 입력하시겠습니까?"} }/>}
                     onConfirm={this.onConfirmGoToWork}
                     onCancel={this.onCancelGoToWork}
                 ></SweetAlert>
@@ -169,10 +190,20 @@ class ManageCommute extends React.Component{
                     confirmBtnText={"Yes"}
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
-                    title={"현재시간"+moment().format("YYYY/MM/DD HH:mm:ss")+"으로 퇴근을 입력하시겠습니까?"}
+                    title={<div dangerouslySetInnerHTML={ {__html: "현재시간"+moment().format("YYYY/MM/DD HH:mm:ss")+"으로<br/> 퇴근을 입력하시겠습니까?"} }/>}
                     onConfirm={this.onConfirmLeaveWork}
                     onCancel={this.onCancelLeaveWork}
                 ></SweetAlert>
+                <Snackbar
+                    anchorOrigin={{vertical:'top', horizontal:'center'}}
+                    open={this.state.snackbar}
+                    autoHideDuration="1500"
+                    onClose={this.handleRequestSnackBarClose}
+                    ContentProps={{
+                    'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.snackbarContents}</span>}
+                />
             </div>
         );
     }

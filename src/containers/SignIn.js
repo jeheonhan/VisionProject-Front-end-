@@ -10,19 +10,23 @@ import {
   hideMessage,
   showAuthLoader,
   userSignIn,
-} from 'actions/Auth';
+  cleanStoreState
+} from 'actions/index';
 import ForgotId from 'components/login/ForgotId';
 import ForgotPassword from 'components/login/ForgotPassword';
+import Snackbar from '@material-ui/core/Snackbar';
 
 class SignIn extends React.Component {
   constructor() {
     super();
     this.state = {
-      userId: 'trueId',
-      password: 'truePwd',
+      userId: '',
+      password: '',
       loginOpen:true,
       forgotIdOpen:false,
-      forgotPwdOpen:false
+      forgotPwdOpen:false,
+      snackbar:false,
+      snackbarContents:""
     }
   }
 
@@ -53,9 +57,33 @@ class SignIn extends React.Component {
     })
   }
 
+    //스낵바 열기
+    handleRequestSnackBarOpen = (contents) => {
+      this.setState({
+        snackbar:true,
+        snackbarContents:contents
+      })
+    }
+  
+  
+    //스낵바 닫기
+    handleRequestSnackBarClose = () => {
+      this.setState({
+        snackbar:false,
+        snackbarContents:""
+      })
+    }
+  
+
   render() {
     
-    const {showMessage, loader, alertMessage} = this.props;
+    const {showMessage, loader, alertMessage, loginFlagData} = this.props;
+
+    if(loginFlagData && loginFlagData.loginFlag == false){
+      this.handleRequestSnackBarOpen("등록된 ID가 없습니다. 다시 확인하세요.")
+      this.props.cleanStoreState("loginFlagData");
+    }
+
     console.log(this.state)
     return (
       
@@ -149,6 +177,17 @@ class SignIn extends React.Component {
 
         {this.state.forgotIdOpen && (<ForgotId/>)}
         {this.state.forgotPwdOpen && (<ForgotPassword/>)}
+
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestSnackBarClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
         
       </div>
     );
@@ -158,12 +197,13 @@ class SignIn extends React.Component {
 const mapStateToProps = ({auth}) => {
   //reducer/Auth.js가 로그인 성공 시에 authUser를 store에 저장
   //                  로그인 실패 시에 showMessage를 true, alertMessage는 payload로 store에 저장
-  const {loader, alertMessage, showMessage, authUser} = auth;
-  return {loader, alertMessage, showMessage, authUser}
+  const {loader, alertMessage, showMessage, authUser, loginFlagData} = auth;
+  return {loader, alertMessage, showMessage, authUser, loginFlagData}
 };
 
 export default connect(mapStateToProps, {
   userSignIn,
   hideMessage,
-  showAuthLoader
+  showAuthLoader,
+  cleanStoreState
 })(SignIn);

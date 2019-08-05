@@ -2,10 +2,11 @@ import React from 'react';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import asyncComponent from '../../../util/asyncComponent';
 import ContainerHeader from "components/ContainerHeader";
+import GetBranchInfo from 'components/common/GetBranchInfo';
 
 const GetInfoBranch = ({match}) => (
     <div  className="app-wrapper">
-       <ContainerHeader title={"내정보보기"} match={match}/>
+       <GetBranchInfo/>
     </div>
 );
 

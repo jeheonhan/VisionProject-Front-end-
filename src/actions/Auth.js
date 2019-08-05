@@ -17,7 +17,8 @@ import {
     REQUEST_IDENTIFY_CODE,
     SEND_IDENTIFY_CODE,
     CARRY_IDENTIFY_CODE,
-    MODIFY_PASSWORD
+    MODIFY_PASSWORD,
+    CARRY_LOGIN_FLAG
 } from 'actionTypes/ActionTypes';
 
 export const userSignIn = (user) => {
@@ -139,6 +140,13 @@ export const carryIdentifyCode = (data) => {
 export const modifyPassword = (data) => {
     return{
         type: MODIFY_PASSWORD,
+        payload: data
+    }
+}
+
+export const carryLoginFlag = (data) => {
+    return{
+        type: CARRY_LOGIN_FLAG,
         payload: data
     }
 }

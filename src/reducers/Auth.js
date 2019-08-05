@@ -11,7 +11,9 @@ import {
     CARRY_FORGOT_USER_ID,
     CLEAN_STORE_STATE,
     CARRY_PASSWORD_BOOLEAN,
-    CARRY_IDENTIFY_CODE
+    CARRY_IDENTIFY_CODE,
+    CARRY_LOGIN_FLAG,
+    
 } from "actionTypes/ActionTypes";
 
 const INIT_STATE = {
@@ -123,6 +125,21 @@ export default (state = INIT_STATE, action) => {
             return{
                 ...state,
                 identyCode: action.payload
+            }
+        }
+
+        case CARRY_LOGIN_FLAG : {
+            return{
+                ...state,
+                loginFlagData: action.payload
+            }
+        }
+
+        //원하는 store의 state값 날리기
+        case CLEAN_STORE_STATE : {
+            return{
+                ...state,
+                [action.payload]:null
             }
         }
 

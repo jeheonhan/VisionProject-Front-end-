@@ -55,9 +55,9 @@ class UserInfo extends React.Component {
                 }
               }}
         >
-          <MenuItem onClick={this.handleRequestClose}>
-            <NavLink to={user.employeeNo? "/app/getMyInfo/employee":"/app/getMyInfo/branch"}>
-              <i className="zmdi zmdi-account zmdi-hc-fw mr-2"/>
+          <MenuItem onClick={this.handleRequestClose} >
+            <NavLink to={user.employeeNo? "/app/getMyInfo/employee":"/app/getMyInfo/branch"} className="text-black">
+              <i className="zmdi zmdi-account zmdi-hc-fw mr-2 "/>
               내정보보기
             </NavLink>
           </MenuItem>
@@ -65,8 +65,8 @@ class UserInfo extends React.Component {
 
 
           <MenuItem>
-            <NavLink to="/app/commute">
-              <i className="zmdi zmdi-settings zmdi-hc-fw mr-2"/>
+            <NavLink to="/app/commute" className="text-black">
+              <i className="zmdi zmdi-assignment zmdi-hc-fw mr-2"/>
               출퇴근기록
             </NavLink>
           </MenuItem>

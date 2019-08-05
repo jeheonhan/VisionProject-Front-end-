@@ -151,6 +151,7 @@ export const REQUEST_IDENTIFY_CODE = 'request_identify_code';
 export const SEND_IDENTIFY_CODE = 'send_identify_code';
 export const CARRY_IDENTIFY_CODE = 'carry_identify_code';
 export const MODIFY_PASSWORD = 'modify_password';
+export const CARRY_LOGIN_FLAG = 'carry_login_flag';
 
 //공통
 export const SEND_EMAIL = 'send_email';
