@@ -20,7 +20,7 @@ class CodeDetailManage extends React.Component{
 
         if(codeList===undefined || codeList===''){
             this.props.getForCodeDetail(this.state.search)
-            return (<div>&nbsp;&nbsp;LOADING...</div>)
+            return (<div></div>)
         }
 
         else
