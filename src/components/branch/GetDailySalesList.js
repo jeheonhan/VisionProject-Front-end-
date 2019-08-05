@@ -19,6 +19,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect } from 'react-redux';
 import { getDailySalesList, getDailySalesDetail, modifyDailySales } from 'actions';
 import GetDailySalesDetail from './GetDailySalesDetail';
+import AddDatePicker from './AddDatePicker';
 
 
 const columnData = [
@@ -48,13 +49,13 @@ const columnData = [
       return (
         <TableHead>
           <TableRow>
-            <TableCell padding="checkbox">
+            {/* <TableCell padding="checkbox">
               <Checkbox color="secondary"
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={numSelected === rowCount}
                         onChange={onSelectAllClick}
               />
-            </TableCell>
+            </TableCell> */}
             {columnData.map(column => {
               return (
                 <TableCell
@@ -102,7 +103,7 @@ const columnData = [
           )}
         </div>
         <div className="spacer"/>
-        <div className="actions">
+        {/* <div className="actions">
           {numSelected > 0 ? (
             // 툴팁 내용
             <Tooltip title="수정">
@@ -117,7 +118,7 @@ const columnData = [
               </IconButton>
             </Tooltip>
           )}
-        </div>
+        </div> */}
       </Toolbar>
     );
   };
@@ -140,6 +141,12 @@ const columnData = [
         order === 'desc'
           ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
           : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+
+          if(property==='viewCount'||property==='dailyTotalAmount'){
+            order === 'desc'
+            ? this.state.data.sort((a, b) => (b[orderBy] - a[orderBy] ))
+            : this.state.data.sort((a, b) => (a[orderBy] - b[orderBy] ));
+        }
   
       this.setState({data, order, orderBy});
     };
@@ -267,10 +274,10 @@ const columnData = [
                         key={page*rowsPerPage+index}
                         selected={isSelected}
                       >
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox color="secondary" checked={isSelected} 
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell align="left" >{row.branchNo}</TableCell>
                         <TableCell align="left"><span onClick={ event => this.getDailySalesDetail(event, row)} style={{cursor:'pointer'}}>{row.salesDate}</span></TableCell>
                         <TableCell align="left">{row.dailyTotalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
@@ -290,6 +297,8 @@ const columnData = [
                   </TableRow>
                 </TableFooter>
               </Table>
+
+              {/* <AddDatePicker></AddDatePicker> */}
 
               { this.props.salesProduct && (<GetDailySalesDetail
               open={ this.state.open }

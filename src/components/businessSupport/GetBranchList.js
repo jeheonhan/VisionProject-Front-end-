@@ -28,7 +28,7 @@ const columnData = [
     {id: 'branchName', align: true, disablePadding: false, label: '지점명'},
     {id: 'localCodeName', align: true, disablePadding: false, label: '지역'},
     {id: 'address', align: true, disablePadding: false, label: '주소'},
-    {id: 'branchTel', align: true, disablePadding: false, label: '전화번호'},
+    //{id: 'branchTel', align: true, disablePadding: false, label: '전화번호'},
     {id: 'branchRegDate', align: true, disablePadding: false, label: '등록일자'}, 
     {id: 'branchStatus', align: true, disablePadding: false, label: '영업상태'}, 
   ];
@@ -54,13 +54,13 @@ const columnData = [
       return (
         <TableHead>
           <TableRow>
-            <TableCell padding="checkbox">
+            {/* <TableCell padding="checkbox">
               <Checkbox color="secondary"
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount!==0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
               />
-            </TableCell>
+            </TableCell> */}
             {columnData.map(column => {
               return (
                 <TableCell
@@ -108,7 +108,7 @@ const columnData = [
           )}
         </div>
         <div className="spacer"/>
-        <div className="actions">
+        {/* <div className="actions">
           {numSelected > 0 ? (
             // 툴팁 내용
             <Tooltip title="수정">
@@ -123,7 +123,7 @@ const columnData = [
               </IconButton>
             </Tooltip>
           )}
-        </div>
+        </div> */}
       </Toolbar>
     );
   };
@@ -308,16 +308,16 @@ const columnData = [
                         selected={isSelected}
                         //className={row.branchStatusCodeNo == '01' ? "" : "bg-grey"}
                       >
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox color="secondary" checked={isSelected} 
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell align="left" ><span onClick={ event => this.getBranch(event, row.branchNo)} style={{cursor:'pointer'}}>{row.branchName}</span></TableCell>
                         <TableCell align="left">{row.localCodeName}</TableCell>
                         <TableCell align="left">{row.address}</TableCell>
-                        <TableCell align="left">{row.branchTel}</TableCell>
+                        {/* <TableCell align="left">{row.branchTel}</TableCell> */}
                         <TableCell align="left">{row.branchRegDate}</TableCell>
-                        <TableCell align="left">{row.branchStatusCodeNo == '01' ? <i class="zmdi zmdi-check zmdi-hc-2x"></i> : <i class="zmdi zmdi-minus-circle zmdi-hc-2x"></i>}</TableCell>
+                        <TableCell align="left">{row.branchStatusCodeNo == '01' ? <i class="zmdi zmdi-check zmdi-hc-2x"></i> : <i class="zmdi zmdi-close zmdi-hc-2x"></i>}</TableCell>
                       </TableRow>
                     );
                   })}
