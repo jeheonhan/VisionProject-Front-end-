@@ -149,16 +149,21 @@ let EnhancedTableToolbar = props => {
               </Tooltip>
             </div>
           ) : (
-            <div style={{paddingRight:'20px'}}>
-              <SearchBox 
-                styleName="d-none d-sm-block"
-                placeholder="거래처번호/명"
-                onChange={updateSearchKeyword}
-                value={value.searchKeyword}
-                onClick={ event => searchActivity(event) }
-                onKeyDown={ event => searchEnterActivity(event) }
-              />
-            </div>
+            <Tooltip
+            title="검색하기"
+            placement={'bottom-start'}
+            enterDelay={300}>
+              <div style={{paddingRight:'20px'}}>
+                <SearchBox 
+                  styleName="d-none d-sm-block"
+                  placeholder="거래처번호/명"
+                  onChange={updateSearchKeyword}
+                  value={value.searchKeyword}
+                  onClick={ event => searchActivity(event) }
+                  onKeyDown={ event => searchEnterActivity(event) }
+                />
+              </div>
+            </Tooltip>
           )}
           
       </div>
@@ -389,14 +394,41 @@ class VendorTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, row.vendorNo)}/>
                       </TableCell>
-                      <TableCell align="left" ><span onClick={ event => this.updateVendorDialog(event, row.vendorNo) } style={{cursor:'pointer'}} title="수정하기">{row.vendorNo}</span></TableCell>
+                      <TableCell align="left" >
+                        <Tooltip
+                          title="수정하기"
+                          placement={'bottom-start'}
+                          enterDelay={300}>
+                            <span onClick={ event => this.updateVendorDialog(event, row.vendorNo) } style={{cursor:'pointer'}}>
+                              {row.vendorNo}
+                            </span>
+                        </Tooltip>
+                      </TableCell>
                       <TableCell align="left" >{row.vendorName}</TableCell>
                       <TableCell align="left">{row.representativeName}</TableCell>
                       <TableCell align="left">{row.vendorTel}</TableCell>
                       <TableCell align="left">{row.vendorPhone}</TableCell>
                       <TableCell align="left">{row.vendorCategoryCodeName}</TableCell>
-                      <TableCell align="left"><span onClick={ event => this.getBankInfo(event, row.vendorNo) } style={{cursor:'pointer'}}><IconPayment htmlColor={"#e65100"} titleAccess={"이체정보보기"} /></span></TableCell>
-                      <TableCell align="left"><span onClick={ event => this.getVendorAddress(event, row.vendorNo) } style={{cursor:'pointer'}} id={row.vendorNo}><IconHome htmlColor={"#e65100"} titleAccess={"주소보기"} /></span></TableCell>
+                      <TableCell align="left">
+                        <Tooltip
+                          title="이체정보"
+                          placement={'bottom-start'}
+                          enterDelay={300}>
+                            <span onClick={ event => this.getBankInfo(event, row.vendorNo) } style={{cursor:'pointer'}}>
+                              <IconPayment htmlColor={"#e65100"}/>
+                            </span>
+                        </Tooltip>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Tooltip
+                          title="주소정보"
+                          placement={'bottom-start'}
+                          enterDelay={300}>
+                            <span onClick={ event => this.getVendorAddress(event, row.vendorNo) } style={{cursor:'pointer'}} id={row.vendorNo}>
+                              <IconHome htmlColor={"#e65100"}/>
+                            </span>
+                        </Tooltip>
+                      </TableCell>
                     </TableRow>
 
                   );

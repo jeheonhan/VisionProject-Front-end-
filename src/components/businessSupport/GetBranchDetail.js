@@ -4,10 +4,10 @@ import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import Slide from '@material-ui/core/Slide';
-import { DialogContent } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import DialogActions from '@material-ui/core/DialogActions';
+import SweetAlert from 'react-bootstrap-sweetalert';
 import { convertBranchStatusCode, getBranchList } from 'actions/index';
 import { connect } from 'react-redux';
 
@@ -22,6 +22,7 @@ function Transition(props) {
       super(props);
 
       this.state = {
+        warning:false,
         branch : this.props.branch,
       }
   }
@@ -40,6 +41,26 @@ function Transition(props) {
       this.props.handleRequestClose();
     }
 
+    onSweetAlert = (event) => {
+      event.preventDefault();
+      this.setState({
+          warning:true,
+      })
+    }
+
+    warningOk = () => {
+      this.setState({
+          warning:false,
+      })
+      this.convertBranchStatusCode(this.state.branch);
+    }
+
+    onCancel = () => {
+        this.setState({
+            warning:false,
+        })
+    }
+
     render() {
 
       if(this.props.branch !== this.state.branch){
@@ -54,7 +75,7 @@ function Transition(props) {
             open={this.props.open}
             TransitionComponent={Transition}
             maxWidth=""
-            //onClose={this.props.handleRequestClose}
+            onClose={this.props.handleRequestClose}
           >
           
           <AppBar className="position-relative" >
@@ -63,87 +84,161 @@ function Transition(props) {
                 flex: 1,
                 minWidth: '800px',
                 }} 
-                align="center"
+                align="left"
                 >
                 지점 상세조회
               </Typography>
-                
+              <DialogActions>
+                <Button onClick={this.props.handleRequestClose} color="inherit" >닫기</Button>
+              </DialogActions>
             </Toolbar>
           </AppBar>
-          
-          <DialogContent style={{minWidth: '800px', maxWidth: '800px', minHeight:'400px', maxHeight:'400px'}}>
 
-              <List>
-                <ListItem>
-                  <div>지점번호 : {this.state.branch.branchNo}</div>
-                </ListItem>
+          <div class="row">
+            <div className="col-md-1"/>
+            <div className="col-md-3">
+                <TextField
+                      label="지점번호"
+                      value={this.state.branch.branchNo}
+                      margin="normal"
+                />
+            </div>
+            <div className="col-md-2">
+                <TextField
+                      label="영업상태"
+                      value={this.state.branch.branchStatus}
+                      margin="normal"
+                />
+            </div>
+            <div className="col-md-3">
+                <TextField
+                      label="지점등록일"
+                      value={this.state.branch.branchRegDate}
+                      margin="normal"
+                />
+            </div>
+            </div>
+            <br/>
+          <div class="row">
+          <div className="col-md-1"/>
+              <div className="col-md-3">
+                  <TextField
+                        label="지점명"
+                        value={this.state.branch.branchName}
+                        margin="normal"
+                        fullWidth
+                        />
 
-                <ListItem>
-                  <div>지점명 : {this.state.branch.branchName}</div>
-                </ListItem>
+                </div>
+          </div>
+          <br/>
 
-                <ListItem>
-                  <div>지   역  : {this.state.branch.localCodeName}</div>
-                </ListItem>
+          <div class="row">
+            <div className="col-md-1"/>
+            <div className="col-md-3">
+                <TextField
+                      label="지점장명"
+                      value={this.state.branch.branchManagerName}
+                      margin="normal"
+                      fullWidth
+                />
+            </div>
+            <div className="col-md-3">
+                <TextField
+                      label="사업자등록번호"
+                      value={this.state.branch.businessLicenseNo}
+                      margin="normal"
+                      fullWidth
+                />
+            </div>
+          </div>
+          <br/>
 
-                <ListItem>
-                  <div>우편번호 : {this.state.branch.zipCode}</div>
-                </ListItem>
+          <div class="row">
+            <div className="col-md-1"/>
+            <div className="col-md-3">
+                <TextField
+                      label="지점 전화번호"
+                      value={this.state.branch.branchTel}
+                      margin="normal"
+                      fullWidth
+                />
+            </div>
+            <div className="col-md-3">
+                <TextField
+                      label="지점장 휴대폰번호"
+                      value={this.state.branch.branchManagerPhone}
+                      margin="normal"
+                      fullWidth
+                />
+            </div>
+          </div>
+          <br/>
 
-                <ListItem>
-                <div> 주  소 : {this.state.branch.address}</div>
-                </ListItem>
+          <div class="row">
+            <div className="col-md-1"/>
+                <div className="col-md-3">
+                    <TextField
+                          label="우편번호"
+                          value={this.state.branch.zipCode}
+                          margin="normal"
+                          fullWidth
+                    />
+                </div>
+              <div className="col-md-3">
+                    <TextField
+                          label="지역"
+                          value={this.state.branch.localCodeName}
+                          margin="normal"
+                          fullWidth
+                    />
+                </div>
+          </div>
 
-                <ListItem>
-                  <div>상세주소 : {this.state.branch.detailAddress}</div>
-                </ListItem>
+          <div class="row">
+            <div className="col-md-1"/>
+            <div className="col-md-8">
+                    <TextField
+                          label="주소"
+                          value={this.state.branch.address}
+                          margin="normal"
+                          fullWidth
+                    />
+                </div>
+                <div className="col-md-2">
+                    <TextField
+                          label="상세주소"
+                          value={this.state.branch.detailAddress}
+                          margin="normal"
+                          fullWidth
+                    />
+                </div>
 
-                <ListItem>
-                  <div>지점장명 : {this.state.branch.branchManagerName}</div>
-                </ListItem>
+          </div>
 
-                <ListItem>
-                  <div>사업자등록번호 : {this.state.branch.businessLicenseNo}</div>
-                </ListItem>
-
-                <ListItem>
-                  <div>지점전화번호 : {this.state.branch.branchTel}</div>
-                </ListItem>
-
-                <ListItem>
-                  <div>지점장휴대폰번호 : {this.state.branch.branchManagerPhone}</div>
-                </ListItem>
-
-                <ListItem>
-                  <div>지점등록일 : {this.state.branch.branchRegDate}</div>
-                </ListItem>
-
-                <ListItem>
-                <div> 영업상태 : {this.state.branch.branchStatus}</div>
-                </ListItem>
-                
-              </List>
-
-          </DialogContent>
-            <div align="right">
-              <Button onClick={() => this.convertBranchStatusCode(this.state.branch)} 
-                      variant="outlined" 
-                      >
-                  <i class="zmdi zmdi-refresh-sync-alert zmdi-hc-spin"></i>{this.state.branch.branchStatusCodeNo == '01' ? '폐업전환' : '영업전환'} 
+            <DialogActions>
+              <Button color="secondary" onClick={() => this.props.updateBranchOpen(this.state.branch.branchNo)}>
+                      수정
               </Button>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </div>
-            <div align="right">
-                <Button variant="contained" variant="outlined" onClick={() => this.props.updateBranchOpen(this.state.branch.branchNo)}>
-                        수정
-                </Button>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            </div>
-              <br/><br/>
+              <Button onClick={this.onSweetAlert} 
+                      >
+                  <i class="zmdi zmdi-refresh-alt zmdi-hc-spin-reverse"></i>{this.state.branch.branchStatusCodeNo == '01' ? '폐업전환' : '영업전환'} 
+              </Button>
+            </DialogActions>
 
-          <Button onClick={this.props.handleRequestClose} variant="outlined" aria-label="Close" ><i class="zmdi zmdi-close-circle zmdi-hc-1g"></i>닫기</Button>
-              <br/>
-              <br/>
+            <SweetAlert show={this.state.warning}
+                        warning
+                        showCancel
+                        cancelBtnText="네"
+                        confirmBtnText="아니오"
+                        confirmBtnBsStyle="danger"
+                        cancelBtnBsStyle="default"
+                        title={this.state.branch.branchStatusCodeNo == '01' ? '폐업상태로 전환합니다.' : '영업상태로 전환합니다.'}
+                        onConfirm={this.onCancel}
+                        onCancel={this.warningOk}
+                >
+                    영업상태를 변경하시겠습니까?
+                </SweetAlert>
           </Dialog>
       );
     }

@@ -10,6 +10,25 @@ import Paper from '@material-ui/core/Paper';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
+import NumberFormat from 'react-number-format';
+import Snackbar from '@material-ui/core/Snackbar';
+
+class TradeAmountMask extends React.Component {
+  render() {
+    return (
+      <NumberFormat
+        {...this.props}
+        thousandSeparator
+      />
+    );
+  }
+}
+
+TradeAmountMask.propTypes = {
+  onChange: PropTypes.func.isRequired,
+};
+
 
 class OrderToVendorRequestList extends React.Component {
 
@@ -18,30 +37,42 @@ class OrderToVendorRequestList extends React.Component {
         this.state = {
           totalAmount: '',
           orderToVendorProduct: [
-          ]
+          ],
+          snackBar: false,
+          snackBarContents : '',
         };
         this.click = this.click.bind(this);
       }
 
       handleSubmit = (total) => {
-    
-        this.props.addOrderToVendor({ "totalAmount":total ,  "orderToVendorProduct":this.state.orderToVendorProduct});
+        
+        if(total === 0){
+     
+          this.openSnackBar('수량')
+        } else {
+     
+          this.props.addOrderToVendor({ 
+            "totalAmount":total ,  "orderToVendorProduct":this.state.orderToVendorProduct
+          });
         this.click(false);
+        }
        }
+
+
+
+
+
 
        click(e) {
          this.props.click(e);
        }
     
       handleNumberInputChange = (key, n, index) => event => {
-       
         let _quantity = parseInt(event.target.value, 10);
         if(isNaN(_quantity)){
           _quantity = 0
         }
-        if(_quantity>n.quantity){
-          _quantity = n.quantity;
-        }
+        
         if(n.quantity==0){
           return this.onLackQuantity();
         }
@@ -96,6 +127,21 @@ class OrderToVendorRequestList extends React.Component {
         })
       }
 
+
+      //snackBar 열기
+   openSnackBar  = (valueName) => {
+    this.setState({ ...this.state, snackBar: true, snackBarContents : valueName });
+  };
+
+  //snackBar 닫기
+  closeSnackBar = () => {
+    this.setState({ ...this.state, snackBar: false });
+  };
+
+
+
+
+
 render() {
      
              const { ProductListForOrder } = this.props;
@@ -135,17 +181,17 @@ render() {
               <TableRow key={n.id}>
                 <TableCell align="right">{n.productName}</TableCell>
                 <TableCell align="right">
-                
                 <FormControl align="right" style={{width:"100px" }}>
                                                 <Input
                                                     
                                                     id={n.productNo}
                                                     type="number"
-                                                    value=
-                                                    { this.state.orderToVendorProduct.
-                                                    findIndex(prod => prod.productNo===n.productNo)  != -1 ?
-                                                     this.state.orderToVendorProduct[this.state.orderToVendorProduct.findIndex(prod => prod.productNo===n.productNo)].quantity : 0}
-                                                    
+                                                    //inputComponent={TradeAmountMask}
+                                                 
+                                                    value={ (this.state.orderToVendorProduct.findIndex
+                                                      (prod => prod.productNo===n.productNo)!=-1 ? this.state.orderToVendorProduct
+                                                      [this.state.orderToVendorProduct.findIndex(prod => prod.productNo===n.productNo)]
+                                                      .quantity : 0)}
                                                      onChange=
                                                       {this.handleNumberInputChange(this.state.orderToVendorProduct.findIndex(prod => prod.productNo===n.productNo), n)}
                                                 />
@@ -158,6 +204,17 @@ render() {
           })}
         </TableBody>
       </Table>
+
+      <Snackbar
+                    anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                    open={this.state.snackBar}
+                    onClose={this.closeSnackBar}
+                    ContentProps={{
+                      'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.snackBarContents}을 1개이상 입력해야합니다.</span>}
+                    autoHideDuration={1500}
+                  />
       
       <div style={{position:"fixed", width:"300px", height:"50px", display:"inline-block", right:"20%", /* 창에서 오른쪽 길이 */ top:"80%", /* 창에서 위에서 부터의 높이 */ backgroundColor: "transparent", margin:0}}><Paper className="text-white" style={{backgroundColor:"#f15b41", padding:"20px", float:"right"}}elevation={16}>총 주문금액:{total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원</Paper></div>
       <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={() => this.handleSubmit(total)} >전송</Button>

@@ -22,6 +22,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import NumberFormat from 'react-number-format';
 import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 class TradeAmountMask extends React.Component {
   render() {
@@ -29,7 +30,6 @@ class TradeAmountMask extends React.Component {
       <NumberFormat
         {...this.props}
         thousandSeparator
-        prefix="￦"
       />
     );
   }
@@ -196,7 +196,7 @@ class GetStatementDetail extends Component {
                 <CardText>
                   거래일시 : {statementInfo && statementInfo.tradeDate}
                   <p/>
-                  거래금액 : &#8361;{statementInfo && statementInfo.tradeAmount}
+                  거래금액 : {statementInfo && statementInfo.tradeAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원
                   <p/>
                   거래 계좌번호 : {statementInfo && statementInfo.accountNo}
                 </CardText>
@@ -262,6 +262,7 @@ class GetStatementDetail extends Component {
                         fullWidth={true}
                         margin="none"
                         onChange={this.handleStatementChange('tradeAmount')}
+                        endAdornment={this.state.statement && this.state.statement.tradeAmount ? (<InputAdornment position="end">원</InputAdornment>) : null}
                       />
                   </FormControl>
                 </div>

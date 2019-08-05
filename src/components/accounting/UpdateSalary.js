@@ -9,6 +9,24 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import NumberFormat from 'react-number-format';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Tooltip from '@material-ui/core/Tooltip';
+
+//급여 개인지급총액 정규식
+class TotalSalaryMask extends React.Component {
+  render() {
+    return (
+      <NumberFormat
+        {...this.props}
+        thousandSeparator
+      />
+    );
+  }
+}
 
 class UpdateSalary extends Component {
 
@@ -39,6 +57,7 @@ class UpdateSalary extends Component {
     //닫기면 index === 0
     if(index === 0){
       this.handelClose();
+      this.setState({ salary : this.props.salaryInfo })
       this.props.close();
     
     //수정이면 index === 1
@@ -70,6 +89,13 @@ class UpdateSalary extends Component {
     this.setState({
       success : false
     })
+    this.props.close()
+  }
+
+  //급여수정 다이얼로그 닫기
+  closeUpdateSalary = () => {
+    this.setState({ salary : this.props.salaryInfo })
+    this.props.close();
   }
 
   render() {
@@ -86,15 +112,20 @@ class UpdateSalary extends Component {
     return (
       <div>
 
-        <Dialog open={this.props.open} onClose={this.props.close}>
+        <Dialog open={this.props.open} onClose={this.closeUpdateSalary}>
           
           <div style={{minWidth: '300px', maxWidth: '300px', minHeight:'500px', maxHeight:'500px'}} className="profile-intro shadow  border-0 text-center">
             <div className="pi-header">
               <div className="bg-secondary card-header" style={{minHeight: '200px', maxHeight: '200px', paddingTop:"10px", paddingBottom:"210px"}}>
                 <div className="jr-card-header-top">
-                  <IconButton className="jr-fs-lg text-white" aria-label="Menu">
-                    <IconMailOutline/>
-                  </IconButton>
+                  <Tooltip
+                    title="메일 보내기"
+                    placement={'bottom-start'}
+                    enterDelay={300}>
+                      <IconButton className="jr-fs-lg text-white" aria-label="Menu">
+                        <IconMailOutline/>
+                      </IconButton>
+                  </Tooltip>
                   {/* 메일 보내려면 사원 메일번호 필요함 */}
                   {/* <IconMailOutline onClick={event => this.handleClickMailOpen(event, row.employeeEmail)} 
                                           style={{cursor:'pointer'}} htmlColor={"#e65100"}/><input type="hidden" value={row.employeeEmail}/> */}
@@ -102,16 +133,19 @@ class UpdateSalary extends Component {
                   {/* <IconButton className="icon-btn p-1 text-white ml-auto" onClick={this.props.close} aria-label="Close">
                     <CloseIcon/>
                   </IconButton> */}
-
-                  <IconButton
-                    className="icon-btn p-1 text-white ml-auto"
-                    aria-label="More"
-                    aria-owns={this.state.open ? 'long-SidenavContent.js' : null}
-                    aria-haspopup
-                    onClick={this.handleClick}
-                  >
-                    <MoreVertIcon/>
-                  </IconButton>
+                  <Tooltip
+                    title="수정하기"
+                    placement={'bottom-start'}
+                    enterDelay={300}>
+                      <IconButton
+                        className="icon-btn p-1 text-white ml-auto"
+                        aria-label="More"
+                        aria-owns={this.state.open ? 'long-SidenavContent.js' : null}
+                        aria-haspopup
+                        onClick={this.handleClick}>
+                        <MoreVertIcon/>
+                      </IconButton>
+                  </Tooltip>
                   <Menu
                     id="long-menu"
                     anchorEl={this.state.anchorEl}
@@ -143,19 +177,26 @@ class UpdateSalary extends Component {
             </div>
             <div className="pi-content">
               <h4 className="card-text" align="center">{salaryInfo && salaryInfo.salaryDate} &nbsp; 급여</h4>
-              <p className="card-text" align="left">소정근로시간     :   {salaryInfo && salaryInfo.totalRegularWorkTime}</p>
-              <p className="card-text" align="left">연장근로시간     :   {salaryInfo && salaryInfo.totalRegularWorkTime}</p>
-              <p className="card-text" align="left">시급     :   {salaryInfo && salaryInfo.wage}</p>
+              <p className="card-text" align="left">소정근로시간(분) : {salaryInfo && salaryInfo.totalRegularWorkTime}</p>
+              <p className="card-text" align="left">연장근로시간(분) : {salaryInfo && salaryInfo.totalRegularWorkTime}</p>
+              <p className="card-text" align="left" style={{marginBottom:'0px'}}>시급 : {salaryInfo && salaryInfo.wage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</p>
+              
               <div style={{padding:"0px"}} className="col-md-12 col-12">
-                <TextField
-                  id="individualTotalSalary"
-                  label="개인지급총액"
-                  value={this.state.salary && this.state.salary.individualTotalSalary}
-                  onChange={this.handleChange('individualTotalSalary')}
-                  margin="none"
-                  fullWidth
-                />
+              <FormControl className="mb-3" fullWidth margin='normal'>
+                <InputLabel shrink={true} htmlFor="tradeAmount">개인지급총액</InputLabel>
+                  <Input
+                    inputComponent={TotalSalaryMask}
+                    id="individualTotalSalary"
+                    placeholder="개인지급총액 입력"
+                    value={this.state.salary && this.state.salary.individualTotalSalary}
+                    onChange={this.handleChange('individualTotalSalary')}
+                    margin="dense"
+                    fullWidth
+                    endAdornment={this.state.salary && this.state.salary.individualTotalSalary ? (<InputAdornment position="end">원</InputAdornment>) : null}
+                  />
+              </FormControl>
               </div>
+
             </div>
           </div>
 

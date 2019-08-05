@@ -14,7 +14,7 @@ class OrderFromBranchRequestContainer extends React.Component{
         if(this.props.orderBranchList===undefined){
             this.props.getOrderBranchList({});
             return (
-                <div>Loading...</div>
+                <div></div>
             )
         }
         return(

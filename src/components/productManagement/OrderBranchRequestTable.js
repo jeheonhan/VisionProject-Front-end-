@@ -16,6 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import TextField from '@material-ui/core/TextField';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import { connect } from 'react-redux';
 import { getProductList, getInfoAccount, addOrderBranch, getOrderBranchList } from 'actions/index';
@@ -35,6 +36,7 @@ import Iamport from 'react-iamport';
 import {Redirect} from 'react-router-dom';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import moment from 'moment';
+import FindAccount from 'components/accounting/FindAccount';
 
 
 let counter = 0;
@@ -46,7 +48,7 @@ const columnData = [
   {id: 'productNo', align: true, disablePadding: false, label: '물품번호'},
   {id: 'productName', align: true, disablePadding: false, label: '물품명'},
   {id: 'salesPrice', align: true, disablePadding: false, label: '주문단가'},
-  {id: 'quantity', align: true, disablePadding: false, label: '재고'},
+  {id: 'quantity', align: true, disablePadding: false, label: '재고(개)'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -102,7 +104,7 @@ class EnhancedTableHead extends React.Component {
             );
           }, this)}
           <TableCell>
-            구매 수량
+            구매 수량(개)
           </TableCell>
         </TableRow>
       </TableHead>
@@ -209,18 +211,47 @@ class EnhancedTable extends React.Component {
   };
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
+  //계좌찾기 다이얼로그창 닫기
+  handleFindAccountClose = () => {
+    this.setState({findAccountOpen: false})
+  }
+
+  //계좌번호 입력
+  getAccountNo = (_accountNo) => {
+    this.setState({
+      orderBranch:{
+        accountNo : _accountNo
+      }
+    })
+  }
+
   handleNumberInputChange = (key, row, index) => event => {
-    let _quantity = event.target.value.replace(/(^0+)/, "");
+    //숫자만 입력받기
+    if(event.keyCode<48 || event.keyCode>57){
+      event.returnValue=false;
+      return;
+   }
+
+   //수량 10진정수로 변환하기
+    let _quantity = event.target.value;
     _quantity = parseInt(_quantity, 10);
+    
+    //수량에 이상한거 들어왔을 때 0처리하기
     if(isNaN(_quantity)){
       _quantity = 0
     }
+
+    //물품 수량보다 많을 때 물품 수량에 맞추기
     if(_quantity>row.quantity){
       _quantity = row.quantity;
     }
+
+    //재고가 0일 때 처리하기
     if(row.quantity==0){
       return this.onLackQuantity();
     }
+
+    //수량이 0이거나 음수일때 처리하기
     if(_quantity<=0){
       if(key==-1){
         return;
@@ -235,7 +266,7 @@ class EnhancedTable extends React.Component {
       })
       return;
     }
-
+    //리스트에 없는 애일 떄 
     if(key==-1){
       this.setState({
         orderBranch:{
@@ -250,6 +281,7 @@ class EnhancedTable extends React.Component {
              })
         }
       })
+      //리스트에 있는 애일 떄
     }else{
       let list = this.state.orderBranch.orderFromBranchProductList;
       let updatedProd = {productNo:row.productNo
@@ -360,11 +392,15 @@ renderRedirect = () => {
            ]
      },
      warning:false,
-     success:false
+     success:false,
+     findAccountOpen : false,
     };
 
   }
-
+  //계좌찾기 다이얼로그창 열기
+  handleFindAccountOpen = () => {
+    this.setState({findAccountOpen: true})
+  }
 
   render() {
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
@@ -397,8 +433,15 @@ renderRedirect = () => {
                   handleDelete={this.handleRequestDeleteList}
                   handleClick={this.handleClick}/>
             </div>
-
-
+            {/* <TextField
+                    margin="normal"
+                    id="accountNo"
+                    label="계좌번호"
+                    helperText="입금하실 계좌를 선택해주세요"
+                    onClick={this.handleFindAccountOpen}
+                    value={this.state.orderBranch.accountNo}
+                  /> */}
+            
             <Iamport
             identificationCode="imp36066914"
             params={{
@@ -471,7 +514,7 @@ renderRedirect = () => {
                                                 <Input
                                                     id={row.productNo}
                                                     type="number"
-                                                    value={ (this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo)!=-1 ? this.state.orderBranch.orderFromBranchProductList[this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo)].orderFromBranchProductQuantity : 0).toString().replace(/(^0+)/, "")}
+                                                    value={ (this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo)!=-1 ? this.state.orderBranch.orderFromBranchProductList[this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo)].orderFromBranchProductQuantity : 0)}
                                                     onChange={this.handleNumberInputChange(this.state.orderBranch.orderFromBranchProductList.findIndex(prod => prod.productNo===row.productNo), row, index)}
                                                 />
                                                 </FormControl>
@@ -513,6 +556,11 @@ renderRedirect = () => {
                     onConfirm={this.onConfirm}>
                         주문이 완료되었습니다. <br/>내주문관리로 이동합니다.
             </SweetAlert>
+            <FindAccount
+                  open={this.state.findAccountOpen}
+                  handleFindAccountClose={this.handleFindAccountClose}
+                  getAccountNo = {this.getAccountNo}
+                  searchCondition="02"/>
       </div>
     );
   }

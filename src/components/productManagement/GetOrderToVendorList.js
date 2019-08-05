@@ -200,8 +200,8 @@ class EnhancedTable extends React.Component {
     this.setState({open : false});
   }
 
-  updateOrderToVendorList = (event, orderToVendor) => {
-    event.preventDefault();
+  updateOrderToVendorList = ( orderToVendor) => {
+   
  
     if(orderToVendor !== undefined){
      
@@ -215,24 +215,25 @@ class EnhancedTable extends React.Component {
 
   handleOrderToVendorOpen =(event, row) => {
     this.setState({
-      deleteConfirmShow:true
-      
+      deleteConfirmShow:true,
+      orderToVendor:row
       })
+
   }
 
   onConfirmDelete = () => {
-    this.updateOrderToVendorList()
-    
+    this.updateOrderToVendorList(this.state.orderToVendor)
     this.setState({
       ...this.state,
-    deleteConfirmShow:false
+    deleteConfirmShow:false,
+    orderToVendor:null
     })
 }
 
-//부서 삭제 Confirm 취소
 onCancelDelete = () => {
     this.setState({
-    deleteConfirmShow:false
+    deleteConfirmShow:false,
+    orderToVendor:null
     })
 }
   
@@ -285,7 +286,8 @@ onCancelDelete = () => {
                         {row.orderToVenStatusCodeNo == '01' ?
                          <span onClick=
                          {event => {event.preventDefault(); 
-                          this.handleOrderToVendorOpen(event, row)}} style={{cursor:'pointer', color:'red'}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Delete/>발주취소</span>
+                          this.handleOrderToVendorOpen(event, row)}} style={{cursor:'pointer', color:'red'}}>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Delete/>발주취소</span>
                         // {event => this.updateOrderToVendorList(event, row)} style={{cursor:'pointer', color:'red'}}>                     
                         //  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         // <Delete/>발주취소 </span> 
@@ -320,12 +322,14 @@ onCancelDelete = () => {
         <SweetAlert show={this.state.deleteConfirmShow}
                     warning
                     showCancel
-                    confirmBtnText={"네"}
+                    cancelBtnText="네"
+                    confirmBtnText="아니오"
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
                     title={"발주취소를 하시겠습니까?"}
-                    onConfirm={this.onConfirmDelete}
-                    onCancel={this.onCancelDelete}
+
+                    onCancel={this.onConfirmDelete}
+                    onConfirm={this.onCancelDelete}
                 ></SweetAlert>
       </div>
     );

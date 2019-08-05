@@ -4,10 +4,9 @@ import { getAnalyzeSalaryBookList } from "actions/index";
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
 import PropTypes from 'prop-types';
 import {Pie, PieChart, ResponsiveContainer, Tooltip} from 'recharts';
-
+import Avatar from '@material-ui/core/Avatar';
 
 class SalaryBookManage extends React.Component{
 
@@ -79,9 +78,9 @@ class SalaryBookManage extends React.Component{
 
       <div className={`timeline-item ${styleName}`}>
         <div className="timeline-badge timeline-img">
-            <span onClick={ event => this.analize(event, salaryDate) } style={{cursor:'pointer'}}>
-              <img className="size-60" src={require("assets/images/pentagon_1.png")} alt="Pentagon" title="Pentagon"/>
-            </span>
+          <span onClick={ event => this.analize(event, salaryDate) } style={{cursor:'pointer'}}>
+            <img className="size-60" src={require("assets/images/moneybag.png")} alt="Pentagon" title="급여분석"/>
+          </span>
         </div>
 
         <div className="timeline-panel">
@@ -89,10 +88,11 @@ class SalaryBookManage extends React.Component{
 
             <div className="timeline-panel-header">
               <div className="timeline-header-img timeline-left">
-                  <img className="size-60 rounded-circle" src={require("assets/images/visionLogoSecond.png")} alt="Pentagon" title="Pentagon"/>
+              <Avatar alt='...' className="user-avatar" style={{backgroundColor:'#cc4f3a'}}>
+                {Number(salaryDate.substring(5,7))}월
+              </Avatar>
               </div>
               <div className="timeline-heading">
-                <h5>{salaryDate}</h5>
                 <h3 className="timeline-title">{salaryBookName}</h3>
               </div>
             </div>
@@ -103,20 +103,20 @@ class SalaryBookManage extends React.Component{
                   <p className="card-text">직원수 : {totalEmpolyeeNumber} 명 </p>
                 </div>
                 <div>
-                  <p className="card-text">평균 시급 : {avgWage} 원 </p>
+                  <p className="card-text">평균 시급 : {avgWage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원 </p>
                 </div>
               </span>
               <span>
                 <div>
-                  <p className="card-text">총 소정근로시간(분) : {totalRegularWorkTime} 분 </p>
+                  <p className="card-text">총 소정근로시간(분) : {totalRegularWorkTime}</p>
                 </div>
                 <div>
-                  <p className="card-text">총 연장근로시간(분) : {totalExtendWorkTime} 분 </p>
+                  <p className="card-text">총 연장근로시간(분) : {totalExtendWorkTime}</p>
                 </div>
                 <p/>
               </span>
               <div>
-                <p className="card-text">총 급여지출 : {totalSalary} 원 </p>
+                <p className="card-text">총 급여지출 : {totalSalary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원 </p>
               </div>
             </div>
             {/* end of body */}

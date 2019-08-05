@@ -57,8 +57,7 @@ class AddCard extends React.Component {
       cardUsageStatusCodeNo : "",
       accountNo : "",
       cardNo : '',
-      cardImageFile : '',
-      open: false,
+      cardImageFile : "",
       findEmployeeOpen : false,
       findAccountOpen : false,
       success : false,
@@ -67,17 +66,11 @@ class AddCard extends React.Component {
     }
   }
 
-  //카드등록 다이얼로그창 띄우기
-  handleClickOpen = () => {
-    this.setState({open: true});
-  };
-
   //카드등록 다이얼로그창 닫기
   handleRequestClose = () => {
     this.setState({
       ...this.state,
       success : false,
-      open: false,
       cardRegNo : "",
       cardManager : "",
       cardManagerName : "",
@@ -92,6 +85,8 @@ class AddCard extends React.Component {
       cardNo : '',
       cardImageFile : ''
     });
+    this.props.cleanStoreState("checkedEmployeeData");
+    this.props.close();
   };
 
   //사원찾기 다이얼로그창 열기
@@ -136,6 +131,7 @@ class AddCard extends React.Component {
   //카드 등록값 입력
   handleChange = name => event => {
     this.setState({ ...this.state, [name]: event.target.value });
+    console.log(this.state)
   };
   
 
@@ -224,7 +220,7 @@ class AddCard extends React.Component {
           accountNo : this.state.accountNo,
           cardNo : this.state.cardNo,
         })
-
+        console.log(this.state)
         this.props.cleanStoreState("checkedEmployeeData");
         this.openSuccessAlarm()
       }
@@ -233,27 +229,23 @@ class AddCard extends React.Component {
     
     return (
       <div>
-        <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
-            등록
-        </Button>
         <Dialog
           fullScreen
-          open={this.state.open}
+          open={this.props.open}
           onClose={this.handleRequestClose}
-          TransitionComponent={Transition}
-        >
-          <AppBar className="position-relative">
-            <Toolbar>
-              <Typography variant="title" color="inherit" style={{
-                flex: 1,
-              }}>
-                카드 등록
-              </Typography>
-              <Button color={"inherit"}   onClick={this.handleRequestClose}>
-                닫기
-              </Button>
-            </Toolbar>
-          </AppBar>
+          TransitionComponent={Transition}>
+            <AppBar className="position-relative">
+              <Toolbar>
+                <Typography variant="title" color="inherit" style={{
+                  flex: 1,
+                }}>
+                  카드 등록
+                </Typography>
+                <Button color={"inherit"}   onClick={this.handleRequestClose}>
+                  닫기
+                </Button>
+              </Toolbar>
+            </AppBar>
           
           <p/>
 
@@ -277,7 +269,7 @@ class AddCard extends React.Component {
                 <div className="col-md-12 col-6" style={{float:"left"}}>
                   <br/><br/>
                     <div className="card-media card-img-top" style={{paddingBottom:"30px"}}>
-                       <img src={ this.state.cardImageFile ? `${this.state.cardImageFile.base64}` : require("assets/images/visionLogoSecond.png")} style={{width: 300, height: 200}}/>
+                       <img src={ this.state.cardImageFile ? `${this.state.cardImageFile.base64}` : require("assets/images/basicCard2.png")} style={{width: 300, height: 200}}/>
                     </div>
                 </div>
                 <div className="col-md-12 col-6">

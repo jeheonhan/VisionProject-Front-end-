@@ -51,7 +51,7 @@ class AlertDialogSlide extends Component {
           <DialogTitle style={{backgroundColor:"#CC4F3A", height:"60px"}}>
           <h1 className="font-weight-bold" style={{color:"white"}}>출하현황조회</h1>
           </DialogTitle>
-          <DialogContent>
+          <DialogContent style={{maxWidth:"363pz", minWidth:"363px"}}>
           {(this.props.status==="01" || this.props.status==="03") && <div><h3 className="font-weight-semibold" style={{marginTop:"10px"}}><i class="zmdi zmdi-truck zmdi-hc-2"></i>&nbsp;미출하상품</h3>
           <Table className="jr-card">
         <TableHead>

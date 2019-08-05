@@ -20,6 +20,7 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import Snackbar from '@material-ui/core/Snackbar';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
+//전표 공급가액 정규식
 class TradeAmountMask extends React.Component {
   render() {
     return (
@@ -39,9 +40,7 @@ class AddStatement extends React.Component {
   state = {
     open: false,
     findAccountOpen: false,
-    statement : {
-
-    },
+    statement : '',
     success : false,
     snackBar: false,
     snackBarContents : '',

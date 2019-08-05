@@ -141,16 +141,21 @@ let EnhancedTableToolbar = props => {
             </Tooltip>
           </div>
         ) : (
-          <div style={{paddingRight:'20px'}}>
-            <SearchBox 
-              styleName="d-none d-sm-block" 
-              placeholder="계좌번호/참고"
-              onChange={updateSearchKeyword}
-              value={value.searchKeyword}
-              onClick={ event => searchActivity(event) }
-              onKeyDown={ event => searchEnterActivity(event) }
-            />
-          </div>
+          <Tooltip
+          title="검색하기"
+          placement={'bottom-start'}
+          enterDelay={300}>
+            <div style={{paddingRight:'20px'}}>
+              <SearchBox 
+                styleName="d-none d-sm-block" 
+                placeholder="계좌번호/참고"
+                onChange={updateSearchKeyword}
+                value={value.searchKeyword}
+                onClick={ event => searchActivity(event) }
+                onKeyDown={ event => searchEnterActivity(event) }
+              />
+            </div>
+          </Tooltip>
         )}
       </div>
     </Toolbar>
@@ -321,7 +326,16 @@ class AccountTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, row.accountRegNo)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={ event => this.updateAcountDialog(event, row.accountRegNo)} style={{cursor:'pointer'}} title="수정하기">{row.accountRegNo}</span></TableCell>
+                      <TableCell align="left">
+                        <Tooltip
+                          title="수정하기"
+                          placement={'bottom-start'}
+                          enterDelay={300}>
+                            <span onClick={ event => this.updateAcountDialog(event, row.accountRegNo)} style={{cursor:'pointer'}}>
+                              {row.accountRegNo}
+                            </span>
+                        </Tooltip>
+                      </TableCell>
                       <TableCell align="left">{row.accountNo}</TableCell>
                       <TableCell align="left">{row.reference}</TableCell>
                       <TableCell align="left">{row.bankCodeName}</TableCell>

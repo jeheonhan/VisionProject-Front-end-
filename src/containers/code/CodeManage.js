@@ -80,7 +80,7 @@ class CodeManage extends React.Component{
         this.props.getGroupCodeList();
         return (
           <div>
-            &nbsp;&nbsp;&nbsp;&nbsp;LOADING...
+           
           </div>
         )
       }

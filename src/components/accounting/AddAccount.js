@@ -17,7 +17,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';  
 
-//계좌 모률 계좌번호 정규식
+//계좌 모듈 계좌번호 정규식
 class AccountMask extends React.Component {
   render() {
     return (

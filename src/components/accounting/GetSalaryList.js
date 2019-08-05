@@ -27,8 +27,8 @@ import Iamport from 'react-iamport';
 const columnData = [
   {id: 'salaryDate', align: false, disablePadding: false, label: '급여월'},
   {id: 'employeeName', align: true, disablePadding: false, label: '사원명'},
-  {id: 'totalRegularWorkTime', align: true, disablePadding: false, label: '소정근로시간'},
-  {id: 'totalExtendWorkTime', align: true, disablePadding: false, label: '연장근로시간'},
+  {id: 'totalRegularWorkTime', align: true, disablePadding: false, label: '소정근로시간(분)'},
+  {id: 'totalExtendWorkTime', align: true, disablePadding: false, label: '연장근로시간(분)'},
   {id: 'wage', align: true, disablePadding: false, label: '시급'},
   {id: 'salaryStatusCodeName', align: true, disablePadding: false, label: '급여상태'},
   {id: 'individualTotalSalary', align: true, disablePadding: false, label: '개인지급총액'},
@@ -289,16 +289,30 @@ class SalaryTable extends React.Component {
                         <Checkbox color="secondary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                       </TableCell> */}
-                      <TableCell align="left"><span onClick={event => this.updateSalaryDialog(event, row.salaryNumbering)} style={{cursor:'pointer'}} title="수정하기">{row.salaryDate}</span></TableCell>
+                      <TableCell align="left">
+                        <Tooltip
+                          title="수정하기"
+                          placement={'bottom-start'}
+                          enterDelay={300}>
+                            <span onClick={event => this.updateSalaryDialog(event, row.salaryNumbering)} style={{cursor:'pointer'}}>
+                              {row.salaryDate}
+                            </span>
+                        </Tooltip>
+                      </TableCell>
                       <TableCell align="left">{row.employeeName}</TableCell>
-                      <TableCell align="left">{row.totalRegularWorkTime}분</TableCell>
-                      <TableCell align="left">{row.totalExtendWorkTime}분</TableCell>
+                      <TableCell align="left">{row.totalRegularWorkTime}</TableCell>
+                      <TableCell align="left">{row.totalExtendWorkTime}</TableCell>
                       <TableCell align="left">{row.wage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
                       <TableCell align="left">
                         {row.salaryStatusCodeNo === '01' ? 
-                          <span onClick={event => this.changeSalaryStatus(event, row.salaryNumbering, row.salaryStatusCodeNo)} style={{cursor:'pointer'}}>
-                           {row.salaryStatusCodeName}
-                          </span>
+                          <Tooltip
+                            title="급여확정"
+                            placement={'bottom-start'}
+                            enterDelay={300}>
+                              <span onClick={event => this.changeSalaryStatus(event, row.salaryNumbering, row.salaryStatusCodeNo)} style={{cursor:'pointer'}}>
+                                {row.salaryStatusCodeName}
+                              </span>
+                          </Tooltip>
                           : row.salaryStatusCodeNo === '02' ?
                           <Iamport
                             identificationCode="imp36066914"
@@ -306,22 +320,27 @@ class SalaryTable extends React.Component {
                               pg: 'inicis',
                               pay_method: 'trans',
                               merchant_uid: 'merchant_' + new Date().getTime(),
-                              name:  'name',
-                              amount: 100, //total,
+                              name:  row.salaryDate+"월 "+row.employeeName+" 급여",
+                              amount: 150, //individualSalarytotal,
                               buyer_email: '',
                               buyer_tel: '',
                               buyer_addr: '',
                               buyer_postcode: '',
-                              buyer_name: 'buyer_name',
+                              buyer_name: '비전 컴퍼니',
                               m_redirect_url: 'http://localhost:3000/app/accounting/salary',
                             }}
                             jqueryLoaded={false}
                             onFailed={this.onFailIamport}
                             onSuccess={this.onSuccessIamport}
                             render={(renderProps) => (
-                              <div onClick={renderProps.onClick}>
-                                급여이체
-                              </div>
+                              <Tooltip
+                                title="이체하기"
+                                placement={'bottom-start'}
+                                enterDelay={300}>
+                                  <div style={{cursor:'pointer'}} onClick={renderProps.onClick}>
+                                    급여이체
+                                  </div>
+                              </Tooltip>
                             )}
                           />
                           : 

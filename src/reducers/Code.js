@@ -1,16 +1,20 @@
-import { CARRY_NEW_CODE_NO, CARRY_FOR_CODE_DETAIL, GET_GROUP_CODE_LIST, CARRY_GROUP_CODE_LIST, GET_CODE_LIST, CARRY_CODE_LIST, CHECK_DUPLICATE_RESULT, ADD_CODE_RESULT } from "actionTypes/ActionTypes";
+import { ADD_CODE, CARRY_NEW_CODE_NO, CARRY_FOR_CODE_DETAIL, GET_GROUP_CODE_LIST, CARRY_GROUP_CODE_LIST, GET_CODE_LIST, CARRY_CODE_LIST, CHECK_DUPLICATE_RESULT, ADD_CODE_RESULT } from "actionTypes/ActionTypes";
 
 
 const INIT_STATE = {
-    groupCode: "",
-    groupCodeName: "",
-    codeNo: "",
-    codeName: "",
-    codeUsageStatus: ""
+    newCodeNo: undefined,
+    groupCodeList: undefined,
+    codeList: undefined,
+    CodeNameBool: undefined,
 };
 
 export default (state = INIT_STATE, action) => {
 switch(action.type){
+   case ADD_CODE : {
+       return{
+           INIT_STATE
+       }
+   }
    case GET_GROUP_CODE_LIST : {
        //console.log("reducer GET_GROUP_CODE_LIST")
        return{
