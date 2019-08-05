@@ -17,7 +17,7 @@ class ApprovalFormList extends React.Component{
 
         if(approvalFormList===undefined || approvalFormList===''){
             this.props.getApprovalFormList();
-            return (<div>&nbsp;&nbsp;LOADING...</div>)
+            return (<div></div>)
         }
 
         else
