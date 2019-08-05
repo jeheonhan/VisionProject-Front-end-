@@ -32,7 +32,6 @@ class TextMaskCustom extends React.Component {
     }
 }
 
-
 class UpdateCard extends React.Component {
 
     constructor(props) {
@@ -117,8 +116,6 @@ class UpdateCard extends React.Component {
         this.props.close();
     }
 
-    
-    
     render() {
         
         const { cardList, cardCategoryList, cardInfo, checkedEmployeeData } = this.props;
@@ -195,7 +192,7 @@ class UpdateCard extends React.Component {
                                 <div className="card-media card-img-top" style={{ paddingBottom:"30px"}}>
                                     <img src={ this.state.card && this.state.card.cardImageFile ? 
                                         `${this.state.card.cardImageFile.base64}` : ( this.state.card && this.state.card.cardImage ?
-                                        '/img/'+this.state.card.cardImage : require("assets/images/stamp.png"))} style={{width: 300, height: 200}}/>
+                                        '/img/'+this.state.card.cardImage : require("assets/images/basicCard2.png"))} style={{width: 300, height: 200}}/>
                                 </div>
                             </div>
 

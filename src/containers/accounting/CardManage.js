@@ -6,7 +6,7 @@ import { getCardList, getCard } from 'actions';
 import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import AddCard from "components/accounting/AddCard";
-
+import Tooltip from '@material-ui/core/Tooltip';
 import {ButtonGroup} from 'reactstrap';
 import Button from '@material-ui/core/Button';
 
@@ -23,6 +23,7 @@ class CardManage extends React.Component{
                 usageCondition : "01"
             },
             menuFlag:false,
+            open:false,
         }
     }
 
@@ -33,15 +34,18 @@ class CardManage extends React.Component{
         })
     }
 
-    addVendor = (event) => {
-        event.preventDefault();
-        console.log(this.addVendorRef)
-        // this.addVendorRef.current.handleClickOpen();
+    //카드 등록창 열기
+    addCardOpen = (event) => {
+        event.preventDefault()
+        this.setState({ ...this.state, open:true })
     }
 
-    componentDidMount(){
-        const addVendorRef = React.createRef(); 
+    //카드 등록창 닫기
+    addCardClose = () => {
+        this.setState({ ...this.state, open:false })
     }
+
+
 
     render() {
 
@@ -62,7 +66,10 @@ class CardManage extends React.Component{
                         </CardBox>
 
                         <div align="right">
-                            <AddCard></AddCard>
+                            <AddCard open={this.state.open} close={ this.addCardClose }></AddCard>
+                            <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={event => this.addCardOpen(event)}>
+                                등록
+                            </Button>
                         </div>
 
                     </div>
@@ -90,15 +97,24 @@ class CardManage extends React.Component{
                                                     backgroundColor:"#f15b41", 
                                                     opacity:0.8, 
                                                     padding:"20px", 
-                                                    float:"right"}}
-                                    >
-                                        <ViewList style={{cursor:'pointer'}} onClick={ this.changeMenu } fontSize="small" titleAccess="리스트로 보기"/>
-                                        <Queue style={{cursor:'pointer'}} onClick={ event => this.addVendor(event) } fontSize="small" titleAccess="등록하기"/>
+                                                    float:"right"}}>
+                                        <Tooltip
+                                            title="리스트로 보기"
+                                            placement={'left-start'}
+                                            enterDelay={300}>                                                        
+                                                <ViewList style={{cursor:'pointer'}} onClick={ this.changeMenu } fontSize="small"/>
+                                        </Tooltip>
+                                        <Tooltip
+                                            title="카드등록"
+                                            placement={'left-start'}
+                                            enterDelay={300}>
+                                                <Queue style={{cursor:'pointer'}} onClick={ event => this.addCardOpen(event) } fontSize="small"/>
+                                        </Tooltip>
                                     </Paper>
                         </div>
 
                         <div style={{display:"none"}} >
-                            <AddCard ref={this.addVendorRef}/>
+                            <AddCard open={this.state.open} close={ this.addCardClose }/>
                         </div>
 
                     </div>

@@ -32,7 +32,7 @@ const columnData = [
   {id: 'cardCompanyCodeName', align: true, disablePadding: false, label: '카드사명'},
   {id: 'cardCategoryCodeName', align: true, disablePadding: false, label: '카드구분'},
   {id: 'accountNo', align: true, disablePadding: false, label: '계좌번호'},
-  {id: 'cardManagerName', align: true, disablePadding: false, label: '카드관리자'},
+  {id: 'cardManagerName', align: true, disablePadding: false, label: '관리자'},
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -142,16 +142,21 @@ let EnhancedTableToolbar = props => {
         <div>
         </div>
       ) : (
-        <div style={{paddingRight:'20px'}}>
-          <SearchBox 
-          styleName="d-none d-sm-block" 
-          placeholder="카드번호/카드명"
-          onChange={updateSearchKeyword}
-          value={value.searchKeyword}
-          onClick={ event => searchActivity(event) }
-          onKeyDown={ event => searchEnterActivity(event) }
-          />
-        </div>
+        <Tooltip
+          title="검색하기"
+          placement={'bottom-start'}
+          enterDelay={300}>
+            <div style={{paddingRight:'20px'}}>
+              <SearchBox 
+              styleName="d-none d-sm-block" 
+              placeholder="카드번호/카드명"
+              onChange={updateSearchKeyword}
+              value={value.searchKeyword}
+              onClick={ event => searchActivity(event) }
+              onKeyDown={ event => searchEnterActivity(event) }
+              />
+            </div>
+        </Tooltip>
       )}
 
       <div className="actions">
@@ -166,11 +171,14 @@ let EnhancedTableToolbar = props => {
           </div>
         ) : (
           <div style={{paddingRight:'20px'}}>
-            <ArtTrack
-              onClick={handleChange}
-              style={{cursor:'pointer'}}
-              titleAccess="섬네일로 보기"
-            />
+            <Tooltip
+              title="섬네일 보기"
+              placement={'bottom-start'}
+              enterDelay={300}>
+                <ArtTrack
+                  onClick={handleChange}
+                  style={{cursor:'pointer'}}/>
+            </Tooltip>
           </div>
         )}
       </div>
@@ -349,10 +357,21 @@ class CardTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, row.cardRegNo)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={ event => this.updateCard(event, row.cardRegNo) } style={{cursor:'pointer'}} title="수정하기">{row.cardRegNo}</span></TableCell>
+                      <TableCell align="left">
+                        <Tooltip
+                          title="수정하기"
+                          placement={'bottom-start'}
+                          enterDelay={300}>
+                            <span onClick={ event => this.updateCard(event, row.cardRegNo) } style={{cursor:'pointer'}}>
+                              {row.cardRegNo}
+                            </span>
+                        </Tooltip>
+                      </TableCell>
                       <TableCell align="left">{row.cardNo}</TableCell>
-                      <TableCell align="left">{row.cardName}</TableCell>
-                      <TableCell align="left">{row.cardCompanyCodeName}</TableCell>
+                      <TableCell align="left">
+                        {row.cardName.length > 16 ? row.cardName.substring(0,17)+"...":row.cardName}
+                      </TableCell>
+                      <TableCell align="left">{row.cardCompanyCodeName.substring(0,2)}</TableCell>
                       <TableCell align="left">{row.cardCategoryCodeName}</TableCell>
                       <TableCell align="left">{row.accountNo}</TableCell>
                       <TableCell align="left">{row.cardManagerName}</TableCell>

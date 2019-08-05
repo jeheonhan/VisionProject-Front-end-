@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 import { getStatement, getStatementList, deleteStatement } from 'actions/index';
 import SearchBox from 'components/SearchBox';
 import SweetAlert from 'react-bootstrap-sweetalert';
-
+import Snackbar from '@material-ui/core/Snackbar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -169,22 +169,22 @@ let EnhancedTableToolbar = props => {
         <div>
         </div>
       ) : (
-        <div style={{paddingRight:'20px'}}>
-          <SearchBox 
-            styleName="d-none d-sm-block" 
-            placeholder="전표번호/내용"
-            onChange={updateSearchKeyword}
-            value={value.searchKeyword}
-            onClick={ event => searchActivity(event) }
-            onKeyDown={ event => searchEnterActivity(event) }
-          />
-        </div>
+        <Tooltip
+          title="검색하기"
+          placement={'bottom-start'}
+          enterDelay={300}>
+            <div style={{paddingRight:'20px'}}>
+              <SearchBox 
+                styleName="d-none d-sm-block" 
+                placeholder="전표번호/내용"
+                onChange={updateSearchKeyword}
+                value={value.searchKeyword}
+                onClick={ event => searchActivity(event) }
+                onKeyDown={ event => searchEnterActivity(event) }
+              />
+            </div>
+        </Tooltip>
       )}
-
-
-
-
-
       <div className="actions">
         {numSelected > 0 ? (
           // 툴팁 내용
@@ -194,38 +194,41 @@ let EnhancedTableToolbar = props => {
             </IconButton>
           </Tooltip>
         ) : (
-          <div style={{paddingRight:'20px'}}>
-              <IconButton
-              className="icon-btn p-1 text-white ml-auto"
-              aria-label="More"
-              aria-owns={value.open ? 'long-SidenavContent.js' : null}
-              aria-haspopup
-              onClick={handleClick}
-            >
-              <MoreVertIcon color='action' titleAccess="전표필터"/>
-            </IconButton>
-            <Menu
-              id="long-menu"
-              anchorEl={value.anchorEl}
-              open={value.open}
-              onClose={handelClose}
-              MenuListProps={{
-                style: {
-                  width: 100,
-                },
-              }}
-            >
-              <MenuItem onClick={event => handleRequestChoose(event, 0)}>
-                  전체보기
-              </MenuItem>
-              <MenuItem onClick={event => handleRequestChoose(event, 1)}>
-                  매출전표
-              </MenuItem>
-              <MenuItem onClick={event => handleRequestChoose(event, 2)}>
-                  매입전표
-              </MenuItem>
-            </Menu>
-            </div>
+          <Tooltip
+            title="전표필터"
+            placement={'bottom-start'}
+            enterDelay={300}>
+              <div style={{paddingRight:'20px'}}>
+                <IconButton
+                className="icon-btn p-1 text-white ml-auto"
+                aria-label="More"
+                aria-owns={value.open ? 'long-SidenavContent.js' : null}
+                aria-haspopup
+                onClick={handleClick}>
+                  <MoreVertIcon color='action'/>
+                </IconButton>
+                <Menu
+                  id="long-menu"
+                  anchorEl={value.anchorEl}
+                  open={value.open}
+                  onClose={handelClose}
+                  MenuListProps={{
+                    style: {
+                      width: 100,
+                    },
+                }}>
+                  <MenuItem onClick={event => handleRequestChoose(event, 0)}>
+                      전체보기
+                  </MenuItem>
+                  <MenuItem onClick={event => handleRequestChoose(event, 1)}>
+                      매출전표
+                  </MenuItem>
+                  <MenuItem onClick={event => handleRequestChoose(event, 2)}>
+                      매입전표
+                  </MenuItem>
+                </Menu>
+              </div>
+          </Tooltip>
             )}
           </div>
     </Toolbar>
@@ -253,6 +256,7 @@ class StatementTable extends React.Component {
       detailDialogOpen: false,
       warning: false,
       updateSuccess : false,
+      snackBar: false,
     };
   }
 
@@ -271,6 +275,7 @@ class StatementTable extends React.Component {
 
     this.setState({data, order, orderBy});
   };
+
   handleSelectAllClick = (event, checked) => {
     if (checked) {
       this.setState({selected: this.state.data.map((row, index) => row.statementNo)});
@@ -278,12 +283,30 @@ class StatementTable extends React.Component {
     }
     this.setState({selected: []});
   };
+
   handleKeyDown = (event, id) => {
     if (keycode(event) === 'space') {
       this.handleClick(event, id);
     }
   };
-  handleClick = (event, id) => {
+
+  //snackBar 열기
+  openSnackBar  = () => {
+    this.setState({ ...this.state, snackBar: true });
+  };
+
+  //snackBar 닫기
+  closeSnackBar = () => {
+    this.setState({ ...this.state, snackBar: false });
+  };
+
+  handleClick = (event, id, statementDetail) => {
+    
+    if(statementDetail.substring(0,2) === '가맹' || statementDetail.substring(0,2) === '주문' || statementDetail.substring(0,2) === '발주'){
+      this.openSnackBar()
+      return 
+    }
+
     const {selected} = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -416,9 +439,18 @@ class StatementTable extends React.Component {
                     >
                       <TableCell padding="checkbox">
                         <Checkbox color="primary" checked={isSelected} 
-                                  onClick={event => this.handleClick(event, row.statementNo)}/>
+                                  onClick={event => this.handleClick(event, row.statementNo, row.statementDetail)}/>
                       </TableCell>
-                      <TableCell align="left"><span onClick={event => this.GetStatementDetail(event, row.statementNo)} style={{cursor:'pointer'}} title="수정하기">{row.statementNo}</span></TableCell>
+                      <TableCell align="left">
+                        <Tooltip
+                          title="상세보기"
+                          placement={'bottom-start'}
+                          enterDelay={300}>
+                            <span onClick={event => this.GetStatementDetail(event, row.statementNo)} style={{cursor:'pointer'}}>
+                              {row.statementNo}
+                            </span>
+                        </Tooltip>
+                      </TableCell>
                       <TableCell align="left">{row.statementCategoryCodeName}</TableCell>
                       <TableCell align="left">{row.statementDetail}</TableCell>
                       <TableCell align="left">{row.tradeDate}</TableCell>
@@ -473,6 +505,18 @@ class StatementTable extends React.Component {
             >
               수정에 성공했습니다
             </SweetAlert>
+
+            <Snackbar
+              anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+              open={this.state.snackBar}
+              onClose={this.closeSnackBar}
+              ContentProps={{
+                'aria-describedby': 'message-id',
+              }}
+              message={<span id="message-id">발주, 주문, 가맹 전표는 삭제할 수 없습니다</span>}
+              autoHideDuration={1500}
+            />
+
           </div>
         </div>
       </div>
