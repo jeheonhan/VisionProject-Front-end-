@@ -25,6 +25,9 @@ class About extends React.Component {
     var aboutList = [];
 
     if(HRCardDetailData != null){
+      birthDay = "19"+(HRCardDetailData.ssn).substring(0,2)+". "+(HRCardDetailData.ssn).substring(2,4)+". "
+      +(HRCardDetailData.ssn).substring(4,6)+".";
+      
       aboutList =  [
         {
           id: 1,
@@ -63,8 +66,7 @@ class About extends React.Component {
         }
       ];
 
-      birthDay = "19"+(HRCardDetailData.ssn).substring(0,2)+". "+(HRCardDetailData.ssn).substring(2,4)+". "
-      +(HRCardDetailData.ssn).substring(4,6)+".";
+      
     }else if(branch != null){
       aboutList =  [
         {

@@ -2,12 +2,10 @@ import React from 'react';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import asyncComponent from '../../../util/asyncComponent';
 
-var userValues = JSON.parse(localStorage.getItem('user'));
 const HumanResource = ({match}) => (
 
     <div className="app-wrapper">
-        {console.log(userValues.accessMenuCodeNo)}
-        {userValues.accessMenuCodeNo == '01' ? (
+        {JSON.parse(localStorage.getItem('user')).accessMenuCodeNo == '01' ? (
          <Switch>
              <Redirect exact from={`${match.url}/`} to={`${match.url}/appointment`}/>
              <Route path={`${match.url}/appointment`} component={asyncComponent(() => import('./routes/Appointment'))}/>
