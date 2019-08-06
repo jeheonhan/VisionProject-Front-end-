@@ -341,14 +341,16 @@ class EnhancedTable extends React.Component {
                         <Checkbox color="primary" checked={isSelected} 
                                   onClick={event => this.handleClick(event, row.workAttitudeCodeNo)}/>
                       </TableCell>
-                      <TableCell align="left" >
-                        <span style={{cursor:'pointer'}}
-                              onClick={event => {this.handleModifyWorkAttitudeCode(event, row)}}
-                              title="수정">
+                      <TableCell align="left" style={{cursor:'pointer'}} 
+                                onClick={event => {this.handleModifyWorkAttitudeCode(event, row)}}>
+                        <span title="수정">
                           {row.workAttitudeCodeNo}
                         </span>
                       </TableCell>
-                      <TableCell align="left">{row.workAttitudeCodeName}</TableCell>
+                      <TableCell align="left" style={{cursor:'pointer'}} 
+                                 onClick={event => {this.handleModifyWorkAttitudeCode(event, row)}}>
+                        {row.workAttitudeCodeName}
+                      </TableCell>
                       <TableCell align="left">{row.commuteApplyCode == '02' ? "적용":"미적용"}</TableCell>
                       <TableCell align="left">{row.applyStartTime}</TableCell>
                       <TableCell align="left">{row.applyEndTime}</TableCell>
