@@ -63,6 +63,7 @@ class GetNoticeDetail extends React.Component {
     return (
       <div className="app-wrapper">
         <Dialog
+          fullScreen
           open={this.props.open}
           TransitionComponent={Transition}
           maxWidth=""
@@ -115,13 +116,16 @@ class GetNoticeDetail extends React.Component {
                   <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside ><div style={{padding:"50px"}} dangerouslySetInnerHTML={{__html:this.state.notice.content}}/></CardBox>
               </div>
               <DialogActions>
-                <Button color="secondary" onClick={() => this.props.updateNoticeOpen()}>
+                <Button color="secondary"  onClick={() => this.props.updateNoticeOpen()}>
                           수정
                 </Button>
                 <Button onClick={this.onSweetAlert} 
                         >
                     <i class="zmdi zmdi-delete zmdi-hc-fw zmdi-hc-1g"></i> 삭제
                 </Button>
+              </DialogActions>
+              <DialogActions>
+                <Button onClick={this.props.handleRequestClose} variant="outlined" color="inherit" >닫기</Button>
               </DialogActions>
 
               <SweetAlert show={this.state.warning}

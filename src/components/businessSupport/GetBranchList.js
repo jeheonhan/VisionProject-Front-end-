@@ -108,7 +108,7 @@ const columnData = [
           )}
         </div>
         <div className="spacer"/>
-        {/* <div className="actions">
+        <div className="actions">
           {numSelected > 0 ? (
             // 툴팁 내용
             <Tooltip title="수정">
@@ -123,7 +123,7 @@ const columnData = [
               </IconButton>
             </Tooltip>
           )}
-        </div> */}
+        </div>
       </Toolbar>
     );
   };

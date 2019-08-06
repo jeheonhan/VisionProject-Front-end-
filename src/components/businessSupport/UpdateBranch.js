@@ -90,8 +90,6 @@ class UpdateBranch extends React.Component {
 
         success : false,
         updateFlag : false,
-        branch:{
-        },
         warning:false,
         snackBar:false,
         snackBarContents:'',
@@ -173,8 +171,6 @@ class UpdateBranch extends React.Component {
       };
 
     render() {
-
-        console.log(this.state.branch)
 
         const {_branch} = this.props;
 
@@ -365,12 +361,19 @@ class UpdateBranch extends React.Component {
                 </div>
                 <div className="col-md-1"/>
               </div>
+              <br/><br/>
 
               <div align="center">
-              <DialogActions>
-                <Button color="secondary" onClick={this.onSweetAlert} >수정하기</Button>
-              </DialogActions>
-              </div>
+                    <Button className="btn-block col-md-4 col-4" 
+                            color="secondary" size="medium" 
+                            onClick={this.onSweetAlert}
+                            
+                            >
+                                수정하기
+                    </Button>
+                </div>
+                <br/><br/>
+
               <Snackbar
                     anchorOrigin={{vertical: 'top', horizontal: 'center'}}
                     open={this.state.snackBar}

@@ -151,6 +151,7 @@ class UpdateNotice extends React.Component {
 
             <div>
                 <Dialog
+                    fullScreen
                      open={this.props.updateOpen}
                      onClose={this.props.updateClose}
                      TransitionComponent={Transition}
@@ -235,10 +236,9 @@ class UpdateNotice extends React.Component {
                 </CardBox>
 
                 <div align="center">
-                    <Button className="btn-block text-white  bg-deep-orange col-md-4 col-4" 
-                            color="default" size="medium" 
+                    <Button className="col-md-4 col-4" 
+                            color="secondary" size="medium"
                             onClick={this.onSweetAlert}
-                            
                             >
                                 수정하기
                     </Button>
