@@ -30,6 +30,7 @@ class GetEmployeeInfo extends Component {
 
     componentWillUnmount(){
         this.props.cleanStoreState("workAttitudeList");
+        this.props.cleanStoreState("salaryList");
     }
 
   render() {

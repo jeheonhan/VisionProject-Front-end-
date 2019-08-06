@@ -23,7 +23,6 @@ function Transition(props) {
 
       this.state = {
         warning:false,
-        branch : this.props.branch,
       }
   }
      
@@ -63,7 +62,7 @@ function Transition(props) {
 
     render() {
 
-      if(this.props.branch !== this.state.branch){
+      if((this.state.branch && this.state.branch == undefined) || this.props.branch !== this.state.branch){
         this.setState({ branch : this.props.branch});
       }
 
@@ -99,21 +98,21 @@ function Transition(props) {
             <div className="col-md-3">
                 <TextField
                       label="지점번호"
-                      value={this.state.branch.branchNo}
+                      value={this.state.branch && this.state.branch.branchNo}
                       margin="normal"
                 />
             </div>
             <div className="col-md-2">
                 <TextField
                       label="영업상태"
-                      value={this.state.branch.branchStatus}
+                      value={this.state.branch && this.state.branch.branchStatus}
                       margin="normal"
                 />
             </div>
             <div className="col-md-3">
                 <TextField
                       label="지점등록일"
-                      value={this.state.branch.branchRegDate}
+                      value={this.state.branch && this.state.branch.branchRegDate}
                       margin="normal"
                 />
             </div>
@@ -124,7 +123,7 @@ function Transition(props) {
               <div className="col-md-3">
                   <TextField
                         label="지점명"
-                        value={this.state.branch.branchName}
+                        value={this.state.branch && this.state.branch.branchName}
                         margin="normal"
                         fullWidth
                         />
@@ -138,7 +137,7 @@ function Transition(props) {
             <div className="col-md-3">
                 <TextField
                       label="지점장명"
-                      value={this.state.branch.branchManagerName}
+                      value={this.state.branch && this.state.branch.branchManagerName}
                       margin="normal"
                       fullWidth
                 />
@@ -146,7 +145,7 @@ function Transition(props) {
             <div className="col-md-3">
                 <TextField
                       label="사업자등록번호"
-                      value={this.state.branch.businessLicenseNo}
+                      value={this.state.branch && this.state.branch.businessLicenseNo}
                       margin="normal"
                       fullWidth
                 />
@@ -159,7 +158,7 @@ function Transition(props) {
             <div className="col-md-3">
                 <TextField
                       label="지점 전화번호"
-                      value={this.state.branch.branchTel}
+                      value={this.state.branch && this.state.branch.branchTel}
                       margin="normal"
                       fullWidth
                 />
@@ -167,7 +166,7 @@ function Transition(props) {
             <div className="col-md-3">
                 <TextField
                       label="지점장 휴대폰번호"
-                      value={this.state.branch.branchManagerPhone}
+                      value={this.state.branch && this.state.branch.branchManagerPhone}
                       margin="normal"
                       fullWidth
                 />
@@ -180,7 +179,7 @@ function Transition(props) {
                 <div className="col-md-3">
                     <TextField
                           label="우편번호"
-                          value={this.state.branch.zipCode}
+                          value={this.state.branch && this.state.branch.zipCode}
                           margin="normal"
                           fullWidth
                     />
@@ -188,7 +187,7 @@ function Transition(props) {
               <div className="col-md-3">
                     <TextField
                           label="지역"
-                          value={this.state.branch.localCodeName}
+                          value={this.state.branch && this.state.branch.localCodeName}
                           margin="normal"
                           fullWidth
                     />
@@ -200,7 +199,7 @@ function Transition(props) {
             <div className="col-md-8">
                     <TextField
                           label="주소"
-                          value={this.state.branch.address}
+                          value={this.state.branch && this.state.branch.address}
                           margin="normal"
                           fullWidth
                     />
@@ -208,23 +207,25 @@ function Transition(props) {
                 <div className="col-md-2">
                     <TextField
                           label="상세주소"
-                          value={this.state.branch.detailAddress}
+                          value={this.state.branch && this.state.branch.detailAddress}
                           margin="normal"
                           fullWidth
                     />
                 </div>
-
           </div>
 
-            <DialogActions>
-              <Button color="secondary" onClick={() => this.props.updateBranchOpen(this.state.branch.branchNo)}>
-                      수정
-              </Button>
-              <Button onClick={this.onSweetAlert} 
-                      >
-                  <i class="zmdi zmdi-refresh-alt zmdi-hc-spin-reverse"></i>{this.state.branch.branchStatusCodeNo == '01' ? '폐업전환' : '영업전환'} 
-              </Button>
-            </DialogActions>
+          <br/><br/>
+                <div align="center">
+                  <Button onClick={this.onSweetAlert} 
+                          >
+                      <i class="zmdi zmdi-refresh-alt zmdi-hc-spin-reverse"></i>{this.state.branch && this.state.branch.branchStatusCodeNo == '01' ? '폐업전환' : '영업전환'} 
+                  </Button>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <Button color="secondary"  onClick={() => this.props.updateBranchOpen(this.state.branch.branchNo)}>
+                          수정
+                  </Button>
+                </div>
+          <br/><br/>
 
             <SweetAlert show={this.state.warning}
                         warning
@@ -233,7 +234,7 @@ function Transition(props) {
                         confirmBtnText="아니오"
                         confirmBtnBsStyle="danger"
                         cancelBtnBsStyle="default"
-                        title={this.state.branch.branchStatusCodeNo == '01' ? '폐업상태로 전환합니다.' : '영업상태로 전환합니다.'}
+                        title={this.state.branch && this.state.branch.branchStatusCodeNo == '01' ? '폐업상태로 전환합니다.' : '영업상태로 전환합니다.'}
                         onConfirm={this.onCancel}
                         onCancel={this.warningOk}
                 >
