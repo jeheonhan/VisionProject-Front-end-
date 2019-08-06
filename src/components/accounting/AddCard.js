@@ -57,7 +57,7 @@ class AddCard extends React.Component {
       cardUsageStatusCodeNo : "",
       accountNo : "",
       cardNo : '',
-      cardImageFile : "",
+      cardImageFile : null,
       findEmployeeOpen : false,
       findAccountOpen : false,
       success : false,
@@ -83,7 +83,7 @@ class AddCard extends React.Component {
       cardUsageStatusCodeNo : "",
       accountNo : "",
       cardNo : '',
-      cardImageFile : ''
+      cardImageFile : null,
     });
     this.props.cleanStoreState("checkedEmployeeData");
     this.props.close();

@@ -177,8 +177,8 @@ class UpdateSalary extends Component {
             </div>
             <div className="pi-content">
               <h4 className="card-text" align="center">{salaryInfo && salaryInfo.salaryDate} &nbsp; 급여</h4>
-              <p className="card-text" align="left">소정근로시간(분) : {salaryInfo && salaryInfo.totalRegularWorkTime}</p>
-              <p className="card-text" align="left">연장근로시간(분) : {salaryInfo && salaryInfo.totalRegularWorkTime}</p>
+              <p className="card-text" align="left">소정근로시간(분) : {salaryInfo && salaryInfo.totalRegularWorkTime} 분</p>
+              <p className="card-text" align="left">연장근로시간(분) : {salaryInfo && salaryInfo.totalRegularWorkTime} 분</p>
               <p className="card-text" align="left" style={{marginBottom:'0px'}}>시급 : {salaryInfo && salaryInfo.wage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</p>
               
               <div style={{padding:"0px"}} className="col-md-12 col-12">

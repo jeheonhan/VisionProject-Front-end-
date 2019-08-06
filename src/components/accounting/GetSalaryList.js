@@ -235,8 +235,10 @@ class SalaryTable extends React.Component {
                                     salaryStatusCodeNo : _salaryStatusCodeNo })
   }
 
-  onSuccessIamport = ( _salaryNumbering, _salaryStatusCodeNo ) => {
-    
+  onSuccessIamport = (_salaryNumbering, _salaryStatusCodeNo ) => {
+    // alert('계좌이체 성공')
+    // this.props.updateSalaryStatus({ salaryNumbering : _salaryNumbering, 
+    //                                 salaryStatusCodeNo : _salaryStatusCodeNo  })
   }
 
   onFailIamport = () => {
@@ -300,21 +302,21 @@ class SalaryTable extends React.Component {
                         </Tooltip>
                       </TableCell>
                       <TableCell align="left">{row.employeeName}</TableCell>
-                      <TableCell align="left">{row.totalRegularWorkTime}</TableCell>
-                      <TableCell align="left">{row.totalExtendWorkTime}</TableCell>
+                      <TableCell align="left">{row.totalRegularWorkTime} 분</TableCell>
+                      <TableCell align="left">{row.totalExtendWorkTime} 분</TableCell>
                       <TableCell align="left">{row.wage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
                       <TableCell align="left">
                         {row.salaryStatusCodeNo === '01' ? 
-                          <Tooltip
+                          (<Tooltip
                             title="급여확정"
                             placement={'bottom-start'}
                             enterDelay={300}>
                               <span onClick={event => this.changeSalaryStatus(event, row.salaryNumbering, row.salaryStatusCodeNo)} style={{cursor:'pointer'}}>
                                 {row.salaryStatusCodeName}
                               </span>
-                          </Tooltip>
+                          </Tooltip>)
                           : row.salaryStatusCodeNo === '02' ?
-                          <Iamport
+                          (<Iamport
                             identificationCode="imp36066914"
                             params={{
                               pg: 'inicis',
@@ -331,7 +333,7 @@ class SalaryTable extends React.Component {
                             }}
                             jqueryLoaded={false}
                             onFailed={this.onFailIamport}
-                            onSuccess={this.onSuccessIamport}
+                            onSuccess={this.onSuccessIamport( row.salaryNumbering, row.salaryStatusCodeNo)}
                             render={(renderProps) => (
                               <Tooltip
                                 title="이체하기"
@@ -342,9 +344,9 @@ class SalaryTable extends React.Component {
                                   </div>
                               </Tooltip>
                             )}
-                          />
+                          />)
                           : 
-                          row.salaryStatusCodeNo
+                          row.salaryStatusCodeName
                         }
                       </TableCell>
                       <TableCell align="left">{row.individualTotalSalary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>

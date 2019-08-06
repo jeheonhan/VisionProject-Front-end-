@@ -132,6 +132,7 @@ class UpdateCard extends React.Component {
                 cardImageFile : this.state.card.cardImageFile,
                 accountNo : this.state.card.accountNo,
                 cardNo : this.state.card.cardNo,
+                cardImage : this.state.card.cardImage,
             });
             this.setState({ updateFlag : false });
             this.props.cleanStoreState('cardInfo');
@@ -195,6 +196,7 @@ class UpdateCard extends React.Component {
                                         '/img/'+this.state.card.cardImage : require("assets/images/basicCard2.png"))} style={{width: 300, height: 200}}/>
                                 </div>
                             </div>
+                            
 
                             <div className="col-md-12 col-6">
                                 <Button variant="contained" color="default" className={classes.button} 
