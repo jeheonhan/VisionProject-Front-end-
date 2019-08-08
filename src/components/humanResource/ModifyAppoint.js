@@ -129,14 +129,15 @@ class FormDialog extends React.Component {
           <DialogTitle>인사발령 수정</DialogTitle>
           <DialogContent >
             <DialogContentText>
-              사원번호 혹은 사원명을 선택한 이후에 발령일자, 발령부서, 발령직급을 선택하시기 바랍니다.
+              인사발령일자와 발령부서 및 발령직급을 수정할 수 있습니다.
             </DialogContentText>
             
-            <div style={{float:"left"}}>
+            <div className="row">
+            <div className="col-md-4 col-6" >
             <DatePicker callBackDateChange={this.callBackDateChange} value={this.state.data && this.state.data.appointDate}></DatePicker>
             </div>
 
-            <div style={{float:"left"}}>
+            <div className="col-md-4 col-6" style={{display:"inline"}}>
             &nbsp;
             <TextField
               required
@@ -147,7 +148,7 @@ class FormDialog extends React.Component {
               disabled
             />
             </div>
-            <div style={{float:"left"}}>
+            <div className="col-md-4 col-6" style={{display:"inline"}}>
             &nbsp;
             <TextField
               required
@@ -158,7 +159,10 @@ class FormDialog extends React.Component {
               disabled
             />
             </div>
-            <div style={{float:"left"}}>
+            </div>
+
+            <div className="row">
+            <div className="col-md-3 col-5" style={{display:"inline"}}>
             &nbsp;
             <TextField
               margin="none"
@@ -168,7 +172,7 @@ class FormDialog extends React.Component {
               disabled
             />
             </div>
-            <div style={{float:"left"}}>
+            <div className="col-md-3 col-5" style={{display:"inline"}}>
             &nbsp;
             <TextField
               margin="none"
@@ -178,7 +182,7 @@ class FormDialog extends React.Component {
               value={this.state.data && this.state.data.appointDepartCodeName}
             />
             </div>
-            <div style={{float:"left"}}>
+            <div className="col-md-3 col-5" style={{display:"inline"}}>
             &nbsp;
             <TextField
               margin="none"
@@ -188,7 +192,7 @@ class FormDialog extends React.Component {
               disabled
             />
             </div>
-            <div style={{float:"left"}}>
+            <div className="col-md-3 col-5" style={{display:"inline"}}>
             &nbsp;
             <TextField
               margin="none"
@@ -197,6 +201,7 @@ class FormDialog extends React.Component {
               onClick={this.handleSubRankComponentOpen}
               value={this.state.data && this.state.data.appointRankCodeName}
             />
+            </div>
             </div>
           </DialogContent>
           <DialogActions>

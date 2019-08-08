@@ -41,7 +41,7 @@ const requestIdentifyCodeRequest = async (_data) => {
 const forgotPasswordRequest = async (_data) => {
     return await axios({
         method:"POST",
-        url:"/user/forgotPassword",
+        url:"/user/getForgotPassword",
         data:_data
     })
     .then(response => response.data)
@@ -51,7 +51,7 @@ const forgotPasswordRequest = async (_data) => {
 const forgotUserIdRequest = async (_data) => {
     return await axios({
         method:"POST",
-        url:"/user/forgotId",
+        url:"/user/getForgotId",
         data:_data
     })
     .then(response => response.data)
@@ -62,7 +62,7 @@ const signInUserWithIdPasswordRequest = async (_data) => {
  
     return await  axios({
         method:'POST',
-        url:'/user/loginUser',
+        url:'/user/getLoginUser',
         //dataType:'json',
         data: _data
     }).then(authUser => authUser.data)

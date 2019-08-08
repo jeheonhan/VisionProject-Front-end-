@@ -42,7 +42,47 @@ class UserInfo extends React.Component {
           <i className="zmdi zmdi-caret-down zmdi-hc-fw align-middle"/>
           </h4>
         </div>
-        <Menu className="user-info"
+
+        {JSON.parse(localStorage.getItem('user')).employeeNo != null ? (
+            <Menu className="user-info"
+            id="simple-menu"
+            anchorEl={this.state.anchorEl}
+            open={this.state.open}
+            onClose={this.handleRequestClose}
+            PaperProps={{
+              style: {
+                minWidth: 120,
+                paddingTop: 0,
+                paddingBottom: 0
+              }
+            }}
+           >
+        
+            <MenuItem onClick={this.handleRequestClose} >
+              <NavLink to={user.employeeNo? "/app/getMyInfo/employee":"/app/getMyInfo/branch"} className="text-black">
+                <i className="zmdi zmdi-account zmdi-hc-fw mr-2 "/>
+                내정보보기
+              </NavLink>
+            </MenuItem>
+
+            <MenuItem>
+              <NavLink to="/app/commute" className="text-black">
+                <i className="zmdi zmdi-assignment zmdi-hc-fw mr-2"/>
+                출퇴근기록
+              </NavLink>
+            </MenuItem>
+              <MenuItem onClick={() => {
+                this.handleRequestClose();
+                this.props.userSignOut()
+              }}>
+                <i className="zmdi zmdi-sign-in zmdi-hc-fw mr-2"/>
+
+                <IntlMessages id="popup.logout"/>
+              </MenuItem>
+            </Menu>
+            )
+            :(
+              <Menu className="user-info"
               id="simple-menu"
               anchorEl={this.state.anchorEl}
               open={this.state.open}
@@ -55,30 +95,25 @@ class UserInfo extends React.Component {
                 }
               }}
         >
-          <MenuItem onClick={this.handleRequestClose} >
-            <NavLink to={user.employeeNo? "/app/getMyInfo/employee":"/app/getMyInfo/branch"} className="text-black">
-              <i className="zmdi zmdi-account zmdi-hc-fw mr-2 "/>
-              내정보보기
-            </NavLink>
-          </MenuItem>
+          
+            <MenuItem onClick={this.handleRequestClose} >
+              <NavLink to={user.employeeNo? "/app/getMyInfo/employee":"/app/getMyInfo/branch"} className="text-black">
+                <i className="zmdi zmdi-account zmdi-hc-fw mr-2 "/>
+                내정보보기
+              </NavLink>
+            </MenuItem>
 
+            <MenuItem onClick={() => {
+              this.handleRequestClose();
+              this.props.userSignOut()
+            }}>
+              <i className="zmdi zmdi-sign-in zmdi-hc-fw mr-2"/>
 
-
-          <MenuItem>
-            <NavLink to="/app/commute" className="text-black">
-              <i className="zmdi zmdi-assignment zmdi-hc-fw mr-2"/>
-              출퇴근기록
-            </NavLink>
-          </MenuItem>
-          <MenuItem onClick={() => {
-            this.handleRequestClose();
-            this.props.userSignOut()
-          }}>
-            <i className="zmdi zmdi-sign-in zmdi-hc-fw mr-2"/>
-
-            <IntlMessages id="popup.logout"/>
-          </MenuItem>
-        </Menu>
+              <IntlMessages id="popup.logout"/>
+            </MenuItem>
+          </Menu>
+            )}
+        
       </div>
     );
   }

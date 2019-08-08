@@ -4,8 +4,8 @@ import { GET_DAILY_SALES_LIST,
         GET_DAILY_SALES_DETAIL, 
         ADD_DAILY_SALES,
         GET_SALES_MENU_LIST,
-        CARRY_SALES_MENU_LIST,} from "actionTypes/ActionTypes";
-import {MODIFY_DAILY_SALES} from "actionTypes/ActionTypes";
+        CARRY_SALES_MENU_LIST,
+        MODIFY_DAILY_SALES} from "actionTypes/ActionTypes";
 
 export const modifyDailySales = (data) => {
     return{
@@ -61,4 +61,3 @@ export const carrySalesMenuList = ( data ) => {
         payload: data
     }
 }
-

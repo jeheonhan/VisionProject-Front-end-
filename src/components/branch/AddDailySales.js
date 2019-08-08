@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
 import Dialog from '@material-ui/core/Dialog';
@@ -17,6 +18,7 @@ import DatePicker from '../date/DatePickers';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { connect } from 'react-redux';
 import { getSalesMenuList, addDailySales, getDailySalesList } from 'actions/index';
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 
@@ -43,8 +45,13 @@ class AddDailySales extends React.Component {
           salesProductList :[],
           warning:false,
           success:false,
-          propList : this.props.salesMenuList
+          propList : this.props.salesMenuList,
+          user:JSON.parse(localStorage.getItem('user')),
+          snackbar:false,
+          snackbarContents:""
         }
+
+        this.datePicker = React.createRef();
 
       }
 
@@ -62,11 +69,32 @@ class AddDailySales extends React.Component {
         })
       };
 
+      //Date 값 가져오기
       callBackDateChange = (date) => {
-        this.setState({
-          ...this.state, 
-          salesDate: date
-        });
+
+        const result = async () => {
+          return axios({
+            method:"POST",
+            url:"/branch/checkDuplicateSalesDate",
+            data:{branchNo:this.state.user.branchNo,salesDate:date}
+          })
+          .then(response => {
+            if(response.data == true){
+              this.handleRequestSnackBarOpen("이미 등록된 날짜는 선택하실 수 없습니다.")
+              this.datePicker.current.setState({
+                selectedDate:null
+              })
+            }else{
+              this.setState({
+                ...this.state, 
+                salesDate: date
+              });
+            }
+          })
+          .catch(error => console.log(error))
+        }
+        result();
+        
       }
 
       handleInputChange = (key, row) => event => {
@@ -138,18 +166,20 @@ class AddDailySales extends React.Component {
     }
 
       submitFn = () => {
-        this.props.addDailySales(this.state.salesProductList);
 
-        this.setState({
-          open : false,
-          salesDate : '',
-          salesProductList :[],
-          warning:false,
-          success:false
-        })
-
-        localStorage.getItem('user').branchNo && this.props.getDailySalesList(localStorage.getItem('user').branchNo);
-
+        if(this.state.salesProductList.length == 0){
+          this.handleRequestSnackBarOpen("입력된 정보가 없습니다. 다시 확인하세요.")
+        }else{
+          this.props.addDailySales(this.state.salesProductList);
+          localStorage.getItem('user').branchNo && this.props.getDailySalesList(localStorage.getItem('user').branchNo);
+          this.setState({
+            open : false,
+            salesDate : '',
+            salesProductList :[],
+            warning:false,
+            success:false
+          })
+        }
       }
 
       warningOk = () => {
@@ -157,6 +187,22 @@ class AddDailySales extends React.Component {
             warning:false
         })
     }
+
+      //스낵바 열기
+      handleRequestSnackBarOpen = (contents) => {
+        this.setState({
+          snackbar:true,
+          snackbarContents:contents
+        })
+      }
+
+      //스낵바 닫기
+      handleRequestSnackBarClose = () => {
+        this.setState({
+          snackbar:false,
+          snackbarContents:""
+        })
+      }
 
     render(){
 
@@ -232,7 +278,7 @@ class AddDailySales extends React.Component {
                   <TableRow key={row.menuNo}>
                     <TableCell width="50px">{row.menuNo}</TableCell>
                     <TableCell align="right">{row.menuName}</TableCell>
-                    <TableCell align="right">{row.menuPrice}</TableCell>
+                    <TableCell align="right">{row.menuPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원</TableCell>
                     <TableCell align="right"><FormControl style={{width:"70px"}}>
                           <Input
                               id={row.menuNo}
@@ -263,10 +309,11 @@ class AddDailySales extends React.Component {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <DatePicker 
-                              callBackDateChange={this.callBackDateChange}
-                              label="매출일자 선택"
-                            />
+                              <DatePicker 
+                                callBackDateChange={this.callBackDateChange}
+                                label="매출일자 선택"
+                                ref={this.datePicker}
+                              />
                           </TableCell>
                       </TableRow>
                 </TableBody>
@@ -295,6 +342,17 @@ class AddDailySales extends React.Component {
             >
                 {this.state.warningText}
             </SweetAlert>
+
+            <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1800"
+            onClose={this.handleRequestSnackBarClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
 
     </div>
 

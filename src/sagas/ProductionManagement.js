@@ -32,7 +32,7 @@ const sendShippingAxios = async (action) => {
 const getProductListRequest = async () => {
     return await axios({
         method : "GET",
-        url : "/pm/selectProductList"
+        url : "/pm/getProductList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -41,7 +41,7 @@ const getProductListRequest = async () => {
 const getOrderToVendorListRequest = async () => {
     return await axios({
         method : "GET",
-        url : "/pm/selectOrderToVendorList"
+        url : "/pm/getOrderToVendorList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -69,7 +69,7 @@ const getProductAccountRequest = async () => {
 const getOrderToVendorDetailListRequest = async (data) => {
     return await axios({
         method : "POST",
-        url : "/pm/orderToVendorDetailList",
+        url : "/pm/getOrderToVendorDetailList",
         data : data
     })
     .then(respones => respones.data)
@@ -134,7 +134,7 @@ const modifyOrderFromBranchAxios = async(action) => {
 const getProductListForOrderRequest = async () => {
     return await axios({
         method : "GET",
-        url : "/pm/selectProductList"
+        url : "/pm/getProductList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -143,7 +143,7 @@ const getProductListForOrderRequest = async () => {
 const getProductListCompleteRequest = async () => {
     return await axios({
         method : "GET",
-        url : "/pm/selectOrderToVendorList"
+        url : "/pm/getOrderToVendorList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -161,7 +161,7 @@ const getProductRequest = async (data) => {
 const updateProductRequest = async (data) => {
     return await axios({
         method:"POST",
-        url:"/pm/updateProduct",
+        url:"/pm/modifyProduct",
         data:data
     })
     .then(respones => respones.data)
@@ -171,7 +171,7 @@ const updateProductRequest = async (data) => {
 const updateProductUsageStatusRequest = async (data) => {
     return await axios({
         method:"POST",
-        url:"/pm/updateUsageStatus",
+        url:"/pm/modifyUsageStatus",
         data:data
     })
 }

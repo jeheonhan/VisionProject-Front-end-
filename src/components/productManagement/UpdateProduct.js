@@ -15,7 +15,8 @@ class UpdateProduct extends React.Component {
   
     state = {
         success : false,
-        updateFlag : false
+        updateFlag : false,
+        deleteConfirmShow: false
     }
 
     //물품수정 제출
@@ -29,10 +30,8 @@ class UpdateProduct extends React.Component {
     //삭제
     submitProductUpdate = (event) => {
         event.preventDefault();
-        this.props.updateProductUsageStatus(this.state.product);
-        this.setState({ updateFlag : false});
-        this.props.cleanStoreState('Product');
-        this.props.close();
+        this.handleOpenDelete();
+
     }
 
 
@@ -68,6 +67,32 @@ class UpdateProduct extends React.Component {
         success : false
         })
         this.props.close();
+    }
+
+    //물품 삭제 Confirm 열기
+    handleOpenDelete = () => {
+        this.setState({
+        deleteConfirmShow:true
+        })
+    }
+
+    //물품 삭제 Confirm 확인
+    onConfirmDelete = () => {
+        console.log(this.state.selected);
+        this.props.updateProductUsageStatus(this.state.product);
+        this.setState({ 
+            updateFlag : false,
+            deleteConfirmShow : false
+        });
+        this.props.cleanStoreState('Product');
+        this.props.close();
+    }
+
+    //물품 삭제 Confirm 취소
+    onCancelDelete = () => {
+        this.setState({
+        deleteConfirmShow:false
+        })
     }
 
     render() {
@@ -177,7 +202,17 @@ class UpdateProduct extends React.Component {
             수정에 성공했습니다
         </SweetAlert>
 
-
+        <SweetAlert show={this.state.deleteConfirmShow}
+                    warning
+                    showCancel
+                    confirmBtnText={"삭제"}
+                    cancelBtnText={"취소"}
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title={"해당 물품을 삭제하시겠습니까?"}
+                    onConfirm={this.onConfirmDelete}
+                    onCancel={this.onCancelDelete}
+        />
        
         </Dialog>
       </div>

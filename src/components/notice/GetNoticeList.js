@@ -201,9 +201,11 @@ const columnData = [
         orderBy: 'noticeNo',
         selected: [],
         // data에 props로 들어오는 list값 넣어주기.
-        data: this.props.noticeList.sort((a, b) => (b.noticeNo - a.noticeNo)),
+        //data: this.props.noticeList.sort((a, b) => (b.noticeNo - a.noticeNo)),
         page: 0,
         rowsPerPage: 10,
+        flag:false,
+        user: JSON.parse(localStorage.getItem('user'))
       };
     }
 
@@ -241,12 +243,27 @@ const columnData = [
     render() {
 
       const { noticeList, noticeHeaderList } = this.props;
-      const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
+      const {data, order, orderBy, selected, rowsPerPage, page, user} = this.state;
 
-      if(noticeList && noticeList != this.state.data){
-        this.setState({
-          data:noticeList.sort((a, b) => (b.noticeNo - a.noticeNo))
+      var noticeListData = [];
+      if(user.employeeNo == null){
+        noticeList.map(row => {
+          if(row.noticeHeaderCodeNo == '01' || row.noticeHeaderCodeNo =='02'){
+            noticeListData = noticeListData.concat(row);
+            console.log(noticeListData);
+          }
         })
+      }else if(user.employeeNo != null){
+        noticeListData = noticeList;
+      }
+
+      if(!this.state.flag){
+        
+        this.setState({
+          data:noticeListData.sort((a, b) => (b.noticeNo - a.noticeNo)),
+          flag:true
+        })
+
       }
   
       return (
@@ -261,14 +278,15 @@ const columnData = [
                   orderBy={orderBy}
                   onSelectAllClick={this.handleSelectAllClick}
                   onRequestSort={this.handleRequestSort}
-                  rowCount={data.length}
+                  rowCount={data && data.length}
                 />
                 <TableBody>
                   
                   {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
-                  {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                  {data && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                     //console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                     const isSelected = this.isSelected(page*rowsPerPage+index);
+                    
                     return (
                       <TableRow
                         hover
@@ -294,7 +312,7 @@ const columnData = [
                 <TableFooter>
                   <TableRow>
                     <TablePagination
-                      count={data.length}
+                      count={data && data.length}
                       rowsPerPage={rowsPerPage}
                       page={page}
                       onChangePage={this.handleChangePage}

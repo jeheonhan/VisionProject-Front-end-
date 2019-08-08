@@ -21,6 +21,7 @@ import { connect } from 'react-redux';
 import { getSalary, updateSalaryStatus } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import Iamport from 'react-iamport';
+import SweetAlert from 'react-bootstrap-sweetalert'
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -148,7 +149,8 @@ class SalaryTable extends React.Component {
       data: this.props.salaryList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
       page: 0,
       rowsPerPage: 10,
-      updateSalaryDialogOpen: false
+      updateSalaryDialogOpen: false,
+      changeSalaryStatusConfirm: false
     };
   }
 
@@ -231,8 +233,12 @@ class SalaryTable extends React.Component {
   //급여상태 변경
   changeSalaryStatus = (event, _salaryNumbering, _salaryStatusCodeNo) => {
     event.preventDefault();
-    this.props.updateSalaryStatus({ salaryNumbering : _salaryNumbering, 
-                                    salaryStatusCodeNo : _salaryStatusCodeNo })
+    //this.onClickConfirmChangeSalaryStatus(_salaryNumbering, _salaryStatusCodeNo);
+    this.setState({
+      paramSalaryNumbering:_salaryNumbering,
+      paramSalaryStatusCodeNo:_salaryStatusCodeNo
+    })
+    this.handleOpenConfirmChangeSalaryStatus();
   }
 
   onSuccessIamport = (_salaryNumbering, _salaryStatusCodeNo ) => {
@@ -243,6 +249,33 @@ class SalaryTable extends React.Component {
 
   onFailIamport = () => {
 
+  }
+
+  //급여상태 변경 확인창 열기
+  handleOpenConfirmChangeSalaryStatus = () => {
+    this.setState({
+      changeSalaryStatusConfirm:true
+    })
+  }
+
+  //급여상태 변경 확인
+  onClickConfirmChangeSalaryStatus = () => {
+
+    this.props.updateSalaryStatus({ salaryNumbering : this.state.paramSalaryNumbering, 
+      salaryStatusCodeNo : this.state.paramSalaryStatusCodeNo })
+
+    this.setState({
+      changeSalaryStatusConfirm:false,
+      paramSalaryNumbering:null,
+      paramSalaryStatusCodeNo:null
+    })
+  }
+
+   //급여상태 변경 취소
+   onClickCancelChangeSalaryStatus = () => {
+    this.setState({
+      changeSalaryStatusConfirm:false
+    })
   }
 
   
@@ -333,7 +366,7 @@ class SalaryTable extends React.Component {
                             }}
                             jqueryLoaded={false}
                             onFailed={this.onFailIamport}
-                            onSuccess={this.onSuccessIamport( row.salaryNumbering, row.salaryStatusCodeNo)}
+                            onSuccess={event => {event.preventDefault(); this.onSuccessIamport( row.salaryNumbering, row.salaryStatusCodeNo);}}
                             render={(renderProps) => (
                               <Tooltip
                                 title="이체하기"
@@ -372,6 +405,18 @@ class SalaryTable extends React.Component {
               open={this.state.updateSalaryDialogOpen}
               close={this.closeUpdateSalaryDialog}
             />
+
+            <SweetAlert show={this.state.changeSalaryStatusConfirm}
+                    warning
+                    showCancel
+                    confirmBtnText={"확인"}
+                    cancelBtnText={"취소"}
+                    confirmBtnBsStyle="danger"
+                    cancelBtnBsStyle="default"
+                    title={"급여상태를 변경하시겠습니까?"}
+                    onConfirm={this.onClickConfirmChangeSalaryStatus}
+                    onCancel={this.onClickCancelChangeSalaryStatus}
+            ></SweetAlert>
 
 
           </div>

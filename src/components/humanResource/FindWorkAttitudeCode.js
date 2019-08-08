@@ -75,7 +75,7 @@ class FindWorkAttitudeCode extends React.Component{
 
     return(        
         <Dialog open={this.props.open}  maxWidth="xl">
-          <DialogTitle>사원 검색</DialogTitle>
+          <DialogTitle>근태코드 검색</DialogTitle>
           <DialogContent >
 
           <List >

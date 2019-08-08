@@ -273,13 +273,15 @@ const columnData = [
                         tabIndex={-1}
                         key={page*rowsPerPage+index}
                         selected={isSelected}
+                        onClick={ event => this.getDailySalesDetail(event, row)} 
+                        style={{cursor:'pointer'}}
                       >
                         {/* <TableCell padding="checkbox">
                           <Checkbox color="secondary" checked={isSelected} 
                                     onClick={event => this.handleClick(event, page*rowsPerPage+index)}/>
                         </TableCell> */}
                         <TableCell align="left" >{row.branchNo}</TableCell>
-                        <TableCell align="left"><span onClick={ event => this.getDailySalesDetail(event, row)} style={{cursor:'pointer'}}>{row.salesDate}</span></TableCell>
+                        <TableCell align="left"><span >{row.salesDate}</span></TableCell>
                         <TableCell align="left">{row.dailyTotalAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
                       </TableRow>
                     );

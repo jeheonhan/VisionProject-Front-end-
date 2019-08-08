@@ -5,7 +5,7 @@ import { getCommuteList,
          addLeaveWork } from 'actions/index';
 import BigCalendar from 'react-big-calendar';
 import moment from 'moment';
-import SweetAlert from 'react-bootstrap-sweetalert'
+import SweetAlert from 'react-bootstrap-sweetalert';
 import Snackbar from '@material-ui/core/Snackbar';
 
 

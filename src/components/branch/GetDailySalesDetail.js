@@ -183,7 +183,7 @@ class GetDailySalesDetail extends React.Component {
                 </TableBody>
             </Table>
             {this.props.updateDetail ? null :
-  <div className="row" style={{paddingLeft:"2%"}}>
+  <div className="row" style={{paddingLeft:"2%", paddingTop:"5%"}}>
     
   <ResponsiveContainer width="34%" height={200}>
     <BarChart data={chartQuantity}
@@ -215,7 +215,7 @@ class GetDailySalesDetail extends React.Component {
     </BarChart>
   </ResponsiveContainer>
 
-  <ResponsiveContainer width="31%" height={200}>
+  <ResponsiveContainer width="31%" height={200} >
     <BarChart data={forLegend}
               margin={{top: 10, right: 0, left: 0, bottom: 50}}>
      <Legend layout="vertical"/>

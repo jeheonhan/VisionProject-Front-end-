@@ -15,6 +15,8 @@ import Input from '@material-ui/core/Input';
 import NumberFormat from 'react-number-format';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
+import Snackbar from '@material-ui/core/Snackbar';
+import ComposeMail from 'components/mail/ComposeMail';
 
 //급여 개인지급총액 정규식
 class TotalSalaryMask extends React.Component {
@@ -35,6 +37,9 @@ class UpdateSalary extends Component {
     anchorEl: undefined,
     open: false,
     success : false,
+    snackbar:false,
+    snackbarContents:"",
+    mailOpen:false
   }
 
   //...클릭시 발생하는 이벤트
@@ -62,9 +67,15 @@ class UpdateSalary extends Component {
     
     //수정이면 index === 1
     } else if(index === 1){
-      this.handelClose();
-      this.openSuccessAlarm();
-      this.props.updateSalary(this.state.salary)
+      if(this.state.salary.salaryStatusCodeNo == '02'){
+        this.handleRequestSnackBarOpen("급여이체 단계에서는 급여를 수정하실 수 없습니다.")
+      }else if(this.state.salary.salaryStatusCodeNo == '03'){
+        this.handleRequestSnackBarOpen("이미 이체가 완료된 급여는 수정하실 수 없습니다.")
+      }else{
+        this.handelClose();
+        this.openSuccessAlarm();
+        this.props.updateSalary(this.state.salary)
+      }
     }
 
     // this.setState({open: false});
@@ -94,20 +105,54 @@ class UpdateSalary extends Component {
 
   //급여수정 다이얼로그 닫기
   closeUpdateSalary = () => {
-    this.setState({ salary : this.props.salaryInfo })
+    this.setState({ 
+      updateFlag:false
+     })
     this.props.close();
+  }
+
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
+  }
+
+  //스낵바 닫기
+  handleRequestSnackBarClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:""
+    })
+  }
+
+  //메일 화면 열기
+  handleOpenMailComponent = () => {
+    this.setState({
+      mailOpen:true
+    })
+    this.closeUpdateSalary();
+  }
+
+  //메일 화면 닫기
+  handleCloseMailComponent = () => {
+    this.setState({
+      mailOpen:false
+    })
   }
 
   render() {
 
     const { salaryInfo } = this.props;
 
-    if(salaryInfo && this.state.updateFlag === false){
+    if(salaryInfo && !this.state.updateFlag ){
       this.setState({
         updateFlag : true,
         salary : salaryInfo
       })
     }
+
 
     return (
       <div>
@@ -122,7 +167,7 @@ class UpdateSalary extends Component {
                     title="메일 보내기"
                     placement={'bottom-start'}
                     enterDelay={300}>
-                      <IconButton className="jr-fs-lg text-white" aria-label="Menu">
+                      <IconButton className="jr-fs-lg text-white" aria-label="Menu" onClick={this.handleOpenMailComponent}>
                         <IconMailOutline/>
                       </IconButton>
                   </Tooltip>
@@ -192,6 +237,7 @@ class UpdateSalary extends Component {
                     onChange={this.handleChange('individualTotalSalary')}
                     margin="dense"
                     fullWidth
+                    disabled={salaryInfo && (salaryInfo.salaryStatusCodeNo == '03' ||  salaryInfo.salaryStatusCodeNo == '02') ? true:false}
                     endAdornment={this.state.salary && this.state.salary.individualTotalSalary ? (<InputAdornment position="end">원</InputAdornment>) : null}
                   />
               </FormControl>
@@ -212,6 +258,20 @@ class UpdateSalary extends Component {
         </SweetAlert>
 
         </Dialog>
+
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestSnackBarClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
+
+        <ComposeMail open={this.state.mailOpen} onClose={this.handleCloseMailComponent} 
+                     emailForSending={this.state.salary && this.state.salary.employeeEmail}/>
       </div>
     );
   }

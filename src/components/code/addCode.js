@@ -40,6 +40,10 @@ class FormDialog extends React.Component {
       open: false,
       success:false,
       snackbar:false,
+      Code:{
+        ...this.state.Code,
+        codeName:""
+      }
     });
     //this.props.getForCodeDetail({searchCondition :0, searchKeyword: this.props.List[0]});
   };

@@ -241,7 +241,7 @@ class FormDialog extends React.Component {
               value={this.state.workAttitudeCode && this.state.workAttitudeCode.workAttitudeCodeNo}
               onChange={this.handleDuplicate}
               //onChange={this.handleChange("workAttitudeCodeNo")}
-              helperText={this.state.duplicate? "중복입니다.":""}
+              helperText={this.state.duplicate? "중복입니다. 다시 입력하여주세요.":""}
               fullWidth
             />
             </div>

@@ -5,7 +5,8 @@ import asyncComponent from '../../../util/asyncComponent';
 const HumanResource = ({match}) => (
 
     <div className="app-wrapper">
-        {JSON.parse(localStorage.getItem('user')).accessMenuCodeNo == '01' ? (
+        {JSON.parse(localStorage.getItem('user')).accessMenuCodeNo == '01' ||
+        JSON.parse(localStorage.getItem('user')).accessMenuCodeNo == '05' ? (
          <Switch>
              <Redirect exact from={`${match.url}/`} to={`${match.url}/appointment`}/>
              <Route path={`${match.url}/appointment`} component={asyncComponent(() => import('./routes/Appointment'))}/>

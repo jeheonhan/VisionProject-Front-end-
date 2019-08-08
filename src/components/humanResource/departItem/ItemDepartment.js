@@ -33,15 +33,15 @@ export default function ItemDepartment(props){
 
         <ul className={`package-items ${itemStyle}`}>
           <li>
-            <i className="zmdi zmdi-assignment-account zmdi-hc-fw"/>
+            <i className="zmdi zmdi-alert-octagon zmdi-hc-fw"/>
             <span>접근가능메뉴 : {values.accessMenuCodeName}</span>
           </li>
           <li>
-            <i className="zmdi zmdi-font zmdi-hc-fw"/>
+            <i className="zmdi zmdi-assignment-account zmdi-hc-fw"/>
             <span>직원 수 : {values.countEmployee} 명</span>
           </li>
           <li>
-            <i className="zmdi zmdi-hotel zmdi-hc-fw"/>
+            <i className="zmdi zmdi-font zmdi-hc-fw"/>
             <span>사용상태 : {values.departUsageStatusCodeName}</span>
           </li>
           <li>

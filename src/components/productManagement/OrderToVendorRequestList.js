@@ -197,7 +197,7 @@ render() {
                                                 />
                                                 </FormControl>
                 </TableCell>
-                <TableCell align="right">{n.purchasePrice}</TableCell>
+                <TableCell align="right">{n.purchasePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}원</TableCell>
                 <TableCell align="right">{n.vendorName}</TableCell>
               </TableRow>
             );
@@ -206,15 +206,15 @@ render() {
       </Table>
 
       <Snackbar
-                    anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                    open={this.state.snackBar}
-                    onClose={this.closeSnackBar}
-                    ContentProps={{
-                      'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">{this.state.snackBarContents}을 1개이상 입력해야합니다.</span>}
-                    autoHideDuration={1500}
-                  />
+        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+        open={this.state.snackBar}
+        onClose={this.closeSnackBar}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={<span id="message-id">{this.state.snackBarContents}을 1개이상 입력해야합니다.</span>}
+        autoHideDuration={1500}
+      />
       
       <div style={{position:"fixed", width:"300px", height:"50px", display:"inline-block", right:"20%", /* 창에서 오른쪽 길이 */ top:"80%", /* 창에서 위에서 부터의 높이 */ backgroundColor: "transparent", margin:0}}><Paper className="text-white" style={{backgroundColor:"#f15b41", padding:"20px", float:"right"}}elevation={16}>총 주문금액:{total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} 원</Paper></div>
       <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={() => this.handleSubmit(total)} >전송</Button>

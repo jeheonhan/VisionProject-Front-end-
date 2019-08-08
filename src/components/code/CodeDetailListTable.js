@@ -146,7 +146,7 @@ class EnhancedTable extends React.Component {
   };
   handleSelectAllClick = (event, checked) => {
     if (checked) {
-      this.setState({selected: this.state.data.map((row, index) => index)});
+      this.setState({selected: this.state.data.map((row, index) => row.codeNo)});
       return;
     }
     this.setState({selected: []});
@@ -284,13 +284,8 @@ class EnhancedTable extends React.Component {
           codeNo:s,
           codeUsageStatus:'D'
         })
-        console.log("fffffffffffffff + ", {
-          groupCode:this.state.data[0].groupCode,
-          codeNo:s,
-          codeUsageStatus:'D'
-        })
       })
-      console.log("eeeeeeeeeeeeee + ", list)
+
       this.props.convertCodeUsageStatusList(list)
       this.setState({
         deleteConfirmShow:false,

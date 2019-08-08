@@ -25,7 +25,8 @@ class GetNoticeDetail extends React.Component {
     this.state = {
       warning:false,
       notice : this.props.noticeDetail,
-      open : this.props.open
+      open : this.props.open,
+      user:JSON.parse(localStorage.getItem('user'))
     }
 }
 
@@ -56,10 +57,14 @@ class GetNoticeDetail extends React.Component {
 
   render() {
 
+    const { user } = this.state;
+
     if(this.state.notice !== this.props.noticeDetail){
        this.setState({notice: this.props.noticeDetail});
     }
-    //console.log(this.state)
+
+    console.log(user)
+    console.log(this.props.noticeDetail)
     return (
       <div className="app-wrapper">
         <Dialog
@@ -116,13 +121,22 @@ class GetNoticeDetail extends React.Component {
                   <CardBox styleName="col-lg-13" cardStyle="p-0" headerOutside ><div style={{padding:"50px"}} dangerouslySetInnerHTML={{__html:this.state.notice.content}}/></CardBox>
               </div>
               <DialogActions>
-                <Button color="secondary"  onClick={() => this.props.updateNoticeOpen()}>
+
+                {user.employeeNo == this.props.noticeDetail.employeeNo ? (
+                  <div>
+                    <Button color="secondary"  onClick={() => this.props.updateNoticeOpen()}>
                           수정
-                </Button>
-                <Button onClick={this.onSweetAlert} 
-                        >
-                    <i class="zmdi zmdi-delete zmdi-hc-fw zmdi-hc-1g"></i> 삭제
-                </Button>
+                    </Button>
+                    <Button onClick={this.onSweetAlert} 
+                            >
+                        <i class="zmdi zmdi-delete zmdi-hc-fw zmdi-hc-1g"></i> 삭제
+                    </Button>
+                  </div>
+                )
+                :(
+                  null
+                )}
+                
               </DialogActions>
               <DialogActions>
                 <Button onClick={this.props.handleRequestClose} variant="outlined" color="inherit" >닫기</Button>

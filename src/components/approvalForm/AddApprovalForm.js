@@ -11,7 +11,9 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import {connect} from 'react-redux'
 import {addApprovalForm} from 'actions/Approval'
-import ApprovalFormCKEditor from './ApprovalFormCKEditor'
+import ApprovalFormCKEditor from './ApprovalFormCKEditor';
+import Snackbar from '@material-ui/core/Snackbar';
+
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -25,7 +27,9 @@ class FullScreenDialog extends React.Component {
             approvalFormTitle : "",
             approvalForm : "",
             registrantEmployeeName: JSON.parse(localStorage.getItem("user")).employeeName,
-            registrantEmployeeNo : JSON.parse(localStorage.getItem("user")).employeeNo
+            registrantEmployeeNo : JSON.parse(localStorage.getItem("user")).employeeNo,
+            snackbar:false,
+            snackbarContents:""
         }
     }
 
@@ -52,8 +56,15 @@ class FullScreenDialog extends React.Component {
     });
   };
   handleAdd = () => {
-    this.props.addApprovalForm(this.state);
-    this.handleRequestClose();
+    if(this.state.approvalFormTitle == ""){
+      this.handleRequestSnackBarOpen("결재양식명은 반드시 입력하셔야합니다.")
+    }else if(this.state.approvalForm == ""){
+      this.handleRequestSnackBarOpen("결재양식이 작성되지 않았습니다.")
+    }else{
+     // this.props.addApprovalForm(this.state);
+      this.handleRequestClose();
+    }
+
   }
   handleRequestClose = () => {
     this.setState({
@@ -62,6 +73,22 @@ class FullScreenDialog extends React.Component {
       approvalForm : "",
     });
   };
+
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
+  }
+
+  //스낵바 닫기
+  handleRequestSnackBarClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:""
+    })
+  }
 
   render() {
     return (
@@ -113,6 +140,16 @@ class FullScreenDialog extends React.Component {
             <Divider/>
             <ApprovalFormCKEditor handleForm={this.handleForm} content={this.state.approvalForm}></ApprovalFormCKEditor>
         </Dialog>
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1800"
+            onClose={this.handleRequestSnackBarClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
       </div>
     );
   }

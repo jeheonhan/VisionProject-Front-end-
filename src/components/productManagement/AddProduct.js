@@ -115,7 +115,8 @@ class FullScreenDialog extends React.Component {
   //물품 등록창 닫기
   handleClickClose = () => {
     this.setState({
-      open:false
+      open:false,
+      product:null
     })
   }
 
@@ -162,6 +163,8 @@ class FullScreenDialog extends React.Component {
   render() {
 
     const {infoAccount} = this.props;
+    const { product } = this.state;
+
     return (
       <div>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
@@ -190,83 +193,83 @@ class FullScreenDialog extends React.Component {
             </Toolbar>
           </AppBar>
 
-  <div  align="center">
-  <br/>
-          <Typography variant="h4" color="textPrimary" style={{
-                flex: 1,
-              }}>
-                물품 등록
-          <br/><br/>
-              </Typography>
+          <div  align="center">
+          <br/>
+                  <Typography variant="h4" color="textPrimary" style={{
+                        flex: 1,
+                      }}>
+                        물품 등록
+                  <br/><br/>
+                      </Typography>
               
-  <div className="col-md-3 col-3" >
-    <TextField
-      name="productName"
-      label="물품명"
-      value={this.state.productName}
-      onChange={this.handleChange}
-      margin="normal"
-      fullWidth
-    />
-    <br />
-    </div>
+            <div className="col-md-6 col-12" >
+              <TextField
+                name="productName"
+                label="물품명"
+                value={product && product.productName}
+                onChange={this.handleChange}
+                margin="normal"
+                fullWidth
+              />
+              <br />
+              </div>
    
-    <div className="col-md-3 col-3" >
+              <div className="col-md-6 col-12" >
                 <FormControl className="mb-3" fullWidth margin='normal'>
                   <InputLabel htmlFor="purchasePrice">매입단가</InputLabel>
                   <Input
                     name="purchasePrice"
                     placeholder="매입단가 입력"
                     inputComponent={TradeAmountMask}
-                    value={this.state.product.purchasePrice}
+                    value={product && product.purchasePrice}
                     fullWidth={true}
                     margin="none"
                     onChange={this.handleChange}
-                    endAdornment={this.state.product.purchasePrice ? (<InputAdornment position="end">원</InputAdornment>) :  null}
+                    endAdornment={product && product.purchasePrice ? (<InputAdornment position="end">원</InputAdornment>) :  null}
                   />
                 </FormControl>
               </div>
   
 
-    <div className="col-md-3 col-3" >
+             <div className="col-md-6 col-12" >
                 <FormControl className="mb-3" fullWidth margin='normal'>
                   <InputLabel htmlFor="salesPrice">출하단가</InputLabel>
                   <Input
                     name="salesPrice"
                     inputComponent={TradeAmountMask}
                     label="출하단가"
-                    value={this.state.product.salesPrice}
+                    value={product && product.salesPrice}
                     fullWidth={true}
                     margin="none"
                     onChange={this.handleChange}
-                    endAdornment={this.state.product.salesPrice ? (<InputAdornment position="end">원</InputAdornment>) :  null}
+                    endAdornment={product && product.salesPrice ? (<InputAdornment position="end">원</InputAdornment>) :  null}
                   />
                 </FormControl>
               </div>
 
 
-              <div className="col-md-3 col-3" >
+              <div className="col-md-6 col-12" >
                 <FormControl className="mb-3" fullWidth margin='normal'>
                   <InputLabel htmlFor="quantity">재고</InputLabel>
                   <Input
                     name="quantity"
                     inputComponent={TradeAmountMask}
                     label="재고"
-                    value={this.state.product.quantity}
+                    value={product && product.quantity}
                     fullWidth={true}
                     margin="none"
                     onChange={this.handleChange}
-                    endAdornment={this.state.product.quantity ? (<InputAdornment position="end">개</InputAdornment>) :  null}
+                    endAdornment={product && product.quantity ? (<InputAdornment position="end">개</InputAdornment>) :  null}
                   />
                 </FormControl>
               </div>
       
-    <div className="col-md-3 col-3" >
+    <div className="col-md-6 col-12" >
     <TextField
       name="vendorNo"
       label="거래처선택"
       select
-      value= {this.state.product.vendorNo && this.state.product.vendorNo}
+      value= {product && product.vendorNo}
       onChange={this.handleChange}
       margin="normal"
       helperText="거래처를 선택하세요"
@@ -301,7 +304,8 @@ class FullScreenDialog extends React.Component {
                     message={<span id="message-id">{this.state.snackBarContents} 항목을 입력하지 않으셨습니다</span>}
                     autoHideDuration={1500}
                   />
-  </div>
+      </div>
+      <br/>
           <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleSubmit}>전송</Button>
         </Dialog>
       </div>
