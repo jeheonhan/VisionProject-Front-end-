@@ -34,12 +34,17 @@ class FormDialog extends React.Component {
     checkedSunday:false,
     duplicate:false,
     snackbar:false,
-    snackbarContents:""
+    snackbarContents:"",
+    user:JSON.parse(localStorage.getItem('user'))
   };
 
   handleClickOpen = () => {
-    this.setState({open: true,
-                 workAttitudeCode:{...this.state.workAttitudeCode, commuteApplyCode:"01"}});
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.setState({open: true,
+                   workAttitudeCode:{...this.state.workAttitudeCode, commuteApplyCode:"01"}});
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.");
+    }
   };
 
   handleRequestClose = () => {
@@ -222,9 +227,11 @@ class FormDialog extends React.Component {
   
     return (
       <div>
+        <div>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
             등록
         </Button>
+        </div>
         <Dialog open={this.state.open} onClose={this.handleRequestClose} maxWidth="xl">
           <DialogTitle>근태코드 등록</DialogTitle>
           <DialogContent >

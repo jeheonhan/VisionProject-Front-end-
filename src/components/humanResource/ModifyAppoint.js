@@ -69,7 +69,6 @@ class FormDialog extends React.Component {
 
   handleChange = name => event => {
       this.setState(...this.state, {[name]:event.target.value})
-      console.log(this.state)
   }
 
   //Date Picker로부터 date정보 받는 call back function
@@ -80,7 +79,6 @@ class FormDialog extends React.Component {
  
   render() {
 
-    console.log(this.state)
 
     const {data} = this.state;    
 

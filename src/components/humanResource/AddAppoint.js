@@ -27,11 +27,16 @@ class FormDialog extends React.Component {
     departOpen: false,
     rankOpen: false,
     snackbar: false,
-    snackbarContents: ''
+    snackbarContents: '',
+    user:JSON.parse(localStorage.getItem('user'))
   };
 
   handleClickOpen = () => {
-    this.setState({open: true});
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.setState({open: true});
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   };
 
   //자식 컴포넌트 열기
@@ -72,6 +77,14 @@ class FormDialog extends React.Component {
   //Date Picker로부터 date정보 받는 call back function
   callBackDateChange = (date) => {
     this.setState({appointDate:date})
+  }
+
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
   }
 
   //스낵바 닫기
@@ -129,9 +142,11 @@ class FormDialog extends React.Component {
   
     return (
       <div>
+        <dv>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
             등록
         </Button>
+        </dv>
         <Dialog open={this.state.open} onClose={this.handleRequestClose} maxWidth="xl">
           <DialogTitle>인사발령 등록</DialogTitle>
           <DialogContent >

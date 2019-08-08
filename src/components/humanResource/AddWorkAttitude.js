@@ -27,11 +27,16 @@ class FormDialog extends React.Component {
     subOpen: false,
     workAttitudeCodeOpen: false,
     snackbar:false,
-    snackbarContents:""
+    snackbarContents:"",
+    user:JSON.parse(localStorage.getItem('user'))
   };
 
   handleClickOpen = () => {
-    this.setState({open: true});
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.setState({open: true});
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   };
 
   handleRequestClose = () => {

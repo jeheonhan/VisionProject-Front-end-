@@ -15,6 +15,7 @@ class SalaryBookManage extends React.Component{
     this.state = {
       analizeOpen : false
     }
+    this.pie = React.createRef();
   }
 
   //급여대장 분석창 열기
@@ -26,10 +27,13 @@ class SalaryBookManage extends React.Component{
 
   //급여대장 분석창 닫기
   analizeDialogClose = () => {
+    console.log(this.pie.current)
     this.setState({
       analizeOpen : false
     })
+    this.pie.current.componentWillUnmount();
   }
+
 
   //급여대장 분석창 클릭시 이벤트
   analize(event, getSalaryDate){
@@ -124,13 +128,13 @@ class SalaryBookManage extends React.Component{
         </div>
         {/* end of timeline panel */}
 
-      <Dialog open={this.state.analizeOpen} onClose={this.analizeDialogClose}>
+      <Dialog open={this.state.analizeOpen} onClose={this.analizeDialogClose} >
         <DialogTitle>
           {salaryBookName} 분석
         </DialogTitle>
         <DialogContent style={{maxWidth:"400px", minWidth:"400px", maxHeight:"350px", minHeight:"350px"}}>
           <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
+            <PieChart ref={this.pie}>
               <Pie data={reviseDepartSalary} 
                    outerRadius={60} 
                    fill="#3367d6"

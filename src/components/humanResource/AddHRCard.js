@@ -146,12 +146,17 @@ class FullScreenDialog extends React.Component {
       }
     },
     departOpen:false,
-    rankOpen:false
+    rankOpen:false,
+    user:JSON.parse(localStorage.getItem('user'))
   };
 
   //인사카드 등록창 열기
   handleClickOpen = () => {
-    this.setState({open: true});
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.setState({open: true});
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   };
 
   //인사카드 등록창 닫기
@@ -325,9 +330,11 @@ class FullScreenDialog extends React.Component {
 
     return (
       <div>
+        <div>
         <Button variant="contained" className="jr-btn bg-deep-orange text-white" onClick={this.handleClickOpen}>
             등록
         </Button>
+        </div>
         <Dialog
           fullScreen
           open={this.state.open}

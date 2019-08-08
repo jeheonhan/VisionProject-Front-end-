@@ -179,6 +179,7 @@ class EnhancedTable extends React.Component {
       deleteConfirmShow:false,
       snackbar:false,
       snackbarContents:"",
+      user:JSON.parse(localStorage.getItem('user'))
     };
   }
   
@@ -241,15 +242,23 @@ class EnhancedTable extends React.Component {
   //수정화면에 Data 보내기
   handleModifyWorkAttitudeCode = (event, row) => {
     event.preventDefault();
-    this.props.handleModifyOpen(row);
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.props.handleModifyOpen(row);
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   }
 
 
    //근태 삭제 Confirm 열기
    handleOpenDeleteWorkAttitude = () => {
-    this.setState({
-      deleteConfirmShow:true
-    })
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.setState({
+        deleteConfirmShow:true
+      })
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   }
 
   //근태 삭제 Confirm 확인
@@ -282,6 +291,14 @@ class EnhancedTable extends React.Component {
   onCancelDelete = () => {
     this.setState({
       deleteConfirmShow:false
+    })
+  }
+
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
     })
   }
 

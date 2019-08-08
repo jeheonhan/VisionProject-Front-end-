@@ -257,6 +257,7 @@ class StatementTable extends React.Component {
       warning: false,
       updateSuccess : false,
       snackBar: false,
+      user: JSON.parse(localStorage.getItem('user'))
     };
   }
 
@@ -357,7 +358,11 @@ class StatementTable extends React.Component {
   
   //전표 삭제시 발생 이벤트 삭제확인 다이얼로그 띄움
   updateUsageStatus = () => {
-    this.setState({ warning : true })
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.setState({ warning : true })
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   }
 
   //전표 삭제 확인 버튼
@@ -391,7 +396,25 @@ class StatementTable extends React.Component {
       updateSuccess : false
     })
   }
+
+    //스낵바 열기
+    handleRequestSnackBarOpen = (contents) => {
+      this.setState({
+        snackbar:true,
+        snackbarContents:contents
+      })
+    }
   
+    //스낵바 닫기
+    handleRequestClose = () => {
+      this.setState({
+        snackbar:false,
+        snackbarContents:"",
+        open: false
+      })
+    }
+    
+
   
   render() {
 
@@ -517,6 +540,16 @@ class StatementTable extends React.Component {
               autoHideDuration={1500}
             />
 
+            <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
           </div>
         </div>
       </div>

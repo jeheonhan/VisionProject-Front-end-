@@ -23,6 +23,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import NumberFormat from 'react-number-format';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Snackbar from '@material-ui/core/Snackbar';
 
 class TradeAmountMask extends React.Component {
   render() {
@@ -58,6 +59,9 @@ class GetStatementDetail extends Component {
     value: 0,
     updateFlag: false,
     findAccountOpen: false,
+    user:JSON.parse(localStorage.getItem('user')),
+    snackbar: false,
+    snackbarContents: ''
   };
 
   handleChange = (event, value) => {
@@ -138,17 +142,48 @@ class GetStatementDetail extends Component {
 
   //전표수정 요청
   submitStatement = event => {
-    event.preventDefault();
-    this.props.updateStatement(this.state.statement); 
-    this.setState({
-      updateFlag : false
-    })
-    this.props.openUpdateSuccessAlarm();
+    if(Number(this.state.user.rankCodeNo) > 1){
+      event.preventDefault();
+      this.props.updateStatement(this.state.statement); 
+      this.setState({
+        updateFlag : false
+      })
+      this.props.openUpdateSuccessAlarm();
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
+
   }
+
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
+  }
+
+  //스낵바 닫기
+  handleRequestClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:"",
+      open: false
+    })
+  }
+  
+    
 
   render() {
 
     const { statementInfo, statementCategoryList, theme } = this.props;
+    let modifyFlag = false;
+
+    if(Number(this.state.user.rankCodeNo) > 1){
+      modifyFlag = true;
+    }else{
+      modifyFlag = false;
+    }
 
     if(statementCategoryList === undefined) {
         this.props.getCodeList({ searchKeyword : "statementCategory" });
@@ -234,6 +269,7 @@ class GetStatementDetail extends Component {
                       onChange={this.handleStatementChange('statementCategoryCodeNo')}
                       SelectProps={{}}
                       margin="none"
+                      disabled={!modifyFlag}
                       fullWidth={true}
                   >
                   {statementCategoryList && statementCategoryList.map(option => (
@@ -245,7 +281,8 @@ class GetStatementDetail extends Component {
                 </div>
 
                 <div className="col-md-6 col-6" style={{float:"left", paddingTop:"20px"}}>
-                  <DatePicker value={this.state.statement && this.state.statement.tradeDate} callBackDateChange={this.callBackDateChange}></DatePicker>
+                  <DatePicker value={this.state.statement && this.state.statement.tradeDate} callBackDateChange={this.callBackDateChange}
+                              disabled={!modifyFlag}></DatePicker>
                 </div>
 
                 <div className="col-md-6 col-6" style={{ float:"left" }}>
@@ -262,6 +299,7 @@ class GetStatementDetail extends Component {
                         fullWidth={true}
                         margin="none"
                         onChange={this.handleStatementChange('tradeAmount')}
+                        disabled={!modifyFlag}
                         endAdornment={this.state.statement && this.state.statement.tradeAmount ? (<InputAdornment position="end">원</InputAdornment>) : null}
                       />
                   </FormControl>
@@ -276,6 +314,7 @@ class GetStatementDetail extends Component {
                       helperText="클릭하여 계좌 선택"
                       onClick={this.handleFindAccountOpen}
                       value={this.state.statement && this.state.statement.accountNo}
+                      disabled={!modifyFlag}
                       fullWidth={true}
                     />
                 </div>
@@ -291,6 +330,7 @@ class GetStatementDetail extends Component {
                       value={this.state.statement && this.state.statement.tradeTargetName}
                       margin="normal"
                       onChange={this.handleStatementChange('tradeTargetName')}
+                      disabled={!modifyFlag}
                       fullWidth={true}
                   />
                 </div>
@@ -307,6 +347,7 @@ class GetStatementDetail extends Component {
                           value={this.state.statement && this.state.statement.statementDetail}
                           margin="normal"
                           onChange={this.handleStatementChange('statementDetail')}
+                          disabled={!modifyFlag}
                           fullWidth={true}
                       />
                 </div>
@@ -326,7 +367,16 @@ class GetStatementDetail extends Component {
           </TabContainer>
         </SwipeableViews>
         </Card>
- 
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
         
         </Dialog>
       </div>

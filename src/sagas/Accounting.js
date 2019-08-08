@@ -245,6 +245,7 @@ const insertSalaryRequest = async (salaryDate) => {
 }
 
 const updateSalaryRequest = async (salary) => {
+    console.log("updateSalaryRequest")
     return await axios({
         method:"POST",
         url:"/accounting/modifySalary",

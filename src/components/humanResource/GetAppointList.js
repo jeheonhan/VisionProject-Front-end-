@@ -22,6 +22,7 @@ import { checkedApointmentRowData, updateAppointStatus } from 'actions/index';
 import moment from 'moment';
 import Snackbar from '@material-ui/core/Snackbar';
 import SearchBox from 'components/SearchBox';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 let counter = 0;
 
@@ -183,6 +184,8 @@ class EnhancedTable extends React.Component {
       flag:false,
       snackbar:false,
       snackbarContents:"",
+      user:JSON.parse(localStorage.getItem('user')),
+      convertConfirmShow:false
     };
   }
 
@@ -250,17 +253,18 @@ class EnhancedTable extends React.Component {
   handleModifyAppointWithData = (event, row) => {
     event.preventDefault();
 
-    console.log(new Date(row.appointDate))
-    console.log(new Date(moment().format('YYYY/MM/DD')))
-
-    if(new Date(row.appointDate) < new Date(moment().format('YYYY/MM/DD'))){
-      this.setState({
-        snackbar:true,
-        snackbarContents:"이미 지난 날짜의 인사발령은 수정할 수 없습니다."
-      })
+    if(Number(this.state.user.rankCodeNo) > 1){
+      if(new Date(row.appointDate) < new Date(moment().format('YYYY/MM/DD'))){
+        this.setState({
+          snackbar:true,
+          snackbarContents:"이미 지난 날짜의 인사발령은 수정할 수 없습니다."
+        })
+      }else{
+        this.props.checkedApointmentRowData(row);
+        this.props.handleModifyAppointOpen();
+      }
     }else{
-      this.props.checkedApointmentRowData(row);
-      this.props.handleModifyAppointOpen();
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
     }
   }
 
@@ -282,16 +286,31 @@ class EnhancedTable extends React.Component {
   //발령상태 변경
   handleClickAppointStatus = (event, rowData) => {
     event.preventDefault();
-    
-    if(rowData.appointmentStatusCodeNo == '01'){
-      console.log(rowData)
-      this.props.updateAppointStatus(Object.assign({},rowData,{appointmentStatusCodeNo:'02'}))
-    }else if(rowData.appointmentStatusCodeNo == '02'){
-      alert("이미 확정된 상태는 변경할 수 없습니다.")
+
+    if(Number(this.state.user.rankCodeNo) > 1){
+      if(rowData.appointmentStatusCodeNo == '01'){
+        this.setState({
+          tempStatus:Object.assign({},rowData,{appointmentStatusCodeNo:'02'}),
+          convertConfirmShow:true
+        })
+        // this.props.updateAppointStatus(Object.assign({},rowData,{appointmentStatusCodeNo:'02'}))
+      }else if(rowData.appointmentStatusCodeNo == '02'){
+        this.handleRequestSnackBarOpen("이미 확정된 상태는 변경할 수 없습니다.");
+      }
+      else if(rowData.appointmentStatusCodeNo == '03'){
+        this.handleRequestSnackBarOpen("이미 취소된 상태는 변경할 수 없습니다.");
+      }
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.");
     }
-    else if(rowData.appointmentStatusCodeNo == '03'){
-      alert("이미 취소된 상태는 변경할 수 없습니다.")
-    }
+  }
+
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
   }
 
   //스낵바 닫기
@@ -301,6 +320,30 @@ class EnhancedTable extends React.Component {
       snackbarContents:""
     })
   }
+
+  //발령 상태변경 Confirm열기
+  handleConvertAppointOpen = () => {
+    this.setState({
+        convertConfirmShow:true
+    })
+   }
+
+  //발령 상태변경 Confirm 확인
+  onConfirmConvert = () => {
+    this.props.updateAppointStatus(this.state.tempStatus);
+      this.setState({
+          tempStatus:null,
+          convertConfirmShow:false
+      })
+  }
+
+  //발령 상태변경 Confirm 취소
+  onCancelConvert = () => {
+      this.setState({
+          convertConfirmShow:false
+      })
+  }
+
 
   render() {
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
@@ -402,6 +445,17 @@ class EnhancedTable extends React.Component {
           }}
           message={<span id="message-id">{this.state.snackbarContents}</span>}
         />
+        <SweetAlert show={this.state.convertConfirmShow}
+          warning
+          showCancel
+          confirmBtnText={"네"}
+          confirmBtnBsStyle="danger"
+          cancelBtnBsStyle="default"
+          cancelBtnText={"아니오"}
+          title={"인사발령 상태를 변경하시겠습니까?"}
+          onConfirm={this.onConfirmConvert}
+          onCancel={this.onCancelConvert}
+      ></SweetAlert>
       </div>
     );
   }

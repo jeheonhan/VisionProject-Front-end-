@@ -39,7 +39,8 @@ class UpdateSalary extends Component {
     success : false,
     snackbar:false,
     snackbarContents:"",
-    mailOpen:false
+    mailOpen:false,
+    user:JSON.parse(localStorage.getItem('user'))
   }
 
   //...클릭시 발생하는 이벤트
@@ -67,14 +68,18 @@ class UpdateSalary extends Component {
     
     //수정이면 index === 1
     } else if(index === 1){
-      if(this.state.salary.salaryStatusCodeNo == '02'){
-        this.handleRequestSnackBarOpen("급여이체 단계에서는 급여를 수정하실 수 없습니다.")
-      }else if(this.state.salary.salaryStatusCodeNo == '03'){
-        this.handleRequestSnackBarOpen("이미 이체가 완료된 급여는 수정하실 수 없습니다.")
+      if(Number(this.state.user.rankCodeNo) > 2){
+        if(this.state.salary.salaryStatusCodeNo == '02'){
+          this.handleRequestSnackBarOpen("급여이체 단계에서는 급여를 수정하실 수 없습니다.")
+        }else if(this.state.salary.salaryStatusCodeNo == '03'){
+          this.handleRequestSnackBarOpen("이미 이체가 완료된 급여는 수정하실 수 없습니다.")
+        }else{
+          this.handelClose();
+          this.openSuccessAlarm();
+          this.props.updateSalary(this.state.salary)
+        }
       }else{
-        this.handelClose();
-        this.openSuccessAlarm();
-        this.props.updateSalary(this.state.salary)
+        this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
       }
     }
 
@@ -145,6 +150,14 @@ class UpdateSalary extends Component {
   render() {
 
     const { salaryInfo } = this.props;
+    var modifyFlag = false;
+
+    if(Number(this.state.user.rankCodeNo) < 3){
+      modifyFlag = true;
+    }
+    if(salaryInfo && (salaryInfo.salaryStatusCodeNo == '03' ||  salaryInfo.salaryStatusCodeNo == '02')){
+      modifyFlag = true;
+    }
 
     if(salaryInfo && !this.state.updateFlag ){
       this.setState({
@@ -237,7 +250,8 @@ class UpdateSalary extends Component {
                     onChange={this.handleChange('individualTotalSalary')}
                     margin="dense"
                     fullWidth
-                    disabled={salaryInfo && (salaryInfo.salaryStatusCodeNo == '03' ||  salaryInfo.salaryStatusCodeNo == '02') ? true:false}
+                    // disabled={salaryInfo && (Number(this.state.user.rankCodeNo) < 3) && (salaryInfo.salaryStatusCodeNo == '03' ||  salaryInfo.salaryStatusCodeNo == '02') ? true:false}
+                    disabled={modifyFlag}
                     endAdornment={this.state.salary && this.state.salary.individualTotalSalary ? (<InputAdornment position="end">원</InputAdornment>) : null}
                   />
               </FormControl>

@@ -107,7 +107,7 @@ let EnhancedTableToolbar = props => {
         {numSelected > 0 ? (
           <Typography variant="subheading">{numSelected} 선택</Typography>
         ) : (
-          <Typography variant="title">계좌 목록조회</Typography>
+          <Typography variant="title">급여 목록조회</Typography>
         )}
       </div>
       <div className="spacer"/>
@@ -150,7 +150,8 @@ class SalaryTable extends React.Component {
       page: 0,
       rowsPerPage: 10,
       updateSalaryDialogOpen: false,
-      changeSalaryStatusConfirm: false
+      changeSalaryStatusConfirm: false,
+      success:false
     };
   }
 
@@ -241,15 +242,6 @@ class SalaryTable extends React.Component {
     this.handleOpenConfirmChangeSalaryStatus();
   }
 
-  onSuccessIamport = (_salaryNumbering, _salaryStatusCodeNo ) => {
-    // alert('계좌이체 성공')
-    // this.props.updateSalaryStatus({ salaryNumbering : _salaryNumbering, 
-    //                                 salaryStatusCodeNo : _salaryStatusCodeNo  })
-  }
-
-  onFailIamport = () => {
-
-  }
 
   //급여상태 변경 확인창 열기
   handleOpenConfirmChangeSalaryStatus = () => {
@@ -278,8 +270,40 @@ class SalaryTable extends React.Component {
     })
   }
 
+  //급여이체를 클릭시 해당 Data를 임시 저장
+  handleClickIamPortForSalary = (event, _salaryNumbering, _salaryStatusCodeNo) => {
+    this.setState({
+      temp:{
+        salaryNumbering:_salaryNumbering,
+        salaryStatusCodeNo:_salaryStatusCodeNo
+      }
+    })
+  }
+
+  onSuccessIamport = () => {
+    // this.props.updateSalaryStatus(this.state.temp);
+    // this.setState({
+    //   temp:null
+    // })
+  }
+
+  onFailIamport = () => {
+    this.props.updateSalaryStatus(this.state.temp);
+    this.setState({
+      temp:null,
+      success:true
+    })
+  }
+
+  onConfirm = () => {
+    this.setState({
+      success:false
+    })
+  }
   
   render() {
+
+    console.log(this.state)
 
     if(this.props.salaryList !== this.state.data){
       this.setState({
@@ -361,18 +385,20 @@ class SalaryTable extends React.Component {
                               buyer_tel: '',
                               buyer_addr: '',
                               buyer_postcode: '',
-                              buyer_name: '비전 컴퍼니',
+                              buyer_name: '비전컴퍼니',
                               m_redirect_url: 'http://localhost:3000/app/accounting/salary',
                             }}
                             jqueryLoaded={false}
                             onFailed={this.onFailIamport}
-                            onSuccess={event => {event.preventDefault(); this.onSuccessIamport( row.salaryNumbering, row.salaryStatusCodeNo);}}
+                            onSuccess={this.onSuccessIamport}
                             render={(renderProps) => (
                               <Tooltip
                                 title="이체하기"
                                 placement={'bottom-start'}
                                 enterDelay={300}>
-                                  <div style={{cursor:'pointer'}} onClick={renderProps.onClick}>
+                                  <div style={{cursor:'pointer'}} //onClick={renderProps.onClick}
+                                    onClick={event => {renderProps.onClick(); this.handleClickIamPortForSalary(event, row.salaryNumbering, row.salaryStatusCodeNo);}}
+                                  >
                                     급여이체
                                   </div>
                               </Tooltip>
@@ -418,7 +444,10 @@ class SalaryTable extends React.Component {
                     onCancel={this.onClickCancelChangeSalaryStatus}
             ></SweetAlert>
 
-
+            <SweetAlert show={this.state.success} success title=""
+                    onConfirm={this.onConfirm}>
+                        급여이체가 완료되었습니다.
+            </SweetAlert>
           </div>
         </div>
       </div>

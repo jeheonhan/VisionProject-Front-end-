@@ -21,6 +21,7 @@ import UpdateAccount from './UpdateAccount';
 import { getAccount, getAccountList, deleteAccount } from 'actions/index';
 import SearchBox from 'components/SearchBox';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import Snackbar from '@material-ui/core/Snackbar';
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -182,6 +183,7 @@ class AccountTable extends React.Component {
       rowsPerPage: 10,
       updateDialogOpen: false,
       warning: false,
+      user:JSON.parse(localStorage.getItem('user'))
     };
   }
 
@@ -243,8 +245,13 @@ class AccountTable extends React.Component {
   //계좌 수정 다이얼로그창 띄우기
   updateAcountDialog = (event, accountRegNo) => {
     event.preventDefault();
-    this.props.getAccount(accountRegNo);
-    this.AccountUpdateDialogOpen();
+
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.props.getAccount(accountRegNo);
+      this.AccountUpdateDialogOpen();
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   }
 
   //계좌 수정 다이얼로그창 열기
@@ -259,7 +266,11 @@ class AccountTable extends React.Component {
 
   //계좌 삭제시 발생 이벤트 삭제확인 다이얼로그 띄움
   updateUsageStatus = () => {
-    this.setState({ warning : true })
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.setState({ warning : true })
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.");
+    }
   }
 
   //계좌 삭제 확인 버튼
@@ -277,6 +288,24 @@ class AccountTable extends React.Component {
       warning: false
     })
   };
+
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
+  }
+
+  //스낵바 닫기
+  handleRequestClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:"",
+      open: false
+    })
+  }
+
 
   render() {
 
@@ -379,6 +408,16 @@ class AccountTable extends React.Component {
               삭제시 복구가 불가능합니다
             </SweetAlert>
             
+            <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
           </div>
         </div>
       </div>

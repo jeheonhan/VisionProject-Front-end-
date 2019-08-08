@@ -13,18 +13,14 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Note';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import ComposeMail from 'components/mail/ComposeMail';
 import FindDepart from 'components/humanResource/FindDepart';
 import FindRank from 'components/humanResource/FindRank';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import SearchBox from 'components/SearchBox';
+import Snackbar from '@material-ui/core/Snackbar';
 
 let counter = 0;
 
@@ -197,7 +193,8 @@ class EnhancedTable extends React.Component {
       rowsPerPage: 10,
       search:{searchKeyword:null},
       flag: false,
-      composeMail:false
+      composeMail:false,
+      user:JSON.parse(localStorage.getItem('user'))
     };
   }
 
@@ -280,9 +277,31 @@ class EnhancedTable extends React.Component {
   //수정화면 열기 및 getHRCardDetail Action 발생
   handleModifyHRCard = (event, employeeNo) => {
     event.preventDefault();
-    this.props.getHRCardDetail(employeeNo)
-    this.props.handleModifyHRCardOpen();
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.props.getHRCardDetail(employeeNo)
+      this.props.handleModifyHRCardOpen();
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   }
+
+    //스낵바 열기
+    handleRequestSnackBarOpen = (contents) => {
+      this.setState({
+        snackbar:true,
+        snackbarContents:contents
+      })
+    }
+  
+  
+    //스낵바 닫기
+    handleRequestSnackBarClose = () => {
+      this.setState({
+        snackbar:false,
+        snackbarContents:""
+      })
+    }
+    
 
   handleSearchResign = () => {
     if(this.state.search.searchCondition == '02'){
@@ -402,6 +421,17 @@ class EnhancedTable extends React.Component {
         <FindDepart/>
         {/* 직급검색 */}
         <FindRank/>
+
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestSnackBarClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
       </div>
     );
   }

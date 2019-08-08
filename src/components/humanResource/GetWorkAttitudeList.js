@@ -24,6 +24,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import SimpleHRCard from 'components/humanResource/SimpleHRCard';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import SearchBox from 'components/SearchBox';
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 
@@ -168,6 +169,7 @@ class EnhancedTable extends React.Component {
 
 
 
+
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -226,8 +228,12 @@ class EnhancedTable extends React.Component {
   //근태코드 수정
   handleModifyWorkAttitude = (event, row) => {
     event.preventDefault();
-    this.props.checkedWorkAttitude(row);
-    this.props.handleModifyOpen();
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.props.checkedWorkAttitude(row);
+      this.props.handleModifyOpen();
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   }
 
   //사원번호 클릭시 사원 프로필 보기
@@ -253,9 +259,13 @@ class EnhancedTable extends React.Component {
 
   //근태 삭제 Confirm 열기
   handleDeleteWorkAttitude = () => {
-    this.setState({
-      deleteConfirmShow:true
-    })
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.setState({
+        deleteConfirmShow:true
+      })
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.");
+    }
     //this.props.convertWorkAttitudeUseStatus(this.state.selected);
   }
 
@@ -275,6 +285,22 @@ class EnhancedTable extends React.Component {
     })
   }
 
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
+  }
+
+  //스낵바 닫기
+  handleRequestClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:"",
+      open: false
+    })
+  }
 
   constructor(props, context) {
     super(props, context);
@@ -291,12 +317,13 @@ class EnhancedTable extends React.Component {
       flag: false,
       composeMail:false,
       simpleCardOpen:false,
-      deleteConfirmShow:false
+      deleteConfirmShow:false,
+      user:JSON.parse(localStorage.getItem('user'))
     };
+
   }
 
   render() {
-    console.log(this.state.selected);
    
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
 
@@ -397,6 +424,16 @@ class EnhancedTable extends React.Component {
                     onConfirm={this.onConfirmDelete}
                     onCancel={this.onCancelDelete}
         ></SweetAlert>
+        <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
       </div>
     );
   }

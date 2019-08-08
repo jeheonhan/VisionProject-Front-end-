@@ -25,6 +25,7 @@ import IconHome from '@material-ui/icons/Home';
 import IconPayment from '@material-ui/icons/Payment';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import SearchBox from 'components/SearchBox';
+import Snackbar from '@material-ui/core/Snackbar';
 
 //칼럼명 지어주는 곳
 //label에 쓰는 단어가 화면에 표시
@@ -192,6 +193,7 @@ class VendorTable extends React.Component {
       subOpen: false,
       addressOpen: false,
       warning: false,
+      user:JSON.parse(localStorage.getItem('user'))
     };
   }
   //이체정보 다이얼로그를 띄우는데 필요한 플래그 state
@@ -275,12 +277,15 @@ class VendorTable extends React.Component {
   //거래처 수정 다이얼로그 클릭시 발생 이벤트
   updateVendorDialog = (event, vendorNo) => {
     event.preventDefault();
-    console.log("updateVendor 가져오라는 요청");
-    if(vendorNo !== undefined){
-      this.props.getVendor(vendorNo);
 
+    if(Number(this.state.user.rankCodeNo) > 1){
+      if(vendorNo !== undefined){
+        this.props.getVendor(vendorNo);
+      }
+      this.updateVendorOpen();
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
     }
-    this.updateVendorOpen();
   }
 
   //거래처 주소 다이얼로그 클릭시 발생 이벤트
@@ -326,7 +331,12 @@ class VendorTable extends React.Component {
 
   //거래처 삭제시 발생 이벤트 삭제확인 다이얼로그 띄움
   updateUsageStatus = () => {
-    this.setState({ warning : true })
+
+    if(Number(this.state.user.rankCodeNo) > 1){
+      this.setState({ warning : true })
+    }else{
+      this.handleRequestSnackBarOpen("해당 기능에 접근권한이 없습니다.")
+    }
   }
 
   //거래처 삭제 확인 버튼
@@ -344,6 +354,24 @@ class VendorTable extends React.Component {
       warning: false
     })
   };
+
+  //스낵바 열기
+  handleRequestSnackBarOpen = (contents) => {
+    this.setState({
+      snackbar:true,
+      snackbarContents:contents
+    })
+  }
+
+  //스낵바 닫기
+  handleRequestClose = () => {
+    this.setState({
+      snackbar:false,
+      snackbarContents:"",
+      open: false
+    })
+  }
+  
 
   render() {
     if(this.props.VendorList !== this.state.data){
@@ -481,6 +509,16 @@ class VendorTable extends React.Component {
               삭제시 복구가 불가능합니다
             </SweetAlert>
                 
+            <Snackbar
+            anchorOrigin={{vertical:'top', horizontal:'center'}}
+            open={this.state.snackbar}
+            autoHideDuration="1500"
+            onClose={this.handleRequestClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.snackbarContents}</span>}
+          />
           </div>
         </div>
       </div>
