@@ -21,7 +21,7 @@ import axios from 'axios';
 const modifyPasswordRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/user/modifyPassword",
+        url:"http://localhost:8080/user/modifyPassword",
         data:_data
     })
     .then(response => response.data)
@@ -31,7 +31,7 @@ const modifyPasswordRequest = async (_data) => {
 const requestIdentifyCodeRequest = async (_data) => {
     return await axios({
         method:"POST",
-        url:"/user/getIdentifyCode",
+        url:"http://localhost:8080/user/getIdentifyCode",
         data:_data
     })
     .then(response => response.data)
@@ -41,7 +41,7 @@ const requestIdentifyCodeRequest = async (_data) => {
 const forgotPasswordRequest = async (_data) => {
     return await axios({
         method:"POST",
-        url:"/user/getForgotPassword",
+        url:"http://localhost:8080/user/getForgotPassword",
         data:_data
     })
     .then(response => response.data)
@@ -51,7 +51,7 @@ const forgotPasswordRequest = async (_data) => {
 const forgotUserIdRequest = async (_data) => {
     return await axios({
         method:"POST",
-        url:"/user/getForgotId",
+        url:"http://localhost:8080/user/getForgotId",
         data:_data
     })
     .then(response => response.data)
@@ -62,7 +62,7 @@ const signInUserWithIdPasswordRequest = async (_data) => {
  
     return await  axios({
         method:'POST',
-        url:'/user/getLoginUser',
+        url:'http://localhost:8080/user/getLoginUser',
         //dataType:'json',
         data: _data
     }).then(authUser => authUser.data)
@@ -102,9 +102,12 @@ function* signInUserWithIdPassword({payload}) {
             yield put(convertLoader());
             yield put(carryLoginFlag(signInUser));
         }
-        else{
+        else if(signInUser.loginFlag == true){
             localStorage.setItem('user', JSON.stringify(signInUser));
             yield put(userSignInSuccess(signInUser));
+        }else{
+            yield put(convertLoader());
+            alert("아이디와 비밀번호를 입력하세요.");
         }
     } catch (error) {
         //yield put(showAuthMessage(error));

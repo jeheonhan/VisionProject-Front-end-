@@ -193,7 +193,7 @@ class UpdateCard extends React.Component {
                                 <div className="card-media card-img-top" style={{ paddingBottom:"30px"}}>
                                     <img src={ this.state.card && this.state.card.cardImageFile ? 
                                         `${this.state.card.cardImageFile.base64}` : ( this.state.card && this.state.card.cardImage ?
-                                        '/img/'+this.state.card.cardImage : require("assets/images/basicCard2.png"))} style={{width: 300, height: 200}}/>
+                                        'http://localhost:8080/img/'+this.state.card.cardImage : require("assets/images/basicCard2.png"))} style={{width: 300, height: 200}}/>
                                 </div>
                             </div>
                             

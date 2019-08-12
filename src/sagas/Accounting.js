@@ -61,7 +61,7 @@ import {
 const getVendorListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/accounting/getVendorList",
+        url:"http://localhost:8080/accounting/getVendorList",
         data:search
     })
     .then(response => response.data)
@@ -71,7 +71,7 @@ const getVendorListRequest = async (search) => {
 const insertVendorRequest = async (_vendor) => {
     return await axios({
         method:"POST",
-        url:"/accounting/addVendor",
+        url:"http://localhost:8080/accounting/addVendor",
         data:_vendor
     })
     .then(response => response.data)
@@ -83,7 +83,7 @@ const insertVendorRequest = async (_vendor) => {
 const getVendorRequest = async (_vendorNo) =>{
     return await axios({
         method:"GET",
-        url:"/accounting/getVendorDetail/"+_vendorNo
+        url:"http://localhost:8080/accounting/getVendorDetail/"+_vendorNo
     })
     .then(response => response.data)
     .catch(response => console.log(response));
@@ -92,7 +92,7 @@ const getVendorRequest = async (_vendorNo) =>{
 const updateVendorRequest = async (_vendor) => {
     return await axios({
         method:"POST",
-        url:"/accounting/modifyVendor",
+        url:"http://localhost:8080/accounting/modifyVendor",
         data:_vendor
     })
     .then(response => response.data)
@@ -102,7 +102,7 @@ const updateVendorRequest = async (_vendor) => {
 const getCardListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/accounting/getCardList",
+        url:"http://localhost:8080/accounting/getCardList",
         data:search
     })
     .then(response => response.data)
@@ -112,7 +112,7 @@ const getCardListRequest = async (search) => {
 const getAccountListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/accounting/getAccountList",
+        url:"http://localhost:8080/accounting/getAccountList",
         data:search
     })
     .then(response => response.data)
@@ -122,7 +122,7 @@ const getAccountListRequest = async (search) => {
 const insertCardRequest = async (_card) => {
     return await axios({
         method:"POST",
-        url:"/accounting/addCard",
+        url:"http://localhost:8080/accounting/addCard",
         data:_card
     })
     .then(response => response.data)
@@ -132,7 +132,7 @@ const insertCardRequest = async (_card) => {
 const getCardRequest = async (_cardNo) =>{
     return await axios({
         method:"GET",
-        url:"/accounting/getCardDetail/"+_cardNo
+        url:"http://localhost:8080/accounting/getCardDetail/"+_cardNo
     })
     .then(response => response.data)
     .catch(response => console.log(response));
@@ -141,7 +141,7 @@ const getCardRequest = async (_cardNo) =>{
 const insertAccountRequest = async (_account) => {
     return await axios({
         method:"POST",
-        url:"/accounting/addAccount",
+        url:"http://localhost:8080/accounting/addAccount",
         data:_account
     })
     .then(response => response.data)
@@ -151,7 +151,7 @@ const insertAccountRequest = async (_account) => {
 const updateCardRequest = async (_card) => {
     return await axios({
         method:"POST",
-        url:"/accounting/modifyCard",
+        url:"http://localhost:8080/accounting/modifyCard",
         data:_card
     })
     .then(response => response.data)
@@ -161,7 +161,7 @@ const updateCardRequest = async (_card) => {
 const getAccountRequest = async (_accountRegNo) =>{
     return await axios({
         method:"GET",
-        url:"/accounting/getAccountDetail/"+_accountRegNo
+        url:"http://localhost:8080/accounting/getAccountDetail/"+_accountRegNo
     })
     .then(response => response.data)
     .catch(response => console.log(response));
@@ -170,7 +170,7 @@ const getAccountRequest = async (_accountRegNo) =>{
 const updateAccountRequest = async (_account) => {
     return await axios({
         method:"POST",
-        url:"/accounting/modifyAccount",
+        url:"http://localhost:8080/accounting/modifyAccount",
         data:_account
     })
     .then(response => response.data)
@@ -180,7 +180,7 @@ const updateAccountRequest = async (_account) => {
 const getStatementListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/accounting/getStatementList",
+        url:"http://localhost:8080/accounting/getStatementList",
         data:search
     })
     .then(response => response.data)
@@ -190,7 +190,7 @@ const getStatementListRequest = async (search) => {
 const insertStatementRequest = async (statement) => {
     return await axios({
         method:"POST",
-        url:"/accounting/addStatement",
+        url:"http://localhost:8080/accounting/addStatement",
         data:statement
     })
     .then(response => response.data)
@@ -200,7 +200,7 @@ const insertStatementRequest = async (statement) => {
 const getStatementRequest = async (statementNo) =>{
     return await axios({
         method:"GET",
-        url:"/accounting/getStatementDetail/"+statementNo
+        url:"http://localhost:8080/accounting/getStatementDetail/"+statementNo
     })
     .then(response => response.data)
     .catch(response => console.log(response));
@@ -209,7 +209,7 @@ const getStatementRequest = async (statementNo) =>{
 const updateStatementRequest = async (_statement) => {
     return await axios({
         method:"POST",
-        url:"/accounting/modifyStatement",
+        url:"http://localhost:8080/accounting/modifyStatement",
         data:_statement
     })
     .then(response => response.data)
@@ -219,7 +219,7 @@ const updateStatementRequest = async (_statement) => {
 const getSalaryListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/accounting/getSalaryList",
+        url:"http://localhost:8080/accounting/getSalaryList",
         data:search
     })
     .then(response => response.data)
@@ -229,7 +229,7 @@ const getSalaryListRequest = async (search) => {
 const checkDuplicateSalaryDateRequest = async (salaryDate) => {
     return await axios({
         method:"GET",
-        url:"/accounting/checkDuplicateSalaryDate/"+salaryDate,
+        url:"http://localhost:8080/accounting/checkDuplicateSalaryDate/"+salaryDate,
     })
     .then(response => response.data)
     .catch(response => console.log(response));
@@ -238,7 +238,7 @@ const checkDuplicateSalaryDateRequest = async (salaryDate) => {
 const insertSalaryRequest = async (salaryDate) => {
     return await axios({
         method:"GET",
-        url:"/accounting/addSalary/"+salaryDate,
+        url:"http://localhost:8080/accounting/addSalary/"+salaryDate,
     })
     .then(response => response.data)
     .catch(response => console.log(response));
@@ -248,7 +248,7 @@ const updateSalaryRequest = async (salary) => {
     console.log("updateSalaryRequest")
     return await axios({
         method:"POST",
-        url:"/accounting/modifySalary",
+        url:"http://localhost:8080/accounting/modifySalary",
         data:salary
     })
     .then(response => response.data)
@@ -258,7 +258,7 @@ const updateSalaryRequest = async (salary) => {
 const getSalaryRequest = async (salaryNumbering) =>{
     return await axios({
         method:"GET",
-        url:"/accounting/getSalaryDetail/"+salaryNumbering
+        url:"http://localhost:8080/accounting/getSalaryDetail/"+salaryNumbering
     })
     .then(response => response.data)
     .catch(response => console.log(response));
@@ -267,7 +267,7 @@ const getSalaryRequest = async (salaryNumbering) =>{
 const getSalaryBookListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/accounting/getSalaryBookList",
+        url:"http://localhost:8080/accounting/getSalaryBookList",
         data:search
     })
     .then(response => response.data)
@@ -277,7 +277,7 @@ const getSalaryBookListRequest = async (search) => {
 const getAnalyzeSalaryBookRequest = async (salaryDate) =>{
     return await axios({
         method:"GET",
-        url:"/accounting/getAnalyzeSalaryBook/"+salaryDate
+        url:"http://localhost:8080/accounting/getAnalyzeSalaryBook/"+salaryDate
     })
     .then(response => response.data)
     .catch(response => console.log(response));
@@ -287,7 +287,7 @@ const getAnalyzeSalaryBookRequest = async (salaryDate) =>{
 const deleteVendorRequest = async (vendorNoList) => {
     return await axios({
         method:"POST",
-        url:"/accounting/convertVendorUsageStatus",
+        url:"http://localhost:8080/accounting/convertVendorUsageStatus",
         data: vendorNoList
     })
     .then(response => response.data)
@@ -297,7 +297,7 @@ const deleteVendorRequest = async (vendorNoList) => {
 const deleteCardRequest = async (cardRegNoList) => {
     return await axios({
         method:"POST",
-        url:"/accounting/convertCardUsageStatus",
+        url:"http://localhost:8080/accounting/convertCardUsageStatus",
         data: cardRegNoList
     })
     .then(response => response.data)
@@ -307,7 +307,7 @@ const deleteCardRequest = async (cardRegNoList) => {
 const deleteAccountRequest = async (accountRegNoList) => {
     return await axios({
         method:"POST",
-        url:"/accounting/convertAccountUsageStatus",
+        url:"http://localhost:8080/accounting/convertAccountUsageStatus",
         data: accountRegNoList
     })
     .then(response => response.data)
@@ -317,7 +317,7 @@ const deleteAccountRequest = async (accountRegNoList) => {
 const deleteStatementRequest = async (statementNoList) => {
     return await axios({
         method:"POST",
-        url:"/accounting/convertStatementUsageStatus",
+        url:"http://localhost:8080/accounting/convertStatementUsageStatus",
         data: statementNoList
     })
     .then(response => response.data)
@@ -327,7 +327,7 @@ const deleteStatementRequest = async (statementNoList) => {
 const updateSalaryStatusRequest = async (salaryStatus) => {
     return await axios({
         method:"POST",
-        url:"/accounting/modifySalaryStatus",
+        url:"http://localhost:8080/accounting/modifySalaryStatus",
         data: salaryStatus
     })
     .then(response => response.data)

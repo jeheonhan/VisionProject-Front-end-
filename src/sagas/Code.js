@@ -7,7 +7,7 @@ const getGroupCodeListAxios = async () =>{
     //console.log("sagas/Code.js getGroupCodeList() start...");
     return await axios({
         method:"POST",
-        url:"/code/getGroupCodeList",
+        url:"http://localhost:8080/code/getGroupCodeList",
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -16,7 +16,7 @@ const getGroupCodeListAxios = async () =>{
 const getCodeListAxios = async (search) =>{
     return await axios({
         method:"POST",
-        url:"/code/getCodeList",
+        url:"http://localhost:8080/code/getCodeList",
         data : search
     })
     .then(response => response.data)
@@ -26,7 +26,7 @@ const getCodeListAxios = async (search) =>{
 const getNewCodeNoAxios = async (data) =>{
     return await axios({
         method:"POST",
-        url:"/code/addCodePreparing/"+data
+        url:"http://localhost:8080/code/addCodePreparing/"+data
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -35,7 +35,7 @@ const getNewCodeNoAxios = async (data) =>{
 const checkDuplicateCodeNameAxios = async (data) =>{
     return await axios({
         method:"POST",
-        url:"/code/checkDuplicateCodeName",
+        url:"http://localhost:8080/code/checkDuplicateCodeName",
         data: data
     })
     .then(response => response.data)
@@ -45,7 +45,7 @@ const checkDuplicateCodeNameAxios = async (data) =>{
 const addCodeAxios = async(data) => {
     return await axios({
         method:"POST",
-        url:"/code/addCode",
+        url:"http://localhost:8080/code/addCode",
         data: data
     })
     .then(response => response.data)
@@ -55,7 +55,7 @@ const addCodeAxios = async(data) => {
 const convertCodeUsageAxios = async(data) => {
     return await axios({
         method:"POST",
-        url:"/code/convertCodeUsageStatus",
+        url:"http://localhost:8080/code/convertCodeUsageStatus",
         data: data
     })
     .then(resoponse => resoponse.data)
@@ -65,7 +65,7 @@ const convertCodeUsageAxios = async(data) => {
 const convertCodeUsageListAxios = async(data) => {
     return await axios({
         method:"POST",
-        url:"/code/convertCodeUsageStatusList",
+        url:"http://localhost:8080/code/convertCodeUsageStatusList",
         data: data
     })
     .then(resoponse => resoponse.data)
@@ -75,7 +75,7 @@ const convertCodeUsageListAxios = async(data) => {
 const updateCodeAxios = async(data) => {
     return await axios({
         method:"POST",
-        url:"/code/modifyCode",
+        url:"http://localhost:8080/code/modifyCode",
         data : data
     })
     .then(response => response.data)

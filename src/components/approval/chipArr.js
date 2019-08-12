@@ -33,7 +33,7 @@ class chipArr extends Component {
           return (
               
             <Chip
-              avatar={<Avatar src={data.profileImage ? `/img/${data.profileImage}`
+              avatar={<Avatar src={data.profileImage ? `http://localhost:8080/img/${data.profileImage}`
               :require("assets/images/placeholder.jpg")}/>}
               label={data.employeeName}
               key={data.employeeNo}

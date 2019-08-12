@@ -6,7 +6,7 @@ import { carryNoticeList, carryNoticeDetail, getNoticeList, carryNoticeHeaderLis
 const getNoticeListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/notice/getNoticeList",
+        url:"http://localhost:8080/notice/getNoticeList",
         data:search
     })
     .then(response => response.data)
@@ -16,7 +16,7 @@ const getNoticeListRequest = async (search) => {
 const getNoticeDetailRequest = async (noticeNo) => {
     return await axios({
         method:"GET",
-        url:"/notice/getNoticeDetail/"+noticeNo
+        url:"http://localhost:8080/notice/getNoticeDetail/"+noticeNo
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -26,7 +26,7 @@ const addNoticeRequest = async (notice) => {
     console.log(notice)
     return await axios({
         method:"POST",
-        url:"/notice/addNotice",
+        url:"http://localhost:8080/notice/addNotice",
         data:notice
     })
     .then(response => response.data)
@@ -36,7 +36,7 @@ const addNoticeRequest = async (notice) => {
 const getNoticeHeaderListRequest = async () => {
     return await axios({
         method:"GET",
-        url:"/notice/getNoticeHeaderList"
+        url:"http://localhost:8080/notice/getNoticeHeaderList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -45,7 +45,7 @@ const getNoticeHeaderListRequest = async () => {
 const converNoticeStatusCodeRequest = async (notice) => {
     return await axios({
         method: "POST",
-        url: "/notice/convertNoticeUsageStatus",
+        url: "http://localhost:8080/notice/convertNoticeUsageStatus",
         data: notice
     })
     .then(response => response.data)
@@ -55,7 +55,7 @@ const converNoticeStatusCodeRequest = async (notice) => {
 const updateNoticeRequest = async (notice) => {
     return await axios({
         method : "POST",
-        url : "/notice/modifyNotice",
+        url : "http://localhost:8080/notice/modifyNotice",
         data : notice
     })
     .then(response => response.data)
@@ -65,7 +65,7 @@ const updateNoticeRequest = async (notice) => {
 const getUpdateNoticeHeaderListRequest = async () => {
     return await axios({
         method:"GET",
-        url:"/notice/getNoticeHeaderList"
+        url:"http://localhost:8080/notice/getNoticeHeaderList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))

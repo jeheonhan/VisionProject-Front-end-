@@ -40,7 +40,7 @@ const GetCardThumbnails = ({ cardList, getCard }) => {
               <div className="card-image">
                 <div className="grid-thumb-equal">
                   <span className="grid-thumb-cover jr-link">
-                    <img onClick={ event => updateCard(event, cardRegNo) } sizes="sm" alt="Remy Sharp" src={cardImage? '/img/'+ cardImage :  require("assets/images/basicCard2.png") }/>
+                    <img onClick={ event => updateCard(event, cardRegNo) } sizes="sm" alt="Remy Sharp" src={cardImage? 'http://localhost:8080/img/'+ cardImage :  require("assets/images/basicCard2.png") }/>
                   </span>
                 </div>
               </div>

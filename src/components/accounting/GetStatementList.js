@@ -303,7 +303,7 @@ class StatementTable extends React.Component {
 
   handleClick = (event, id, statementDetail) => {
     
-    if(statementDetail.substring(0,2) === '가맹' || statementDetail.substring(0,2) === '주문' || statementDetail.substring(0,2) === '발주'){
+    if(statementDetail.substring(statementDetail.length-2,statementDetail.length) === '가맹' || statementDetail.substring(0,2) === '주문' || statementDetail.substring(0,2) === '발주'){
       this.openSnackBar()
       return 
     }

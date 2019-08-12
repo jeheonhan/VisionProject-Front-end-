@@ -6,7 +6,7 @@ import { getApprovalFormList, carryApprovalFormList, carryApprovalFormDetail, ca
 const getApprovalFormListAxios = async() =>{
     return await axios({
         method:"POST",
-        url:"/approval/getApprovalFormList"
+        url:"http://localhost:8080/approval/getApprovalFormList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -15,7 +15,7 @@ const getApprovalFormListAxios = async() =>{
 const addApprovalFormAxios = async(action) => {
     return await axios({
         method:"POST",
-        url: "/approval/addApprovalForm",
+        url: "http://localhost:8080/approval/addApprovalForm",
         data: action.payload
     })
     .then(response => response.data)
@@ -25,7 +25,7 @@ const addApprovalFormAxios = async(action) => {
 const deleteApprovalFormAxios = async(action) =>{
     return await axios({
         method:"POST",
-        url: "/approval/convertApprovalFormUsageStatus",
+        url: "http://localhost:8080/approval/convertApprovalFormUsageStatus",
         data: action.payload
     })
     .then(response => response.data)
@@ -35,7 +35,7 @@ const deleteApprovalFormAxios = async(action) =>{
 const getApprovalFormDetailAxios = async(action) => {
     return await axios({
         method:"POST",
-        url: "/approval/getApprovalFormDetail/"+action.payload
+        url: "http://localhost:8080/approval/getApprovalFormDetail/"+action.payload
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -44,7 +44,7 @@ const getApprovalFormDetailAxios = async(action) => {
 const addApprovalAxios = async(action) => {
     return await axios({
         method:"POST",
-        url: "/approval/addApproval",
+        url: "http://localhost:8080/approval/addApproval",
         data : action.payload
     })
     .then(response => response)
@@ -54,7 +54,7 @@ const addApprovalAxios = async(action) => {
 const getApprovalListAxios = async(action) => {
     return await axios({
         method:"POST",
-        url:"/approval/getApprovalList",
+        url:"http://localhost:8080/approval/getApprovalList",
         data: action.payload
     })
     .then(response => response.data)
@@ -64,7 +64,7 @@ const getApprovalListAxios = async(action) => {
 const getApprovalDetailAxios = async(action) => {
     return await axios({
         method: "POST",
-        url: "/approval/getApprovalDetail/"+action.payload,
+        url: "http://localhost:8080/approval/getApprovalDetail/"+action.payload,
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -73,7 +73,7 @@ const getApprovalDetailAxios = async(action) => {
 const modifyApprovalStatusAxios = async(action) => {
     return await axios({
         method:"POST",
-        url:"/approval/modifyApprovalStatus/"+action.url
+        url:"http://localhost:8080/approval/modifyApprovalStatus/"+action.url
     })
     .then(response => response.data)
     .catch(error => console.log(error))

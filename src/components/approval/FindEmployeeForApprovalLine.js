@@ -137,7 +137,7 @@ class FindEmployee extends React.Component{
             <ListItem button key={row.employeeNo}>
               <span className="col-sm-2">
               <ListItemAvatar>
-              <Avatar alt="Remy Sharp" src={row.profileImage ? `/img/${row.profileImage}`
+              <Avatar alt="Remy Sharp" src={row.profileImage ? `http://localhost:8080/img/${row.profileImage}`
               :require("assets/images/placeholder.jpg")}/>
               </ListItemAvatar>
               </span>

@@ -80,7 +80,7 @@ class AddSalary extends Component {
     //급여 중복체크
     var values = async () => await axios({
       method:"GET",
-      url:"/accounting/checkDuplicateSalaryDate/"+this.state.salaryDate,
+      url:"http://localhost:8080/accounting/checkDuplicateSalaryDate/"+this.state.salaryDate,
     })
     .then(response => { 
       if(response.data){ 

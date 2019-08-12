@@ -5,7 +5,7 @@ import { SEND_EMAIL } from 'actionTypes/ActionTypes';
 const sendEmailRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/common/sendEmail",
+        url:"http://localhost:8080/common/sendEmail",
         data:_data
     })
     .then(response => console.log(response))

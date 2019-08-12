@@ -136,7 +136,7 @@ class FormDialog extends React.Component {
   handleDuplicateCheckReq = async (_data) => {
     return await axios({
       method:"GET",
-      url:"/hr/getWorkAttitudeCodeDetail/"+_data
+      url:"http://localhost:8080/hr/getWorkAttitudeCodeDetail/"+_data
     })
     .then(response => response.data)
     .catch(error => console.log(error))

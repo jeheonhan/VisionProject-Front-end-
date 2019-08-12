@@ -129,6 +129,17 @@ class AddBranch extends React.Component{
         this.props.addBranch(this.state.branch);
         this.setState({
           redirect : true,
+          branch:{
+            branchName : '',
+            zipCode : '',
+            address : '',
+            detailAddress : '',
+            businessLicenseNo : '',
+            branchTel: '',
+            branchManagerName: '',
+            branchManagerPhone: '',
+            localPhoneCode:'02',
+          },
         })
       }
 
@@ -388,13 +399,13 @@ class AddBranch extends React.Component{
                     <SweetAlert show={this.state.warning}
                             warning
                             showCancel
-                            cancelBtnText="네"
-                            confirmBtnText="아니오"
+                            cancelBtnText="아니오"
+                            confirmBtnText="네"
                             confirmBtnBsStyle="danger"
                             cancelBtnBsStyle="default"
                             title="지점을 등록합니다."
-                            onConfirm={this.onCancel}
-                            onCancel={this.warningOk}
+                            onConfirm={this.warningOk}
+                            onCancel={this.onCancel}
                     >
                         이대로 등록하시겠습니까?
                     </SweetAlert>

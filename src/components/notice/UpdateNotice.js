@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { cleanStoreState } from 'actions/index';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -128,6 +130,12 @@ class UpdateNotice extends React.Component {
         })
     }
 
+    handleCloseDialog = () => {
+        this.setState({
+            updateFlag:false
+        })
+        this.props.updateClose();
+    }
     
 
 
@@ -139,7 +147,7 @@ class UpdateNotice extends React.Component {
         const { notice } = this.state;
 
         if( !this.state.updateFlag ) {
-            if( noticeDetail !== null && this.state.notice !== noticeDetail ) {
+            if( this.props.updateOpen && noticeDetail !== null && this.state.notice !== noticeDetail ) {
                 this.setState({
                     updateFlag : true,
                     notice : noticeDetail
@@ -153,7 +161,8 @@ class UpdateNotice extends React.Component {
                 <Dialog
                     fullScreen
                      open={this.props.updateOpen}
-                     onClose={this.props.updateClose}
+                    //  onClose={this.props.updateClose}
+                     onClose={this.handleCloseDialog}
                      TransitionComponent={Transition}
                      maxWidth=""
                     >
@@ -283,4 +292,4 @@ class UpdateNotice extends React.Component {
 
 }
 
-export default UpdateNotice
+export default connect(null, { cleanStoreState })(UpdateNotice);

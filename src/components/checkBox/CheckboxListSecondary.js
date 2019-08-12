@@ -97,7 +97,7 @@ class CheckboxListSecondary extends Component {
         {HRCardList && HRCardList.map(row =>
           <ListItem button key={row.employeeNo}>
             <ListItemAvatar>
-              <Avatar alt="Remy Sharp" src={"/img/newyork.jpg"}/>
+              <Avatar alt="Remy Sharp" src={"http://localhost:8080/img/newyork.jpg"}/>
             </ListItemAvatar>
             <ListItemText className="br-break" primary={row.employeeName}/>
             <ListItemSecondaryAction>

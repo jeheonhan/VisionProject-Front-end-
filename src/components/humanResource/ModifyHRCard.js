@@ -415,7 +415,7 @@ function AddTextField(props){
                   <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
                     <Avatar className="size-100" alt="Remy Sharp" 
                             src={employee.profileFile ? `${employee.profileFile.base64}`
-                                :(employee.profileImage? '/img/'+employee.profileImage:require("assets/images/noneProfile.png"))}/>
+                                :(employee.profileImage? 'http://localhost:8080/img/'+employee.profileImage:require("assets/images/noneProfile.png"))}/>
                   </Tooltip>   
                 </div>
                 <div style={{position:"relative", top:"-25px"}}>
@@ -748,7 +748,7 @@ class SignatureDialog extends React.Component {
                   <Tooltip id="tooltip-icon" title="Hello" placement="bottom">
                     <Avatar className="size-100" alt="Remy Sharp" 
                             src={signatureFile? `${signatureFile.base64}`
-                                                 : (this.props.employee.signatureImage? "/img/"+this.props.employee.signatureImage
+                                                 : (this.props.employee.signatureImage? "http://localhost:8080/img/"+this.props.employee.signatureImage
                                                                                         : require("assets/images/stamp.png"))}/>
                   </Tooltip>   
                 </div>

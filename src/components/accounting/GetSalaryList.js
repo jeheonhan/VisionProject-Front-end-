@@ -18,7 +18,7 @@ import DeleteIcon from '@material-ui/icons/Note';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import UpdateSalary from 'components/accounting/UpdateSalary';
 import { connect } from 'react-redux';
-import { getSalary, updateSalaryStatus } from 'actions/index';
+import { getSalary, updateSalaryStatus, getSalaryList } from 'actions/index';
 import Button from '@material-ui/core/Button';
 import Iamport from 'react-iamport';
 import SweetAlert from 'react-bootstrap-sweetalert'
@@ -146,7 +146,7 @@ class SalaryTable extends React.Component {
       orderBy: '',
       selected: [],
       // data에 props로 들어오는 list값 넣어주기.
-      data: this.props.salaryList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      // data: this.props.salaryList.sort((a, b) => (a.calories < b.calories ? -1 : 1)),
       page: 0,
       rowsPerPage: 10,
       updateSalaryDialogOpen: false,
@@ -300,14 +300,20 @@ class SalaryTable extends React.Component {
       success:false
     })
   }
+
+  componentDidMount(){
+    this.props.getSalaryList({searchKeyword:null})
+  }
   
   render() {
 
     console.log(this.state)
 
-    if(this.props.salaryList !== this.state.data){
+    const { salaryList } = this.props;
+
+    if(salaryList && (salaryList !== this.state.data)){
       this.setState({
-        data : this.props.salaryList
+        data : this.props.salaryList.sort((a, b) => (a.calories < b.calories ? -1 : 1))
       })
     }
 
@@ -325,12 +331,12 @@ class SalaryTable extends React.Component {
                 orderBy={orderBy}
                 onSelectAllClick={this.handleSelectAllClick}
                 onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
+                rowCount={data && data.length}
               />
               <TableBody>
                 
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
-                {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                {data && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
 
@@ -417,7 +423,7 @@ class SalaryTable extends React.Component {
               <TableFooter>
                 <TableRow>
                   <TablePagination
-                    count={data.length}
+                    count={data && data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={this.handleChangePage}
@@ -455,5 +461,10 @@ class SalaryTable extends React.Component {
   }
 }
 
+const mapStateToProps = ({ accounting }) => {
+  const { salaryList } = accounting;
+  return { salaryList };
+}
 
-export default connect(null, { getSalary, updateSalaryStatus })(SalaryTable);
+
+export default connect(null, { getSalary, updateSalaryStatus, getSalaryList })(SalaryTable);

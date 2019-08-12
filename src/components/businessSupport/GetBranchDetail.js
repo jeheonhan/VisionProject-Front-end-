@@ -230,13 +230,13 @@ function Transition(props) {
             <SweetAlert show={this.state.warning}
                         warning
                         showCancel
-                        cancelBtnText="네"
-                        confirmBtnText="아니오"
+                        cancelBtnText="아니오"
+                        confirmBtnText="네"
                         confirmBtnBsStyle="danger"
                         cancelBtnBsStyle="default"
                         title={this.state.branch && this.state.branch.branchStatusCodeNo == '01' ? '폐업상태로 전환합니다.' : '영업상태로 전환합니다.'}
-                        onConfirm={this.onCancel}
-                        onCancel={this.warningOk}
+                        onConfirm={this.warningOk}
+                        onCancel={this.onCancel}
                 >
                     영업상태를 변경하시겠습니까?
                 </SweetAlert>

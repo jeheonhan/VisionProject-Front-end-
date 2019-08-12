@@ -24,7 +24,7 @@ import {} from 'actions/index';
 const sendShippingAxios = async (action) => {
     return await axios({
         method:"POST",
-        url:"/pm/modifyOrderFromBranchProductStatus",
+        url:"http://localhost:8080/pm/modifyOrderFromBranchProductStatus",
         data:action.payload
     })
     .catch(error => console.log(error))
@@ -32,7 +32,7 @@ const sendShippingAxios = async (action) => {
 const getProductListRequest = async () => {
     return await axios({
         method : "GET",
-        url : "/pm/getProductList"
+        url : "http://localhost:8080/pm/getProductList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -41,7 +41,7 @@ const getProductListRequest = async () => {
 const getOrderToVendorListRequest = async () => {
     return await axios({
         method : "GET",
-        url : "/pm/getOrderToVendorList"
+        url : "http://localhost:8080/pm/getOrderToVendorList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -50,7 +50,7 @@ const getOrderToVendorListRequest = async () => {
 const addProductRequest = async (data) => {
     return await axios({
         method : "POST",
-        url : "/pm/addProduct",
+        url : "http://localhost:8080/pm/addProduct",
         data : data,
     })
     .then(response => response)
@@ -60,7 +60,7 @@ const addProductRequest = async (data) => {
 const getProductAccountRequest = async () => {
     return await axios({
        method : "GET",
-       url : "/pm/addProductPreparing" 
+       url : "http://localhost:8080/pm/addProductPreparing" 
     })
     .then(respones => respones.data)
     .catch(error => console.log(error))
@@ -69,7 +69,7 @@ const getProductAccountRequest = async () => {
 const getOrderToVendorDetailListRequest = async (data) => {
     return await axios({
         method : "POST",
-        url : "/pm/getOrderToVendorDetailList",
+        url : "http://localhost:8080/pm/getOrderToVendorDetailList",
         data : data
     })
     .then(respones => respones.data)
@@ -82,14 +82,14 @@ const updateOrderToVendorCodeRequest = async (data) => {
 
     return await axios({
         method : "GET" ,
-        url : "/pm/modifyOrderToVenCode/"+data.statementNo+"/"+data.orderToVendorNo
+        url : "http://localhost:8080/pm/modifyOrderToVenCode/"+data.statementNo+"/"+data.orderToVendorNo
     })
 }
 
 const addOrderToVendorRequest = async (data) => {
     return await axios({
         method : "POST" , 
-        url : "/pm/addOrderToVendor",
+        url : "http://localhost:8080/pm/addOrderToVendor",
         data : data
     })
     .catch(error => console.log(error))
@@ -98,7 +98,7 @@ const addOrderToVendorRequest = async (data) => {
 const addOrderBranchAxios = async (action) => {
     return await axios({
         method:"POST",
-        url:"/pm/addOrderFromBranch",
+        url:"http://localhost:8080/pm/addOrderFromBranch",
         data : action.payload
     })
 }
@@ -108,7 +108,7 @@ const updateOrderToVenItemCodeRequest = async (data) => {
     console.log(data)
     return await axios({
         method : "POST",
-        url:"/pm/modifyOrderToVenItemCode",
+        url:"http://localhost:8080/pm/modifyOrderToVenItemCode",
         data : data
     })
     .catch(error => console.log(error))
@@ -116,7 +116,7 @@ const updateOrderToVenItemCodeRequest = async (data) => {
 const getOrderBranchAxios = async(action) => {
     return await axios({
         method:"POST",
-        url:"/pm/getOrderFromBranchList",
+        url:"http://localhost:8080/pm/getOrderFromBranchList",
         data:action.payload
     })
     .then(response => response.data)
@@ -126,7 +126,7 @@ const getOrderBranchAxios = async(action) => {
 const modifyOrderFromBranchAxios = async(action) => {
     return await axios({
         method:"POST",
-        url:"/pm/modifyOrderFromBranchStatus",
+        url:"http://localhost:8080/pm/modifyOrderFromBranchStatus",
         data:action.payload
     })
 }
@@ -134,7 +134,7 @@ const modifyOrderFromBranchAxios = async(action) => {
 const getProductListForOrderRequest = async () => {
     return await axios({
         method : "GET",
-        url : "/pm/getProductList"
+        url : "http://localhost:8080/pm/getProductList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -143,7 +143,7 @@ const getProductListForOrderRequest = async () => {
 const getProductListCompleteRequest = async () => {
     return await axios({
         method : "GET",
-        url : "/pm/getOrderToVendorList"
+        url : "http://localhost:8080/pm/getOrderToVendorList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -152,7 +152,7 @@ const getProductListCompleteRequest = async () => {
 const getProductRequest = async (data) => {
     return await axios({
         method:"GET",
-        url:"/pm/getProduct/"+data
+        url:"http://localhost:8080/pm/getProduct/"+data
     })
     .then(respones => respones.data)
     .catch(error => console.log(error))
@@ -161,7 +161,7 @@ const getProductRequest = async (data) => {
 const updateProductRequest = async (data) => {
     return await axios({
         method:"POST",
-        url:"/pm/modifyProduct",
+        url:"http://localhost:8080/pm/modifyProduct",
         data:data
     })
     .then(respones => respones.data)
@@ -171,7 +171,7 @@ const updateProductRequest = async (data) => {
 const updateProductUsageStatusRequest = async (data) => {
     return await axios({
         method:"POST",
-        url:"/pm/modifyUsageStatus",
+        url:"http://localhost:8080/pm/modifyUsageStatus",
         data:data
     })
 }
@@ -228,7 +228,8 @@ function* addOrderBranchFn(action){
 function* getOrderBranchFn(action){
     const result = yield call(getOrderBranchAxios, action)
     yield put(carryOrderBranchList(result));
-    getProductListFn();
+    // getProductListFn();
+    yield put(getProductList());
 }
 
 function* updateOrderToVenItemCodeFn({payload}){

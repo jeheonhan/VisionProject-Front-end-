@@ -20,7 +20,7 @@ const Signature = ({ signatureImage}) => {
         <ul className="jr-fnd-list mb-0">
           <li className="mb-2" >
               <div className="jr-user-fnd">
-                <img alt="..." src={`/img/${signatureImage}`}/>
+                <img alt="..." src={`http://localhost:8080/img/${signatureImage}`}/>
                 <div className="jr-user-fnd-content">
                   <span className="jr-badge"><Status isType="online"/></span>
                   <h6></h6>

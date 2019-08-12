@@ -62,7 +62,7 @@ class About extends React.Component {
           title: '시급',
           icon: 'money',
           userList: '',
-          desc: [HRCardDetailData.wage+"원"]
+          desc: [HRCardDetailData.wage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')+"원"]
         }
       ];
 

@@ -417,7 +417,8 @@ class EnhancedTable extends React.Component {
         <SweetAlert show={this.state.deleteConfirmShow}
                     warning
                     showCancel
-                    confirmBtnText={"Yes"}
+                    confirmBtnText={"네"}
+                    cancelBtnText={"아니오"}
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
                     title={"해당 근태정보를 삭제하시겠습니까?"}

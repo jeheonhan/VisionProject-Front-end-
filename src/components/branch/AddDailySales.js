@@ -75,7 +75,7 @@ class AddDailySales extends React.Component {
         const result = async () => {
           return axios({
             method:"POST",
-            url:"/branch/checkDuplicateSalesDate",
+            url:"http://localhost:8080/branch/checkDuplicateSalesDate",
             data:{branchNo:this.state.user.branchNo,salesDate:date}
           })
           .then(response => {

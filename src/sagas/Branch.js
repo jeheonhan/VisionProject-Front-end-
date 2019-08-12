@@ -7,7 +7,7 @@ import {MODIFY_DAILY_SALES} from 'actionTypes/ActionTypes'
 const modifyDailySalesRequest = async (action) => {
     return await axios({
         method : "POST",
-        url:"/branch/modifySalesProduct",
+        url:"http://localhost:8080/branch/modifySalesProduct",
         data:action.payload
     })
     .catch(error => console.log(error))
@@ -16,7 +16,7 @@ const modifyDailySalesRequest = async (action) => {
 const getDailySalesListRequest = async (branchNo) => {
     return await axios({
         method : "GET",
-        url:"/branch/getDailySalesList/"+branchNo,
+        url:"http://localhost:8080/branch/getDailySalesList/"+branchNo,
     })
     .then(response => response.data)
     .catch(error => console.log(error))    
@@ -25,7 +25,7 @@ const getDailySalesListRequest = async (branchNo) => {
 const getDailySalesDetailRequest = async (branchDailySales) => {
     return await axios({
         method : "POST",
-        url:"/branch/getDailySalesDetail",
+        url:"http://localhost:8080/branch/getDailySalesDetail",
         data: branchDailySales
     })
     .then(response => response.data)
@@ -36,7 +36,7 @@ const addDailySalesRequest = async ( salesProductList ) => {
     //console.log("addDailySales :::::::: ");
     return await axios({
         method : "POST",
-        url:"/branch/addDailySales",
+        url:"http://localhost:8080/branch/addDailySales",
         data: salesProductList
     })
     .then(response => response.data)
@@ -46,7 +46,7 @@ const addDailySalesRequest = async ( salesProductList ) => {
 const getSalesMenuListRequest = async () => {
     return await axios({
         method : "GET",
-        url: "/branch/getSalesMenuList"
+        url: "http://localhost:8080/branch/getSalesMenuList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))

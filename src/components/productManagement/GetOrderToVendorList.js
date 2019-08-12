@@ -263,7 +263,7 @@ onCancelDelete = () => {
               <TableBody>
                 
                 {/* props로 받은 list값을 페이지에 맞게 잘라서 map()을 사용함 */}
-                {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                {data && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   console.log("page::"+page+" rowsPerPage :: "+rowsPerPage+" index :: "+index+" data.length ::"+data.length);
                   const isSelected = this.isSelected(page*rowsPerPage+index);
                   return (
@@ -302,7 +302,7 @@ onCancelDelete = () => {
               <TableFooter>
                 <TableRow>
                   <TablePagination
-                    count={data.length}
+                    count={data && data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={this.handleChangePage}

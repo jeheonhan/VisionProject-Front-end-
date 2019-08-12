@@ -6,7 +6,7 @@ import { carryBranchList, carryBranchDetail, getBranchList, carryLocalList, getS
 const getBranchListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/bs/getBranchList",
+        url:"http://localhost:8080/bs/getBranchList",
         data:search
     })
     .then(response => response.data)
@@ -16,7 +16,7 @@ const getBranchListRequest = async (search) => {
 const getBranchDetailRequest = async (branchNo) => {
     return await axios({
          method:"GET",
-         url:"/bs/getBranch/"+branchNo,
+         url:"http://localhost:8080/bs/getBranch/"+branchNo,
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -26,7 +26,7 @@ const getLocalListRequest = async () => {
     //console.log("getLocalList :::::: ")
     return await axios({
         method:"GET",
-        url:"/bs/getLocalList"
+        url:"http://localhost:8080/bs/getLocalList"
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -35,7 +35,7 @@ const getLocalListRequest = async () => {
 const addBranchRequest = async (data) => {
     return await axios({
         method:"POST",
-        url:"/bs/addBranch",
+        url:"http://localhost:8080/bs/addBranch",
         data: data
     })
     .then(response => response.data)
@@ -45,7 +45,7 @@ const addBranchRequest = async (data) => {
 const convertBranchStatusCodeRequest = async ( branch ) => {
     return await axios({
         method:"POST",
-        url : "/bs/convertBranchUsageStatus",
+        url : "http://localhost:8080/bs/convertBranchUsageStatus",
         data : branch
     })
     .then(response => response.data)
@@ -55,7 +55,7 @@ const convertBranchStatusCodeRequest = async ( branch ) => {
 const updateBranchRequest = async ( branch ) => {
     return await axios({
         method : "POST",
-        url : "/bs/modifyBranch",
+        url : "http://localhost:8080/bs/modifyBranch",
         data : branch
     })
     .then(response => response.data)

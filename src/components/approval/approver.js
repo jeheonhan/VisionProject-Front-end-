@@ -33,7 +33,7 @@ class Approver extends React.Component{
                     //         <Box bgcolor="text.hint" color="white" width="90px" height="30px" align="center" padding="5px">{emp.rankCodeName}</Box>
                     //         </Tooltip>
                     //         <Box border={1} bgcolor="white" width="90px" height="90px" align="center">
-                    //             <img style={{paddingTop:"5px"}} width="82px" height="82px" src={(emp.signatureImage!==undefined && emp.signatureImage!==null) ? `/img/${emp.signatureImage}` : require("assets/images/noimage.png")}/>
+                    //             <img style={{paddingTop:"5px"}} width="82px" height="82px" src={(emp.signatureImage!==undefined && emp.signatureImage!==null) ? `http://localhost:8080/img/${emp.signatureImage}` : require("assets/images/noimage.png")}/>
                     //         </Box>
                             
                     //         </span>
@@ -49,7 +49,7 @@ class Approver extends React.Component{
                             <Box bgcolor="text.hint" color="white" width="90px" height="30px" align="center" padding="5px">{emp.rankCodeName}</Box>
                             </Tooltip>
                             {emp.approvalStatus!=1 ? <Box border={1} bgcolor="white" width="90px" height="90px" align="center"></Box> : <Box border={1} bgcolor="white" width="90px" height="90px" align="center">
-                                <img style={{paddingTop:"5px"}} width="82px" height="82px" src={(emp.signatureImage!==undefined && emp.signatureImage!==null) ? `/img/${emp.signatureImage}` : require("assets/images/noimage.png")}/>
+                                <img style={{paddingTop:"5px"}} width="82px" height="82px" src={(emp.signatureImage!==undefined && emp.signatureImage!==null) ? `http://localhost:8080/img/${emp.signatureImage}` : require("assets/images/noimage.png")}/>
                             </Box>}
                             
                             </span>

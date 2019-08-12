@@ -44,7 +44,7 @@ import { GET_HRCARD_LIST,
 const addLeaveWorkRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/updateLeaveWorkTime",
+        url:"http://localhost:8080/hr/updateLeaveWorkTime",
         data:_data
     })
     .then(response => console.log(response))
@@ -54,7 +54,7 @@ const addLeaveWorkRequest = async (_data) => {
 const addGoToWorkRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/addCommute",
+        url:"http://localhost:8080/hr/addCommute",
         data:_data
     })
     .then(response => console.log(response))
@@ -64,7 +64,7 @@ const addGoToWorkRequest = async (_data) => {
 const getCommuteListRequest = async (employeeNo) => {
     return await axios({
         method:"GET",
-        url:"/hr/getCommuteList/"+employeeNo
+        url:"http://localhost:8080/hr/getCommuteList/"+employeeNo
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -73,7 +73,7 @@ const getCommuteListRequest = async (employeeNo) => {
 const convertDepartDeleteRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/modifyDepartment",
+        url:"http://localhost:8080/hr/modifyDepartment",
         data:_data
     })
     .then(response => console.log(response))
@@ -83,7 +83,7 @@ const convertDepartDeleteRequest = async (_data) => {
 const convertWorkAttitudeCodeUseStatusRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/convertWorkAttitudeCodeUsageStatus",
+        url:"http://localhost:8080/hr/convertWorkAttitudeCodeUsageStatus",
         data: _data
     })
     .then(response => console.log(response))
@@ -93,7 +93,7 @@ const convertWorkAttitudeCodeUseStatusRequest = async (_data) => {
 const convertWorkAttitudeUseStatusRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/convertWorkAttitudeUsageStatus",
+        url:"http://localhost:8080/hr/convertWorkAttitudeUsageStatus",
         data:_data
     })
     .then(response => console.log(response))
@@ -103,7 +103,7 @@ const convertWorkAttitudeUseStatusRequest = async (_data) => {
 const updateAppointStatusRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/modifyAppointmentStatus",
+        url:"http://localhost:8080/hr/modifyAppointmentStatus",
         data:_data
     })
     .then(response => console.log(response))
@@ -113,7 +113,7 @@ const updateAppointStatusRequest = async (_data) => {
 const updateHRCardRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/modifyHumanResourceCard",
+        url:"http://localhost:8080/hr/modifyHumanResourceCard",
         data:_data
     })
     .then(response => console.log(response))
@@ -123,7 +123,7 @@ const updateHRCardRequest = async (_data) => {
 const getHRCardDetailRequest = async (_data) => {
     return await axios({
         method:"GET",
-        url:"/hr/getHumanResourceCardDetail/"+_data
+        url:"http://localhost:8080/hr/getHumanResourceCardDetail/"+_data
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -132,7 +132,7 @@ const getHRCardDetailRequest = async (_data) => {
 const updateWorkAttitudeCodeRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/modifyWorkAttitudeCode",
+        url:"http://localhost:8080/hr/modifyWorkAttitudeCode",
         data:_data
     })
     .then(response => console.log(response))
@@ -142,7 +142,7 @@ const updateWorkAttitudeCodeRequest = async (_data) => {
 const updateWorkAttitudeRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/modifyWorkAttitude",
+        url:"http://localhost:8080/hr/modifyWorkAttitude",
         data:_data
     })
     .then(response => console.log(response))
@@ -152,7 +152,7 @@ const updateWorkAttitudeRequest = async (_data) => {
 const convertDepartUsageRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/convertDepartmentUsageStatus",
+        url:"http://localhost:8080/hr/convertDepartmentUsageStatus",
         data:_data
     })
     .then(response => console.log(response))
@@ -162,7 +162,7 @@ const convertDepartUsageRequest = async (_data) => {
 const addDepartmentRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/addDepartment",
+        url:"http://localhost:8080/hr/addDepartment",
         data:_data
     })
     .then(response => console.log(response))
@@ -172,7 +172,7 @@ const addDepartmentRequest = async (_data) => {
 const getDepartmentListRequest = async (_data) => {
     return await axios({
         method:"POST",
-        url:"/hr/getDepartmentList",
+        url:"http://localhost:8080/hr/getDepartmentList",
         data:_data
     })
     .then(response => response.data)
@@ -182,7 +182,7 @@ const getDepartmentListRequest = async (_data) => {
 const addWorkAttitudeCodeRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/addWorkAttitudeCode",
+        url:"http://localhost:8080/hr/addWorkAttitudeCode",
         data:_data
     })
     .then(response => console.log(response))
@@ -192,7 +192,7 @@ const addWorkAttitudeCodeRequest = async (_data) => {
 const updateAppointmentRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/modifyAppointment",
+        url:"http://localhost:8080/hr/modifyAppointment",
         data:_data
     })
     .then(response => console.log(response))
@@ -202,7 +202,7 @@ const updateAppointmentRequest = async (_data) => {
 const addWorkAttitudeRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/addWorkAttitude",
+        url:"http://localhost:8080/hr/addWorkAttitude",
         data:_data
     })
     .then(response => console.log(response.data))
@@ -212,7 +212,7 @@ const addWorkAttitudeRequest = async (_data) => {
 const getWorkAttitudeCodeListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/hr/getWorkAttitudeCodeList",
+        url:"http://localhost:8080/hr/getWorkAttitudeCodeList",
         data: search
     })
     .then(response => response.data)
@@ -222,7 +222,7 @@ const getWorkAttitudeCodeListRequest = async (search) => {
 const getWorkAttitude = async (search) => {
     return await axios({
         method:"POST",
-        url:"/hr/getWorkAttitudeList",
+        url:"http://localhost:8080/hr/getWorkAttitudeList",
         data:search
     })
     .then(response => response.data)
@@ -232,7 +232,7 @@ const getWorkAttitude = async (search) => {
 const addHRCardRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/addHumanResourceCard",
+        url:"http://localhost:8080/hr/addHumanResourceCard",
         data:_data
     })
     .then(response => console.log(response))
@@ -242,7 +242,7 @@ const addHRCardRequest = async (_data) => {
 const getSimpleHRCardDetailRequest = async (employeeNo) => {
     return await axios({
         method: "GET",
-        url: "/hr/getSimpleHumanResourceCardDetail/"+employeeNo
+        url: "http://localhost:8080/hr/getSimpleHumanResourceCardDetail/"+employeeNo
     })
     .then(response => response.data)
     .catch(error => console.log(error))
@@ -251,7 +251,7 @@ const getSimpleHRCardDetailRequest = async (employeeNo) => {
 const getHRCardListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/hr/getHumanResourceCardList",
+        url:"http://localhost:8080/hr/getHumanResourceCardList",
         data:search
     })
     .then(response => response.data)
@@ -261,7 +261,7 @@ const getHRCardListRequest = async (search) => {
 const addAppointmentRequest = async (_data) => {
     await axios({
         method:"POST",
-        url:"/hr/addAppointment",
+        url:"http://localhost:8080/hr/addAppointment",
         data:_data
     })
     .then(response => console.log(response))
@@ -271,7 +271,7 @@ const addAppointmentRequest = async (_data) => {
 const getAppointListRequest = async (search) => {
     return await axios({
         method:"POST",
-        url:"/hr/getAppointmentList",
+        url:"http://localhost:8080/hr/getAppointmentList",
         data:search
     })
     .then(response => response.data)

@@ -12,7 +12,7 @@ const ProfileHeader = (props) => {
           <div className="jr-profile-banner-top">
             <div className="jr-profile-banner-top-left">
               <div className="jr-profile-banner-avatar">
-                <Avatar className="size-90" alt="..." src={HRCardDetailData && HRCardDetailData.profileImage ? `/img/${HRCardDetailData.profileImage}`
+                <Avatar className="size-90" alt="..." src={HRCardDetailData && HRCardDetailData.profileImage ? `http://localhost:8080/img/${HRCardDetailData.profileImage}`
                 :require("assets/images/placeholder.jpg")}/>
               </div>
               <div className="jr-profile-banner-avatar-info">

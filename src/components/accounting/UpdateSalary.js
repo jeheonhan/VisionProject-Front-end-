@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import { connect } from 'react-redux';
-import { updateSalary } from 'actions/index';
+import { updateSalary, cleanStoreState } from 'actions/index';
 import IconButton from '@material-ui/core/IconButton';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 import TextField from '@material-ui/core/TextField';
@@ -112,7 +112,8 @@ class UpdateSalary extends Component {
   closeUpdateSalary = () => {
     this.setState({ 
       updateFlag:false
-     })
+    })
+    this.props.cleanStoreState("salaryInfo")
     this.props.close();
   }
 
@@ -152,6 +153,8 @@ class UpdateSalary extends Component {
     const { salaryInfo } = this.props;
     var modifyFlag = false;
 
+    console.log(salaryInfo)
+
     if(Number(this.state.user.rankCodeNo) < 3){
       modifyFlag = true;
     }
@@ -159,7 +162,7 @@ class UpdateSalary extends Component {
       modifyFlag = true;
     }
 
-    if(salaryInfo && !this.state.updateFlag ){
+    if(salaryInfo && !this.state.updateFlag && this.props.open ){
       this.setState({
         updateFlag : true,
         salary : salaryInfo
@@ -296,4 +299,4 @@ const mapStateToProps = ({ accounting }) => {
   return { salaryInfo };
 }
 
-export default connect(mapStateToProps, {updateSalary})(UpdateSalary);
+export default connect(mapStateToProps, {updateSalary, cleanStoreState })(UpdateSalary);

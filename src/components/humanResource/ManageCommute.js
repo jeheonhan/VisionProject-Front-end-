@@ -177,7 +177,8 @@ class ManageCommute extends React.Component{
                 <SweetAlert show={this.state.goToWorkConfirm}
                     warning
                     showCancel
-                    confirmBtnText={"Yes"}
+                    confirmBtnText={"네"}
+                    cancelBtnText={"아니오"}
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
                     title={<div dangerouslySetInnerHTML={ {__html: "현재시간 "+moment().format("YYYY/MM/DD HH:mm:ss")+"으로<br/> 출근을 입력하시겠습니까?"} }/>}
@@ -187,7 +188,8 @@ class ManageCommute extends React.Component{
                 <SweetAlert show={this.state.leaveWorkConfirm}
                     warning
                     showCancel
-                    confirmBtnText={"Yes"}
+                    confirmBtnText={"네"}
+                    cancelBtnText={"아니오"}
                     confirmBtnBsStyle="danger"
                     cancelBtnBsStyle="default"
                     title={<div dangerouslySetInnerHTML={ {__html: "현재시간"+moment().format("YYYY/MM/DD HH:mm:ss")+"으로<br/> 퇴근을 입력하시겠습니까?"} }/>}
